@@ -3,11 +3,11 @@ package com.dbobjekts.codegen
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.codegen.metadata.SequenceNameResolverStrategy
 import com.dbobjekts.example.custom.AddressTypeColumn
-import com.dbobjekts.fixture.PathUtil
-import com.dbobjekts.fixture.TestSourceWriter
+import com.dbobjekts.util.TestSourceWriter
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.nio.file.Paths
 
 
 class WriteSchemaTest {
@@ -19,9 +19,9 @@ class WriteSchemaTest {
 
         generator.sourceConfigurer()
             .vendor("h2")
-            .addLiquibaseChangelogFile("custom", PathUtil.getFileInResourcesDir("all_types.xml"))
-            .addLiquibaseChangelogFile("core", PathUtil.getFileInResourcesDir("core-changelog.xml"))
-            .addLiquibaseChangelogFile("hr", PathUtil.getFileInResourcesDir("hr-changelog.xml"))
+            .addLiquibaseChangelogFile("custom", getFileInResourcesDir("all_types.xml"))
+            .addLiquibaseChangelogFile("core", getFileInResourcesDir("core-changelog.xml"))
+            .addLiquibaseChangelogFile("hr", getFileInResourcesDir("hr-changelog.xml"))
 
         generator.mappingConfigurer()
             .mapColumnToCustomType("KIND", AddressTypeColumn.INSTANCE, table = "EMPLOYEE_ADDRESS")
@@ -54,8 +54,8 @@ class WriteSchemaTest {
 
         generator.sourceConfigurer()
             .vendor("h2")
-            .addLiquibaseChangelogFile("core", PathUtil.getFileInResourcesDir("core-changelog.xml"))
-            .addLiquibaseChangelogFile("hr", PathUtil.getFileInResourcesDir("hr-changelog.xml"))
+            .addLiquibaseChangelogFile("core", getFileInResourcesDir("core-changelog.xml"))
+            .addLiquibaseChangelogFile("hr", getFileInResourcesDir("hr-changelog.xml"))
 
         generator.exclusionConfigurer()
             .ignoreColumns("COUNTRY_ID")
@@ -66,6 +66,10 @@ class WriteSchemaTest {
 
     }
 
+    private fun getFileInResourcesDir(fileName: String): String {
+        val path = Paths.get("src", "test", "resources", fileName)
+        return path.toAbsolutePath().toString()
+    }
 
     object H2SequenceNameResolver : SequenceNameResolverStrategy() {
         override fun getSequence(columnProperties: ColumnMappingProperties): String =

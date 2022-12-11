@@ -6,13 +6,14 @@ import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.result.ColumnInResultRow
 import com.dbobjekts.result.ResultRow
 import com.dbobjekts.util.QueryLogger
+import com.dbobjekts.util.StatementLogger
 import com.dbobjekts.vendors.Vendor
 import com.dbobjekts.vendors.VendorSpecificProperties
 import java.sql.*
 
 data class ConnectionAdapter(
     private val conn: Connection,
-    val queryLogger: QueryLogger,
+    val statementLogger: StatementLogger,
     private val _catalog: Catalog?,
     val vendor: Vendor
 ) {
@@ -34,7 +35,7 @@ data class ConnectionAdapter(
         try {
             jdbcConnection.close()
         } catch (e: SQLException) {
-            queryLogger.error("Error trying to close connection.", e)
+            statementLogger.error("Error trying to close connection.", e)
         }
     }
 
@@ -51,7 +52,7 @@ data class ConnectionAdapter(
     fun prepareAndExecuteUpdate(sql: SQL, parameters: List<AnySqlParameter>): Long {
         val statement = jdbcConnection.prepareStatement(sql.value)
         parameters.forEach { it.setValueOnStatement(statement) }
-        queryLogger.logStatement(sql, parameters)
+        statementLogger.logStatement(sql, parameters)
         return statement.executeUpdate().toLong()
     }
 
@@ -86,12 +87,12 @@ data class ConnectionAdapter(
     ): ResultSet {
         val statement = jdbcConnection.prepareStatement(sql.value)
         params.forEach { it.setValueOnStatement(statement) }
-        queryLogger.logStatement(sql, params)
+        statementLogger.logStatement(sql, params)
         return statement.executeQuery()
     }
 
     fun prepareAndExecuteDeleteStatement(sql: SQL, parameters: List<AnySqlParameter>): Long {
-        queryLogger.logStatement(sql, parameters)
+        statementLogger.logStatement(sql, parameters)
         return prepareAndExecuteUpdate(sql, parameters)
     }
 
@@ -101,7 +102,7 @@ data class ConnectionAdapter(
             stm = jdbcConnection.prepareStatement(sql.value)
             val rs = stm.executeQuery()
             return if (!rs.next()) {
-                queryLogger.error("Could not retrieve value from sequence. Resultset was empty.")
+                statementLogger.error("Could not retrieve value from sequence. Resultset was empty.")
                 null
             } else
                 rs.getLong(1).let { if (it == 0L) null else it }

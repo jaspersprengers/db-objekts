@@ -3,7 +3,7 @@ package com.dbobjekts.integration
 import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.codegen.datatypemapper.StandardColumnTypeMapper
 import com.dbobjekts.example.custom.AddressTypeMapper
-import com.dbobjekts.fixture.TestSourceWriter
+import com.dbobjekts.util.TestSourceWriter
 import com.dbobjekts.metadata.column.ColumnType
 import com.dbobjekts.vendors.MariaDB
 import org.junit.jupiter.api.Test

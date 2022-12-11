@@ -3,15 +3,15 @@ package com.dbobjekts.jdbc
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.util.HikariDataSourceAdapterImpl
 import com.dbobjekts.util.QueryLogger
-import com.dbobjekts.util.SLF4JQueryLogger
+import com.dbobjekts.util.StatementLogger
 import com.zaxxer.hikari.HikariDataSource
 import javax.sql.DataSource
 
 abstract class TransactionManagerBuilderBase<out T> {
-    protected lateinit var dataSource: DataSourceAdapter
-    protected var catalog: Catalog? = null
-    protected var queryLogger: QueryLogger = SLF4JQueryLogger()
-    protected var querySettings: TransactionSettings = TransactionSettings()
+    internal lateinit var dataSource: DataSourceAdapter
+    internal var catalog: Catalog? = null
+    internal var statementLogger: StatementLogger = StatementLogger()
+    internal var querySettings: TransactionSettings = TransactionSettings()
 
     @Suppress("unchecked")
     fun dataSource(dataSource: DataSource): T {
@@ -27,8 +27,8 @@ abstract class TransactionManagerBuilderBase<out T> {
         return this as T
     }
 
-    fun customLogger(logger: QueryLogger): T {
-        this.queryLogger = logger
+    fun customLogger(logger: StatementLogger): T {
+        this.statementLogger = logger
         return this as T
     }
 
@@ -47,14 +47,14 @@ abstract class TransactionManagerBuilderBase<out T> {
 class TransactionManagerBuilder : TransactionManagerBuilderBase<TransactionManagerBuilder>() {
     fun build(): TransactionManager {
         validate()
-        return TransactionManager(dataSource, catalog!!, querySettings, queryLogger)
+        return TransactionManager(dataSource, catalog!!, querySettings, statementLogger)
     }
 }
 
 object SingletonTransactionManagerBuilder : TransactionManagerBuilderBase<SingletonTransactionManagerBuilder>() {
     fun initialize(): Boolean {
         validate()
-        return SingletonTransactionManager.initialize(dataSource, catalog!!, querySettings, queryLogger)
+        return SingletonTransactionManager.initialize(dataSource, catalog!!, querySettings, statementLogger)
     }
 
 }

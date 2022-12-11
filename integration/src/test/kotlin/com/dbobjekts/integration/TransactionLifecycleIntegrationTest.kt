@@ -19,7 +19,7 @@ class TransactionLifecycleIntegrationTest {
         .catalog(H2DB.catalog)
         .autoCommit(false)
         .dataSource(HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver"))
-        .customLogger(H2DB.queryLogger)
+        .customLogger(H2DB.statementLogger)
         .build()
 
     companion object {

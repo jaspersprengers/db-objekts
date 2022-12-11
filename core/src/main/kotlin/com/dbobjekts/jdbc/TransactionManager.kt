@@ -2,8 +2,7 @@ package com.dbobjekts.jdbc
 
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.statement.TransactionResultValidator
-import com.dbobjekts.util.QueryLogger
-import com.dbobjekts.util.SLF4JQueryLogger
+import com.dbobjekts.util.StatementLogger
 import com.dbobjekts.vendors.Vendors
 import com.google.common.cache.CacheLoader
 import java.sql.Connection
@@ -12,7 +11,7 @@ class TransactionManager(
     private val dataSource: DataSourceAdapter,
     val catalog: Catalog,
     val transactionSettings: TransactionSettings = TransactionSettings(),
-    val queryLogger: QueryLogger = SLF4JQueryLogger()
+    val statementLogger: StatementLogger = StatementLogger()
 ) : CacheLoader<Long, Transaction>() {
 
     private val transactionCache = TransactionCache(this, transactionSettings)
@@ -28,7 +27,7 @@ class TransactionManager(
         return Transaction(
             ConnectionAdapter(
                 connection,
-                queryLogger,
+                statementLogger,
                 catalog,
                 Vendors.byName(catalog.vendor)
             )
@@ -44,7 +43,7 @@ class TransactionManager(
             }
             return TransactionResultValidator.validate(result)
         } catch (e: Exception) {
-            queryLogger.error("Caught exception while executing query for select. Rolling back", e)
+            statementLogger.error("Caught exception while executing query for select. Rolling back", e)
             if (!transactionSettings.autoCommit) {
                 transaction.rollback()
             }
@@ -60,7 +59,7 @@ class TransactionManager(
             val result: T = fct(currentTransaction)
             return TransactionResultValidator.validate(result)
         } catch (e: Exception) {
-            queryLogger.error("Caught exception while executing query. Rolling back ", e)
+            statementLogger.error("Caught exception while executing query. Rolling back ", e)
             currentTransaction.rollback()
             transactionCache.evict()
             throw e

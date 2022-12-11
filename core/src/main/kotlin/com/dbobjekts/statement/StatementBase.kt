@@ -9,12 +9,12 @@ import com.dbobjekts.metadata.TableJoinChainBuilder
 import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.statement.whereclause.WhereClause
-import com.dbobjekts.util.QueryLogger
+import com.dbobjekts.util.StatementLogger
 
 abstract class StatementBase<W>(internal val connection: ConnectionAdapter) {
 
     internal open val catalog: Catalog = connection.catalog()
-    internal val logger: QueryLogger = connection.queryLogger
+    internal val logger: StatementLogger = connection.statementLogger
 
     internal var tables: MutableList<Table> = mutableListOf<Table>()
     private var _drivingTable: Table? = null

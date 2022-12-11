@@ -3,13 +3,14 @@ package com.dbobjekts.fixture
 import com.dbobjekts.jdbc.SingletonTransactionManager
 import com.dbobjekts.jdbc.TransactionManager
 import com.dbobjekts.metadata.Catalog
+import com.dbobjekts.util.StatementLogger
 import org.slf4j.LoggerFactory
 import javax.sql.DataSource
 
 abstract class TestDatabaseFacade {
 
     private val logger = LoggerFactory.getLogger(TestDatabaseFacade::class.java)
-    val queryLogger = SqlLogger()
+    val statementLogger = StatementLogger()
 
     fun getTransactionManager(autoCommit: Boolean = true): TransactionManager {
         if (!SingletonTransactionManager.isConfigured())
@@ -42,7 +43,7 @@ abstract class TestDatabaseFacade {
             SingletonTransactionManager.configurer()
                 .catalog(catalog)
                 .autoCommit(autoCommit)
-                .customLogger(queryLogger)
+                .customLogger(statementLogger)
                 .dataSource(createDataSource())
                 .initialize()
             return true

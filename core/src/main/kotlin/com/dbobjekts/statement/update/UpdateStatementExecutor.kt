@@ -39,9 +39,9 @@ class UpdateStatementExecutor(
     fun execute(): Long {
         val sql = toSQL()
         val allParams: List<AnySqlParameter> = getAllParameters()
-        connection.queryLogger.logStatement(sql, allParams)
+        connection.statementLogger.logStatement(sql, allParams)
         return if (allParams.isEmpty()) {
-            connection.queryLogger.info("No parameters defined. Skipping execute.")
+            connection.statementLogger.info("No parameters defined. Skipping execute.")
             0
         } else {
             connection.prepareAndExecuteUpdate(sql, allParams)
