@@ -6,9 +6,9 @@ import com.dbobjekts.metadata.Catalog
 import org.slf4j.LoggerFactory
 import javax.sql.DataSource
 
-abstract class DatabaseFacade {
+abstract class TestDatabaseFacade {
 
-    private val logger = LoggerFactory.getLogger(DatabaseFacade::class.java)
+    private val logger = LoggerFactory.getLogger(TestDatabaseFacade::class.java)
     val queryLogger = SqlLogger()
 
     fun getTransactionManager(autoCommit: Boolean = true): TransactionManager {
@@ -22,7 +22,7 @@ abstract class DatabaseFacade {
 
     abstract fun deleteAllTables()
 
-    abstract fun dataSource(): DataSource
+    abstract fun createDataSource(): DataSource
 
     abstract val catalog: Catalog
 
@@ -43,7 +43,7 @@ abstract class DatabaseFacade {
                 .catalog(catalog)
                 .autoCommit(autoCommit)
                 .customLogger(queryLogger)
-                .dataSource(dataSource())
+                .dataSource(createDataSource())
                 .initialize()
             return true
         } catch (e: Exception) {

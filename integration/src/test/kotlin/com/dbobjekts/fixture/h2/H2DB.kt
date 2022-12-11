@@ -4,15 +4,13 @@ import com.dbobjekts.example.Catalogdefinition
 import com.dbobjekts.example.core.*
 import com.dbobjekts.example.hr.Certificate
 import com.dbobjekts.example.hr.Hobby
-import com.dbobjekts.fixture.DatabaseFacade
+import com.dbobjekts.fixture.TestDatabaseFacade
 import com.dbobjekts.jdbc.Transaction
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.util.HikariDataSourceFactory
 import javax.sql.DataSource
 
-object H2DB : DatabaseFacade() {
-
-    private val ds = HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
+object H2DB : TestDatabaseFacade() {
 
     fun <T> newTransaction(fct: (Transaction) -> T) = getTransactionManager().newTransaction(fct)
 
@@ -38,7 +36,7 @@ object H2DB : DatabaseFacade() {
         }
     }
 
-    override fun dataSource(): DataSource = ds
+    override fun createDataSource(): DataSource = HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
 
     override val catalog: Catalog = Catalogdefinition
 

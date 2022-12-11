@@ -23,7 +23,7 @@ interface ColumnForWriteMapContainer<T> {
 }
 
 class ColumnForWriteMapContainerImpl<T>(val builder: T) : ColumnForWriteMapContainer<T> {
-    internal val data: HashSet<AnyColumnAndValue> = linkedSetOf<AnyColumnAndValue>()
+    val data: HashSet<AnyColumnAndValue> = linkedSetOf<AnyColumnAndValue>()
 
     override fun <C> put(col: Column<C>, value: C?): T {
         if (value == null)
