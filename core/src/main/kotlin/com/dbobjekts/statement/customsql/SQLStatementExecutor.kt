@@ -14,10 +14,10 @@ import com.dbobjekts.statement.StatementExecutor
 
 open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
     override val connection: ConnectionAdapter,
-    val sql: SQL,
-    val args: List<Any>,
+    internal val sql: SQL,
+    internal val args: List<Any>,
     columnClasses: List<AnyColumn>,
-    val selectResultSet: RSB
+    internal val selectResultSet: RSB
 ) : StatementExecutor {
 
     constructor(connection: ConnectionAdapter, sql: SQL, args: List<Any>) : this(connection, sql, args, listOf(Columns.LONG), ResultRow1<Long>() as RSB)

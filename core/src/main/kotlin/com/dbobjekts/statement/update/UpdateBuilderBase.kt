@@ -15,7 +15,6 @@ interface HasUpdateBuilder<U : UpdateBuilderBase, I : InsertBuilderBase> {
     fun inserter(connection: ConnectionAdapter): I
 }
 
-
 interface ColumnForWriteMapContainer<T> {
 
     fun <C> put(col: Column<C>, value: C?): T
@@ -24,7 +23,7 @@ interface ColumnForWriteMapContainer<T> {
 }
 
 class ColumnForWriteMapContainerImpl<T>(val builder: T) : ColumnForWriteMapContainer<T> {
-     val data: HashSet<AnyColumnAndValue> = linkedSetOf<AnyColumnAndValue>()
+    internal val data: HashSet<AnyColumnAndValue> = linkedSetOf<AnyColumnAndValue>()
 
     override fun <C> put(col: Column<C>, value: C?): T {
         if (value == null)
@@ -38,8 +37,8 @@ class ColumnForWriteMapContainerImpl<T>(val builder: T) : ColumnForWriteMapConta
 }
 
 abstract class UpdateBuilderBase(
-    val table: Table,
-    val connection: ConnectionAdapter
+    internal val table: Table,
+    internal val connection: ConnectionAdapter
 ) {
     abstract protected fun data(): Set<AnyColumnAndValue>
     private var whereClause: SubClause? = null

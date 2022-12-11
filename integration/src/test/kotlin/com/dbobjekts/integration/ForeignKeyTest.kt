@@ -53,6 +53,7 @@ class ForeignKeyTest {
             H2DB.newTransaction { tr -> tr.insert(ed).departmentId(hrDept).employeeId(janesId).execute() }
             H2DB.newTransaction { tr -> tr.insert(ed).departmentId(itDept).employeeId(janesId).execute() }
             H2DB.newTransaction { tr ->
+                
                 tr.insert(Certificate).name("BSC").employeeId(johnsId).execute()
                 tr.insert(Certificate).name("MA").employeeId(janesId).execute()
                 tr.insert(EmployeeAddress).addressId(johnAndJanesAddress).employeeId(johnsId).kind(AddressType.HOME)

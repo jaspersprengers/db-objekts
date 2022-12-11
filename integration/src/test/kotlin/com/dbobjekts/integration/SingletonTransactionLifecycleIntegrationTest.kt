@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import java.time.LocalDate
 
-
+@Disabled
 class SingletonTransactionLifecycleIntegrationTest {
     val employee = Employee
 

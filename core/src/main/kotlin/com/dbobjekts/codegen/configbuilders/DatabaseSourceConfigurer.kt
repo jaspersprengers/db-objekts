@@ -8,11 +8,12 @@ import java.nio.file.Paths
 
 
 class DatabaseSourceConfigurer {
+
     private val logger = LoggerFactory.getLogger(DatabaseSourceConfigurer::class.java)
 
-    val changeLogFiles: HashMap<SchemaName, String> = hashMapOf()
-    val dataSourceConfigurer: DataSourceConfigurer = DataSourceConfigurer()
-    var vendor: Vendor? = null
+    internal val changeLogFiles: HashMap<SchemaName, String> = hashMapOf()
+    internal val dataSourceConfigurer: DataSourceConfigurer = DataSourceConfigurer()
+    internal var vendor: Vendor? = null
 
     fun vendor(vendorString: String): DatabaseSourceConfigurer {
         return vendor(Vendors.byName(vendorString))
@@ -32,12 +33,11 @@ class DatabaseSourceConfigurer {
         return dataSourceConfigurer
     }
 
-
-    fun getChangeLogFilesPath(): String? = changeLogFiles.values.firstOrNull()?.let {
+    internal fun getChangeLogFilesPath(): String? = changeLogFiles.values.firstOrNull()?.let {
         Paths.get(it).toFile().getParentFile().getAbsolutePath()
     }
 
-    fun validate() {
+    internal fun validate() {
         require(vendor != null, { "Setting 'vendor' is mandatory. Choose one of h2, mysql, postgresql" })
         require(
             changeLogFiles.isNotEmpty() || dataSourceConfigurer.toDataSourceInfo() != null,

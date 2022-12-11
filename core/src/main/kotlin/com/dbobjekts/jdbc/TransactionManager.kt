@@ -4,22 +4,39 @@ import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.statement.TransactionResultValidator
 import com.dbobjekts.util.QueryLogger
 import com.dbobjekts.util.SLF4JQueryLogger
+import com.dbobjekts.vendors.Vendors
+import com.google.common.cache.CacheLoader
+import java.sql.Connection
 
 class TransactionManager(
     private val dataSource: DataSourceAdapter,
     val catalog: Catalog,
     val transactionSettings: TransactionSettings = TransactionSettings(),
     val queryLogger: QueryLogger = SLF4JQueryLogger()
-) {
+) : CacheLoader<Long, Transaction>() {
 
-    private val transactionFactory =
-        TransactionFactory(dataSource, catalog, TransactionSettings(transactionSettings.autoCommit), queryLogger)
-    private val transactionCache = TransactionCache(transactionFactory)
+    private val transactionCache = TransactionCache(this, transactionSettings)
 
     operator fun <T> invoke(fct: (Transaction) -> T): T = newTransaction(fct)
 
+    override fun load(key: Long): Transaction = newTransaction()
+
+    fun newTransaction(): Transaction {
+        val connection: Connection = dataSource.createConnection()
+        require(!connection.isClosed, { "Connection is closed" })
+        connection.setAutoCommit(transactionSettings.autoCommit)
+        return Transaction(
+            ConnectionAdapter(
+                connection,
+                queryLogger,
+                catalog,
+                Vendors.byName(catalog.vendor)
+            )
+        )
+    }
+
     fun <T> newTransaction(fct: (Transaction) -> T): T {
-        val transaction = transactionFactory.newTransaction()
+        val transaction = newTransaction()
         try {
             val result: T = fct(transaction)
             if (!transactionSettings.autoCommit) {
@@ -51,7 +68,6 @@ class TransactionManager(
     }
 
 
-
     fun commit() {
         transactionCache.getIfExists()?.let {
             if (!transactionSettings.autoCommit)
@@ -74,8 +90,8 @@ class TransactionManager(
 
     override fun toString(): String = "${dataSource} ${catalog}"
 
-     fun test(): Boolean {
-        val tr = transactionFactory.newTransaction()
+    fun test(): Boolean {
+        val tr = newTransaction()
         return tr.isValid().also { tr.close() }
     }
 

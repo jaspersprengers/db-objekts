@@ -1,16 +1,17 @@
 package com.dbobjekts.jdbc
 
 import com.google.common.cache.CacheBuilder
+import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache
 import com.google.common.util.concurrent.UncheckedExecutionException
 import java.lang.IllegalStateException
 import java.util.concurrent.TimeUnit
 
-class TransactionCache(factory: TransactionFactory,
-                       minimumExpiryMillis: Long = 1000) {
+class TransactionCache(factory: CacheLoader<Long, Transaction>,
+                       transactionSettings: TransactionSettings) {
 
     private val guava: LoadingCache<Long, Transaction> = CacheBuilder.newBuilder()
-        .expireAfterWrite(Math.max(minimumExpiryMillis, factory.cacheExpiryMillis),
+        .expireAfterWrite(Math.max(1000, transactionSettings.transactionCacheExpireMillis),
             TimeUnit.MILLISECONDS)
         .build(factory)
 

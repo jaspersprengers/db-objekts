@@ -6,9 +6,9 @@ import com.dbobjekts.codegen.writer.SourceWriter
 
 class OutputConfigurer {
 
-    var basedirOpt: String? = null
-    var basePackage: PackageName? = null
-    var customSourceWriter: SourceWriter? = null
+    internal var basedirOpt: String? = null
+    internal var basePackage: PackageName? = null
+    internal var customSourceWriter: SourceWriter? = null
 
     fun basePackageForSources(pkg: String): OutputConfigurer {
         basePackage = PackageName(pkg)

@@ -23,7 +23,7 @@ class Transaction(val connection: ConnectionAdapter) {
     fun deleteFrom(tableJoinChain: TableJoinChain): DeleteStatementExecutor =
         DeleteStatementExecutor(connection).withJoinChain(tableJoinChain)
 
-    fun close() {
+    internal fun close() {
         connection.close()
     }
 

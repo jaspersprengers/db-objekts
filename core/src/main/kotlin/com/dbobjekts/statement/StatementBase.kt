@@ -11,47 +11,51 @@ import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.statement.whereclause.WhereClause
 import com.dbobjekts.util.QueryLogger
 
-abstract class StatementBase<W>(val connection: ConnectionAdapter) {
+abstract class StatementBase<W>(internal val connection: ConnectionAdapter) {
 
-    open val catalog: Catalog = connection.catalog()
-    val logger: QueryLogger = connection.queryLogger
+    internal open val catalog: Catalog = connection.catalog()
+    internal val logger: QueryLogger = connection.queryLogger
 
-    var tables: MutableList<Table> = mutableListOf<Table>()
+    internal var tables: MutableList<Table> = mutableListOf<Table>()
     private var _drivingTable: Table? = null
     private var _joinChain: TableJoinChain? = null
     protected lateinit var _whereClause: WhereClause
 
-     fun registerJoinChain(joinChain: TableJoinChain) {
+    internal fun registerJoinChain(joinChain: TableJoinChain) {
         _joinChain = joinChain
     }
 
-     fun registerDrivingTable(table: Table) {
+    internal fun registerDrivingTable(table: Table) {
         _drivingTable = table
     }
 
-    fun joinChain(): TableJoinChain =
-        _joinChain?:TableJoinChainBuilder(catalog = catalog,
-                drivingTable = _drivingTable?:tables.firstOrNull()?:throw IllegalStateException("Cannot build query: no tables to select"),
-                tables = tables.toList()).build()
+    internal fun joinChain(): TableJoinChain =
+        _joinChain ?: TableJoinChainBuilder(
+            catalog = catalog,
+            drivingTable = _drivingTable ?: tables.firstOrNull() ?: throw IllegalStateException("Cannot build query: no tables to select"),
+            tables = tables.toList()
+        ).build()
 
 
-     fun registerTable(table: Table) {
+    internal fun registerTable(table: Table) {
         if (!tables.contains(table))
             tables.add(table)
     }
 
-     fun withWhereClause(clause: SubClause) {
+    internal fun withWhereClause(clause: SubClause) {
         this._whereClause = WhereClause(clause, connection.vendor)
     }
 
-     fun getWhereClause(): WhereClause = if (!this::_whereClause.isInitialized) WhereClause(EmptyWhereClause, connection.vendor) else _whereClause
+    internal fun getWhereClause(): WhereClause =
+        if (!this::_whereClause.isInitialized) WhereClause(EmptyWhereClause, connection.vendor) else _whereClause
 
-     fun registerTablesInColumn(values: List<AnyColumnAndValue>) {
-        val tables = values.map {it.column.table}.toSet()
+    internal fun registerTablesInColumn(values: List<AnyColumnAndValue>) {
+        val tables = values.map { it.column.table }.toSet()
         if (tables.size != 1) throw IllegalStateException("Parameter should contain exactly one table but was ${tables.size}")
-        tables.forEach {registerTable(it)}
+        tables.forEach { registerTable(it) }
     }
 
-    fun getTable(): Table = if (tables.isEmpty()) throw IllegalStateException("Expected at least one table for query") else tables.first()
+    internal fun getTable(): Table =
+        if (tables.isEmpty()) throw IllegalStateException("Expected at least one table for query") else tables.first()
 
 }

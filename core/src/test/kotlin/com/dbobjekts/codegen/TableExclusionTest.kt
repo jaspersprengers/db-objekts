@@ -27,7 +27,7 @@ class TableExclusionTest {
 
     @Test
     fun `Exclude the employees table in hr`() {
-        set.add(TableExclusionFilter("employees", schema = "hr"))
+        set.addTableFilter(TableExclusionFilter("employees", schema = "hr"))
         val (exclude, include) = set.partition(listOf<DBTableDefinition>(employees, departments, salaries))
         assertThat(include).hasSize(2)
         val names: List<String> = exclude.map { it.tableName.value }

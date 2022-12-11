@@ -12,12 +12,12 @@ import com.dbobjekts.util.StringUtil
 
 class DeleteStatementExecutor(connection: ConnectionAdapter) :StatementBase<Long>(connection) {
 
-     fun withTable(table: Table): DeleteStatementExecutor {
+     internal fun withTable(table: Table): DeleteStatementExecutor {
         registerTable(table)
        return this
     }
 
-     fun withJoinChain(tableJoinChain: TableJoinChain): DeleteStatementExecutor {
+     internal fun withJoinChain(tableJoinChain: TableJoinChain): DeleteStatementExecutor {
         registerJoinChain(tableJoinChain)
         return this
     }

@@ -15,8 +15,8 @@ import com.dbobjekts.statement.whereclause.SubClause
 
 class SelectStatementExecutor<T, RSB : ResultRow<T>>(
     connection: ConnectionAdapter,
-    val columns: List<AnyColumn>,
-    val selectResultSet: RSB
+    internal val columns: List<AnyColumn>,
+    internal val selectResultSet: RSB
 ) : StatementBase<SelectStatementExecutor<T, RSB>>(connection){
 
     init {

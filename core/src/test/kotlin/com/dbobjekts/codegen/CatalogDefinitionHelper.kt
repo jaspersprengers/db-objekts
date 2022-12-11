@@ -1,4 +1,4 @@
-package com.dbobjekts
+package com.dbobjekts.codegen
 
 import com.dbobjekts.codegen.metadata.DBCatalogDefinition
 import com.dbobjekts.codegen.metadata.DBColumnDefinition

@@ -11,23 +11,23 @@ class ExclusionConfigurer() {
     internal var tableFilters = mutableSetOf<TableExclusionFilter>()
     internal var columnFilters = mutableSetOf<ColumnExclusionFilter>()
 
-    fun add(filter: SchemaExclusionFilter): ExclusionConfigurer {
+    fun addSchemaFilter(filter: SchemaExclusionFilter): ExclusionConfigurer {
         schemaFilters += filter
         return this
     }
 
-    fun add(filter: TableExclusionFilter): ExclusionConfigurer {
+    fun addTableFilter(filter: TableExclusionFilter): ExclusionConfigurer {
         tableFilters += filter
         return this
     }
 
-    fun add(filter: ColumnExclusionFilter): ExclusionConfigurer {
+    fun addColumnFilter(filter: ColumnExclusionFilter): ExclusionConfigurer {
         columnFilters += filter
         return this
     }
 
     fun ignoreSchemas(vararg pattern: String): ExclusionConfigurer {
-        pattern.forEach { add(SchemaExclusionFilter(it, exactMatch = true)) }
+        pattern.forEach { addSchemaFilter(SchemaExclusionFilter(it, exactMatch = true)) }
         return this
     }
 
@@ -40,15 +40,15 @@ class ExclusionConfigurer() {
         schema: String? = null,
         exactMatch: Boolean = false
     ): ExclusionConfigurer {
-        add(ColumnExclusionFilter(pattern, exactMatch = exactMatch, schema = schema, table = table))
+        addColumnFilter(ColumnExclusionFilter(pattern, exactMatch = exactMatch, schema = schema, table = table))
         return this
     }
 
     /**
      * @param schema applies filter only in specific schema. When null, apply it in all schemas
      */
-    fun ignoreTablesContainingPattern(pattern: String, schema: String? = null, exactMatch: Boolean = false): ExclusionConfigurer {
-        add(TableExclusionFilter(pattern, exactMatch = exactMatch, schema = schema))
+    fun ignoreTables(pattern: String, schema: String? = null, exactMatch: Boolean = false): ExclusionConfigurer {
+        addTableFilter(TableExclusionFilter(pattern, exactMatch = exactMatch, schema = schema))
         return this
     }
 
