@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog>
+    <changeSet author="jsprenge (generated)" id="1576823787268-1">
+        <createTable tableName="child">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="first_parent_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="second_parent_id" type="INT">
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseColumnNames="first_parent_id"
+                                 baseTableName="child"
+                                 referencedColumnNames="id"
+                                 referencedTableCatalogName="s1"
+                                 referencedTableName="parent"/>
+        <addForeignKeyConstraint baseColumnNames="second_parent_id"
+                                 baseTableName="child"
+                                 referencedColumnNames="id"
+                                 referencedTableCatalogName="s1"
+                                 referencedTableName="parent"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,2012 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="jsprenge (generated)" id="1576823787268-1">
+        <createTable tableName="action">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="linked_action_id" type="INT UNSIGNED"/>
+            <column name="description" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_id" remarks="fk -&gt; avm.action_type" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0.0" name="duration" remarks="minutes" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="enabled" remarks="boolean" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="remark" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" remarks="If no function is specified, the action is generic" type="CHAR(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-2">
+        <createTable tableName="action_history">
+            <column defaultValue="insert" name="action" type="VARCHAR(8)"/>
+            <column name="employeenr" type="INT UNSIGNED"/>
+            <column defaultValueDate="0001-01-01T00:00:00" name="datetime" type="datetime">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="linked_action_id" type="INT UNSIGNED"/>
+            <column name="description" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_id" remarks="fk -&gt; avm.action_type" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0.0" name="duration" remarks="minutes" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="enabled" remarks="boolean" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="remark" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" remarks="If no function is specified, the action is generic" type="CHAR(6)"/>
+            <column autoIncrement="true" name="time_index" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-3">
+        <createTable tableName="activity">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="linked_activity_id" type="INT UNSIGNED"/>
+            <column defaultValue="" name="description" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="true" name="nr_persons" remarks="Number of required persons" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0.0" name="frequency" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="frequency_confidence_id" remarks="fk -&gt; avm.frequency_confidence" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="frequency_remarks" type="VARCHAR(1000)"/>
+            <column name="total_repair_time" remarks="(hours) &quot;EASY WAY!!!&quot; override" type="DOUBLE"/>
+            <column defaultValueBoolean="false" name="trt_confidence_id" remarks="Confidence over the calculated total repair time (not the easy way)" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="remark" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activity_category_number" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activity_group_id" type="INT UNSIGNED"/>
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" type="CHAR(6)"/>
+            <column name="building_block_number" type="CHAR(32)"/>
+            <column name="part_nc12" type="CHAR(18)"/>
+            <column name="manual_parts_per_function" remarks="Number of parts per function (manually entered)" type="INT UNSIGNED"/>
+            <column name="manual_standard_cost_price" remarks="Standard cost price of the used part (manually entered)" type="DECIMAL(10, 2) UNSIGNED"/>
+            <column name="manual_part_description" remarks="Description of the used part (manually entered)" type="VARCHAR(256)"/>
+            <column name="project_code" type="CHAR(9)"/>
+            <column defaultValue="" name="hw_tools_description" remarks="Temporary field for Treegrid testing" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="sw_tools_description" remarks="Temporary field for Treegrid testing" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="packings_description" remarks="Temporary field for Treegrid testing" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="coach_procedure" remarks="May contain an optional free-format link to a coach procedure for non-HW service activities, which lack a part_12nc" type="VARCHAR(15)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-4">
+        <createTable tableName="activity_action">
+            <column name="activity_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="action_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValueNumeric="1.0" name="weight" remarks="For replacement actions both for duration and part count" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cars_action" type="INT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-5">
+        <createTable tableName="activity_action_history">
+            <column defaultValue="insert" name="action" type="VARCHAR(8)"/>
+            <column name="employeenr" type="INT UNSIGNED"/>
+            <column defaultValueDate="0001-01-01T00:00:00" name="datetime" type="datetime">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="activity_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="action_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValueNumeric="1.0" name="weight" remarks="For replacement actions both for duration and part count" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cars_action" type="INT"/>
+            <column autoIncrement="true" name="time_index" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-6">
+        <createTable tableName="activity_action_orig">
+            <column name="activity_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="action_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValueNumeric="1.0" name="weight" remarks="For replacement actions both for duration and part count" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-7">
+        <createTable tableName="activity_category">
+            <column name="number" remarks="Encodes hierarchy and ordering" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="CHAR(15)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="level" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_number" type="INT UNSIGNED"/>
+            <column name="selectable" remarks="Can have concrete activities?" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="can_contain_part" remarks="Indicates whether a category of this type can contain part information" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-8">
+        <createTable tableName="activity_grid_order">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="activity_id" type="INT UNSIGNED"/>
+            <column name="activity_group_id" type="INT UNSIGNED"/>
+            <column name="position" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-9">
+        <createTable tableName="activity_group">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" type="CHAR(7)"/>
+            <column name="activity_category_number" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_id" type="INT UNSIGNED"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-10">
+        <createTable tableName="activity_group_history">
+            <column defaultValue="insert" name="action" type="VARCHAR(8)"/>
+            <column name="employeenr" type="INT UNSIGNED"/>
+            <column defaultValueDate="0001-01-01T00:00:00" name="datetime" type="datetime">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" type="CHAR(7)"/>
+            <column name="activity_category_number" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_id" type="INT UNSIGNED"/>
+            <column autoIncrement="true" name="time_index" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-11">
+        <createTable tableName="activity_group_order">
+            <column name="activity_group_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="position" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-12">
+        <createTable tableName="activity_history">
+            <column defaultValue="insert" name="action" type="VARCHAR(8)"/>
+            <column name="employeenr" type="INT UNSIGNED"/>
+            <column defaultValueDate="0001-01-01T00:00:00" name="datetime" type="datetime">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="linked_activity_id" type="INT UNSIGNED"/>
+            <column defaultValue="" name="description" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="true" name="nr_persons" remarks="Number of required persons" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0.0" name="frequency" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="frequency_confidence_id" remarks="fk -&gt; avm.frequency_confidence" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="frequency_remarks" type="VARCHAR(1000)"/>
+            <column name="total_repair_time" remarks="(hours) &quot;EASY WAY!!!&quot; override" type="DOUBLE"/>
+            <column defaultValueBoolean="false" name="trt_confidence_id" remarks="Confidence over the calculated total repair time (not the easy way)" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="remark" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activity_category_number" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activity_group_id" type="INT UNSIGNED"/>
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" type="CHAR(6)"/>
+            <column name="building_block_number" type="CHAR(32)"/>
+            <column name="part_nc12" type="CHAR(18)"/>
+            <column name="manual_parts_per_function" type="INT"/>
+            <column name="manual_standard_cost_price" remarks="Standard cost price of the used part (manually entered)" type="DECIMAL(10, 2) UNSIGNED"/>
+            <column name="manual_part_description" remarks="Description of the used part (manually entered)" type="VARCHAR(256)"/>
+            <column name="project_code" type="CHAR(9)"/>
+            <column defaultValue="" name="hw_tools_description" remarks="Temporary field for Treegrid testing" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="sw_tools_description" remarks="Temporary field for Treegrid testing" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="packings_description" remarks="Temporary field for Treegrid testing" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="coach_procedure" remarks="May contain an optional free-format link to a coach procedure for non-HW service activities, which lack a part_12nc" type="VARCHAR(15)"/>
+            <column autoIncrement="true" name="time_index" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-13">
+        <createTable tableName="activity_link">
+            <column name="link_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="from_id" remarks="The activity from which action are copied." type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="to_id" remarks="The activity to which actions are copied." type="INT UNSIGNED"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-14">
+        <createTable tableName="activity_order">
+            <column name="activity_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="position" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-15">
+        <createTable tableName="activity_packaging">
+            <column name="activity_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="packaging_nc12" type="CHAR(18)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-16">
+        <createTable tableName="activity_scenario">
+            <column name="activity_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="scenario_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0.0" name="duration" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="enabled" type="TINYINT(3) UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-17">
+        <createTable tableName="activity_scenario_history">
+            <column defaultValue="insert" name="action" type="VARCHAR(8)"/>
+            <column name="employeenr" type="INT UNSIGNED"/>
+            <column defaultValueDate="0001-01-01T00:00:00" name="datetime" type="datetime">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="activity_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="scenario_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="duration" type="DOUBLE"/>
+            <column name="enabled" type="TINYINT(3)"/>
+            <column autoIncrement="true" name="time_index" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-18">
+        <createTable tableName="activity_tool">
+            <column name="activity_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="tool_nc12" type="CHAR(18)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-19">
+        <createTable tableName="air_issue_ambition_list">
+            <column name="number" type="CHAR(16)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="sys_id" type="CHAR(32)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-20">
+        <createTable tableName="are_change_notification">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" type="CHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="emails" type="VARCHAR(4000)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-21">
+        <createTable tableName="are_configuration">
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="attrib" type="VARCHAR(255)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="val" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-22">
+        <createTable tableName="availability">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" type="CHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="remarks" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="true" name="include_in_summary" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-23">
+        <createTable tableName="availability_action_order">
+            <column name="action_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="availability_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-24">
+        <createTable tableName="availability_history">
+            <column defaultValue="insert" name="action" type="VARCHAR(8)"/>
+            <column name="employeenr" type="INT UNSIGNED"/>
+            <column defaultValueDate="0001-01-01T00:00:00" name="datetime" type="datetime">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" type="CHAR(6)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="remarks" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="time_index" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValueBoolean="true" name="include_in_summary" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-25">
+        <createTable tableName="availability_link">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="from_id" remarks="The availability from which activities are copied." type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to_id" remarks="The availability to which activities are copied." type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-26">
+        <createTable tableName="cars_sequence">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_id" remarks="Analogous to action.type_id, but supporting only access and recovery types." type="TINYINT(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="neighbor" remarks="For ordering purposes within the same type_id and product_12nc. The first item has neighbor zero." type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-27">
+        <createTable tableName="cars_sequence_action">
+            <column autoIncrement="true" name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="action_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cars_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="1.0" name="weight" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-28">
+        <createTable tableName="cars_sequence_action_history">
+            <column defaultValue="insert" name="action" type="VARCHAR(8)"/>
+            <column name="employeenr" type="INT UNSIGNED"/>
+            <column defaultValueDate="0001-01-01T00:00:00" name="datetime" type="datetime">
+                <constraints primaryKey="true"/>
+            </column>
+            <column autoIncrement="true" name="time_index" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="action_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cars_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="weight" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-29">
+        <createTable tableName="cars_sequence_activity">
+            <column name="activity_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="cars_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-30">
+        <createTable tableName="cars_sequence_activity_history">
+            <column defaultValue="insert" name="action" type="VARCHAR(8)"/>
+            <column name="employeenr" type="INT UNSIGNED"/>
+            <column defaultValueDate="0001-01-01T00:00:00" name="datetime" type="datetime">
+                <constraints primaryKey="true"/>
+            </column>
+            <column autoIncrement="true" name="time_index" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="activity_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="cars_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-31">
+        <createTable tableName="cars_sequence_history">
+            <column defaultValue="insert" name="action" type="VARCHAR(8)"/>
+            <column name="employeenr" type="INT UNSIGNED"/>
+            <column defaultValueDate="0001-01-01T00:00:00" name="datetime" type="datetime">
+                <constraints primaryKey="true"/>
+            </column>
+            <column autoIncrement="true" name="time_index" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type_id" type="TINYINT(3)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="neighbor" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-32">
+        <createTable tableName="changelog">
+            <column name="change_number" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="complete_dt" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="applied_by" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(500)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-33">
+        <createTable tableName="definition">
+            <column name="domain" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="value" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-34">
+        <createTable tableName="improvement">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="air_id" remarks="*** To be specified ***" type="CHAR(10)"/>
+            <column name="wbs_id" remarks="*** To be specified ***" type="CHAR(10)"/>
+            <column name="status_id" remarks="fk -&gt; avm.improvement_status" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="delivery_date" type="date"/>
+            <column name="frequency" type="DOUBLE"/>
+            <column name="repair_time" remarks="hours" type="DOUBLE"/>
+            <column name="cost_price" remarks="Euro" type="DECIMAL(10, 2)"/>
+            <column defaultValue="" name="description" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment" type="VARCHAR(250)"/>
+            <column name="issue_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-35">
+        <createTable tableName="improvement_history">
+            <column defaultValue="insert" name="action" type="VARCHAR(8)"/>
+            <column name="employeenr" type="INT UNSIGNED"/>
+            <column defaultValueDate="0001-01-01T00:00:00" name="datetime" type="datetime">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="air_id" remarks="*** To be specified ***" type="CHAR(10)"/>
+            <column name="wbs_id" remarks="*** To be specified ***" type="CHAR(10)"/>
+            <column name="status_id" remarks="fk -&gt; avm.improvement_status" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="delivery_date" type="date"/>
+            <column name="frequency" type="DOUBLE"/>
+            <column name="repair_time" remarks="hours" type="DOUBLE"/>
+            <column name="cost_price" remarks="Euro" type="DECIMAL(10, 2)"/>
+            <column defaultValue="" name="description" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="comment" type="VARCHAR(250)"/>
+            <column name="issue_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="time_index" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-36">
+        <createTable tableName="issue">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="description" type="VARCHAR(250)"/>
+            <column name="start_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-37">
+        <createTable tableName="issue_history">
+            <column defaultValue="insert" name="action" type="VARCHAR(8)"/>
+            <column name="employeenr" type="INT UNSIGNED"/>
+            <column defaultValueDate="0001-01-01T00:00:00" name="datetime" type="datetime">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="id" type="INT">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="description" type="VARCHAR(250)"/>
+            <column name="start_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="time_index" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-38">
+        <createTable tableName="log_mails">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="sent" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="from" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="to" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cc" type="VARCHAR(255)"/>
+            <column defaultValue="" name="subject" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="body" type="TEXT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="testmode" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="errormessage" type="TEXT"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-39">
+        <createTable tableName="parameter">
+            <column name="product_nc12" remarks="fk -&gt; avm.product" type="VARCHAR(14)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="int_value" type="INT"/>
+            <column name="double_value" type="DOUBLE"/>
+            <column name="char_value" type="VARCHAR(1024)"/>
+            <column name="datetime_value" type="datetime"/>
+            <column name="unit" type="VARCHAR(16)"/>
+            <column name="sort_order" type="TINYINT(3) UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-40">
+        <createTable tableName="parameter_history">
+            <column defaultValue="insert" name="action" type="VARCHAR(8)"/>
+            <column name="employeenr" type="INT UNSIGNED"/>
+            <column defaultValueDate="0001-01-01T00:00:00" name="datetime" type="datetime">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(50)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="int_value" type="INT"/>
+            <column name="double_value" type="DOUBLE"/>
+            <column name="char_value" type="VARCHAR(1024)"/>
+            <column name="datetime_value" type="datetime"/>
+            <column name="unit" type="VARCHAR(16)"/>
+            <column name="sort_order" type="TINYINT(3) UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column autoIncrement="true" name="time_index" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-41">
+        <createTable tableName="product_action_order">
+            <column name="action_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="type_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="position" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-42">
+        <createTable tableName="product_detail">
+            <column name="nc12" remarks="fk -&gt; avm.product.nc12" type="VARCHAR(14)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValueBoolean="false" name="export_coverage" remarks="Whether the coverage in this product should be exported automatically every day" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="export_coverage_enabled_by" remarks="The userid of the person that enabled the export." type="VARCHAR(30)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-43">
+        <createTable tableName="product_detail_history">
+            <column defaultValue="insert" name="action" type="VARCHAR(8)"/>
+            <column name="employeenr" type="INT UNSIGNED"/>
+            <column defaultValueDate="0001-01-01T00:00:00" name="datetime" type="datetime">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="nc12" type="VARCHAR(14)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValue="" name="are_configuration" remarks="ARE configuration bundle" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="export_coverage" remarks="Whether the coverage in this product should be exported automatically every day" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="export_coverage_enabled_by" remarks="The userid of the person that enabled the export." type="VARCHAR(30)"/>
+            <column autoIncrement="true" name="time_index" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-44">
+        <createTable tableName="product_set">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-45">
+        <createTable tableName="reliability_history">
+            <column defaultValue="insert" name="action" type="VARCHAR(8)"/>
+            <column name="employeenr" type="INT UNSIGNED"/>
+            <column defaultValueDate="0001-01-01T00:00:00" name="datetime" type="datetime">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="factory_nc12" type="CHAR(18)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValueNumeric="0" name="product_set_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="is_reliability_critical" remarks="Reliability critical part" type="BIT(1)"/>
+            <column name="is_new" remarks="New / Existing part" type="BIT(1)"/>
+            <column name="spec_failed_after_7_years" type="DOUBLE"/>
+            <column defaultValue="" name="spec_remarks" remarks="Reliability specification remarks" type="VARCHAR(2000)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="spec_reference" remarks="Reliability specification reference: contains link to development document or TPD sheet" type="VARCHAR(1024)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="data_failed_7_years_first_estimate" type="DOUBLE"/>
+            <column name="data_failed_7_years_design_proven" type="DOUBLE"/>
+            <column defaultValue="" name="data_remarks" type="VARCHAR(2000)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="data_reference" remarks="Data reference link" type="VARCHAR(1024)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ca_failure_rate_actual" remarks="Crow-AMSAA failure rate actual" type="FLOAT(12)"/>
+            <column name="ca_growth_factor_actual" remarks="Crow-AMSAA growth factor (beta) actual" type="FLOAT(12)"/>
+            <column name="ca_failure_rate_predicted_1yr" remarks="Crow-AMSAA failure rate predicted 1yr" type="FLOAT(12)"/>
+            <column defaultValue="" name="ca_reference" remarks="Crow-AMSAA reference" type="VARCHAR(1024)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ca_update_date" remarks="Crow-AMSAA update date" type="date"/>
+            <column name="ler_failure_rate_actual" remarks="Lifetime Evidence Report failure rate actual" type="FLOAT(12)"/>
+            <column name="ler_growth_factor_actual" remarks="LER growth factor (beta) actual" type="FLOAT(12)"/>
+            <column name="ler_failure_rate_predicted_1yr" remarks="LER failure rate predicted 1yr" type="FLOAT(12)"/>
+            <column name="ler_failed_per_part_after_1yr" type="DOUBLE"/>
+            <column name="ler_failed_per_part_after_7yr" type="DOUBLE"/>
+            <column defaultValue="" name="ler_summary" remarks="LER summary" type="VARCHAR(2000)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="" name="ler_reference" remarks="Link to lifetime evidence report on network drive" type="VARCHAR(1024)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ler_update_date" remarks="LER update date" type="date"/>
+            <column autoIncrement="true" name="time_index" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-46">
+        <createTable tableName="scenario">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" type="CHAR(6)"/>
+            <column name="product_nc12" remarks="fk -&gt; avm.product.nc12" type="VARCHAR(14)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueBoolean="false" name="deleted" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0" name="previous_duration" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action_id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-47">
+        <createTable tableName="scenario_orig">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action_type_id" remarks="fk -&gt; avm.action_type.id" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="concept" remarks="boolean" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="duration" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_nc12" remarks="fk -&gt; avm.product.nc12" type="VARCHAR(14)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" type="CHAR(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-48">
+        <createTable tableName="se_overrule">
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="function_number" type="CHAR(6)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="prognosis" type="DOUBLE"/>
+            <column name="improvements" type="DOUBLE"/>
+            <column name="reason" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-49">
+        <createTable tableName="specification">
+            <column autoIncrement="true" name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValueNumeric="0.0" name="value" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0.0" name="intro_value" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="specification_category_number" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_nc12" remarks="fk -&gt; avm.product" type="VARCHAR(14)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" remarks="fk -&gt; avm.function" type="CHAR(6)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-50">
+        <createTable tableName="specification_category">
+            <column name="number" remarks="Encodes hierarchy and ordering" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="level" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="parent_number" type="INT UNSIGNED"/>
+            <column name="calculated" remarks="Calculated categories cant be assigned to" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-51">
+        <createTable tableName="specification_history">
+            <column defaultValue="insert" name="action" type="VARCHAR(8)"/>
+            <column name="employeenr" type="INT UNSIGNED"/>
+            <column defaultValueDate="0001-01-01T00:00:00" name="datetime" type="datetime">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column defaultValueNumeric="0.0" name="value" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValueNumeric="0.0" name="intro_value" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="specification_category_number" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_nc12" remarks="fk -&gt; avm.product" type="VARCHAR(14)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" remarks="fk -&gt; avm.function" type="CHAR(6)"/>
+            <column autoIncrement="true" name="time_index" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-52">
+        <createTable tableName="wf2_activity">
+            <column name="activity_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="description" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="CHAR(15)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="product_name" type="VARCHAR(64)"/>
+            <column name="frequency" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activity_mttr" remarks="Depending on action durations and eventual scenario duration calculated MTTR, this MTTR can be overruled by total_repair_time" type="DOUBLE"/>
+            <column name="activity_mttr_overruled" remarks="Indicates whether activity_mttr contains the overruling value from total_repair_time" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" type="CHAR(7)"/>
+            <column name="linked_activity_id" type="INT UNSIGNED"/>
+            <column name="nr_persons" remarks="Number of required persons" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="frequency_confidence_id" remarks="fk -&gt; avm.frequency_confidence" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="frequency_remarks" type="VARCHAR(1000)"/>
+            <column name="total_repair_time" remarks="(hours) &quot;EASY WAY!!!&quot; overrides action durations" type="DOUBLE"/>
+            <column name="trt_confidence_id" remarks="Confidence over the calculated total repair time (not the easy way)" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="remark" type="VARCHAR(1000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activity_category_number" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activity_group_id" type="INT UNSIGNED"/>
+            <column name="building_block_number" type="CHAR(32)"/>
+            <column name="part_nc12" type="CHAR(18)"/>
+            <column name="manual_parts_per_function" remarks="Number of parts per function (manually entered)" type="INT UNSIGNED"/>
+            <column name="manual_standard_cost_price" remarks="Standard cost price of the used part (manually entered)" type="DECIMAL(10, 2) UNSIGNED"/>
+            <column name="manual_part_description" remarks="Description of the used part (manually entered)" type="VARCHAR(256)"/>
+            <column name="project_code" type="CHAR(9)"/>
+            <column name="diagnostic_time" remarks="Sum of the durations of to the activity related diagnostic actions" type="DOUBLE"/>
+            <column name="access_time" remarks="Sum of the durations of to the activity related access actions" type="DOUBLE"/>
+            <column name="replace_time" remarks="Sum of the durations of to the activity related part replacement actions" type="DOUBLE"/>
+            <column name="recovery_time" remarks="Sum of the durations of to the activity related diagnostic actions, unless overruled by a scenario duration" type="DOUBLE"/>
+            <column name="is_unscheduled_down" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_scheduled_down" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_preventive_maintenance" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_automated_maintenance" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sa_scp" remarks="Service activity standard cost price, based on the involved part cost price. The manually set activity cost price is taken in case no part cost price is available." type="DECIMAL(10, 2)"/>
+            <column name="manually_set_sa_scp" remarks="Indicates whether the manually set activity cost price is taken, because of un-availability of the part cost price" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="part_description" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-53">
+        <createTable tableName="wf2_activity_improvement">
+            <column name="activity_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="period_sort_id" remarks="Helper for chronological sorting within timelines, for calculation and for display purposes" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="period_type" remarks="Kind of period: G = General, Q = Quarter, H = Half-year, Y = Year, P = Planned, A = Aborted" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="period_name" remarks="Name of the period as presented in Spotfire waterfall reports" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="freq_impr" remarks="Sum of frequency improvements of the service activity, up to and including the applicable period" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="repair_impr" remarks="Sum of MTTR improvements of the service activity, up to and including the applicable period" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="scp_impr" remarks="Sum of standard costprice improvements of the service activity, up to and including the applicable period" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="diagnostics_impr" remarks="Sum of diagnostic action parts of MTTR improvements of the service activity, up to and including the applicable period" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="access_impr" remarks="Sum of access actions part of MTTR improvements of the service activity, up to and including the applicable period" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="replace_impr" remarks="Sum of replace actions part of MTTR improvements of the service activity, up to and including the applicable period" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="recovery_impr" remarks="Sum of recovery actions part of MTTR improvements of the service activity, up to and including the applicable period" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="frequency" remarks="Resulting activity frequency when the improvement is effective" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="repair_time" remarks="Resulting activity MTTR when the improvement is effective" type="DOUBLE"/>
+            <column name="scp" remarks="Resulting standard cost price when the improvement is effective" type="DOUBLE"/>
+            <column name="diagnostic_time" remarks="Resulting diagnostic actions part of the activity MTTR when the improvement is effective" type="DOUBLE"/>
+            <column name="access_time" remarks="Resulting access actions part of the activity MTTR when the improvement is effective" type="DOUBLE"/>
+            <column name="replace_time" remarks="Resulting replace actions part of the activity MTTR when the improvement is effective" type="DOUBLE"/>
+            <column name="recovery_time" remarks="Resulting recovery actions part of the activity MTTR when the improvement is effective" type="DOUBLE"/>
+            <column name="has_improvements" remarks="Indicates wheter the activity has one or more improvements" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-54">
+        <createTable tableName="wf2_improvement_coverage">
+            <column name="improvement_id" remarks="Improvement number, this is an auto incremented number, which is assigned by Cerberus to the improvement. This id participates in chronological improvement sequence definition" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activity_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="air_id" type="CHAR(10)"/>
+            <column name="cad" remarks="Committed availability date. Only applicable for open improvements. In case a related air_issue is available, taken from the air_issue, otherwise taken from improvement.delivery_date" type="date"/>
+            <column name="cad_quarter" remarks="Name of the period as presented in Spotfire waterfall reports" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cad_halfyear" remarks="Name of the period as presented in Spotfire waterfall reports" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cad_year" remarks="Name of the period as presented in Spotfire waterfall reports" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" remarks="Improvement status, taken from the related air_issue, or in case no related air_issue availble, taken from improvement.status_id" type="VARCHAR(50)"/>
+            <column name="activity" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activity_type" type="CHAR(15)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action_type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="air_description" type="VARCHAR(150)"/>
+            <column name="issue_description" type="VARCHAR(250)"/>
+            <column name="impr_description" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="impr_comment" type="VARCHAR(250)"/>
+            <column name="freq_impr" remarks="Frequency improvement on service activity level" type="DOUBLE"/>
+            <column name="repair_impr" remarks="MTTR improvement" type="DOUBLE"/>
+            <column name="access_impr" remarks="MTTR improvement, in case the improvement is about an access action" type="DOUBLE"/>
+            <column name="diagnostics_impr" remarks="MTTR improvement, in case the improvement is about a diagnostic action" type="DOUBLE"/>
+            <column name="replace_impr" remarks="MTTR improvement, in case the improvement is about a replace action" type="DOUBLE"/>
+            <column name="recovery_impr" remarks="MTTR improvement, in case the improvement is about a recovery action" type="DOUBLE"/>
+            <column name="product_name" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" type="CHAR(7)"/>
+            <column name="is_scheduled_down" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_preventive_maintenance" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_automated_maintenance" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_unscheduled_down" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="was_extreme_long_down" remarks="Indicates whether the improvement results in going from XLD to not XLD for the activity" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_extreme_long_down" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="system_function_number" type="VARCHAR(7)"/>
+            <column name="coverage_av" remarks="Calculated standalone availability coverage of the improvement" type="DOUBLE"/>
+            <column name="coverage_scp" remarks="Calculated standalone standard cost price coverage of the improvement" type="DOUBLE"/>
+            <column name="scp_impr" remarks="Standard cost price improvement" type="DOUBLE"/>
+            <column name="activity_frequency" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activity_mttr" type="DOUBLE"/>
+            <column name="sa_scp" remarks="Service activity standard cost price" type="DECIMAL(10, 2)"/>
+            <column name="improvement_sequence_date" remarks="CAD date for planned Open improvements, otherwise an artifical date, depending on the status of the improvement. This date participates in chronological improvement sequence definition" type="date"/>
+            <column name="product_nc12" type="VARCHAR(14)"/>
+            <column name="include_in_summary" type="BIT(1)"/>
+            <column name="preceding_freq_impr" remarks="Sum of frequency improvements, of preceeding improvements in the chronological sequence of improvements of the related service activity" type="DOUBLE"/>
+            <column name="preceding_repair_impr" remarks="Sum of MTTR improvements, of preceeding improvements in the chronological sequence of improvements of the related service activity" type="DOUBLE"/>
+            <column name="sequenced_coverage_av" remarks="Calculated availability coverage of the improvement, depending on preceeding improvements on the same service activity" type="DOUBLE"/>
+            <column name="sequenced_coverage_scp" remarks="Calculated stadard cost price coverage of the improvement, depending on preceeding improvements on the same service activity" type="DOUBLE"/>
+            <column name="coverage_sequence_nr" remarks="Improvement sequence number, starting with 0, within the set of improvements, which are applicable for the same service activity" type="BIGINT">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-55">
+        <createTable tableName="wf2_improvement_sequence">
+            <column name="improvement_id" remarks="Improvement number, this is an auto incremented number, which is assigned by Cerberus to the improvement. This id participates in chronological improvement sequence definition" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="activity_id" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="air_id" type="CHAR(10)"/>
+            <column name="cad" remarks="Committed availability date. Only applicable for open improvements. In case a related air_issue is available, taken from the air_issue, otherwise taken from improvement.delivery_date" type="date"/>
+            <column name="cad_quarter" remarks="Name of the period as presented in Spotfire waterfall reports" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cad_halfyear" remarks="Name of the period as presented in Spotfire waterfall reports" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cad_year" remarks="Name of the period as presented in Spotfire waterfall reports" type="VARCHAR(30)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" remarks="Improvement status, taken from the related air_issue, or in case no related air_issue availble, taken from improvement.status_id" type="VARCHAR(50)"/>
+            <column name="activity" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activity_type" type="CHAR(15)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="action_type" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="air_description" type="VARCHAR(150)"/>
+            <column name="issue_description" type="VARCHAR(250)"/>
+            <column name="impr_description" type="VARCHAR(250)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="impr_comment" type="VARCHAR(250)"/>
+            <column name="freq_impr" remarks="Frequency improvement on service activity level" type="DOUBLE"/>
+            <column name="repair_impr" remarks="MTTR improvement" type="DOUBLE"/>
+            <column name="access_impr" remarks="MTTR improvement, in case the improvement is about an access action" type="DOUBLE"/>
+            <column name="diagnostics_impr" remarks="MTTR improvement, in case the improvement is about a diagnostic action" type="DOUBLE"/>
+            <column name="replace_impr" remarks="MTTR improvement, in case the improvement is about a replace action" type="DOUBLE"/>
+            <column name="recovery_impr" remarks="MTTR improvement, in case the improvement is about a recovery action" type="DOUBLE"/>
+            <column name="product_name" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" type="CHAR(7)"/>
+            <column name="is_scheduled_down" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_preventive_maintenance" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_automated_maintenance" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="is_unscheduled_down" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="system_function_number" type="VARCHAR(7)"/>
+            <column name="coverage_av" remarks="Calculated standalone availability coverage of the improvement" type="DOUBLE"/>
+            <column name="coverage_scp" remarks="Calculated standalone standard cost price coverage of the improvement" type="DOUBLE"/>
+            <column name="scp_impr" remarks="Standard cost price improvement" type="DOUBLE"/>
+            <column name="activity_frequency" type="DOUBLE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activity_mttr" type="DOUBLE"/>
+            <column name="sa_scp" remarks="Service activity standard cost price" type="DECIMAL(10, 2)"/>
+            <column name="improvement_sequence_date" remarks="CAD date for planned Open improvements, otherwise an artifical date, depending on the status of the improvement. This date participates in chronological improvement sequence definition" type="date"/>
+            <column name="product_nc12" type="VARCHAR(14)"/>
+            <column name="include_in_summary" type="BIT(1)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-56">
+        <createTable tableName="wf2_period">
+            <column autoIncrement="true" name="period_sort_id" remarks="Helper for chronological sorting within timelines, for calculation and for display purposes" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="period_type" remarks="Kind of period: G = General, Q = Quarter, H = Half-year, Y = Year, P = Planned, A = Aborted" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="period_name" remarks="Name of the period as presented in Spotfire waterfall reports" type="VARCHAR(30)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="begin_date" remarks="First day of the period, NULL in case no time span applicable" type="date"/>
+            <column name="end_date" remarks="Last day of the period, NULL in case no time span applicable" type="date"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-57">
+        <createTable tableName="wf2_product_period">
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="product_name" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" type="CHAR(7)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="system_function_number" type="VARCHAR(7)"/>
+            <column name="include_in_summary" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="period_sort_id" remarks="Helper for chronological sorting within timelines, for calculation and for display purposes" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="period_type" remarks="Kind of period: G = General, Q = Quarter, H = Half-year, Y = Year, P = Planned, A = Aborted" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="period_name" remarks="Name of the period as presented in Spotfire waterfall reports" type="VARCHAR(30)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="begin_date" remarks="First day of the period, NULL in case no time span applicable" type="date"/>
+            <column name="end_date" remarks="Last day of the period, NULL in case no time span applicable" type="date"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-58">
+        <createTable tableName="wf2_specification_category">
+            <column name="category_number" remarks="Encodes KPI specification hierarchy and ordering" type="INT UNSIGNED">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="unit" remarks="The unit, which is applicable for the KPI" type="VARCHAR(20)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="waterfall_name" remarks="name used in the Spotfire waterfall reports" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="kpi" remarks="KPI name, as used in Spotfire waterfall reports" type="VARCHAR(30)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="divider" remarks="divider to convert into percentages, based on (365 days * 24 hours) / 100%" type="FLOAT(12)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="factor" remarks="multiplier to convert from percentages, based on (365 days * 24 hours) / 100%" type="FLOAT(12)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-59">
+        <createTable tableName="wf2_timeline">
+            <column name="product_nc12" type="VARCHAR(14)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="product_name" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="function_number" type="CHAR(7)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="kpi" remarks="KPI name, as used in Spotfire waterfall reports" type="VARCHAR(30)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="series" remarks="Indicates whether the value is KPI value or an offset for presentation in a waterfaal graph" type="VARCHAR(10)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="period_sort_id" remarks="Helper for chronological sorting within timelines, for calculation and for display purposes" type="INT UNSIGNED">
+                <constraints nullable="false"/>
+            </column>
+            <column name="period_type" remarks="Kind of period: G = General, Q = Quarter, H = Half-year, Y = Year, P = Planned, A = Aborted" type="CHAR(1)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="period_name" remarks="Name of the period as presented in Spotfire waterfall reports" type="VARCHAR(30)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="value" remarks="KPI value or an offset for presentation in a waterfaal graph" type="DOUBLE"/>
+            <column name="system_function_number" type="VARCHAR(7)"/>
+            <column name="include_in_summary" type="BIT(1)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-60">
+        <addUniqueConstraint columnNames="activity_id, activity_id, activity_id, activity_id" constraintName="FK_activity_grid_order_activity" tableName="activity_grid_order"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-61">
+        <addUniqueConstraint columnNames="activity_group_id, activity_group_id, activity_group_id, activity_group_id" constraintName="FK_activity_grid_order_activity_group" tableName="activity_grid_order"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-62">
+        <addUniqueConstraint columnNames="availability_id, type_id, position" constraintName="UC_AVAIL_TYPE_POS" tableName="availability_action_order"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-63">
+        <addUniqueConstraint columnNames="action_id, cars_id" constraintName="action_id" tableName="cars_sequence_action"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-64">
+        <addUniqueConstraint columnNames="to_id, from_id" constraintName="idx_availabilitylinn_toid_fromid" tableName="availability_link"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-65">
+        <addUniqueConstraint columnNames="specification_category_number, product_nc12, function_number" constraintName="index_category_product_function" tableName="specification"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-66">
+        <addUniqueConstraint columnNames="product_nc12, name" constraintName="product_scenario" tableName="scenario"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-67">
+        <addUniqueConstraint columnNames="product_nc12, function_number" constraintName="u_product_nc12_function_number" tableName="availability"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-68">
+        <createIndex indexName="FK -&gt; product_set.id" tableName="reliability_history">
+            <column defaultValueNumeric="0" name="product_set_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-69">
+        <createIndex indexName="FK_activity_grid_order_activity" tableName="activity_grid_order" unique="true">
+            <column name="activity_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-70">
+        <createIndex indexName="FK_activity_grid_order_activity_group" tableName="activity_grid_order" unique="true">
+            <column name="activity_group_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-71">
+        <createIndex indexName="FK_activity_scenario_scenario" tableName="activity_scenario">
+            <column name="scenario_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-72">
+        <createIndex indexName="FK_availability_action_order_availability" tableName="availability_action_order">
+            <column name="availability_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-73">
+        <createIndex indexName="FK_cars_action_action" tableName="activity_action">
+            <column name="cars_action"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-74">
+        <createIndex indexName="FK_scenario_action" tableName="scenario">
+            <column name="action_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-75">
+        <createIndex indexName="activity_index" tableName="activity_packaging">
+            <column name="activity_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-76">
+        <createIndex indexName="activity_index" tableName="activity_tool">
+            <column name="activity_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-77">
+        <createIndex indexName="cars_id" tableName="cars_sequence_action">
+            <column name="cars_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-78">
+        <createIndex indexName="cars_id" tableName="cars_sequence_activity">
+            <column name="cars_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-79">
+        <createIndex indexName="fk_action" tableName="issue">
+            <column name="action_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-80">
+        <createIndex indexName="fk_action" tableName="issue_history">
+            <column name="action_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-81">
+        <createIndex indexName="fk_activity_category" tableName="activity">
+            <column name="activity_category_number"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-82">
+        <createIndex indexName="fk_activity_category" tableName="activity_history">
+            <column name="activity_category_number"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-83">
+        <createIndex indexName="fk_activitylink_fromid" tableName="activity_link">
+            <column name="from_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-84">
+        <createIndex indexName="fk_activitylink_toid" tableName="activity_link">
+            <column name="to_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-85">
+        <createIndex indexName="fk_avtivity_group" tableName="activity">
+            <column name="activity_group_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-86">
+        <createIndex indexName="fk_avtivity_group" tableName="activity_history">
+            <column name="activity_group_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-87">
+        <createIndex indexName="fk_issue" tableName="improvement">
+            <column name="issue_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-88">
+        <createIndex indexName="fk_issue" tableName="improvement_history">
+            <column name="issue_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-89">
+        <createIndex indexName="fk_scenario" tableName="activity_scenario_history">
+            <column name="scenario_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-90">
+        <createIndex indexName="function_index" tableName="action_history">
+            <column name="function_number"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-91">
+        <createIndex indexName="function_number" tableName="activity">
+            <column name="function_number"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-92">
+        <createIndex indexName="function_number" tableName="are_change_notification">
+            <column name="function_number"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-93">
+        <createIndex indexName="function_number" tableName="se_overrule">
+            <column name="function_number"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-94">
+        <createIndex indexName="function_number" tableName="specification">
+            <column name="function_number"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-95">
+        <createIndex indexName="idx_action_linkedactionid" tableName="action">
+            <column name="linked_action_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-96">
+        <createIndex indexName="idx_activity_linkedactivityid" tableName="activity">
+            <column name="linked_activity_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-97">
+        <createIndex indexName="idx_linkedavailability_fromid" tableName="availability_link">
+            <column name="from_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-98">
+        <createIndex indexName="index_action" tableName="activity_action">
+            <column name="action_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-99">
+        <createIndex indexName="index_action" tableName="activity_action_history">
+            <column name="action_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-100">
+        <createIndex indexName="index_action" tableName="activity_action_orig">
+            <column name="action_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-101">
+        <createIndex indexName="index_activity_product" tableName="wf2_activity">
+            <column name="product_nc12"/>
+            <column name="function_number"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-102">
+        <createIndex indexName="index_category_number" tableName="activity_group">
+            <column name="activity_category_number"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-103">
+        <createIndex indexName="index_category_number" tableName="activity_group_history">
+            <column name="activity_category_number"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-104">
+        <createIndex indexName="index_end_date" tableName="wf2_period">
+            <column name="end_date"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-105">
+        <createIndex indexName="index_function_number" tableName="activity_group">
+            <column name="function_number"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-106">
+        <createIndex indexName="index_function_number" tableName="activity_group_history">
+            <column name="function_number"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-107">
+        <createIndex indexName="index_improvement_coverage_activity" tableName="wf2_improvement_coverage">
+            <column name="activity_id"/>
+            <column name="improvement_sequence_date"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-108">
+        <createIndex indexName="index_improvement_coverage_product" tableName="wf2_improvement_coverage">
+            <column name="product_nc12"/>
+            <column name="function_number"/>
+            <column name="improvement_sequence_date"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-109">
+        <createIndex indexName="index_improvement_sequence_activity" tableName="wf2_improvement_sequence">
+            <column name="activity_id"/>
+            <column name="improvement_sequence_date"/>
+            <column name="improvement_id"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-110">
+        <createIndex indexName="index_part_nc12" tableName="activity">
+            <column name="part_nc12"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-111">
+        <createIndex indexName="index_part_nc12" tableName="activity_history">
+            <column name="part_nc12"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-112">
+        <createIndex indexName="index_period_dates" tableName="wf2_period">
+            <column name="begin_date"/>
+            <column name="end_date"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-113">
+        <createIndex indexName="index_product_nc12" tableName="activity_group">
+            <column name="product_nc12"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-114">
+        <createIndex indexName="index_product_nc12" tableName="activity_group_history">
+            <column name="product_nc12"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-115">
+        <createIndex indexName="index_product_nc12" tableName="availability_history">
+            <column name="product_nc12"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-116">
+        <createIndex indexName="index_product_period_dates" tableName="wf2_product_period">
+            <column name="product_nc12"/>
+            <column name="function_number"/>
+            <column name="begin_date"/>
+            <column name="end_date"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-117">
+        <createIndex indexName="index_product_period_end_date" tableName="wf2_product_period">
+            <column name="product_nc12"/>
+            <column name="function_number"/>
+            <column name="end_date"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-118">
+        <createIndex indexName="number_can_contain_part" tableName="activity_category">
+            <column name="number"/>
+            <column name="can_contain_part"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-119">
+        <createIndex indexName="packaging_index" tableName="activity_packaging">
+            <column name="packaging_nc12"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-120">
+        <createIndex indexName="product_function_index" tableName="action">
+            <column name="product_nc12"/>
+            <column name="function_number"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-121">
+        <createIndex indexName="product_index" tableName="action_history">
+            <column name="product_nc12"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-122">
+        <createIndex indexName="product_nc12" tableName="activity">
+            <column name="product_nc12"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-123">
+        <createIndex indexName="product_nc12" tableName="are_change_notification">
+            <column name="product_nc12"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-124">
+        <createIndex indexName="product_nc12" tableName="product_action_order">
+            <column name="product_nc12"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-125">
+        <createIndex indexName="product_nc12" tableName="specification">
+            <column name="product_nc12"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-126">
+        <createIndex indexName="time_index" tableName="action_history">
+            <column name="time_index"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-127">
+        <createIndex indexName="time_index" tableName="activity_action_history">
+            <column name="time_index"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-128">
+        <createIndex indexName="time_index" tableName="activity_group_history">
+            <column name="time_index"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-129">
+        <createIndex indexName="time_index" tableName="activity_history">
+            <column name="time_index"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-130">
+        <createIndex indexName="time_index" tableName="activity_scenario_history">
+            <column name="time_index"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-131">
+        <createIndex indexName="time_index" tableName="availability_history">
+            <column name="time_index"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-132">
+        <createIndex indexName="time_index" tableName="cars_sequence_action_history">
+            <column name="time_index"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-133">
+        <createIndex indexName="time_index" tableName="cars_sequence_activity_history">
+            <column name="time_index"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-134">
+        <createIndex indexName="time_index" tableName="cars_sequence_history">
+            <column name="time_index"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-135">
+        <createIndex indexName="time_index" tableName="improvement_history">
+            <column name="time_index"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-136">
+        <createIndex indexName="time_index" tableName="issue_history">
+            <column name="time_index"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-137">
+        <createIndex indexName="time_index" tableName="parameter_history">
+            <column name="time_index"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-138">
+        <createIndex indexName="time_index" tableName="product_detail_history">
+            <column name="time_index"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-139">
+        <createIndex indexName="time_index" tableName="reliability_history">
+            <column name="time_index"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-140">
+        <createIndex indexName="time_index" tableName="specification_history">
+            <column name="time_index"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-141">
+        <createIndex indexName="tool_index" tableName="activity_tool">
+            <column name="tool_nc12"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-142">
+        <createIndex indexName="value_index" tableName="definition">
+            <column name="value"/>
+        </createIndex>
+    </changeSet>
+        <changeSet author="jsprenge (generated)" id="1576823787268-143">
+            <addForeignKeyConstraint baseColumnNames="action_id" baseTableName="availability_action_order" constraintName="FK1_action" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="action" validate="true"/>
+        </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-144">
+        <addForeignKeyConstraint baseColumnNames="action_id" baseTableName="activity_action" constraintName="FK_activity_action_action" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="action" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-145">
+        <addForeignKeyConstraint baseColumnNames="activity_id" baseTableName="activity_action" constraintName="FK_activity_action_activity" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-146">
+        <addForeignKeyConstraint baseColumnNames="activity_group_id" baseTableName="activity" constraintName="FK_activity_activity_group" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_group" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-147">
+        <addForeignKeyConstraint baseColumnNames="activity_id" baseTableName="activity_grid_order" constraintName="FK_activity_grid_order_activity" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-148">
+        <addForeignKeyConstraint baseColumnNames="activity_group_id" baseTableName="activity_grid_order" constraintName="FK_activity_grid_order_activity_group" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_group" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-149">
+        <addForeignKeyConstraint baseColumnNames="activity_category_number" baseTableName="activity_group" constraintName="FK_activity_group_activity_category" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="number" referencedTableName="activity_category" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-150">
+        <addForeignKeyConstraint baseColumnNames="activity_group_id" baseTableName="activity_group_order" constraintName="FK_activity_group_order" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity_group" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-151">
+        <addForeignKeyConstraint baseColumnNames="activity_id" baseTableName="activity_order" constraintName="FK_activity_order" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-152">
+        <addForeignKeyConstraint baseColumnNames="activity_id" baseTableName="activity_scenario" constraintName="FK_activity_scenario_activity" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-153">
+        <addForeignKeyConstraint baseColumnNames="scenario_id" baseTableName="activity_scenario" constraintName="FK_activity_scenario_scenario" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="scenario" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-154">
+        <addForeignKeyConstraint baseColumnNames="availability_id" baseTableName="availability_action_order" constraintName="FK_availability_action_order_availability" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="availability" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-155">
+        <addForeignKeyConstraint baseColumnNames="cars_action" baseTableName="activity_action" constraintName="FK_cars_action_action" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="cars_sequence_action" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-156">
+        <addForeignKeyConstraint baseColumnNames="action_id" baseTableName="product_action_order" constraintName="FK_product_action_order_action" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="action" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-157">
+        <addForeignKeyConstraint baseColumnNames="action_id" baseTableName="scenario" constraintName="FK_scenario_action" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="action" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-158">
+        <addForeignKeyConstraint baseColumnNames="specification_category_number" baseTableName="specification" constraintName="FK_specification_specification_category" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="number" referencedTableName="specification_category" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-159">
+        <addForeignKeyConstraint baseColumnNames="linked_action_id" baseTableName="action" constraintName="action_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="action" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-160">
+        <addForeignKeyConstraint baseColumnNames="linked_activity_id" baseTableName="activity" constraintName="activity_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="activity" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-161">
+        <addForeignKeyConstraint baseColumnNames="cars_id" baseTableName="cars_sequence_action" constraintName="cars_sequence_action_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="cars_sequence" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-162">
+        <addForeignKeyConstraint baseColumnNames="action_id" baseTableName="cars_sequence_action" constraintName="cars_sequence_action_ibfk_2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="action" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-163">
+        <addForeignKeyConstraint baseColumnNames="activity_id" baseTableName="cars_sequence_activity" constraintName="cars_sequence_activity_ibfk_1" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-164">
+        <addForeignKeyConstraint baseColumnNames="cars_id" baseTableName="cars_sequence_activity" constraintName="cars_sequence_activity_ibfk_2" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="cars_sequence" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-165">
+        <addForeignKeyConstraint baseColumnNames="action_id" baseTableName="issue" constraintName="fk_action" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="action" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-166">
+        <addForeignKeyConstraint baseColumnNames="activity_category_number" baseTableName="activity" constraintName="fk_activity_category" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="number" referencedTableName="activity_category" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-167">
+        <addForeignKeyConstraint baseColumnNames="from_id" baseTableName="activity_link" constraintName="fk_activitylink_fromid" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="activity" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-168">
+        <addForeignKeyConstraint baseColumnNames="link_id" baseTableName="activity_link" constraintName="fk_activitylink_linkid" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="availability_link" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-169">
+        <addForeignKeyConstraint baseColumnNames="to_id" baseTableName="activity_link" constraintName="fk_activitylink_toid" deferrable="false" initiallyDeferred="false" onDelete="SET NULL" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="activity" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-170">
+        <addForeignKeyConstraint baseColumnNames="from_id" baseTableName="availability_link" constraintName="fk_availabilitylink_fromid" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="availability" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-171">
+        <addForeignKeyConstraint baseColumnNames="to_id" baseTableName="availability_link" constraintName="fk_availabilitylink_toid" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="availability" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-172">
+        <addForeignKeyConstraint baseColumnNames="issue_id" baseTableName="improvement" constraintName="fk_issue" deferrable="false" initiallyDeferred="false" onDelete="CASCADE" onUpdate="CASCADE" referencedColumnNames="id" referencedTableName="issue" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-173">
+        <addForeignKeyConstraint baseColumnNames="activity_id" baseTableName="activity_packaging" constraintName="fk_packaging_activity" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-174">
+        <addForeignKeyConstraint baseColumnNames="activity_id" baseTableName="activity_tool" constraintName="fk_tool_activity" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="activity" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-175">
+        <createView fullDefinition="false" remarks="" viewName="action_type">select `avm`.`definition`.`id` AS `id`,`avm`.`definition`.`value` AS `value` from `avm`.`definition` where (`avm`.`definition`.`domain` = 1)</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-176">
+        <createView fullDefinition="false" remarks="" viewName="activity_factory_part">select `avm`.`activity`.`id` AS `activity_id`,coalesce(`rdb`.`form_fit_function_relations`.`right_12nc`,`avm`.`activity`.`part_nc12`) AS `factory_part_nc12` from (`avm`.`activity` left join `rdb`.`form_fit_function_relations` on(((`avm`.`activity`.`part_nc12` = `rdb`.`form_fit_function_relations`.`left_12nc`) and (`avm`.`activity`.`part_nc12` like 'SERV.%') and (`rdb`.`form_fit_function_relations`.`relation` = 'service_factory')))) where ((`avm`.`activity`.`part_nc12` is not null) and (`avm`.`activity`.`part_nc12` &lt;&gt; ''))</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-177">
+        <createView fullDefinition="false" remarks="" viewName="activity_history_view">select `ah`.`action` AS `action`,`ah`.`employeenr` AS `employeenr`,`em`.`fullname` AS `employee_fullname`,`em`.`userid` AS `employee_userid`,`ah`.`datetime` AS `datetime`,`ah`.`id` AS `id`,`ah`.`description` AS `description`,`ah`.`nr_persons` AS `nr_persons`,`ah`.`frequency` AS `frequency`,`fc`.`value` AS `frequency_confidence`,`ah`.`frequency_remarks` AS `frequency_remarks`,`ah`.`total_repair_time` AS `total_repair_time`,`trt_confidence`.`value` AS `trt_confidence`,`ah`.`remark` AS `remark`,`ac`.`description` AS `activity_category_description`,`ah`.`product_nc12` AS `product_nc12`,`ah`.`function_number` AS `function_number`,`ah`.`building_block_number` AS `building_block_number`,`ah`.`part_nc12` AS `part_nc12`,`ah`.`manual_parts_per_function` AS `manual_parts_per_function`,`ah`.`manual_standard_cost_price` AS `manual_standard_cost_price`,`ah`.`manual_part_description` AS `manual_part_description`,`ah`.`project_code` AS `project_code`,`ah`.`hw_tools_description` AS `hw_tools_description`,`ah`.`sw_tools_description` AS `sw_tools_description`,`ah`.`packings_description` AS `packings_description` from ((((`avm`.`activity_history` `ah` join `avm`.`frequency_confidence` `fc` on((`fc`.`id` = `ah`.`frequency_confidence_id`))) join `avm`.`trt_confidence` on((`trt_confidence`.`id` = `ah`.`trt_confidence_id`))) join `avm`.`activity_category` `ac` on((`ac`.`number` = `ah`.`activity_category_number`))) join `de_ie_cm`.`employees` `em` on((`em`.`employeenr` = `ah`.`employeenr`)))</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-178">
+        <createView fullDefinition="false" remarks="" viewName="activity_repair_times">select `avm`.`activity`.`id` AS `id`,`avm`.`activity`.`linked_activity_id` AS `linked_activity_id`,`avm`.`activity`.`description` AS `description`,`avm`.`activity`.`nr_persons` AS `nr_persons`,`avm`.`activity`.`frequency` AS `frequency`,`avm`.`activity`.`frequency_confidence_id` AS `frequency_confidence_id`,`avm`.`activity`.`frequency_remarks` AS `frequency_remarks`,`avm`.`activity`.`total_repair_time` AS `total_repair_time`,`avm`.`activity`.`trt_confidence_id` AS `trt_confidence_id`,`avm`.`activity`.`remark` AS `remark`,`avm`.`activity`.`activity_category_number` AS `activity_category_number`,`avm`.`activity`.`activity_group_id` AS `activity_group_id`,`avm`.`activity`.`product_nc12` AS `product_nc12`,`avm`.`activity`.`function_number` AS `function_number`,`avm`.`activity`.`building_block_number` AS `building_block_number`,`avm`.`activity`.`part_nc12` AS `part_nc12`,`avm`.`activity`.`manual_parts_per_function` AS `manual_parts_per_function`,`avm`.`activity`.`manual_standard_cost_price` AS `manual_standard_cost_price`,`avm`.`activity`.`manual_part_description` AS `manual_part_description`,`avm`.`activity`.`project_code` AS `project_code`,`avm`.`activity`.`hw_tools_description` AS `hw_tools_description`,`avm`.`activity`.`sw_tools_description` AS `sw_tools_description`,`avm`.`activity`.`packings_description` AS `packings_description`,`avm`.`activity`.`coach_procedure` AS `coach_procedure`,any_value(`avm`.`activity_category`.`type`) AS `category_type`,any_value(`de_ie_cm`.`products`.`fullname`) AS `product_name`,if((coalesce(`avm`.`activity`.`total_repair_time`,0) &gt; 0),`avm`.`activity`.`total_repair_time`,(sum(if((`avm`.`action`.`type_id` in (0,4,5,6)),coalesce((`avm`.`activity_action`.`weight` * `avm`.`action`.`duration`),0),0)) / 60.0)) AS `mean_time_to_repair`,(sum(if((`avm`.`action`.`type_id` = 4),coalesce((`avm`.`activity_action`.`weight` * `avm`.`action`.`duration`),0),0)) / 60.0) AS `diagnostic_time`,(sum(if((`avm`.`action`.`type_id` = 0),coalesce((`avm`.`activity_action`.`weight` * `avm`.`action`.`duration`),0),0)) / 60.0) AS `access_time`,(sum(if((`avm`.`action`.`type_id` = 6),coalesce((`avm`.`activity_action`.`weight` * `avm`.`action`.`duration`),0),0)) / 60.0) AS `replace_time`,(sum(if((`avm`.`action`.`type_id` = 5),coalesce((`avm`.`activity_action`.`weight` * `avm`.`action`.`duration`),0),0)) / 60.0) AS `recovery_time`,any_value(`part`.`cost_price`) AS `part_cost_price`,any_value(`part`.`description`) AS `part_description` from (((((`avm`.`activity` join `avm`.`activity_category` on((`avm`.`activity`.`activity_category_number` = `avm`.`activity_category`.`number`))) left join `avm`.`activity_action` on((`avm`.`activity`.`id` = `avm`.`activity_action`.`activity_id`))) left join `avm`.`action` on(((`avm`.`activity_action`.`action_id` = `avm`.`action`.`id`) and (`avm`.`action`.`enabled` = 1)))) left join `avm`.`part` on((`avm`.`activity`.`part_nc12` = `part`.`nc12`))) left join `de_ie_cm`.`products` on((`de_ie_cm`.`products`.`fssn` = `avm`.`activity`.`product_nc12`))) group by `avm`.`activity`.`id`</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-179">
+        <createView fullDefinition="false" remarks="" viewName="air_issue">select `de_ie_cm`.`air_issues`.`number` AS `number`,`de_ie_cm`.`air_issues`.`owner` AS `owner`,`de_ie_cm`.`air_issues`.`short_description` AS `short_description`,`de_ie_cm`.`air_issues`.`status` AS `status`,`de_ie_cm`.`air_issues`.`creation_date` AS `creation_date`,`de_ie_cm`.`air_issues`.`committed_avail_date` AS `committed_avail_date` from `de_ie_cm`.`air_issues`</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-180">
+        <createView fullDefinition="false" remarks="" viewName="air_issue_ambition_item">select `de_ie_cm`.`air_issue_ambition_item`.`air_issue_number` AS `air_issue_number`,`de_ie_cm`.`air_issue_ambition_item`.`line_item_sys_id` AS `line_item_sys_id` from `de_ie_cm`.`air_issue_ambition_item`</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-181">
+        <createView fullDefinition="false" remarks="" viewName="availability_action">select `avm`.`availability`.`id` AS `availability_id`,`avm`.`action`.`id` AS `action_id`,`avm`.`availability`.`product_nc12` AS `product_nc12`,`avm`.`availability`.`function_number` AS `function_number` from (`avm`.`availability` join `avm`.`action` on(((`avm`.`availability`.`product_nc12` = `avm`.`action`.`product_nc12`) and ((`avm`.`availability`.`function_number` = `avm`.`action`.`function_number`) or isnull(`avm`.`action`.`function_number`)))))</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-182">
+        <createView fullDefinition="false" remarks="" viewName="availability_activity">select `avm`.`availability`.`id` AS `availability_id`,`avm`.`activity`.`id` AS `activity_id`,`avm`.`availability`.`product_nc12` AS `product_nc12`,`avm`.`availability`.`function_number` AS `function_number` from (`avm`.`availability` join `avm`.`activity` on(((`avm`.`activity`.`product_nc12` = `avm`.`availability`.`product_nc12`) and (`avm`.`activity`.`function_number` = `avm`.`availability`.`function_number`))))</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-183">
+        <createView fullDefinition="false" remarks="" viewName="building_block">select `bb`.`number` AS `number`,`bb`.`name` AS `name`,`bb`.`12nc` AS `nc12`,`fc`.`number` AS `fc_number` from (`de_ie_cm`.`building_blocks` `bb` join `de_ie_cm`.`functions` `fc` on((`fc`.`id` = `bb`.`functions_id`))) where (`fc`.`status` &lt;&gt; 'obsolete')</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-184">
+        <createView fullDefinition="false" remarks="" viewName="building_block_part">select `de_ie_cm`.`products`.`fssn` AS `product_nc12`,`de_ie_cm`.`building_blocks`.`number` AS `building_block_number`,`de_ie_cm`.`functions`.`number` AS `function_number`,`de_ie_cm`.`sap_parts`.`12nc` AS `part_nc12`,(`de_ie_cm`.`product_part`.`quantity` * `building_block_sap_part`.`quantity`) AS `quantity` from (((((`de_ie_cm`.`products` join `de_ie_cm`.`product_part` on((`de_ie_cm`.`products`.`id` = `de_ie_cm`.`product_part`.`products_id`))) join `de_ie_cm`.`building_blocks` on((`de_ie_cm`.`product_part`.`parts_id` = `de_ie_cm`.`building_blocks`.`parts_id`))) join `de_ie_cm`.`functions` on((`de_ie_cm`.`building_blocks`.`functions_id` = `de_ie_cm`.`functions`.`id`))) join `de_ie_cm`.`building_block_sap_part` on((`de_ie_cm`.`building_blocks`.`id` = `building_block_sap_part`.`building_blocks_id`))) join `de_ie_cm`.`sap_parts` on((`building_block_sap_part`.`sap_parts_id` = `de_ie_cm`.`sap_parts`.`id`)))</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-185">
+        <createView fullDefinition="false" remarks="" viewName="frequency_confidence">select `avm`.`definition`.`id` AS `id`,`avm`.`definition`.`value` AS `value` from `avm`.`definition` where (`avm`.`definition`.`domain` = 2)</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-186">
+        <createView fullDefinition="false" remarks="" viewName="function">select `fc`.`id` AS `id`,`fc`.`parent` AS `parent`,`fc`.`number` AS `number`,`fc`.`name` AS `name`,`fc`.`sort_order` AS `sort_order`,`fc`.`description` AS `functional_description`,(select (count(`c`.`id`) = 0) from `de_ie_cm`.`functions` `c` where (`c`.`parent` = `fc`.`id`)) AS `is_leaf`,(select (count(`c`.`id`) &gt; 0) from `de_ie_cm`.`functions` `c` where ((`c`.`parent` = `fc`.`id`) and (`c`.`status` = 'obsolete') and (`fc`.`parent` is not null))) AS `has_obsolete_children` from (`de_ie_cm`.`functions` `fc` left join `de_ie_cm`.`functions` `parent` on((`parent`.`id` = `fc`.`parent`))) where ((`fc`.`status` &lt;&gt; 'obsolete') or ((`fc`.`status` = 'obsolete') and (`parent`.`parent` is not null)))</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-187">
+        <createView fullDefinition="false" remarks="" viewName="function_part">select `de_ie_cm`.`functions`.`number` AS `function_number`,`de_ie_cm`.`building_blocks`.`number` AS `building_block_number`,`de_ie_cm`.`parts`.`12nc` AS `part_nc12`,`de_ie_cm`.`products`.`fssn` AS `product_nc12`,`de_ie_cm`.`building_block_part`.`quantity` AS `parts_per_building_block` from (((((`de_ie_cm`.`parts` join `de_ie_cm`.`building_block_part` on((`de_ie_cm`.`parts`.`id` = `de_ie_cm`.`building_block_part`.`parts_id`))) join `de_ie_cm`.`building_blocks` on((`de_ie_cm`.`building_block_part`.`building_blocks_id` = `de_ie_cm`.`building_blocks`.`id`))) join `de_ie_cm`.`product_part` on((`de_ie_cm`.`building_blocks`.`parts_id` = `de_ie_cm`.`product_part`.`parts_id`))) join `de_ie_cm`.`products` on((`de_ie_cm`.`product_part`.`products_id` = `de_ie_cm`.`products`.`id`))) join `de_ie_cm`.`functions` on((substr(`de_ie_cm`.`building_blocks`.`number`,4,3) = substr(`de_ie_cm`.`functions`.`number`,4,3)))) where (left(`de_ie_cm`.`functions`.`number`,2) = 'FC')</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-188">
+        <createView fullDefinition="false" remarks="" viewName="improvement_status">select `avm`.`definition`.`id` AS `id`,`avm`.`definition`.`value` AS `value` from `avm`.`definition` where (`avm`.`definition`.`domain` = 3)</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-189">
+        <createView fullDefinition="false" remarks="" viewName="packaging">select `de_ie_cm`.`parts`.`12nc` AS `nc12`,`de_ie_cm`.`parts`.`description` AS `description`,`de_ie_cm`.`parts`.`DPSCodeProject` AS `project_group_code` from `de_ie_cm`.`parts` where (`de_ie_cm`.`parts`.`TCEItemType` = 'PACKING MAT')</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-190">
+        <createView fullDefinition="false" remarks="" viewName="part">select `p`.`12nc` AS `nc12`,`p`.`material_master` AS `material_master`,`p`.`description` AS `description`,`p`.`factory_12nc` AS `factory_12nc`,`p`.`DPSCodeProject` AS `project_group_code`,`p`.`highest_revision` AS `highest_revision`,coalesce(`s`.`predecessor`,`tce`.`PredecessorMaterial`) AS `predecessor`,`s`.`sp` AS `cost_price`,`s`.`r_status` AS `r_status`,if(((`pr1`.`resource` = 'gpi') or (`pr2`.`resource` = 'gpi')),1,0) AS `is_secured`,`p`.`TCEItemType` AS `item_type` from ((((`de_ie_cm`.`parts` `p` join `de_ie_cm`.`parts_tce_fields` `tce` on((`p`.`id` = `tce`.`parts_id`))) left join `de_ie_cm`.`sap_parts` `s` on((`s`.`12nc` = `p`.`12nc`))) left join `de_ie_cm`.`part_resource` `pr1` on((`pr1`.`12nc` = `p`.`12nc`))) left join `de_ie_cm`.`part_resource` `pr2` on((`pr2`.`12nc` = `p`.`factory_12nc`))) where ((`p`.`TCEItemType` &lt;&gt; 'PACKING MAT') and (not((`p`.`12nc` like 'TOOL%'))))</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-191">
+        <createView fullDefinition="false" remarks="" viewName="platform">select `de_ie_cm`.`platforms`.`id` AS `id`,`de_ie_cm`.`platforms`.`name` AS `name`,`de_ie_cm`.`products`.`fssn` AS `product_nc12`,`de_ie_cm`.`parts`.`12nc` AS `part_nc12` from (((`de_ie_cm`.`platforms` join `de_ie_cm`.`products` on((`de_ie_cm`.`products`.`platforms_id` = `de_ie_cm`.`platforms`.`id`))) join `de_ie_cm`.`product_part` on((`de_ie_cm`.`product_part`.`products_id` = `de_ie_cm`.`products`.`id`))) join `de_ie_cm`.`parts` on((`de_ie_cm`.`parts`.`id` = `de_ie_cm`.`product_part`.`parts_id`)))</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-192">
+        <createView fullDefinition="false" remarks="" viewName="product">select `pr`.`fssn` AS `nc12`,`pr`.`fullname` AS `name`,`sp`.`code` AS `deliverable_code`,ifnull(`bu`.`abbr`,`pa`.`char_value`) AS `business_line` from (((((((`de_ie_cm`.`products` `pr` left join `de_ie_cm`.`product_sap_product` `psp` on((`psp`.`product_id` = `pr`.`id`))) left join `de_ie_cm`.`sap_products` `sp` on((`psp`.`sap_product_code` = `sp`.`code`))) left join `avm`.`product_detail` `pd` on((`pr`.`fssn` = `pd`.`nc12`))) left join `de_ie_cm`.`sap_programs` `sprog` on((`sp`.`sap_program_id` = `sprog`.`id`))) left join `de_ie_cm`.`sap_product_groups` `spg` on((`sprog`.`sap_product_groups_id` = `spg`.`id`))) left join `de_ie_cm`.`business_units` `bu` on((`bu`.`sap_product_groups_id` = `spg`.`id`))) left join `avm`.`parameter` `pa` on(((`pa`.`product_nc12` = `pr`.`fssn`) and (`pa`.`name` = 'BusinessLine')))) where ((`pr`.`fssn` is not null) and (`pr`.`type` in ('product','option')) and (`pr`.`status` &lt;&gt; 'cancelled'))</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-193">
+        <createView fullDefinition="false" remarks="" viewName="product_part">select `pr`.`fssn` AS `product_nc12`,`pa`.`12nc` AS `part_nc12`,`pp`.`quantity` AS `quantity` from ((`de_ie_cm`.`products` `pr` join `de_ie_cm`.`product_part` `pp` on((`pp`.`products_id` = `pr`.`id`))) join `de_ie_cm`.`parts` `pa` on((`pp`.`parts_id` = `pa`.`id`))) where (`pr`.`fssn` is not null)</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-194">
+        <createView fullDefinition="false" remarks="" viewName="project">select `p`.`code` AS `code`,`p`.`description` AS `description`,`d`.`code` AS `deliverable_code`,`g`.`name` AS `project_group_code` from ((`de_ie_cm`.`sap_projects` `p` join `de_ie_cm`.`sap_deliverables` `d` on((`p`.`sap_deliverable_id` = `d`.`id`))) join `de_ie_cm`.`projects` `g` on((`p`.`project_id` = `g`.`id`)))</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-195">
+        <createView fullDefinition="false" remarks="" viewName="project_group">select `de_ie_cm`.`projects`.`name` AS `code`,`de_ie_cm`.`projects`.`fullname` AS `name` from `de_ie_cm`.`projects`</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-196">
+        <createView fullDefinition="false" remarks="" viewName="service_factory_part">select `rdb`.`form_fit_function_relations`.`left_12nc` AS `service_nc12`,`rdb`.`form_fit_function_relations`.`right_12nc` AS `factory_nc12` from `rdb`.`form_fit_function_relations` where (`rdb`.`form_fit_function_relations`.`relation` = 'service_factory')</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-197">
+        <createView fullDefinition="false" remarks="" viewName="tool">select `de_ie_cm`.`parts`.`12nc` AS `nc12`,`de_ie_cm`.`parts`.`description` AS `description`,`de_ie_cm`.`parts`.`DPSCodeProject` AS `project_group_code` from `de_ie_cm`.`parts` where (`de_ie_cm`.`parts`.`12nc` like 'TOOL%')</createView>
+    </changeSet>
+    <changeSet author="jsprenge (generated)" id="1576823787268-198">
+        <createView fullDefinition="false" remarks="" viewName="trt_confidence">select `avm`.`definition`.`id` AS `id`,`avm`.`definition`.`value` AS `value` from `avm`.`definition` where (`avm`.`definition`.`domain` = 4)</createView>
+    </changeSet>
+</databaseChangeLog>

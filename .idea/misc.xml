@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_17" default="true" project-jdk-name="openjdk-17" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+  <component name="SbtLocalSettings">
+    <option name="modificationStamps">
+      <map>
+        <entry key="$USER_HOME$/Documents/dev/actorbintree" value="1431264676000" />
+        <entry key="$USER_HOME$/Documents/dev/calculator" value="1429532720000" />
+        <entry key="$USER_HOME$/Documents/dev/example" value="1428939742000" />
+        <entry key="$USER_HOME$/Documents/dev/kvstore" value="1431903306000" />
+        <entry key="$USER_HOME$/Documents/dev/nodescala" value="1430080228000" />
+        <entry key="$USER_HOME$/Documents/dev/quickcheck" value="1429107702000" />
+        <entry key="$USER_HOME$/Documents/dev/suggestions" value="1430726742000" />
+        <entry key="$PROJECT_DIR$/../scalatrain" value="1447842156000" />
+      </map>
+    </option>
+    <option name="projectSyncType">
+      <map>
+        <entry key="$PROJECT_DIR$/../aligilo" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../jartah" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../play-scala-starter-example" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../scala-devdays" value="PREVIEW" />
+        <entry key="$PROJECT_DIR$/../stryker4sdemo" value="PREVIEW" />
+      </map>
+    </option>
+  </component>
+  <component name="ScalaSbtSettings">
+    <option name="customVMPath" />
+  </component>
+</project>

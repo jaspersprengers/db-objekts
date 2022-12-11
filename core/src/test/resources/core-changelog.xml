@@ -1,0 +1,188 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-3.8.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+    <changeSet author="jsprengers (generated)" id="1577964489836-1">
+        <createSequence sequenceName="ADDRESS_SEQ"/>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-2">
+        <createSequence sequenceName="DEPARTMENT_SEQ"/>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-3">
+        <createSequence sequenceName="EMPLOYEE_SEQ"/>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-4">
+        <createTable tableName="ADDRESS">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="CONSTRAINT_E"/>
+            </column>
+            <column name="STREET" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COUNTRY_ID" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_DT" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MODIFIED_DT" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-5">
+        <createTable tableName="COUNTRY">
+            <column name="ID" type="VARCHAR(10)">
+                <constraints primaryKey="true" primaryKeyName="CONSTRAINT_6"/>
+            </column>
+            <column name="NAME" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_DT" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MODIFIED_DT" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-6">
+        <createTable tableName="DEPARTMENT">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="CONSTRAINT_4"/>
+            </column>
+            <column name="NAME" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_DT" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MODIFIED_DT" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-7">
+        <createTable tableName="EMPLOYEE">
+            <column name="ID" type="BIGINT">
+                <constraints primaryKey="true" primaryKeyName="CONSTRAINT_7"/>
+            </column>
+            <column name="NAME" type="VARCHAR(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="SALARY" type="DOUBLE(17)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MARRIED" type="BOOLEAN"/>
+            <column name="DATE_OF_BIRTH" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CHILDREN" type="SMALLINT"/>
+            <column name="HOBBY_ID" type="VARCHAR(10)"/>
+            <column name="CREATED_DT" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MODIFIED_DT" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-8">
+        <createTable tableName="EMPLOYEE_ADDRESS">
+            <column name="EMPLOYEE_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ADDRESS_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="KIND" type="VARCHAR(10)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_DT" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MODIFIED_DT" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-9">
+        <createTable tableName="EMPLOYEE_DEPARTMENT">
+            <column name="EMPLOYEE_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="DEPARTMENT_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="CREATED_DT" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MODIFIED_DT" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-10">
+        <createTable tableName="SHAPE">
+            <column name="HEIGHT" type="DOUBLE(17)"/>
+            <column name="WIDTH" type="DOUBLE(17)"/>
+            <column name="CREATED_DT" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MODIFIED_DT" type="TIMESTAMP">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-11">
+        <createTable tableName="TO_BE_IGNORED">
+            <column name="HEIGHT" type="DOUBLE(17)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-11">
+        <createIndex indexName="CONSTRAINT_INDEX_7" tableName="EMPLOYEE">
+            <column name="HOBBY_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-12">
+        <createIndex indexName="CONSTRAINT_INDEX_9" tableName="EMPLOYEE_ADDRESS">
+            <column name="EMPLOYEE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-13">
+        <createIndex indexName="CONSTRAINT_INDEX_9C" tableName="EMPLOYEE_ADDRESS">
+            <column name="ADDRESS_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-14">
+        <createIndex indexName="CONSTRAINT_INDEX_E" tableName="ADDRESS">
+            <column name="COUNTRY_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-15">
+        <createIndex indexName="CONSTRAINT_INDEX_E8" tableName="EMPLOYEE_DEPARTMENT">
+            <column name="EMPLOYEE_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-16">
+        <createIndex indexName="CONSTRAINT_INDEX_E88" tableName="EMPLOYEE_DEPARTMENT">
+            <column name="DEPARTMENT_ID"/>
+        </createIndex>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-17">
+        <addForeignKeyConstraint baseColumnNames="HOBBY_ID" baseTableName="EMPLOYEE" constraintName="CONSTRAINT_75" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="HOBBY" referencedTableSchemaName="HR" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-18">
+        <addForeignKeyConstraint baseColumnNames="EMPLOYEE_ID" baseTableName="EMPLOYEE_ADDRESS" constraintName="CONSTRAINT_9" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="EMPLOYEE" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-19">
+        <addForeignKeyConstraint baseColumnNames="ADDRESS_ID" baseTableName="EMPLOYEE_ADDRESS" constraintName="CONSTRAINT_9C" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="ADDRESS" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-20">
+        <addForeignKeyConstraint baseColumnNames="COUNTRY_ID" baseTableName="ADDRESS" constraintName="CONSTRAINT_E6" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="COUNTRY" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-21">
+        <addForeignKeyConstraint baseColumnNames="EMPLOYEE_ID" baseTableName="EMPLOYEE_DEPARTMENT" constraintName="CONSTRAINT_E8" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="EMPLOYEE" validate="true"/>
+    </changeSet>
+    <changeSet author="jsprengers (generated)" id="1577964489836-22">
+        <addForeignKeyConstraint baseColumnNames="DEPARTMENT_ID" baseTableName="EMPLOYEE_DEPARTMENT" constraintName="CONSTRAINT_E88" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="ID" referencedTableName="DEPARTMENT" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
