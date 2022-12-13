@@ -4,6 +4,7 @@ import com.dbobjekts.example.core.Employee
 import com.dbobjekts.fixture.h2.H2DB
 import com.dbobjekts.jdbc.Transaction
 import com.dbobjekts.jdbc.TransactionManager
+import com.dbobjekts.jdbc.TransactionSettings
 import com.dbobjekts.util.HikariDataSourceFactory
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -15,10 +16,11 @@ import java.time.LocalDate
 
 class TransactionLifecycleIntegrationTest {
     val employee = Employee
-    val transactionManager = TransactionManager.newBuilder()
+
+    val transactionManager = TransactionManager.builder()
+        .dataSource(HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver"))
         .catalog(H2DB.catalog)
         .autoCommit(false)
-        .dataSource(HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver"))
         .customLogger(H2DB.statementLogger)
         .build()
 

@@ -11,8 +11,6 @@ class AliasCodeBuilder(val catalog: DBCatalogDefinition, private val logger: Pro
   fun createFileSource(): String {
 
     strBuilder.append("package ${catalog.packageName}\n")
-    strBuilder.append("import com.dbobjekts.vendors.${catalog.vendor.asClassName}\n")
-    //strBuilder.append("import com.dbobjekts.metadata.Catalog\n")
     catalog.schemas.forEach { strBuilder.append("import ${it.fullyQualifiedClassName()}\n") }
 
     catalog.schemas.flatMap {it.tables} .forEach { strBuilder.append("import ${it.fullyQualifiedClassName()}\n") }

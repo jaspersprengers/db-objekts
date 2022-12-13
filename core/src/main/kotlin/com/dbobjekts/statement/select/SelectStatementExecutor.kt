@@ -30,7 +30,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         when (val obj = joinChain) {
             is TableJoinChain -> registerJoinChain(obj)
             is Table -> registerDrivingTable(obj)
-            else -> throw IllegalStateException("Unsupported")
+            else -> throw IllegalStateException("Unsupported operation: argument must be subclass of TableJoinChain or Table")
         }
         return this
     }

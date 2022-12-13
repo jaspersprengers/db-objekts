@@ -21,6 +21,7 @@
         <kotlin.version>1.7.22</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <logback.version>1.4.5</logback.version>
+        <testcontainers.version>1.16.2</testcontainers.version>
     </properties>
 
     <dependencyManagement>
@@ -97,6 +98,19 @@
                 <version>5.9.1</version>
                 <scope>test</scope>
             </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${testcontainers.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>mariadb</artifactId>
+                <version>${testcontainers.version}</version>
+                <scope>test</scope>
+            </dependency>
+
 
             <dependency>
                 <groupId>com.h2database</groupId>
@@ -180,7 +194,7 @@
                     <executions>
                         <execution>
                             <id>add-source</id>
-                            <phase>generate-sources</phase>
+                            <phase>generate-test-sources</phase>
                             <goals>
                                 <goal>add-source</goal>
                             </goals>

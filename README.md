@@ -1,7 +1,10 @@
 # Introduction #
 
-DbObjekts is a Kotlin library aimed to facilitate working with relational databases in Kotlin application code.
-It is a port of a project I started in Scala, but I found it challenging enough to also do it in Kotlin, making the best use of what each language has to offer.
+DbObjekts is a Kotlin library to perform type-safe CRUD-queries on a relational databases in Kotlin application code.
+It works by generating metadata (Kotlin objects) for the database objects and their relations, i.e. the tables, columns and referential constraints (foreign keys). 
+DBObjekts has superficial similarities to ORM frameworks like Hibernate. It generates queries based on database metadata, but there are no stateful entity objects that mimic database rows where changes are carried through transparently. ORM works fine when the focus is retrieval and manipulation of single data entities. It is far less efficient at batch updates. 
+
+Opinionated
 
 The library uses regular JDBC functionality and can be configured with either an existing `javax.sql.DataSource`, or with the built-in Hikari connection pool.
  ```kotlin
@@ -9,7 +12,7 @@ val datasource =
     HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
 val transactionManager = TransactionManager.newBuilder()
     .dataSource(datasource)
-    .catalog(Catalogdefinition) //Catalogdefinition is a Kotlin object with schema and table metadata.
+    .catalog(Catalogdefinition) 
     .autoCommit(true)
     .build()
 ```
@@ -74,12 +77,12 @@ you might as well access the TransactionManager in a singleton fashion, i.e. wit
 
 ```kotlin
   // Nothing is returned, but you can now acces the methods on the TransactionManager object directly 
-SingletonTransactionManager.configurer()
+TransactionManager.configurer()
     .dataSource(someDataSource)
     .configure()
 ```  
 
-`SingletonTransactionManager.isConfigured()` tells you if the system has been set up. Note that you cannot call `configure()` twice. You must call `SingletonTransactionManager.invalidate()`. This closes the current datasource.
+`TransactionManager.isConfigured()` tells you if the system has been set up. Note that you cannot call `configure()` twice. You must call `SingletonTransactionManager.invalidate()`. This closes the current datasource.
 
 ### My first query ###
 
@@ -87,7 +90,7 @@ Now the system is set up to run queries, and you run them against a `Transaction
 obtained from the pool and returned once you are done.
 
 ```kotlin
-  import SingletonTransactionManager.*
+  import TransactionManager.*
   newTransaction {
     transaction -> val rows = transaction.select3<String, Double, Boolean>("select name, salary, married from employee where date_of_birth > ?", LocalDate.of(1980,1,1)).asList()
   }             

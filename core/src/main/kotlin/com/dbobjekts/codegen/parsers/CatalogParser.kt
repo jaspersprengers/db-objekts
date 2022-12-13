@@ -22,7 +22,7 @@ abstract class CatalogParser(private val generatorConfig: CodeGeneratorConfig) {
     private val sqlMapper: ColumnTypeResolver
 
     init {
-        sqlMapper = ColumnTypeResolver(generatorConfig.vendor.createSQLDataTypeMapper(), generatorConfig.customColumnMappers)
+        sqlMapper = ColumnTypeResolver(generatorConfig.vendor.defaultMapper, generatorConfig.customColumnMappers)
     }
 
     fun parseCatalog(): DBCatalogDefinition {

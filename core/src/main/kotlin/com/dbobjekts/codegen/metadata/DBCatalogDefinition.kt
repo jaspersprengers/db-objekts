@@ -11,6 +11,6 @@ data class DBCatalogDefinition(override val packageName: PackageName,
     override fun toString(): String = name
 
     fun prettyPrint(): String =
-        """${vendor.vendorName} Database in package ${packageName} with ${schemas.size} schemas.
+        """${vendor} Database in package ${packageName} with ${schemas.size} schemas.
            |${schemas.map {it.prettyPrint()}.joinToString("\n")}"""
 }

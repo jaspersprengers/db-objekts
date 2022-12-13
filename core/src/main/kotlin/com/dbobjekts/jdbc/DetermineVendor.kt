@@ -18,8 +18,8 @@ class DetermineVendor {
         return if (catalogOpt == null)
             vendor
         else {
-            if (catalogOpt.vendor != vendor.vendorName)
-                throw IllegalArgumentException("Mismatch between the vendor type of the connected database (${vendor.vendorName}), and the one specified in the Catalog definition: ${catalogOpt.vendor}.")
+            if (catalogOpt.vendor != vendor.name)
+                throw IllegalArgumentException("Mismatch between the vendor type of the connected database (${vendor.name}), and the one specified in the Catalog definition: ${catalogOpt.vendor}.")
             Vendors.byName(catalogOpt.vendor)
         }
     }

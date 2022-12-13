@@ -2,11 +2,12 @@ package com.dbobjekts.integration
 
 import com.dbobjekts.example.core.Employee
 import com.dbobjekts.fixture.h2.H2DB
-import com.dbobjekts.jdbc.SingletonTransactionManager
 import com.dbobjekts.jdbc.Transaction
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 class SingletonTransactionLifecycleIntegrationTest {
@@ -17,7 +18,6 @@ class SingletonTransactionLifecycleIntegrationTest {
         @BeforeAll
         @JvmStatic
         fun setup() {
-            SingletonTransactionManager.invalidate()
             H2DB.createTransactionManager(autoCommit = false)
             H2DB.setupDatabaseObjects()
         }

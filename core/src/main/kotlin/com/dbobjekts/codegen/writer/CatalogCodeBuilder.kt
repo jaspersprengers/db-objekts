@@ -18,7 +18,7 @@ class CatalogCodeBuilder(val catalog: DBCatalogDefinition, private val logger: P
     private fun createObjectBody(): String {
         val schemas = catalog.schemas.map { it.asClassName() }.joinToString(", ")
         return """
-           object ${catalog.asClassName()} : Catalog("${catalog.vendor.vendorName}", listOf($schemas))
+           object ${catalog.asClassName()} : Catalog("${catalog.vendor.name}", listOf($schemas))
        """.trimIndent()
 
     }

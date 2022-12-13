@@ -23,13 +23,13 @@ class DetermineVendorTest {
     @Test
     fun `valid vendor with no catalog`() {
         whenever(metaData.databaseProductName).thenReturn("H2")
-        assertEquals("h2", determineVendor(conn, null).vendorName)
+        assertEquals("h2", determineVendor(conn, null).name)
     }
 
     @Test
     fun `valid vendor with catalog`() {
         whenever(metaData.databaseProductName).thenReturn("H2")
-        assertEquals("h2", determineVendor(conn, NilSchemaCatalog).vendorName)
+        assertEquals("h2", determineVendor(conn, NilSchemaCatalog).name)
     }
 
     @Test
@@ -45,7 +45,7 @@ class DetermineVendorTest {
             .hasMessage("Mismatch between the vendor type of the connected database (h2), and the one specified in the Catalog definition: sybase.")
     }
 
-    object DummyCatalog : Catalog("sybase", listOf())
+    object DummyCatalog : Catalog("sybase")
 }
 
 

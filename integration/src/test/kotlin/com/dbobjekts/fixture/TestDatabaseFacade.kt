@@ -1,6 +1,5 @@
 package com.dbobjekts.fixture
 
-import com.dbobjekts.jdbc.SingletonTransactionManager
 import com.dbobjekts.jdbc.TransactionManager
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.util.StatementLogger
@@ -13,9 +12,9 @@ abstract class TestDatabaseFacade {
     val statementLogger = StatementLogger()
 
     fun getTransactionManager(autoCommit: Boolean = true): TransactionManager {
-        if (!SingletonTransactionManager.isConfigured())
+        if (!TransactionManager.isConfigured())
             createTransactionManager(autoCommit)
-        return SingletonTransactionManager.instance()!!
+        return TransactionManager.singletonInstance()
     }
 
 
@@ -28,7 +27,7 @@ abstract class TestDatabaseFacade {
     abstract val catalog: Catalog
 
     fun createTransactionManager(autoCommit: Boolean = true) {
-        if (!SingletonTransactionManager.isConfigured() && !createFactory(autoCommit, 0))
+        if (!TransactionManager.isConfigured() && !createFactory(autoCommit, 0))
             throw IllegalStateException("Could not connect")
     }
 
@@ -40,12 +39,12 @@ abstract class TestDatabaseFacade {
             return false
         Thread.sleep(2000)
         try {
-            SingletonTransactionManager.configurer()
+            TransactionManager.builder()
+                .dataSource(dataSource = createDataSource())
                 .catalog(catalog)
-                .autoCommit(autoCommit)
                 .customLogger(statementLogger)
-                .dataSource(createDataSource())
-                .initialize()
+                .autoCommit(autoCommit)
+                .buildForSingleton()
             return true
         } catch (e: Exception) {
             logger.warn("Cannot connect: {}", e.message)

@@ -2,7 +2,7 @@ package com.dbobjekts.metadata
 
 open class Catalog(
     val vendor: String,
-    val schemas: List<Schema>
+    val schemas: List<Schema> = listOf()
 ) {
 
     val tables: List<Table>
@@ -24,4 +24,4 @@ open class Catalog(
 
 }
 
- object NilSchemaCatalog : Catalog("h2", listOf())
+ object NilSchemaCatalog : Catalog("h2")

@@ -9,7 +9,7 @@ import com.dbobjekts.codegen.metadata.DBForeignKeyDefinition
 import com.dbobjekts.codegen.metadata.DBSchemaDefinition
 import com.dbobjekts.codegen.metadata.DBTableDefinition
 import com.dbobjekts.metadata.Columns
-import com.dbobjekts.vendors.H2
+import com.dbobjekts.vendors.Vendors
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -37,7 +37,7 @@ class ValidateForeignKeyConstraintsTest {
     fun `When all tables are included validation is ok`() {
         val hrSchema = DBSchemaDefinition(pkg, hr, listOf(peopleTable, hobbiesTable), listOf())
         val financeSchema = DBSchemaDefinition(pkg, SchemaName("hr"), listOf(wagesTable), listOf())
-        val catalog = DBCatalogDefinition(pkg, H2, listOf(hrSchema, financeSchema))
+        val catalog = DBCatalogDefinition(pkg, Vendors.H2, listOf(hrSchema, financeSchema))
         assertTrue(ValidateForeignKeyConstraints(catalog))
     }
 
@@ -45,7 +45,7 @@ class ValidateForeignKeyConstraintsTest {
     fun `When both wages and hobbies are absent, validation is ok`() {
         val hrSchema = DBSchemaDefinition(pkg, hr, listOf(peopleTable, hobbiesTable), listOf(hobbiesTable))
         val financeSchema = DBSchemaDefinition(pkg, finance, listOf(wagesTable), listOf(wagesTable))
-        val catalog = DBCatalogDefinition(pkg, H2, listOf(hrSchema, financeSchema))
+        val catalog = DBCatalogDefinition(pkg, Vendors.H2, listOf(hrSchema, financeSchema))
         assertTrue(ValidateForeignKeyConstraints(catalog))
     }
 
@@ -53,7 +53,7 @@ class ValidateForeignKeyConstraintsTest {
     fun `When people table is missing, validation fails`() {
         val hrSchema = DBSchemaDefinition(pkg, hr, listOf(peopleTable, hobbiesTable), listOf(peopleTable))
         val financeSchema = DBSchemaDefinition(pkg, finance, listOf(wagesTable), listOf())
-        val catalog = DBCatalogDefinition(pkg, H2, listOf(hrSchema, financeSchema))
+        val catalog = DBCatalogDefinition(pkg, Vendors.H2, listOf(hrSchema, financeSchema))
         assertFalse(ValidateForeignKeyConstraints(catalog))
         val (p1, p2) = ValidateForeignKeyConstraints.reportMissing(catalog).first()
         assertEquals("hr.hobbies.people_id", p1)

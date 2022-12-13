@@ -1,7 +1,7 @@
 package com.dbobjekts.codegen.datatypemapper
 
 import com.dbobjekts.metadata.column.ColumnType
-import com.dbobjekts.vendors.H2
+import com.dbobjekts.vendors.Vendors
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -14,7 +14,7 @@ class SqlTypeMapperFacadeTest {
         StandardColumnTypeMapper("person_id", ColumnType.LONG),
         StandardColumnTypeMapper("employees", ColumnType.LONG),
         StandardColumnTypeMapper("employees", ColumnType.LONG, schema = "hr"), )
-    val mapper: ColumnTypeResolver = ColumnTypeResolver(H2.createSQLDataTypeMapper(), customMappers)
+    val mapper: ColumnTypeResolver = ColumnTypeResolver(Vendors.H2.defaultMapper, customMappers)
 
     @Test
     fun `person_id is LONG`() {

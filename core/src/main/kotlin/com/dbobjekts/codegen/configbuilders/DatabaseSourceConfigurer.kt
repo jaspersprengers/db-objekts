@@ -78,9 +78,9 @@ class DataSourceConfigurer() {
         return this
     }
 
-    fun isConfigured(): Boolean = user != null && password != null && url != null
+    internal fun isConfigured(): Boolean = user != null && password != null && url != null
 
-    fun toDataSourceInfo(): DataSourceInfo? {
+    internal fun toDataSourceInfo(): DataSourceInfo? {
         return if (isConfigured()) DataSourceInfo(user!!, password!!, url!!, driver)
         else null
     }
