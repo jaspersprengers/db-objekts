@@ -1,2 +1,6 @@
-.idea
 **/.iml
+/.idea/
+/core/core.iml
+/integration/integration.iml
+/core/target
+integration/target
