@@ -1,12 +1,12 @@
 package com.dbobjekts.integration
 
-import com.dbobjekts.example.core.Address
-import com.dbobjekts.example.core.Country
-import com.dbobjekts.example.core.Employee
-import com.dbobjekts.example.core.EmployeeAddress
-import com.dbobjekts.example.custom.AddressType
-import com.dbobjekts.example.hr.Hobby
 import com.dbobjekts.fixture.h2.H2DB
+import com.dbobjekts.integration.h2.core.Address
+import com.dbobjekts.integration.h2.core.Country
+import com.dbobjekts.integration.h2.core.Employee
+import com.dbobjekts.integration.h2.core.EmployeeAddress
+import com.dbobjekts.integration.h2.custom.AddressType
+import com.dbobjekts.integration.h2.hr.Hobby
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.*

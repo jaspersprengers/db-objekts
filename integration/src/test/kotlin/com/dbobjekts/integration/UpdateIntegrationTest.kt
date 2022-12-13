@@ -1,8 +1,8 @@
 package com.dbobjekts.integration
 
-import com.dbobjekts.example.core.Employee
-import com.dbobjekts.example.hr.Hobby
 import com.dbobjekts.fixture.h2.H2DB
+import com.dbobjekts.integration.h2.core.Employee
+import com.dbobjekts.integration.h2.hr.Hobby
 import com.dbobjekts.statement.select.SelectStatementExecutor
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*

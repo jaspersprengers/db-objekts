@@ -1,7 +1,7 @@
 package com.dbobjekts.metadata
 
-import com.dbobjekts.example.Catalogdefinition
-import com.dbobjekts.example.core.*
+import com.dbobjekts.integration.h2.Catalogdefinition
+import com.dbobjekts.integration.h2.core.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test

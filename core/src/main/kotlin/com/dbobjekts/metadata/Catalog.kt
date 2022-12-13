@@ -24,4 +24,4 @@ open class Catalog(
 
 }
 
- object NilSchemaCatalog : Catalog("h2")
+ object NilSchemaCatalog : Catalog("H2")

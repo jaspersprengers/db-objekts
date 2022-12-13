@@ -3,7 +3,7 @@ package com.dbobjekts.metadata
 import com.dbobjekts.AnyColumn
 import com.dbobjekts.SchemaName
 import com.dbobjekts.TableName
-import com.dbobjekts.example.core.EmployeeAddress
+import com.dbobjekts.integration.h2.core.EmployeeAddress
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

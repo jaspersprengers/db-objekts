@@ -3,7 +3,7 @@ CREATE DATABASE if not exists hr;
 
 create table IF NOT EXISTS hr.HOBBY
 (
-    id   varchar(10) primary key auto_increment,
+    id   varchar(10) primary key,
     name varchar(50) not null
 );
 

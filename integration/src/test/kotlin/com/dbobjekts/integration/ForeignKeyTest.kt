@@ -1,10 +1,9 @@
 package com.dbobjekts.integration
 
-import com.dbobjekts.example.core.*
-import com.dbobjekts.example.custom.AddressType
-import com.dbobjekts.example.hr.Certificate
-import com.dbobjekts.example.hr.Hobby
 import com.dbobjekts.fixture.h2.H2DB
+import com.dbobjekts.integration.h2.core.*
+import com.dbobjekts.integration.h2.custom.AddressType
+import com.dbobjekts.integration.h2.hr.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

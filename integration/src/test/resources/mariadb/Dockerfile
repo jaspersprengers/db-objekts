@@ -10,10 +10,9 @@ RUN ["sed", "-i", "s/exec \"$@\"/echo \"not running $@\"/", "/usr/local/bin/dock
 
 # needed for intialization
 ENV MYSQL_ROOT_PASSWORD=test
-ENV MYSQL_DATABASE=classicmodels
+ENV MYSQL_DATABASE=test
 ENV MYSQL_USER=test
 ENV MYSQL_PASSWORD=test
-ENV MYSQL_ROOT_PASSWORD=test
 
 USER mysql
 

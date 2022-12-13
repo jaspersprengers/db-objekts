@@ -1,10 +1,9 @@
 package com.dbobjekts.integration
 
-import com.dbobjekts.example.core.Employee
 import com.dbobjekts.fixture.h2.H2DB
+import com.dbobjekts.integration.h2.core.Employee
 import com.dbobjekts.jdbc.Transaction
 import com.dbobjekts.jdbc.TransactionManager
-import com.dbobjekts.jdbc.TransactionSettings
 import com.dbobjekts.util.HikariDataSourceFactory
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals

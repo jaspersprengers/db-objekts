@@ -1,12 +1,14 @@
 package com.dbobjekts.integration
 
-import com.dbobjekts.example.custom.AllTypes
 import com.dbobjekts.fixture.h2.H2DB
-import com.dbobjekts.metadata.column.*
+import com.dbobjekts.integration.h2.custom.AllTypes
+import com.dbobjekts.metadata.column.BlobColumn
+import com.dbobjekts.metadata.column.ClobColumn
 import com.dbobjekts.statement.whereclause.SubClause
-import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import java.lang.Byte
 import java.time.*
 

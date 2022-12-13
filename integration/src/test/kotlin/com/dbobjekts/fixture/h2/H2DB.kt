@@ -1,10 +1,10 @@
 package com.dbobjekts.fixture.h2
 
-import com.dbobjekts.example.Catalogdefinition
-import com.dbobjekts.example.core.*
-import com.dbobjekts.example.hr.Certificate
-import com.dbobjekts.example.hr.Hobby
 import com.dbobjekts.fixture.TestDatabaseFacade
+import com.dbobjekts.integration.h2.Catalogdefinition
+import com.dbobjekts.integration.h2.core.*
+import com.dbobjekts.integration.h2.hr.Certificate
+import com.dbobjekts.integration.h2.hr.Hobby
 import com.dbobjekts.jdbc.Transaction
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.util.HikariDataSourceFactory

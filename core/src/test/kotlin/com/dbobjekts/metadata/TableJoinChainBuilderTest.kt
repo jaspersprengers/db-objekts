@@ -1,11 +1,7 @@
 package com.dbobjekts.metadata
-
-import com.dbobjekts.example.Catalogdefinition
-import com.dbobjekts.example.core.Address
-import com.dbobjekts.example.core.Country
-import com.dbobjekts.example.core.Employee
-import com.dbobjekts.example.core.EmployeeAddress
-import com.dbobjekts.example.hr.Hobby
+import com.dbobjekts.integration.h2.Catalogdefinition
+import com.dbobjekts.integration.h2.core.*
+import com.dbobjekts.integration.h2.hr.Hobby
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
