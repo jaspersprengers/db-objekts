@@ -3,6 +3,7 @@ package com.dbobjekts.codegen.configbuilders
 import com.dbobjekts.AnyColumn
 import com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper
 import com.dbobjekts.codegen.datatypemapper.CustomColumnTypeMapper
+import com.dbobjekts.codegen.datatypemapper.SequenceForPrimaryKeyMapper
 import com.dbobjekts.codegen.datatypemapper.StandardColumnTypeMapper
 import com.dbobjekts.metadata.column.ColumnType
 
@@ -10,7 +11,7 @@ import com.dbobjekts.metadata.column.ColumnType
 class MappingConfigurer {
 
     internal val mappers: MutableList<ColumnTypeMapper> = mutableListOf()
-    internal var generatedPrimaryKeyConfigurer: GeneratedPrimaryKeyConfigurer = GeneratedPrimaryKeyConfigurer(this)
+    internal val sequenceMappers: MutableList<SequenceForPrimaryKeyMapper> = mutableListOf()
 
     fun addColumnTypeMapper(mapper: ColumnTypeMapper): MappingConfigurer {
         mappers += mapper
@@ -27,8 +28,8 @@ class MappingConfigurer {
     fun mapColumnToStandardType(
         column: String,
         columnType: ColumnType,
-        schema: String?= null,
-        table: String?= null,
+        schema: String? = null,
+        table: String? = null,
         exactMatch: Boolean = false
     ): MappingConfigurer {
         mappers += StandardColumnTypeMapper(
@@ -52,7 +53,7 @@ class MappingConfigurer {
         column: String,
         columnType: AnyColumn,
         schema: String? = null,
-        table: String?= null,
+        table: String? = null,
         exactMatch: Boolean = false
     ): MappingConfigurer {
         mappers += CustomColumnTypeMapper(
@@ -65,8 +66,19 @@ class MappingConfigurer {
         return this
     }
 
-    fun generatedPrimaryKeyConfiguration(): GeneratedPrimaryKeyConfigurer {
-        return generatedPrimaryKeyConfigurer
+    fun sequenceForPrimaryKey(
+        schema: String,
+        table: String,
+        column: String,
+        sequence: String
+    ): MappingConfigurer {
+        sequenceMappers += SequenceForPrimaryKeyMapper(
+            schema = schema,
+            table = table,
+            column = column,
+            sequence = sequence
+        )
+        return this
     }
 
 }

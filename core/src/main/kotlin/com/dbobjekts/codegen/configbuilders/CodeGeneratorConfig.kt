@@ -3,6 +3,7 @@ package com.dbobjekts.codegen.configbuilders
 import com.dbobjekts.PackageName
 import com.dbobjekts.SchemaName
 import com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper
+import com.dbobjekts.codegen.datatypemapper.SequenceForPrimaryKeyMapper
 import com.dbobjekts.codegen.exclusionfilters.ExclusionConfigurer
 import com.dbobjekts.codegen.metadata.NoGeneratedPrimaryKeyStrategy
 import com.dbobjekts.codegen.metadata.PrimaryKeyStrategy
@@ -15,8 +16,8 @@ data class CodeGeneratorConfig(
     val dataSourceInfo: DataSourceInfo? = null,
     val exclusionConfigurer: ExclusionConfigurer,
     val basePackage: PackageName,
-    val primaryKeyStrategy: PrimaryKeyStrategy = NoGeneratedPrimaryKeyStrategy,
-    val customColumnMappers: List<ColumnTypeMapper> = listOf()
+    val customColumnMappers: List<ColumnTypeMapper> = listOf(),
+    val sequenceMappers: List<SequenceForPrimaryKeyMapper> = listOf()
 ){
 
 }

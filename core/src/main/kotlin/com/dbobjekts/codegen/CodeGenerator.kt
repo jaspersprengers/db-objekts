@@ -84,8 +84,8 @@ open class CodeGenerator {
             dataSourceInfo = dbConfigurer.dataSourceConfigurer.toDataSourceInfo(),
             exclusionConfigurer = exclusionConfigurer,
             basePackage = outputConfigurer.basePackage ?: throw IllegalStateException("Base package is mandatory"),
-            primaryKeyStrategy = mappingConfigurer.generatedPrimaryKeyConfigurer.getStrategy(),
-            customColumnMappers = mappingConfigurer.mappers.toList()
+            customColumnMappers = mappingConfigurer.mappers.toList(),
+            sequenceMappers = mappingConfigurer.sequenceMappers
         )
     }
 

@@ -1,4 +1,4 @@
-package com.dbobjekts.fixture
+package com.dbobjekts.util
 
 import java.nio.file.Paths
 

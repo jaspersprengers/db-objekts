@@ -19,10 +19,12 @@ abstract class CatalogParser(private val generatorConfig: CodeGeneratorConfig) {
         createTableMetaData(generatorConfig)
     }
     private val basePackage = generatorConfig.basePackage
-    private val sqlMapper: ColumnTypeResolver
+    private val columnTypeResolver: ColumnTypeResolver
 
     init {
-        sqlMapper = ColumnTypeResolver(generatorConfig.vendor.defaultMapper, generatorConfig.customColumnMappers)
+        columnTypeResolver = ColumnTypeResolver(generatorConfig.vendor.defaultMapper,
+            generatorConfig.customColumnMappers,
+            generatorConfig.sequenceMappers)
     }
 
     fun parseCatalog(): DBCatalogDefinition {
@@ -61,7 +63,7 @@ abstract class CatalogParser(private val generatorConfig: CodeGeneratorConfig) {
         val keyManager = ForeignKeyManager(tableMetaData)
         val tableBuilders: List<TableBuilder> = tableMetaData.map({ tableMd ->
             val packageForSchema = basePackage.createSubPackageForSchema(tableMd.schema)
-            val tb = TableBuilder(packageForSchema, tableMd.schema, tableMd.tableName, generatorConfig, keyManager, sqlMapper)
+            val tb = TableBuilder(packageForSchema, tableMd.schema, tableMd.tableName, generatorConfig, keyManager, columnTypeResolver)
 
             //exclude the columns explicitly marked
             val allowedColumns = tableMd.columns.filterNot {
