@@ -12,7 +12,7 @@ import com.dbobjekts.integration.h2.hr.Hobby
 
 
 object Employee:Table("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, EmployeeInsertBuilder> {
-    val id = com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "ID", "core.EMPLOYEE_SEQ")
+    val id = com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "ID", "EMPLOYEE_SEQ")
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     val salary = com.dbobjekts.metadata.column.DoubleColumn(this, "SALARY")
     val married = com.dbobjekts.metadata.column.NullableBooleanColumn(this, "MARRIED")

@@ -10,7 +10,7 @@ import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
 object Address:Table("ADDRESS"), HasUpdateBuilder<AddressUpdateBuilder, AddressInsertBuilder> {
-    val id = com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "ID", "core.ADDRESS_SEQ")
+    val id = com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "ID", "ADDRESS_SEQ")
     val street = com.dbobjekts.metadata.column.VarcharColumn(this, "STREET")
     val countryId = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "COUNTRY_ID", Country.id)
     val createdDt = com.dbobjekts.metadata.column.TimeStampColumn(this, "CREATED_DT")

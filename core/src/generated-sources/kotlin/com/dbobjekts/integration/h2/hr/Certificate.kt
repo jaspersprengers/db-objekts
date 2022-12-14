@@ -12,7 +12,7 @@ import com.dbobjekts.integration.h2.core.Employee
 
 
 object Certificate:Table("CERTIFICATE"), HasUpdateBuilder<CertificateUpdateBuilder, CertificateInsertBuilder> {
-    val id = com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "ID", "hr.CERTIFICATE_SEQ")
+    val id = com.dbobjekts.metadata.column.LongColumn(this, "ID")
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "EMPLOYEE_ID", Employee.id)
     val createdDt = com.dbobjekts.metadata.column.TimeStampColumn(this, "CREATED_DT")
@@ -26,6 +26,7 @@ class CertificateUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBas
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 
+    fun id(value: Long): CertificateUpdateBuilder = ct.put(Certificate.id, value)
     fun name(value: String): CertificateUpdateBuilder = ct.put(Certificate.name, value)
     fun employeeId(value: Long): CertificateUpdateBuilder = ct.put(Certificate.employeeId, value)
     fun createdDt(value: java.time.Instant): CertificateUpdateBuilder = ct.put(Certificate.createdDt, value)
@@ -36,12 +37,14 @@ class CertificateInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 
+    fun id(value: Long): CertificateInsertBuilder = ct.put(Certificate.id, value)
     fun name(value: String): CertificateInsertBuilder = ct.put(Certificate.name, value)
     fun employeeId(value: Long): CertificateInsertBuilder = ct.put(Certificate.employeeId, value)
     fun createdDt(value: java.time.Instant): CertificateInsertBuilder = ct.put(Certificate.createdDt, value)
     fun modifiedDt(value: java.time.Instant?): CertificateInsertBuilder = ct.put(Certificate.modifiedDt, value)
 
-    fun mandatoryColumns(name: String, employeeId: Long, createdDt: java.time.Instant) : CertificateInsertBuilder {
+    fun mandatoryColumns(id: Long, name: String, employeeId: Long, createdDt: java.time.Instant) : CertificateInsertBuilder {
+      ct.put(Certificate.id, id)
       ct.put(Certificate.name, name)
       ct.put(Certificate.employeeId, employeeId)
       ct.put(Certificate.createdDt, createdDt)

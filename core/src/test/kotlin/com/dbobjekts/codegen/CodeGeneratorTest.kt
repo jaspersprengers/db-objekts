@@ -5,7 +5,6 @@ import com.dbobjekts.codegen.metadata.SequenceNameResolverStrategy
 import com.dbobjekts.integration.h2.custom.AddressTypeColumn
 import com.dbobjekts.util.PathUtil
 import com.dbobjekts.util.TestSourceWriter
-import org.apache.commons.io.file.PathUtils
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.nio.file.Paths

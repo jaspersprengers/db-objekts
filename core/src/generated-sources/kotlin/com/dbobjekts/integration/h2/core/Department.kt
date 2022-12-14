@@ -10,7 +10,7 @@ import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
 object Department:Table("DEPARTMENT"), HasUpdateBuilder<DepartmentUpdateBuilder, DepartmentInsertBuilder> {
-    val id = com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "ID", "core.DEPARTMENT_SEQ")
+    val id = com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "ID", "DEPARTMENT_SEQ")
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     val createdDt = com.dbobjekts.metadata.column.TimeStampColumn(this, "CREATED_DT")
     val modifiedDt = com.dbobjekts.metadata.column.NullableTimeStampColumn(this, "MODIFIED_DT")

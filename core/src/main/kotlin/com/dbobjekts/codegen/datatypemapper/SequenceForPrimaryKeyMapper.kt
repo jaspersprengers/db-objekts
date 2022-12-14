@@ -9,7 +9,7 @@ class SequenceForPrimaryKeyMapper(
 
     operator fun invoke(properties: ColumnMappingProperties): String? {
         return if (schema.equals(properties.schema.value, true)
-            && table.equals(properties.schema.value, true)
+            && table.equals(properties.table.value, true)
             && column.equals(properties.column.value, true)
         )
             sequence else null
