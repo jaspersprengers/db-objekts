@@ -62,7 +62,7 @@ abstract class LiveDBParser(codeGeneratorConfig: CodeGeneratorConfig,
                     nullable = if (it.isPrimaryKey) false else it.defaultValue != null || it.nullable
                 )
             }
-            val foreignKeys = foreignKeyProperties.filter { it.table.value == table && it.schema.value == schema }
+            val foreignKeys = foreignKeyProperties.filter { it.table.value.equals(table, true) && it.schema.value.equals(schema, true) }
             val tmd = TableMetaData(schema = SchemaName(schema), tableName = TableName(table), columns = cols, foreignKeys = foreignKeys)
             println(tmd)
             println()

@@ -1,4 +1,4 @@
-package com.dbobjekts.codegen.parsers.mysql
+package com.dbobjekts.vendors.mariadb
 
 import com.dbobjekts.codegen.ProgressLogger
 import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
@@ -13,7 +13,8 @@ import org.slf4j.LoggerFactory
 /**
  * Accesses a live database to extract information from all the schemas
  */
-class MariaDBCatalogParser(codeGeneratorConfig: CodeGeneratorConfig, transactionManager: TransactionManager, logger: ProgressLogger) : LiveDBParser(codeGeneratorConfig, transactionManager, logger) {
+class MariaDBCatalogParser(codeGeneratorConfig: CodeGeneratorConfig, transactionManager: TransactionManager, logger: ProgressLogger) :
+    LiveDBParser(codeGeneratorConfig, transactionManager, logger) {
 
     private val log = LoggerFactory.getLogger(MariaDBCatalogParser::class.java)
 
@@ -45,8 +46,17 @@ class MariaDBCatalogParser(codeGeneratorConfig: CodeGeneratorConfig, transaction
                 VARCHAR_NIL, //default value
                 VARCHAR // data type
             ).asList()
-            rows.map({
-                TableMetaDataRow.parse(it)
+            rows.map({ tuple ->
+                TableMetaDataRow(
+                    schema = tuple.v1,
+                    table = tuple.v2,
+                    autoIncrement = (tuple.v3 ?: "") == "auto_increment",
+                    column = tuple.v4,
+                    isPrimaryKey = tuple.v5 == "PRI",
+                    nullable = tuple.v6 == "YES",
+                    defaultValue = tuple.v7,
+                    dataType = tuple.v8
+                )
             })
         }
     }
@@ -72,8 +82,15 @@ class MariaDBCatalogParser(codeGeneratorConfig: CodeGeneratorConfig, transaction
                 VARCHAR, //column name
                 VARCHAR, //referenced column name
             ).asList()
-            rows.map({
-                ForeignKeyMetaDataRow.parse(it)
+            rows.map({ tuple ->
+                ForeignKeyMetaDataRow(
+                    schema = tuple.v1,
+                    table = tuple.v2,
+                    refTable = tuple.v3,
+                    refSchema = tuple.v4,
+                    column = tuple.v5,
+                    refColumn = tuple.v6
+                )
             })
         }
     }

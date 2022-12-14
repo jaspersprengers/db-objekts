@@ -1,9 +1,13 @@
 package com.dbobjekts.metadata
 
+import com.dbobjekts.vendors.Vendor
+
 open class Catalog(
     val vendor: String,
     val schemas: List<Schema> = listOf()
 ) {
+
+    constructor(vendor: Vendor, schemas: List<Schema>  = listOf()) : this(vendor.name, schemas)
 
     val tables: List<Table>
     private val aliases: TableAliases
@@ -24,4 +28,4 @@ open class Catalog(
 
 }
 
- object NilSchemaCatalog : Catalog("H2")
+object NilSchemaCatalog : Catalog("H2")
