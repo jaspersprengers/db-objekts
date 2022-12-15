@@ -3,7 +3,7 @@ package com.dbobjekts.util
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-class StringUtilSpec {
+class StringUtilTest {
 
     // non empty
     @Test
@@ -131,6 +131,11 @@ class StringUtilSpec {
     @Test
     fun `java primitive int returns Int`() {
         assertEquals("Int", StringUtil.classToString(java.lang.Integer.TYPE))
+    }
+
+    @Test
+    fun `capitalize camel case`() {
+        assertEquals("Kameel", StringUtil.capitalCamel("kameel"))
     }
 
 }

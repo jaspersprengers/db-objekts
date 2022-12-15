@@ -16,5 +16,5 @@ data class DBTableDefinition(override val packageName: PackageName,
     fun prettyPrint(): String =
         """
            |   Table ${packageName.toString()}.${schema.value}.$tableName $alias has ${columns.size} columns.
-           |${columns.map{it.prettyPrint()}.joinToString("\n")}"""
+           |${columns.map{it.prettyPrint()}.joinToString(", ")}"""
 }

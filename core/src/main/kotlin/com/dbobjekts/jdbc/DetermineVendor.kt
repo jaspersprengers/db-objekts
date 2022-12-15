@@ -1,26 +1,28 @@
 package com.dbobjekts.jdbc
 
-import com.dbobjekts.metadata.Catalog
-import com.dbobjekts.vendors.Vendor
+import com.dbobjekts.metadata.DBConnectionMetaData
+import com.dbobjekts.util.StringUtil
 import com.dbobjekts.vendors.Vendors
-import java.sql.Connection
 
 
 class DetermineVendor {
 
-    operator fun invoke(conn: Connection, catalogOpt: Catalog?): Vendor {
-        val metaData = conn.getMetaData()
-        val vendor =
-            Vendors.byProductAndVersion(
-                metaData.getDatabaseProductName(),
-                metaData.getDatabaseProductVersion()
-            )
-        return if (catalogOpt == null)
-            vendor
-        else {
-            if (!catalogOpt.vendor.equals(vendor.name, true))
-                throw IllegalArgumentException("Mismatch between the vendor type of the connected database (${vendor.name}), and the one specified in the Catalog definition: ${catalogOpt.vendor}.")
-            Vendors.byName(catalogOpt.vendor)
+    operator fun invoke(transactionManager: TransactionManager): DBConnectionMetaData {
+        return transactionManager.newTransaction {
+            val metaData = it.connection.jdbcConnection.metaData
+            val vendor =
+                Vendors.byProductAndVersion(
+                    metaData.getDatabaseProductName(),
+                    metaData.getDatabaseProductVersion()
+                )
+            val rs = metaData.catalogs
+            val catalogs = mutableListOf<String>()
+            while (rs.next()) {
+                rs.getString(1).also {
+                    catalogs += StringUtil.initUpperCase(it)
+                }
+            }
+            DBConnectionMetaData(vendor, catalogs)
         }
     }
 

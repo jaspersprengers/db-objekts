@@ -1,10 +1,10 @@
 package com.dbobjekts.vendors.h2
 
-import com.dbobjekts.codegen.ProgressLogger
 import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
 import com.dbobjekts.codegen.parsers.ForeignKeyMetaDataRow
-import com.dbobjekts.codegen.parsers.LiveDBParser
+import com.dbobjekts.codegen.parsers.CatalogParser
 import com.dbobjekts.codegen.parsers.TableMetaDataRow
+import com.dbobjekts.jdbc.DetermineVendor
 import com.dbobjekts.jdbc.TransactionManager
 import com.dbobjekts.metadata.Columns.VARCHAR
 import com.dbobjekts.metadata.Columns.VARCHAR_NIL
@@ -14,10 +14,13 @@ import org.slf4j.LoggerFactory
  * Accesses a live database to extract information from all the schemas
  */
 class H2CatalogParser(codeGeneratorConfig: CodeGeneratorConfig,
-                      internal val transactionManager: TransactionManager,
-                      logger: ProgressLogger) : LiveDBParser(codeGeneratorConfig, logger) {
+                      internal val transactionManager: TransactionManager) : CatalogParser(codeGeneratorConfig) {
 
     private val log = LoggerFactory.getLogger(H2CatalogParser::class.java)
+
+    override fun extractCatalogs(): List<String> =
+        DetermineVendor().invoke(transactionManager).catalogs
+
 
     override fun extractColumnAndTableMetaDataFromDB(): List<TableMetaDataRow> {
         return transactionManager.newTransaction {

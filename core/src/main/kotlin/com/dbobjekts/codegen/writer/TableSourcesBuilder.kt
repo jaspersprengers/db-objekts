@@ -1,15 +1,13 @@
 package com.dbobjekts.codegen.writer
 
 import com.dbobjekts.PackageName
-import com.dbobjekts.codegen.ProgressLogger
 import com.dbobjekts.codegen.metadata.DBColumnDefinition
 import com.dbobjekts.codegen.metadata.DBForeignKeyDefinition
 import com.dbobjekts.codegen.metadata.DBTableDefinition
 
 class TableSourcesBuilder(
     val basePackage: PackageName,
-    val model: DBTableDefinition,
-    private val logger: ProgressLogger
+    val model: DBTableDefinition
 ) {
 
     val strBuilder = StringBuilder()

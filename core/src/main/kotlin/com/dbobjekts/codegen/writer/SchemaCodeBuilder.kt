@@ -1,10 +1,8 @@
 package com.dbobjekts.codegen.writer
 
-import com.dbobjekts.codegen.ProgressLogger
 import com.dbobjekts.codegen.metadata.DBSchemaDefinition
 
-class SchemaCodeBuilder(val schema: DBSchemaDefinition,
-                        private val logger: ProgressLogger) {
+class SchemaCodeBuilder(val schema: DBSchemaDefinition) {
     private val strBuilder = StringBuilder()
 
     fun buildForApplication(): String {

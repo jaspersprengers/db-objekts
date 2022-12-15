@@ -1,9 +1,8 @@
 package com.dbobjekts.codegen.writer
 
-import com.dbobjekts.codegen.ProgressLogger
 import com.dbobjekts.codegen.metadata.DBCatalogDefinition
 
-class CatalogCodeBuilder(val catalog: DBCatalogDefinition, private val logger: ProgressLogger) {
+class CatalogCodeBuilder(val catalog: DBCatalogDefinition) {
     private val strBuilder = StringBuilder()
 
     fun createFileSource(): String {

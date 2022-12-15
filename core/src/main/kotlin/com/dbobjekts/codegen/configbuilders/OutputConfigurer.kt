@@ -7,15 +7,9 @@ import com.dbobjekts.util.StringUtil
 
 class OutputConfigurer {
 
-    internal var catalogName: String? = null
     internal var basedirOpt: String? = null
     internal var basePackage: PackageName? = null
     internal var customSourceWriter: SourceWriter? = null
-
-    fun catalogName(name: String): OutputConfigurer {
-        catalogName = name
-        return this
-    }
 
     fun basePackageForSources(pkg: String): OutputConfigurer {
         basePackage = PackageName(pkg)

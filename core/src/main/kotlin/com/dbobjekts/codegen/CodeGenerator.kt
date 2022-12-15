@@ -11,11 +11,12 @@ import com.dbobjekts.codegen.parsers.DBParserFactory
 import com.dbobjekts.codegen.parsers.DBParserFactoryImpl
 import com.dbobjekts.codegen.writer.SourceFileWriter
 import com.dbobjekts.codegen.writer.SourcesGenerator
+import org.slf4j.LoggerFactory
 import org.xml.sax.helpers.ParserFactory
 
 open class CodeGenerator {
 
-    private val logger = ProgressLogger()
+    private val logger = LoggerFactory.getLogger(CodeGenerator::class.java)
     private var exclusionConfigurer: ExclusionConfigurer = ExclusionConfigurer()
     private val dbConfigurer = DatabaseSourceConfigurer()
     private val outputConfigurer = OutputConfigurer()
@@ -41,17 +42,14 @@ open class CodeGenerator {
         SourcesGenerator(
             outputConfigurer.basedirOpt,
             outputConfigurer.basePackage ?: throw IllegalStateException("Base package is mandatory"),
-            outputConfigurer.customSourceWriter ?: SourceFileWriter(),
-            catalogDefinition,
-            logger
-        ).generate()
+            outputConfigurer.customSourceWriter ?: SourceFileWriter(), catalogDefinition).generate()
         logger.info("Source files were generated OK.")
     }
 
     fun createCatalogDefinition(): DBCatalogDefinition {
         logger.info("Running code generation tool. Validating configuration settings.")
         val generatorConfig: CodeGeneratorConfig = build()
-        return parserFactory.create(generatorConfig, logger).parseCatalog()
+        return parserFactory.create(generatorConfig).parseCatalog()
     }
 
     private fun build(): CodeGeneratorConfig {
@@ -64,7 +62,6 @@ open class CodeGenerator {
             dataSourceInfo = dbConfigurer.dataSourceConfigurer.toDataSourceInfo(),
             exclusionConfigurer = exclusionConfigurer,
             basePackage = outputConfigurer.basePackage ?: throw IllegalStateException("Base package is mandatory"),
-            catalogName = outputConfigurer.catalogName ?: "CatalogDefinition",
             customColumnMappers = mappingConfigurer.mappers.toList(),
             sequenceMappers = mappingConfigurer.sequenceMappers
         )

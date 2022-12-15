@@ -1,36 +1,36 @@
 package com.dbobjekts.codegen.writer
 
 import com.dbobjekts.PackageName
-import com.dbobjekts.codegen.ProgressLogger
 import com.dbobjekts.codegen.metadata.DBCatalogDefinition
 import com.dbobjekts.codegen.metadata.DBSchemaDefinition
 import com.dbobjekts.util.StringUtil
+import org.slf4j.LoggerFactory
 
 class SourcesGenerator(
     val basedir: String?,
     val basePackage : PackageName,
     val writer: SourceWriter,
-    val catalog: DBCatalogDefinition,
-    private val logger: ProgressLogger
+    val catalog: DBCatalogDefinition
 ) {
+    private val logger = LoggerFactory.getLogger(SourcesGenerator::class.java)
 
     fun generate() {
         catalog.schemas.forEach { schemaDefinition ->
-            val schemaFileBuilder = SchemaCodeBuilder(schemaDefinition, logger)
+            val schemaFileBuilder = SchemaCodeBuilder(schemaDefinition)
             writeSourceFile(
                 schemaDefinition,
                 schemaDefinition.schemaName.value,
                 schemaFileBuilder.buildForApplication()
             )
             schemaDefinition.tables.forEach { tableDefinition ->
-                val builder = TableSourcesBuilder(catalog.packageName, tableDefinition, logger)
+                val builder = TableSourcesBuilder(catalog.packageName, tableDefinition)
                 val source = builder.build()
                 writeSourceFile(schemaDefinition, tableDefinition.tableName.value, source)
             }
         }
 
-        writeSourceFile(null, catalog.name, CatalogCodeBuilder(catalog, logger).createFileSource())
-        writeSourceFile(null, "Aliases", AliasCodeBuilder(catalog, logger).createFileSource())
+        writeSourceFile(null, catalog.name, CatalogCodeBuilder(catalog).createFileSource())
+        writeSourceFile(null, "Aliases", AliasCodeBuilder(catalog).createFileSource())
     }
 
     private fun writeSourceFile(

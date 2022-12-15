@@ -17,7 +17,6 @@ class DBSequenceKeyDefinitionTest {
 
     @Test
     fun `factory method`() {
-        println("package name " + key.packageName.asFilePath())
         assertEquals("""com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "id", "people_seq")""", key.asFactoryMethod())
     }
 

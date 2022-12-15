@@ -3,7 +3,7 @@ package com.dbobjekts.codegen
 import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
 import com.dbobjekts.codegen.parsers.DBParserFactory
 import com.dbobjekts.codegen.parsers.ForeignKeyMetaDataRow
-import com.dbobjekts.codegen.parsers.LiveDBParser
+import com.dbobjekts.codegen.parsers.CatalogParser
 import com.dbobjekts.codegen.parsers.TableMetaDataRow
 
 
@@ -24,7 +24,7 @@ class MockDBParserFactory : DBParserFactory {
     }
 
 
-    override fun create(codeGeneratorConfig: CodeGeneratorConfig, logger: ProgressLogger): LiveDBParser {
-        return MockH2Parser(tableRows, fkRows, codeGeneratorConfig, logger)
+    override fun create(codeGeneratorConfig: CodeGeneratorConfig): CatalogParser {
+        return MockH2Parser(tableRows, fkRows, codeGeneratorConfig)
     }
 }
