@@ -12,9 +12,9 @@ import com.dbobjekts.vendors.h2.H2CatalogParser
 import javax.sql.DataSource
 
 
-object LiveDBParserFactory {
+class DBParserFactoryImpl : DBParserFactory {
 
-    fun create(
+    override fun create(
         codeGeneratorConfig: CodeGeneratorConfig,
         logger: ProgressLogger
     ): LiveDBParser {
@@ -27,10 +27,12 @@ object LiveDBParserFactory {
                 val transactionManager = builder.catalog(Catalog(Vendors.MARIADB.name)).build()
                 MariaDBCatalogParser(codeGeneratorConfig, transactionManager, logger)
             }
+
             Vendors.H2 -> {
                 val transactionManager = builder.catalog(Catalog(Vendors.H2.name)).build()
                 H2CatalogParser(codeGeneratorConfig, transactionManager, logger)
             }
+
             else -> throw IllegalStateException("Vendor ${vendor} not allowed")
         }
     }

@@ -38,7 +38,7 @@ abstract class StatementBase<W>(internal val connection: ConnectionAdapter) {
 
 
     internal fun registerTable(table: Table) {
-        if (!tables.contains(table))
+        if (!tables.contains(catalog.assertContainsTable(table)))
             tables.add(table)
     }
 

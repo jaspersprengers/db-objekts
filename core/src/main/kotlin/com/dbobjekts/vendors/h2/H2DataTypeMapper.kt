@@ -4,6 +4,7 @@ import com.dbobjekts.AnyColumn
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper
 import com.dbobjekts.metadata.Columns
+import com.dbobjekts.metadata.DefaultTable
 import org.slf4j.LoggerFactory
 
 //see http://h2database.com/html/datatypes.html#decfloat_type
@@ -37,44 +38,45 @@ class H2DataTypeMapper : ColumnTypeMapper {
             "TIMESTAMP" -> Columns.timeStampColumn(nullable)
             "TIMESTAMP WITH TIME ZONE" -> Columns.offsetDateTimeColumn(nullable)
             "INTERVAL" -> {
-                logger.error("INTERVAL not supported")
+                logger.warn("INTERVAL data type is not supported")
                 return null
             }
 
             "JAVA_OBJECT" -> {
-                logger.error("JAVA_OBJECT not supported")
+                logger.warn("JAVA_OBJECT data type is not supported")
                 return null
             }
 
             "ENUM" -> Columns.varcharColumn(nullable)
             "GEOMETRY" -> {
-                logger.error("GEOMETRY not supported")
+                logger.warn("GEOMETRY data type is not supported")
                 return null
             }
 
             "JSON" -> Columns.byteArrayColumn(nullable)
-            "UUID" -> Columns.varcharColumn(nullable)
+            "UUID" -> if (nullable) UUID_NIL else UUID
             "ARRAY" -> {
-                logger.error("ARRAY not supported")
+                logger.warn("ARRAY data type is not supported")
                 return null
             }
 
-            "ROW" ->  {
-                logger.error("ROW not supported")
+            "ROW" -> {
+                logger.warn("ROW data type is not supported")
                 return null
             }
+
             else -> null
         }
     }
 
-    fun mapIntegerType(size: Int, nullable: Boolean): AnyColumn =
-        if (size > 8)
-            Columns.longColumn(nullable)
-        else Columns.integerColumn(nullable)
-
-
     companion object {
+        private val table = DefaultTable
+        private const val DUMMY = "dummy"
         val numericTypes = setOf("int", "integer", "bigint")
+
+        val UUID = UUIDColumn(table, DUMMY)
+        val UUID_NIL = UUIDColumn(table, DUMMY)
+
     }
 
 }

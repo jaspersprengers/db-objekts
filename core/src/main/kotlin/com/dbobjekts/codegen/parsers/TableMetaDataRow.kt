@@ -1,14 +1,12 @@
 package com.dbobjekts.codegen.parsers
 
-import com.dbobjekts.Tuple8
-
 data class TableMetaDataRow(
     val schema: String,
     val table: String,
-    val autoIncrement: Boolean,
+    val autoIncrement: Boolean = false,
     val column: String,
-    val isPrimaryKey: Boolean,
-    val nullable: Boolean,
-    val defaultValue: String?,
+    val isPrimaryKey: Boolean = false,
+    val nullable: Boolean = true,
+    val defaultValue: String? = null,
     val dataType: String
 )

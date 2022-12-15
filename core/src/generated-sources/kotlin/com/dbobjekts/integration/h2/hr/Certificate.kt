@@ -15,9 +15,7 @@ object Certificate:Table("CERTIFICATE"), HasUpdateBuilder<CertificateUpdateBuild
     val id = com.dbobjekts.metadata.column.LongColumn(this, "ID")
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "EMPLOYEE_ID", Employee.id)
-    val createdDt = com.dbobjekts.metadata.column.TimeStampColumn(this, "CREATED_DT")
-    val modifiedDt = com.dbobjekts.metadata.column.NullableTimeStampColumn(this, "MODIFIED_DT")
-    override val columns: List<AnyColumn> = listOf(id,name,employeeId,createdDt,modifiedDt)
+    override val columns: List<AnyColumn> = listOf(id,name,employeeId)
     override fun updater(connection: ConnectionAdapter): CertificateUpdateBuilder = CertificateUpdateBuilder(connection)
     override fun inserter(connection: ConnectionAdapter): CertificateInsertBuilder = CertificateInsertBuilder(connection)
 }
@@ -29,8 +27,6 @@ class CertificateUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBas
     fun id(value: Long): CertificateUpdateBuilder = ct.put(Certificate.id, value)
     fun name(value: String): CertificateUpdateBuilder = ct.put(Certificate.name, value)
     fun employeeId(value: Long): CertificateUpdateBuilder = ct.put(Certificate.employeeId, value)
-    fun createdDt(value: java.time.Instant): CertificateUpdateBuilder = ct.put(Certificate.createdDt, value)
-    fun modifiedDt(value: java.time.Instant?): CertificateUpdateBuilder = ct.put(Certificate.modifiedDt, value)
 }
 
 class CertificateInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(Certificate, connection){
@@ -40,14 +36,11 @@ class CertificateInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(
     fun id(value: Long): CertificateInsertBuilder = ct.put(Certificate.id, value)
     fun name(value: String): CertificateInsertBuilder = ct.put(Certificate.name, value)
     fun employeeId(value: Long): CertificateInsertBuilder = ct.put(Certificate.employeeId, value)
-    fun createdDt(value: java.time.Instant): CertificateInsertBuilder = ct.put(Certificate.createdDt, value)
-    fun modifiedDt(value: java.time.Instant?): CertificateInsertBuilder = ct.put(Certificate.modifiedDt, value)
 
-    fun mandatoryColumns(id: Long, name: String, employeeId: Long, createdDt: java.time.Instant) : CertificateInsertBuilder {
+    fun mandatoryColumns(id: Long, name: String, employeeId: Long) : CertificateInsertBuilder {
       ct.put(Certificate.id, id)
       ct.put(Certificate.name, name)
       ct.put(Certificate.employeeId, employeeId)
-      ct.put(Certificate.createdDt, createdDt)
       return this
     }
 

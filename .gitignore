@@ -1,5 +1,5 @@
 **/.iml
-/.idea/
+/.idea
 /core/core.iml
 /integration/integration.iml
 /core/target

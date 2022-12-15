@@ -19,9 +19,7 @@ object Employee:Table("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, Emplo
     val dateOfBirth = com.dbobjekts.metadata.column.DateColumn(this, "DATE_OF_BIRTH")
     val children = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "CHILDREN")
     val hobbyId = com.dbobjekts.metadata.column.OptionalForeignKeyVarcharColumn(this, "HOBBY_ID", Hobby.id)
-    val createdDt = com.dbobjekts.metadata.column.TimeStampColumn(this, "CREATED_DT")
-    val modifiedDt = com.dbobjekts.metadata.column.NullableTimeStampColumn(this, "MODIFIED_DT")
-    override val columns: List<AnyColumn> = listOf(id,name,salary,married,dateOfBirth,children,hobbyId,createdDt,modifiedDt)
+    override val columns: List<AnyColumn> = listOf(id,name,salary,married,dateOfBirth,children,hobbyId)
     override fun updater(connection: ConnectionAdapter): EmployeeUpdateBuilder = EmployeeUpdateBuilder(connection)
     override fun inserter(connection: ConnectionAdapter): EmployeeInsertBuilder = EmployeeInsertBuilder(connection)
 }
@@ -36,8 +34,6 @@ class EmployeeUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(E
     fun dateOfBirth(value: java.time.LocalDate): EmployeeUpdateBuilder = ct.put(Employee.dateOfBirth, value)
     fun children(value: Int?): EmployeeUpdateBuilder = ct.put(Employee.children, value)
     fun hobbyId(value: String?): EmployeeUpdateBuilder = ct.put(Employee.hobbyId, value)
-    fun createdDt(value: java.time.Instant): EmployeeUpdateBuilder = ct.put(Employee.createdDt, value)
-    fun modifiedDt(value: java.time.Instant?): EmployeeUpdateBuilder = ct.put(Employee.modifiedDt, value)
 }
 
 class EmployeeInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(Employee, connection){
@@ -50,14 +46,11 @@ class EmployeeInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(Emp
     fun dateOfBirth(value: java.time.LocalDate): EmployeeInsertBuilder = ct.put(Employee.dateOfBirth, value)
     fun children(value: Int?): EmployeeInsertBuilder = ct.put(Employee.children, value)
     fun hobbyId(value: String?): EmployeeInsertBuilder = ct.put(Employee.hobbyId, value)
-    fun createdDt(value: java.time.Instant): EmployeeInsertBuilder = ct.put(Employee.createdDt, value)
-    fun modifiedDt(value: java.time.Instant?): EmployeeInsertBuilder = ct.put(Employee.modifiedDt, value)
 
-    fun mandatoryColumns(name: String, salary: Double, dateOfBirth: java.time.LocalDate, createdDt: java.time.Instant) : EmployeeInsertBuilder {
+    fun mandatoryColumns(name: String, salary: Double, dateOfBirth: java.time.LocalDate) : EmployeeInsertBuilder {
       ct.put(Employee.name, name)
       ct.put(Employee.salary, salary)
       ct.put(Employee.dateOfBirth, dateOfBirth)
-      ct.put(Employee.createdDt, createdDt)
       return this
     }
 

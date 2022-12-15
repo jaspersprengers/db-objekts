@@ -13,10 +13,10 @@ import org.slf4j.LoggerFactory
 /**
  * Accesses a live database to extract information from all the schemas
  */
-class MariaDBCatalogParser(codeGeneratorConfig: CodeGeneratorConfig, transactionManager: TransactionManager, logger: ProgressLogger) :
-    LiveDBParser(codeGeneratorConfig, transactionManager, logger) {
-
-    private val log = LoggerFactory.getLogger(MariaDBCatalogParser::class.java)
+class MariaDBCatalogParser(codeGeneratorConfig: CodeGeneratorConfig,
+                           internal val transactionManager: TransactionManager,
+                           logger: ProgressLogger) :
+    LiveDBParser(codeGeneratorConfig, logger) {
 
     override fun extractColumnAndTableMetaDataFromDB(): List<TableMetaDataRow> {
         return transactionManager.newTransaction {

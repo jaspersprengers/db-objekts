@@ -12,10 +12,10 @@ import com.dbobjekts.vendors.Vendor
 
 data class CodeGeneratorConfig(
     val vendor: Vendor,
-    val changeLogFiles: Map<SchemaName, String> = mapOf(),
     val dataSourceInfo: DataSourceInfo? = null,
     val exclusionConfigurer: ExclusionConfigurer,
     val basePackage: PackageName,
+    val catalogName: String,
     val customColumnMappers: List<ColumnTypeMapper> = listOf(),
     val sequenceMappers: List<SequenceForPrimaryKeyMapper> = listOf()
 ){

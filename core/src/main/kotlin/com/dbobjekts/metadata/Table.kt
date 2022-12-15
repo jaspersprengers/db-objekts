@@ -23,7 +23,7 @@ abstract class Table(
             throw IllegalArgumentException("Not a valid table name: " + tableName)
     }
 
-    val foreignKeys: List<AnyForeignKey> by lazy {columns.filter { it is AnyForeignKey }.map { it as AnyForeignKey }}
+    val foreignKeys: List<AnyForeignKey> by lazy { columns.filter { it is AnyForeignKey }.map { it as AnyForeignKey } }
 
     fun getForeignKeyToParent(parent: Table): AnyForeignKey? = foreignKeys.find { it.parentColumn.table == parent }
 
@@ -37,6 +37,10 @@ abstract class Table(
 
     fun withSchema(schema: Schema) {
         this.schema = schema
+    }
+
+    internal fun isInitialized(): Boolean {
+        return this::schema.isInitialized
     }
 
     /**

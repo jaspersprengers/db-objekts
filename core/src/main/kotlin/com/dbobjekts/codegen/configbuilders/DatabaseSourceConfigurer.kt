@@ -1,17 +1,14 @@
 package com.dbobjekts.codegen.configbuilders
 
-import com.dbobjekts.SchemaName
 import com.dbobjekts.vendors.Vendor
 import com.dbobjekts.vendors.Vendors
 import org.slf4j.LoggerFactory
-import java.nio.file.Paths
 
 
 class DatabaseSourceConfigurer {
 
     private val logger = LoggerFactory.getLogger(DatabaseSourceConfigurer::class.java)
 
-    internal val changeLogFiles: HashMap<SchemaName, String> = hashMapOf()
     internal val dataSourceConfigurer: DataSourceConfigurer = DataSourceConfigurer()
     internal var vendor: Vendor? = null
 
@@ -24,28 +21,14 @@ class DatabaseSourceConfigurer {
         return this
     }
 
-    fun addLiquibaseChangelogFile(schemaName: String, path: String): DatabaseSourceConfigurer {
-        changeLogFiles.put(SchemaName(schemaName), path)
-        return this
-    }
-
     fun configureDataSource(): DataSourceConfigurer {
         return dataSourceConfigurer
     }
 
-    internal fun getChangeLogFilesPath(): String? = changeLogFiles.values.firstOrNull()?.let {
-        Paths.get(it).toFile().getParentFile().getAbsolutePath()
-    }
-
     internal fun validate() {
         require(vendor != null, { "Setting 'vendor' is mandatory. Choose one of h2, mysql, postgresql" })
-        require(
-            changeLogFiles.isNotEmpty() || dataSourceConfigurer.toDataSourceInfo() != null,
-            { "No changelog files configured. Add at least one with conf.addLiquibaseChangelogFile(..)" })
-        changeLogFiles.forEach { schema, path ->
-            ValidateFile(path)
-            logger.info("Using liquibase changelog file: $path for schema $schema")
-        }
+        require(dataSourceConfigurer.toDataSourceInfo() != null,
+            { "Could not create DataSource to inspect schemas. Make sure you configure url, username and password." })
     }
 }
 
@@ -73,6 +56,9 @@ class DataSourceConfigurer() {
         return this
     }
 
+    /**
+     * Optional setting. Use it when JDBC cannot automatically resolve the appropriate driver from the URL.
+     */
     fun driverClassName(d: String): DataSourceConfigurer {
         this.driver = d
         return this

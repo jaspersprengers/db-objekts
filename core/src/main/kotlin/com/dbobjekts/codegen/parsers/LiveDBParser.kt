@@ -12,7 +12,6 @@ import com.dbobjekts.jdbc.TransactionManager
 
 
 abstract class LiveDBParser(codeGeneratorConfig: CodeGeneratorConfig,
-                            protected val transactionManager: TransactionManager,
                             protected val logger: ProgressLogger) : CatalogParser(codeGeneratorConfig) {
 
     override fun createTableMetaData(conf: CodeGeneratorConfig): List<TableMetaData> {

@@ -62,7 +62,7 @@ class MariaIntegrationTest {
         val writer = TestSourceWriter()
         val generator = CodeGenerator()
 
-        generator.sourceConfigurer()
+        generator.dataSourceConfigurer()
             .vendor(Vendors.MARIADB).configureDataSource().password("test").url("jdbc:mariadb://localhost:3306/classicmodels")
             .user("root")//.driverClassName("org.mariadb.jdbc.Driver")
         generator.outputConfigurer().basePackageForSources("com.dbobjekts")

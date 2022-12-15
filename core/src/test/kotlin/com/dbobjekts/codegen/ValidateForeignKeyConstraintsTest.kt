@@ -37,7 +37,7 @@ class ValidateForeignKeyConstraintsTest {
     fun `When all tables are included validation is ok`() {
         val hrSchema = DBSchemaDefinition(pkg, hr, listOf(peopleTable, hobbiesTable), listOf())
         val financeSchema = DBSchemaDefinition(pkg, SchemaName("hr"), listOf(wagesTable), listOf())
-        val catalog = DBCatalogDefinition(pkg, Vendors.H2, listOf(hrSchema, financeSchema))
+        val catalog = DBCatalogDefinition(pkg, Vendors.H2, listOf(hrSchema, financeSchema), "CatalogDefinition")
         assertTrue(ValidateForeignKeyConstraints(catalog))
     }
 
@@ -45,7 +45,7 @@ class ValidateForeignKeyConstraintsTest {
     fun `When both wages and hobbies are absent, validation is ok`() {
         val hrSchema = DBSchemaDefinition(pkg, hr, listOf(peopleTable, hobbiesTable), listOf(hobbiesTable))
         val financeSchema = DBSchemaDefinition(pkg, finance, listOf(wagesTable), listOf(wagesTable))
-        val catalog = DBCatalogDefinition(pkg, Vendors.H2, listOf(hrSchema, financeSchema))
+        val catalog = DBCatalogDefinition(pkg, Vendors.H2, listOf(hrSchema, financeSchema), "CatalogDefinition")
         assertTrue(ValidateForeignKeyConstraints(catalog))
     }
 
@@ -53,7 +53,7 @@ class ValidateForeignKeyConstraintsTest {
     fun `When people table is missing, validation fails`() {
         val hrSchema = DBSchemaDefinition(pkg, hr, listOf(peopleTable, hobbiesTable), listOf(peopleTable))
         val financeSchema = DBSchemaDefinition(pkg, finance, listOf(wagesTable), listOf())
-        val catalog = DBCatalogDefinition(pkg, Vendors.H2, listOf(hrSchema, financeSchema))
+        val catalog = DBCatalogDefinition(pkg, Vendors.H2, listOf(hrSchema, financeSchema), "CatalogDefinition")
         assertFalse(ValidateForeignKeyConstraints(catalog))
         val (p1, p2) = ValidateForeignKeyConstraints.reportMissing(catalog).first()
         assertEquals("hr.hobbies.people_id", p1)

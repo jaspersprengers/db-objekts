@@ -9,7 +9,6 @@ open class Schema(
 ) {
 
     constructor(name: String, tables: List<Table>) : this(NilSchemaCatalog, SchemaName(name), tables)
-    //constructor(name: String, vendor: String, tables: List<Table>) : this(NilSchemaCatalog(), SchemaName(name), vendor)
 
     init {
         tables.forEach { it.withSchema(this) }

@@ -38,7 +38,8 @@ abstract class CatalogParser(private val generatorConfig: CodeGeneratorConfig) {
                 val (excluded, included) = generatorConfig.exclusionConfigurer.partition(entry.value)
                 DBSchemaDefinition(packageForSchema, schemaName, included, excluded)
             }
-        return DBCatalogDefinition(basePackage, generatorConfig.vendor, schemas).also {
+        return DBCatalogDefinition(basePackage, generatorConfig.vendor, schemas, generatorConfig.catalogName)
+            .also {
             validateCatalogForMissingTables(it)
         }
     }
