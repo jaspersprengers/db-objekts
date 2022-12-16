@@ -104,7 +104,7 @@ class H2DataTypeMapper : ColumnTypeMapper {
             "UUID"
         )
         val UUID = UUIDColumn(table, DUMMY)
-        val UUID_NIL = UUIDColumn(table, DUMMY)
+        val UUID_NIL = NullableUUIDColumn(table, DUMMY)
 
     }
 

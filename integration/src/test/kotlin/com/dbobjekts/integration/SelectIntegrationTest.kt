@@ -6,11 +6,11 @@ import com.dbobjekts.integration.h2.core.Address
 import com.dbobjekts.integration.h2.core.Country
 import com.dbobjekts.integration.h2.core.Employee
 import com.dbobjekts.integration.h2.core.EmployeeAddress
-import com.dbobjekts.integration.h2.custom.AddressType
 import com.dbobjekts.integration.h2.hr.Hobby
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 class SelectIntegrationTest {
@@ -39,7 +39,7 @@ class SelectIntegrationTest {
                 it.insert(Country).id("DE").name("Germany").execute()
                 it.insert(Country).id("NL").name("Netherlands").execute()
                 val zuidhoek = it.insert(Address).mandatoryColumns(street = "Zuidhoek", countryId = "DE").execute()
-                it.insert(EmployeeAddress).mandatoryColumns(employeeId = jane, addressId = zuidhoek).kind(AddressType.WORK).execute()
+                it.insert(EmployeeAddress).mandatoryColumns(employeeId = jane, addressId = zuidhoek, kind = "WORK").execute()
 
             }
 

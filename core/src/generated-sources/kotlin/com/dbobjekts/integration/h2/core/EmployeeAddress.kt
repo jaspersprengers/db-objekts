@@ -12,7 +12,7 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
 object EmployeeAddress:Table("EMPLOYEE_ADDRESS"), HasUpdateBuilder<EmployeeAddressUpdateBuilder, EmployeeAddressInsertBuilder> {
     val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "EMPLOYEE_ID", Employee.id)
     val addressId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "ADDRESS_ID", Address.id)
-    val kind = com.dbobjekts.integration.h2.custom.AddressTypeColumn(this, "KIND")
+    val kind = com.dbobjekts.metadata.column.VarcharColumn(this, "KIND")
     override val columns: List<AnyColumn> = listOf(employeeId,addressId,kind)
     override fun updater(connection: ConnectionAdapter): EmployeeAddressUpdateBuilder = EmployeeAddressUpdateBuilder(connection)
     override fun inserter(connection: ConnectionAdapter): EmployeeAddressInsertBuilder = EmployeeAddressInsertBuilder(connection)
@@ -24,7 +24,7 @@ class EmployeeAddressUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilde
 
     fun employeeId(value: Long): EmployeeAddressUpdateBuilder = ct.put(EmployeeAddress.employeeId, value)
     fun addressId(value: Long): EmployeeAddressUpdateBuilder = ct.put(EmployeeAddress.addressId, value)
-    fun kind(value: com.dbobjekts.integration.h2.custom.AddressType?): EmployeeAddressUpdateBuilder = ct.put(EmployeeAddress.kind, value)
+    fun kind(value: String): EmployeeAddressUpdateBuilder = ct.put(EmployeeAddress.kind, value)
 }
 
 class EmployeeAddressInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(EmployeeAddress, connection){
@@ -33,11 +33,12 @@ class EmployeeAddressInsertBuilder(connection: ConnectionAdapter):InsertBuilderB
 
     fun employeeId(value: Long): EmployeeAddressInsertBuilder = ct.put(EmployeeAddress.employeeId, value)
     fun addressId(value: Long): EmployeeAddressInsertBuilder = ct.put(EmployeeAddress.addressId, value)
-    fun kind(value: com.dbobjekts.integration.h2.custom.AddressType?): EmployeeAddressInsertBuilder = ct.put(EmployeeAddress.kind, value)
+    fun kind(value: String): EmployeeAddressInsertBuilder = ct.put(EmployeeAddress.kind, value)
 
-    fun mandatoryColumns(employeeId: Long, addressId: Long) : EmployeeAddressInsertBuilder {
+    fun mandatoryColumns(employeeId: Long, addressId: Long, kind: String) : EmployeeAddressInsertBuilder {
       ct.put(EmployeeAddress.employeeId, employeeId)
       ct.put(EmployeeAddress.addressId, addressId)
+      ct.put(EmployeeAddress.kind, kind)
       return this
     }
 

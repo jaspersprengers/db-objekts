@@ -56,9 +56,9 @@ class ForeignKeyTest {
                 
                 tr.insert(Certificate).name("BSC").employeeId(johnsId).execute()
                 tr.insert(Certificate).name("MA").employeeId(janesId).execute()
-                tr.insert(EmployeeAddress).addressId(johnAndJanesAddress).employeeId(johnsId).kind(AddressType.HOME)
+                tr.insert(EmployeeAddress).addressId(johnAndJanesAddress).employeeId(johnsId).kind("HOME")
                     .execute()
-                tr.insert(EmployeeAddress).addressId(johnAndJanesAddress).employeeId(janesId).kind(AddressType.HOME)
+                tr.insert(EmployeeAddress).addressId(johnAndJanesAddress).employeeId(janesId).kind("HOME")
                     .execute()
             }
 
@@ -67,8 +67,8 @@ class ForeignKeyTest {
             val janesWorkAddress =
                 H2DB.newTransaction { tr -> tr.insert(a).street("Jane's office").countryId("fr").execute() }
             H2DB.newTransaction { tr ->
-                tr.insert(ea).addressId(johnsWorkAddress).employeeId(johnsId).kind(AddressType.WORK).execute()
-                tr.insert(ea).addressId(janesWorkAddress).employeeId(janesId).kind(AddressType.WORK).execute()
+                tr.insert(ea).addressId(johnsWorkAddress).employeeId(johnsId).kind("WORK").execute()
+                tr.insert(ea).addressId(janesWorkAddress).employeeId(janesId).kind("WORK").execute()
             }
         }
 
@@ -78,7 +78,7 @@ class ForeignKeyTest {
     fun `get all work addresses`() {
         H2DB.newTransaction { tr ->
             val results: List<Tuple3<String?, String?, String?>> =
-                tr.select(e.name, a.street, c.name).where(ea.kind.eq(AddressType.WORK)).orderAsc(e.name).asList()
+                tr.select(e.name, a.street, c.name).where(ea.kind.eq("WORK")).orderAsc(e.name).asList()
             assertEquals("Jane", results[0].first)
             assertEquals("Jane's office", results[0].second)
             assertEquals("France", results[0].third)
@@ -93,7 +93,7 @@ class ForeignKeyTest {
     @Test
     fun `get all private addresses`() {
         val results: List<Tuple3<String, String, String>> = H2DB.newTransaction {
-            it.select(e.name, a.street, c.name).where(ea.kind.eq(AddressType.HOME)).orderAsc(e.name).asList()
+            it.select(e.name, a.street, c.name).where(ea.kind.eq("HOME")).orderAsc(e.name).asList()
         }
         assertEquals("Jane", results[0].first)
         assertEquals("Home sweet home", results[0].second)

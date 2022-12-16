@@ -70,6 +70,7 @@ object H2DB : TestDatabaseFacade() {
         val allTypesSql = """
             create table IF NOT EXISTS core.ALL_TYPES
             (
+                id                            BIGINT not null primary key auto_increment,
                 character_col                 CHARACTER                   NOT NULL,
                 character_col_nil             CHARACTER                   NULL,
                 charactervarying_col          CHARACTER VARYING           NOT NULL,
@@ -80,10 +81,10 @@ object H2DB : TestDatabaseFacade() {
                 varchar_ignorecase_col_nil    VARCHAR_IGNORECASE          NULL,
                 enum_col                      ENUM ('yes', 'no', 'maybe') NOT NULL,
                 enum_col_nil                  ENUM ('yes', 'no', 'maybe') NULL,
-                binary_col                    BINARY                      NOT NULL,
-                binary_col_nil                BINARY                      NULL,
-                binaryvarying_col             BINARY VARYING              NOT NULL,
-                binaryvarying_col_nil         BINARY VARYING              NULL,
+                binary_col                    BINARY(1024)                NOT NULL,
+                binary_col_nil                BINARY(1024)                NULL,
+                binaryvarying_col             BINARY VARYING(1024)        NOT NULL,
+                binaryvarying_col_nil         BINARY VARYING(1024)        NULL,
                 binarylargeobject_col         BINARY LARGE OBJECT         NOT NULL,
                 binarylargeobject_col_nil     BINARY LARGE OBJECT         NULL,
                 json_col                      JSON                        NOT NULL,

@@ -10,7 +10,9 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.lang.Byte
+import java.math.BigDecimal
 import java.time.*
+import java.util.*
 
 
 class TypesIntegrationTest {
@@ -38,44 +40,79 @@ class TypesIntegrationTest {
         val fox = "The quick brown fox"
         val t = AllTypes
         H2DB.newTransaction { tr ->
-            val execute = tr.insert(AllTypes)
-                .tinyintC(java.lang.Byte.parseByte("2"))
-                .smallintC(42)
-                .intC(424242)
-                .charC("C")
-                .varcharC("Hello")
-                .bigintC(999999L)
-                .floatC(42.43f)
-                .doubleC(44.44)
-                .timeC(time)
-                .dateC(date)
-                .timestampC(dateTimeEurope.toInstant())
-                .timestampTzC(dateTimeEuropeAsOffset)
-                .booleanC(true)
-                //.intBooleanC(true)
-                .blobC(BlobColumn.ofString(fox))
-                //.clobC(ClobColumn.ofString(fox)).execute()
 
-            /*val row: Tuple16<Byte?, Int?, Int?, String?, String?, Long?, Float?, Double?, LocalTime?, LocalDate?, Instant?, OffsetDateTime?, Boolean?, Boolean, Blob?, Clob?> =
-                 tr.select(t.timestampC, t.timestampTzC, t.booleanC, t.intBooleanC, t.blobC, t.clobC)
-                 .where(AllTypes.intC.eq(424242)).first()*/
-            val where: SubClause = AllTypes.intC.eq(424242)
-            assertEquals(tr.select(t.tinyintC).where(where).first(), Byte.parseByte("2"))
-            assertEquals(42, tr.select(t.smallintC).where(where).first())
+            val row = tr.insert(AllTypes)
+            .characterCol("C")
+            .characterColNil(null)
+            .charactervaryingCol("Hello world")
+            .charactervaryingColNil(null)
+            .characterlargeobjectCol("Hello world")
+            .characterlargeobjectColNil(null)
+            .varcharIgnorecaseCol("HeLlLo WoRlD")
+            .varcharIgnorecaseColNil(null)
+            .enumCol("maybe")
+            .enumColNil(null)
+            .binaryCol("bytearray".encodeToByteArray())
+            .binaryColNil(null)
+            .binaryvaryingCol("binary varying".encodeToByteArray())
+            .binaryvaryingColNil(null)
+            .binarylargeobjectCol(BlobColumn.ofString(fox))
+            .binarylargeobjectColNil(null)
+            .jsonCol("{\"value\": 42}".encodeToByteArray())
+            .jsonColNil(null)
+            .booleanCol(true)
+            .booleanColNil(null)
+            .tinyintCol(0B1)
+            .tinyintColNil(null)
+            .smallintCol(42)
+            .smallintColNil(null)
+            .integerCol(100_000)
+            .integerColNil(null)
+            .bigintCol(1_000_000_000L)
+            .bigintColNil(null)
+            .numericCol(BigDecimal.TEN)
+            .numericColNil(null)
+            .decfloatCol(BigDecimal.TEN)
+            .decfloatColNil(null)
+            .realCol(42.42f)
+            .realColNil(null)
+            .doubleprecisionCol(100_000.999999)
+            .doubleprecisionColNil(null)
+            .dateCol(date)
+            .dateColNil(null)
+            .timeCol(time)
+            .timeColNil(null)
+            .timewithtimezoneCol(dateTimeEuropeAsOffset)
+            .timewithtimezoneColNil(null)
+            .timestampCol(dateTimeEurope.toInstant())
+            .timestampColNil(null)
+            .timestampwithtimezoneCol(dateTimeEuropeAsOffset)
+            .timestampwithtimezoneColNil(null)
+            .uuidCol(UUID.randomUUID())
+            .uuidColNil(null).execute()
+
+            val where: SubClause = AllTypes.id.eq(row)
+            assertEquals("C", tr.select(t.characterCol).where(where).first())
+            assertEquals("Hello world", tr.select(t.charactervaryingCol).where(where).first())
+            assertEquals("Hello world", tr.select(t.characterlargeobjectCol).where(where).first())
+            assertEquals("HeLlLo WoRlD", tr.select(t.varcharIgnorecaseCol).where(where).first())
+            assertEquals("maybe", tr.select(t.enumCol).where(where).first())
+
+            /*assertEquals(42, tr.select(t.smallintC).where(where).first())
             assertEquals(424242, tr.select(t.intC).where(where).first())
             assertEquals("C", tr.select(t.charC).where(where).first())
             assertEquals("Hello", tr.select(t.varcharC).where(where).first())
             assertEquals(999999L, tr.select(t.bigintC).where(where).first())
             assertEquals(42.43f, tr.select(t.floatC).where(where).first())
-            assertEquals(44.44, tr.select(t.doubleC).where(where).first())
-            assertEquals(time.withNano(0), tr.select(t.timeC).where(where).first())
-            assertEquals(date, tr.select(t.dateC).where(where).first())
-            assertEquals(dateTimeEurope.toInstant(), tr.select(t.timestampC).where(where).first())
-            assertEquals(dateTimeEuropeAsOffset, tr.select(t.timestampTzC).where(where).first())
-            assertTrue(tr.select(t.booleanC).where(where).first() ?: false)
+            assertEquals(44.44, tr.select(t.doubleC).where(where).first())*/
+            assertEquals(time.withNano(0), tr.select(t.timeCol).where(where).first())
+            assertEquals(date, tr.select(t.dateCol).where(where).first())
+            assertEquals(dateTimeEurope.toInstant(), tr.select(t.timestampCol).where(where).first())
+            assertEquals(dateTimeEuropeAsOffset, tr.select(t.timestampwithtimezoneCol).where(where).first())
+            assertTrue(tr.select(t.booleanCol).where(where).first() ?: false)
             //assertTrue(tr.select(t.intBooleanC).where(where).first())
-            /*assertEquals(19, tr.select(t.blobC).where(where).first())?.length())
-            assertEquals(19, tr.select(t.clobC).where(where).first())?.length())*/
+            //assertEquals(19, tr.select(t.blobC).where(where).first())?.length())
+
         }
 
     }
