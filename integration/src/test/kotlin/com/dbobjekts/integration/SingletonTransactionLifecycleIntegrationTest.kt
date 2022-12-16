@@ -1,8 +1,9 @@
 package com.dbobjekts.integration
 
+import com.dbobjekts.api.Transaction
 import com.dbobjekts.fixture.h2.H2DB
 import com.dbobjekts.integration.h2.core.Employee
-import com.dbobjekts.jdbc.Transaction
+import com.dbobjekts.jdbc.TransactionImpl
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
@@ -33,7 +34,7 @@ class SingletonTransactionLifecycleIntegrationTest {
     }
 
     fun insertrow() {
-        H2DB.joinTransaction { tr ->
+        H2DB.newTransaction { tr ->
             tr.insert(employee).name("Jared").salary(2000.0).dateOfBirth(LocalDate.of(1980, 12, 12)).execute()
         }
     }
@@ -51,7 +52,7 @@ class SingletonTransactionLifecycleIntegrationTest {
         //a separate transaction cannot see this yet
         H2DB.newTransaction { tr -> validateRowExists("new transaction cannot read uncommitted write", tr, false) }
         //but this one can
-        H2DB.joinTransaction { tr -> validateRowExists("same transaction can read", tr, true) }
+        H2DB.newTransaction { tr -> validateRowExists("same transaction can read", tr, true) }
         H2DB.getTransactionManager().commit()
         H2DB.newTransaction { tr -> validateRowExists("separate transaction can read committed insert", tr, true) }
     }
@@ -65,36 +66,6 @@ class SingletonTransactionLifecycleIntegrationTest {
         H2DB.newTransaction { tr -> validateRowExists("insert has been rolled back", tr, false) }
     }
 
-    @Test
-    fun `Different threads use different transactions`() {
-        var transation1Hash: Int = 0
-        var transation2Hash: Int = 0
-        var transation3Hash: Int = 0
-        val t1 = Runnable {
-            H2DB.joinTransaction { tr ->
-                transation1Hash = tr.hashCode()
-                tr.insert(employee).name("Jared").salary(2000.0).dateOfBirth(LocalDate.of(1980, 12, 12)).execute()
-            }
-        }
-        val t2 = Runnable {
-            Thread.sleep(50)
-            H2DB.joinTransaction { tr ->
-                transation2Hash = tr.hashCode()
-                tr.insert(employee).name("Greg").salary(2000.0).dateOfBirth(LocalDate.of(1980, 12, 12)).execute()
-            }
-            Thread.sleep(50)
-            H2DB.joinTransaction { tr ->
-                transation3Hash = tr.hashCode()
-                validateRowExists("separate transaction can read insert", tr, true)
-            }
-        }
-        Thread(t1).start()
-        Thread(t2).start()
-        Thread.sleep(300)
-        assertNotEquals(transation1Hash, transation2Hash)
-        assertEquals(transation2Hash, transation3Hash)
-
-    }
 
 }
 

@@ -1,34 +1,33 @@
 package com.dbobjekts.jdbc
 
+import com.dbobjekts.api.Transaction
+import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.statement.TransactionResultValidator
-import com.dbobjekts.util.HikariDataSourceAdapterImpl
 import com.dbobjekts.util.StatementLogger
 import com.dbobjekts.vendors.Vendors
 import com.google.common.cache.CacheLoader
-import com.zaxxer.hikari.HikariDataSource
 import java.sql.Connection
-import javax.sql.DataSource
 
-class TransactionManager(
+class TransactionManagerImpl (
     private val dataSource: DataSourceAdapter,
     val catalog: Catalog,
     val transactionSettings: TransactionSettings = TransactionSettings(),
     val statementLogger: StatementLogger = StatementLogger()
-) : CacheLoader<Long, Transaction>() {
+) : TransactionManager, CacheLoader<Long, Transaction>() {
 
     private val transactionCache = TransactionCache(this, transactionSettings)
 
-    operator fun <T> invoke(fct: (Transaction) -> T): T = newTransaction(fct)
+    override operator fun <T> invoke(fct: (Transaction) -> T): T = newTransaction(fct)
 
     override fun load(key: Long): Transaction = newTransaction()
 
-    fun newTransaction(): Transaction {
+    private fun newTransaction(): Transaction {
         val connection: Connection = dataSource.createConnection()
         require(!connection.isClosed, { "Connection is closed" })
         connection.setAutoCommit(transactionSettings.autoCommit)
-        return Transaction(
-            ConnectionAdapter(
+        return TransactionImpl(
+            ConnectionAdapterImpl(
                 connection,
                 statementLogger,
                 catalog,
@@ -37,7 +36,7 @@ class TransactionManager(
         )
     }
 
-    fun <T> newTransaction(fct: (Transaction) -> T): T {
+    override fun <T> newTransaction(fct: (Transaction) -> T): T {
         val transaction = newTransaction()
         try {
             val result: T = fct(transaction)
@@ -69,7 +68,7 @@ class TransactionManager(
         }
     }
 
-    fun commit() {
+    override fun commit() {
         transactionCache.getIfExists()?.let {
             if (!transactionSettings.autoCommit)
                 it.commit()
@@ -77,7 +76,7 @@ class TransactionManager(
         transactionCache.evict()
     }
 
-    fun rollback() {
+    override fun rollback() {
         transactionCache.getIfExists()?.let({
             if (!transactionSettings.autoCommit)
                 it.rollback()
@@ -85,19 +84,19 @@ class TransactionManager(
         transactionCache.evict()
     }
 
-    fun close() {
+    override fun close() {
         dataSource.close()
     }
 
     override fun toString(): String = "${dataSource} ${catalog}"
 
-    fun test(): Boolean {
+    private fun test(): Boolean {
         val tr = newTransaction()
         return tr.isValid().also { tr.close() }
     }
 
     companion object {
-        internal var INSTANCE: TransactionManager? = null
+        internal var INSTANCE: TransactionManagerImpl? = null
 
         fun builder(): TransactionManagerBuilder =
             TransactionManagerBuilder()
@@ -112,15 +111,13 @@ class TransactionManager(
         ): Boolean {
             if (INSTANCE != null)
                 throw IllegalStateException("The singleton TransactionManager has already been initialized. You must call invalidate() first to close any open connections before you can call initialize() again.")
-            val tr = TransactionManager(dataSource, catalog, querySettings, statementLogger)
+            val tr = TransactionManagerImpl(dataSource, catalog, querySettings, statementLogger)
             return tr.test().also { INSTANCE = tr }
         }
 
         fun singletonInstance(): TransactionManager = ensure()
 
         fun <T> newTransaction(fct: (Transaction) -> T): T = ensure().newTransaction(fct)
-
-        fun <T> joinTransaction(fct: (Transaction) -> T): T = ensure().joinTransaction(fct)
 
         fun commit() = ensure().commit()
 

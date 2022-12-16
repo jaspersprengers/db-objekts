@@ -1,7 +1,7 @@
 package com.dbobjekts.statement
 
 import com.dbobjekts.AnyColumnAndValue
-import com.dbobjekts.jdbc.ConnectionAdapter
+import com.dbobjekts.jdbc.ConnectionAdapterImpl
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.TableJoinChain
@@ -11,7 +11,7 @@ import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.statement.whereclause.WhereClause
 import com.dbobjekts.util.StatementLogger
 
-abstract class StatementBase<W>(internal val connection: ConnectionAdapter) {
+abstract class StatementBase<W>(internal val connection: ConnectionAdapterImpl) {
 
     internal open val catalog: Catalog = connection.catalog()
     internal val logger: StatementLogger = connection.statementLogger

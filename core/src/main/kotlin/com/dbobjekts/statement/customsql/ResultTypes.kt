@@ -2,14 +2,13 @@ package com.dbobjekts.statement.customsql
 
 import com.dbobjekts.SQL
 import com.dbobjekts.*
-import com.dbobjekts.jdbc.ConnectionAdapter
+import com.dbobjekts.jdbc.ConnectionAdapterImpl
 import com.dbobjekts.metadata.Columns
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.result.*
 import java.math.BigDecimal
 import java.sql.Blob
 import java.sql.Clob
-import java.sql.Time
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -17,7 +16,7 @@ import java.time.LocalTime
 import java.time.OffsetDateTime
 
 class CustomSQLStatementBuilder(
-    private val conn: ConnectionAdapter,
+    private val conn: ConnectionAdapterImpl,
     private val sql: SQL,
     private val args: List<Any>
 ) {
@@ -46,6 +45,7 @@ class CustomSQLStatementBuilder(
         val columns = listOf(ret.column1, ret.column2, ret.column3, ret.column4, ret.column5, ret.column6)
         return SQLStatementExecutor(conn, sql, args.toList(), columns, ResultRow6<T1, T2, T3, T4, T5, T6>())
     }
+
     fun <T1, T2, T3, T4, T5, T6, T7> returning(ret: Returning7<T1, T2, T3, T4, T5, T6, T7>): SQLStatementExecutor<Tuple7<T1, T2, T3, T4, T5, T6, T7>, ResultRow7<T1, T2, T3, T4, T5, T6, T7>> {
         val columns = listOf(ret.column1, ret.column2, ret.column3, ret.column4, ret.column5, ret.column6, ret.column7)
         return SQLStatementExecutor(conn, sql, args.toList(), columns, ResultRow7<T1, T2, T3, T4, T5, T6, T7>())

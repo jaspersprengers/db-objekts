@@ -2,7 +2,7 @@ package com.dbobjekts.integration.h2.hr
 
 import com.dbobjekts.AnyColumn
 import com.dbobjekts.AnyColumnAndValue
-import com.dbobjekts.jdbc.ConnectionAdapter
+import com.dbobjekts.jdbc.ConnectionAdapterImpl
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -16,11 +16,11 @@ object Certificate:Table("CERTIFICATE"), HasUpdateBuilder<CertificateUpdateBuild
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "EMPLOYEE_ID", Employee.id)
     override val columns: List<AnyColumn> = listOf(id,name,employeeId)
-    override fun updater(connection: ConnectionAdapter): CertificateUpdateBuilder = CertificateUpdateBuilder(connection)
-    override fun inserter(connection: ConnectionAdapter): CertificateInsertBuilder = CertificateInsertBuilder(connection)
+    override fun updater(connection: ConnectionAdapterImpl): CertificateUpdateBuilder = CertificateUpdateBuilder(connection)
+    override fun inserter(connection: ConnectionAdapterImpl): CertificateInsertBuilder = CertificateInsertBuilder(connection)
 }
 
-class CertificateUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(Certificate, connection) {
+class CertificateUpdateBuilder(connection: ConnectionAdapterImpl) : UpdateBuilderBase(Certificate, connection) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 
@@ -29,7 +29,7 @@ class CertificateUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBas
     fun employeeId(value: Long): CertificateUpdateBuilder = ct.put(Certificate.employeeId, value)
 }
 
-class CertificateInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(Certificate, connection){
+class CertificateInsertBuilder(connection: ConnectionAdapterImpl):InsertBuilderBase(Certificate, connection){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 

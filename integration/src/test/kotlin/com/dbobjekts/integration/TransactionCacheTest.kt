@@ -1,5 +1,6 @@
 package com.dbobjekts.integration
 
+import com.dbobjekts.api.Transaction
 import com.dbobjekts.jdbc.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
@@ -9,7 +10,7 @@ import java.lang.IllegalStateException
 
 class TransactionCacheTest {
 
-    val factory = mock<TransactionManager>()
+    val factory = mock<TransactionManagerImpl>()
     val tr1 = mock<Transaction>()
     val tr2 = mock<Transaction>()
     val settings = TransactionSettings()

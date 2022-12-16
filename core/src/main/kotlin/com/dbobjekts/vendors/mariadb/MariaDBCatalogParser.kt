@@ -1,19 +1,23 @@
 package com.dbobjekts.vendors.mariadb
 
+import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
-import com.dbobjekts.codegen.parsers.ForeignKeyMetaDataRow
 import com.dbobjekts.codegen.parsers.CatalogParser
+import com.dbobjekts.codegen.parsers.ForeignKeyMetaDataRow
 import com.dbobjekts.codegen.parsers.TableMetaDataRow
 import com.dbobjekts.jdbc.DetermineVendor
-import com.dbobjekts.jdbc.TransactionManager
 import com.dbobjekts.metadata.Columns.VARCHAR
 import com.dbobjekts.metadata.Columns.VARCHAR_NIL
+import com.dbobjekts.statement.customsql.ResultTypes
+import com.dbobjekts.statement.customsql.Returning2
 
 /**
  * Accesses a live database to extract information from all the schemas
  */
-class MariaDBCatalogParser(codeGeneratorConfig: CodeGeneratorConfig,
-                           internal val transactionManager: TransactionManager) :
+class MariaDBCatalogParser(
+    codeGeneratorConfig: CodeGeneratorConfig,
+    internal val transactionManager: TransactionManager
+) :
     CatalogParser(codeGeneratorConfig) {
 
     override fun extractCatalogs(): List<String> =
@@ -38,16 +42,8 @@ class MariaDBCatalogParser(codeGeneratorConfig: CodeGeneratorConfig,
             """.trimIndent()
 
             val rows = it.select(
-                sql,
-                VARCHAR, // schema
-                VARCHAR, // table
-                VARCHAR, //look for auto_increment
-                VARCHAR, //column name
-                VARCHAR_NIL, //column key
-                VARCHAR, //nullable NO/YES
-                VARCHAR_NIL, //default value
-                VARCHAR // data type
-            ).asList()
+                sql
+            ).returning(ResultTypes.string().string().string().string().stringNil().string().stringNil().string()).asList()
             rows.map({ tuple ->
                 TableMetaDataRow(
                     schema = tuple.v1,
@@ -75,15 +71,8 @@ class MariaDBCatalogParser(codeGeneratorConfig: CodeGeneratorConfig,
                 from information_schema.KEY_COLUMN_USAGE u where REFERENCED_TABLE_NAME is not null
             """.trimIndent()
 
-            val rows = it.select(
-                sql,
-                VARCHAR, // schema
-                VARCHAR, // table
-                VARCHAR, //referenced table
-                VARCHAR, //referenced schema
-                VARCHAR, //column name
-                VARCHAR, //referenced column name
-            ).asList()
+            val rows = it.select(sql)
+                .returning(ResultTypes.string().string().string().string().string().string()).asList()
             rows.map({ tuple ->
                 ForeignKeyMetaDataRow(
                     schema = tuple.v1,

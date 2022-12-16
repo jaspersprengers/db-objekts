@@ -1,12 +1,12 @@
-package com.dbobjekts.integration.h2.custom
+package com.dbobjekts.integration.h2.core
 
 import com.dbobjekts.AnyColumn
 import com.dbobjekts.AnyColumnAndValue
 import com.dbobjekts.jdbc.ConnectionAdapterImpl
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl
 import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
 object AllTypesNn:Table("ALL_TYPES_NN"), HasUpdateBuilder<AllTypesNnUpdateBuilder, AllTypesNnInsertBuilder> {
@@ -24,7 +24,7 @@ object AllTypesNn:Table("ALL_TYPES_NN"), HasUpdateBuilder<AllTypesNnUpdateBuilde
     val timestampC = com.dbobjekts.metadata.column.TimeStampColumn(this, "TIMESTAMP_C")
     val timestampTzC = com.dbobjekts.metadata.column.OffsetDateTimeColumn(this, "TIMESTAMP_TZ_C")
     val booleanC = com.dbobjekts.metadata.column.BooleanColumn(this, "BOOLEAN_C")
-    val intBooleanC = com.dbobjekts.metadata.column.BooleanColumn(this, "INT_BOOLEAN_C")
+    val intBooleanC = com.dbobjekts.metadata.column.ByteColumn(this, "INT_BOOLEAN_C")
     val blobC = com.dbobjekts.metadata.column.BlobColumn(this, "BLOB_C")
     val clobC = com.dbobjekts.metadata.column.ClobColumn(this, "CLOB_C")
     override val columns: List<AnyColumn> = listOf(tinyintC,smallintC,integerC,intC,charC,varcharC,bigintC,floatC,doubleC,timeC,dateC,timestampC,timestampTzC,booleanC,intBooleanC,blobC,clobC)
@@ -50,12 +50,12 @@ class AllTypesNnUpdateBuilder(connection: ConnectionAdapterImpl) : UpdateBuilder
     fun timestampC(value: java.time.Instant): AllTypesNnUpdateBuilder = ct.put(AllTypesNn.timestampC, value)
     fun timestampTzC(value: java.time.OffsetDateTime): AllTypesNnUpdateBuilder = ct.put(AllTypesNn.timestampTzC, value)
     fun booleanC(value: Boolean): AllTypesNnUpdateBuilder = ct.put(AllTypesNn.booleanC, value)
-    fun intBooleanC(value: Boolean): AllTypesNnUpdateBuilder = ct.put(AllTypesNn.intBooleanC, value)
+    fun intBooleanC(value: Byte): AllTypesNnUpdateBuilder = ct.put(AllTypesNn.intBooleanC, value)
     fun blobC(value: java.sql.Blob): AllTypesNnUpdateBuilder = ct.put(AllTypesNn.blobC, value)
     fun clobC(value: java.sql.Clob): AllTypesNnUpdateBuilder = ct.put(AllTypesNn.clobC, value)
 }
 
-class AllTypesNnInsertBuilder(connection: ConnectionAdapterImpl): InsertBuilderBase(AllTypesNn, connection){
+class AllTypesNnInsertBuilder(connection: ConnectionAdapterImpl):InsertBuilderBase(AllTypesNn, connection){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 
@@ -73,11 +73,11 @@ class AllTypesNnInsertBuilder(connection: ConnectionAdapterImpl): InsertBuilderB
     fun timestampC(value: java.time.Instant): AllTypesNnInsertBuilder = ct.put(AllTypesNn.timestampC, value)
     fun timestampTzC(value: java.time.OffsetDateTime): AllTypesNnInsertBuilder = ct.put(AllTypesNn.timestampTzC, value)
     fun booleanC(value: Boolean): AllTypesNnInsertBuilder = ct.put(AllTypesNn.booleanC, value)
-    fun intBooleanC(value: Boolean): AllTypesNnInsertBuilder = ct.put(AllTypesNn.intBooleanC, value)
+    fun intBooleanC(value: Byte): AllTypesNnInsertBuilder = ct.put(AllTypesNn.intBooleanC, value)
     fun blobC(value: java.sql.Blob): AllTypesNnInsertBuilder = ct.put(AllTypesNn.blobC, value)
     fun clobC(value: java.sql.Clob): AllTypesNnInsertBuilder = ct.put(AllTypesNn.clobC, value)
 
-    fun mandatoryColumns(tinyintC: Byte, smallintC: Int, integerC: Int, intC: Int, charC: String, varcharC: String, bigintC: Long, floatC: Float, doubleC: Double, timeC: java.time.LocalTime, dateC: java.time.LocalDate, timestampC: java.time.Instant, timestampTzC: java.time.OffsetDateTime, booleanC: Boolean, intBooleanC: Boolean, blobC: java.sql.Blob, clobC: java.sql.Clob) : AllTypesNnInsertBuilder {
+    fun mandatoryColumns(tinyintC: Byte, smallintC: Int, integerC: Int, intC: Int, charC: String, varcharC: String, bigintC: Long, floatC: Float, doubleC: Double, timeC: java.time.LocalTime, dateC: java.time.LocalDate, timestampC: java.time.Instant, timestampTzC: java.time.OffsetDateTime, booleanC: Boolean, intBooleanC: Byte, blobC: java.sql.Blob, clobC: java.sql.Clob) : AllTypesNnInsertBuilder {
       ct.put(AllTypesNn.tinyintC, tinyintC)
       ct.put(AllTypesNn.smallintC, smallintC)
       ct.put(AllTypesNn.integerC, integerC)

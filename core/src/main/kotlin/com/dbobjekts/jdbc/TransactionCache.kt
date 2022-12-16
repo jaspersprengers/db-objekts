@@ -1,5 +1,6 @@
 package com.dbobjekts.jdbc
 
+import com.dbobjekts.api.Transaction
 import com.google.common.cache.CacheBuilder
 import com.google.common.cache.CacheLoader
 import com.google.common.cache.LoadingCache

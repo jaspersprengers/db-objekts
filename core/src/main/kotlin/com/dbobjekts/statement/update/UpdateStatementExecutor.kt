@@ -3,7 +3,7 @@ package com.dbobjekts.statement.update
 import com.dbobjekts.AnyColumnAndValue
 import com.dbobjekts.AnySqlParameter
 import com.dbobjekts.SQL
-import com.dbobjekts.jdbc.ConnectionAdapter
+import com.dbobjekts.jdbc.ConnectionAdapterImpl
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.statement.ColumnsForUpdate
 import com.dbobjekts.statement.SQLOptions
@@ -14,7 +14,7 @@ import com.dbobjekts.util.StringUtil
 
 
 class UpdateStatementExecutor(
-    connection: ConnectionAdapter,
+    connection: ConnectionAdapterImpl,
     table: Table,
     values: List<AnyColumnAndValue>
 ) : StatementBase<Long>(connection) {

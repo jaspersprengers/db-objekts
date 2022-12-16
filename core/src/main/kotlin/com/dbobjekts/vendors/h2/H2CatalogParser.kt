@@ -1,13 +1,14 @@
 package com.dbobjekts.vendors.h2
 
+import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
-import com.dbobjekts.codegen.parsers.ForeignKeyMetaDataRow
 import com.dbobjekts.codegen.parsers.CatalogParser
+import com.dbobjekts.codegen.parsers.ForeignKeyMetaDataRow
 import com.dbobjekts.codegen.parsers.TableMetaDataRow
 import com.dbobjekts.jdbc.DetermineVendor
-import com.dbobjekts.jdbc.TransactionManager
 import com.dbobjekts.metadata.Columns.VARCHAR
 import com.dbobjekts.metadata.Columns.VARCHAR_NIL
+import com.dbobjekts.statement.customsql.ResultTypes
 import org.slf4j.LoggerFactory
 
 /**
@@ -40,17 +41,9 @@ class H2CatalogParser(codeGeneratorConfig: CodeGeneratorConfig,
                 order by c.TABLE_SCHEMA, c.TABLE_NAME, c.ORDINAL_POSITION
             """.trimIndent()
 
-            val rows = it.select(
-                sql,
-                VARCHAR, // schema
-                VARCHAR, // table
-                VARCHAR, //IDENTITY Y/N
-                VARCHAR, //column name
-                VARCHAR_NIL, //same as column name when PK
-                VARCHAR, //nullable NO/YES
-                VARCHAR_NIL, //default value
-                VARCHAR // data type
-            ).asList()
+            val rows =  it.select(
+                sql
+            ).returning(ResultTypes.string().string().string().string().stringNil().string().stringNil().string()).asList()
             rows.map({tuple ->
                 TableMetaDataRow(
                     schema = tuple.v1,
@@ -76,15 +69,8 @@ class H2CatalogParser(codeGeneratorConfig: CodeGeneratorConfig,
                     where u.CONSTRAINT_TYPE = 'FOREIGN KEY'
             """.trimIndent()
             //CORE,EMPLOYEE_ADDRESS,ADDRESS_ID,CORE,ADDRESS,ID
-            val rows = it.select(
-                sql,
-                VARCHAR, // schema
-                VARCHAR, // table
-                VARCHAR, //referenced table
-                VARCHAR, //referenced schema
-                VARCHAR, //column name
-                VARCHAR, //referenced column name
-            ).asList()
+            val rows = it.select(sql)
+                .returning(ResultTypes.string().string().string().string().string().string()).asList()
             rows.map({tuple ->
                 ForeignKeyMetaDataRow(
                     schema = tuple.v1,

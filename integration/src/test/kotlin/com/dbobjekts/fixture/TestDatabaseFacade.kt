@@ -1,6 +1,7 @@
 package com.dbobjekts.fixture
 
-import com.dbobjekts.jdbc.TransactionManager
+import com.dbobjekts.api.TransactionManager
+import com.dbobjekts.jdbc.TransactionManagerImpl
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.util.StatementLogger
 import org.slf4j.LoggerFactory
@@ -12,9 +13,9 @@ abstract class TestDatabaseFacade {
     val statementLogger = StatementLogger()
 
     fun getTransactionManager(autoCommit: Boolean = true): TransactionManager {
-        if (!TransactionManager.isConfigured())
+        if (!TransactionManagerImpl.isConfigured())
             createTransactionManager(autoCommit)
-        return TransactionManager.singletonInstance()
+        return TransactionManagerImpl.singletonInstance()
     }
 
 
@@ -27,7 +28,7 @@ abstract class TestDatabaseFacade {
     abstract val catalog: Catalog
 
     fun createTransactionManager(autoCommit: Boolean = true) {
-        if (!TransactionManager.isConfigured() && !createFactory(autoCommit, 0))
+        if (!TransactionManagerImpl.isConfigured() && !createFactory(autoCommit, 0))
             throw IllegalStateException("Could not connect")
     }
 
@@ -39,7 +40,7 @@ abstract class TestDatabaseFacade {
             return false
         Thread.sleep(2000)
         try {
-            TransactionManager.builder()
+            TransactionManagerImpl.builder()
                 .dataSource(dataSource = createDataSource())
                 .catalog(catalog)
                 .customLogger(statementLogger)

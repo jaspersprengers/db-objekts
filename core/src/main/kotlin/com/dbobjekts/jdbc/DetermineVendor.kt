@@ -1,5 +1,6 @@
 package com.dbobjekts.jdbc
 
+import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.metadata.DBConnectionMetaData
 import com.dbobjekts.util.StringUtil
 import com.dbobjekts.vendors.Vendors
@@ -9,7 +10,7 @@ class DetermineVendor {
 
     operator fun invoke(transactionManager: TransactionManager): DBConnectionMetaData {
         return transactionManager.newTransaction {
-            val metaData = it.connection.jdbcConnection.metaData
+            val metaData = it.connection().jdbcConnection.metaData
             val vendor =
                 Vendors.byProductAndVersion(
                     metaData.getDatabaseProductName(),

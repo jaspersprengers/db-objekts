@@ -1,7 +1,7 @@
 package com.dbobjekts.statement.update
 
 import com.dbobjekts.AnyColumnAndValue
-import com.dbobjekts.jdbc.ConnectionAdapter
+import com.dbobjekts.jdbc.ConnectionAdapterImpl
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.metadata.column.NullableColumnAndValue
@@ -10,9 +10,9 @@ import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
 
 interface HasUpdateBuilder<U : UpdateBuilderBase, I : InsertBuilderBase> {
-    fun updater(connection: ConnectionAdapter): U
+    fun updater(connection: ConnectionAdapterImpl): U
 
-    fun inserter(connection: ConnectionAdapter): I
+    fun inserter(connection: ConnectionAdapterImpl): I
 }
 
 interface ColumnForWriteMapContainer<T> {
@@ -38,7 +38,7 @@ class ColumnForWriteMapContainerImpl<T>(val builder: T) : ColumnForWriteMapConta
 
 abstract class UpdateBuilderBase(
     internal val table: Table,
-    internal val connection: ConnectionAdapter
+    internal val connection: ConnectionAdapterImpl
 ) {
     abstract protected fun data(): Set<AnyColumnAndValue>
     private var whereClause: SubClause? = null

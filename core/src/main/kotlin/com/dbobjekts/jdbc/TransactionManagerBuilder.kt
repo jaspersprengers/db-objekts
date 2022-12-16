@@ -1,8 +1,10 @@
 package com.dbobjekts.jdbc
 
+import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.util.HikariDataSourceAdapterImpl
 import com.dbobjekts.util.StatementLogger
+import com.dbobjekts.vendors.Vendor
 import com.zaxxer.hikari.HikariDataSource
 import javax.sql.DataSource
 
@@ -26,6 +28,14 @@ class TransactionManagerBuilder {
         return this
     }
 
+    /**
+     * Use this if you have no generated Catalog implementation for your database and/or only intend to use custom SQL queries.
+     */
+    fun catalogForVendor(vendor: Vendor): TransactionManagerBuilder {
+        this.catalog = Catalog(vendor)
+        return this
+    }
+
     fun customLogger(logger: StatementLogger): TransactionManagerBuilder {
         this.statementLogger = logger
         return this
@@ -37,13 +47,12 @@ class TransactionManagerBuilder {
     }
 
     fun build(): TransactionManager {
-        return TransactionManager(dataSource, catalog, querySettings, statementLogger)
+        return TransactionManagerImpl(dataSource, catalog, querySettings, statementLogger)
     }
 
     fun buildForSingleton() {
-        TransactionManager.initialize(dataSource, catalog, querySettings, statementLogger)
+        TransactionManagerImpl.initialize(dataSource, catalog, querySettings, statementLogger)
     }
-
 
 }
 

@@ -2,7 +2,7 @@ package com.dbobjekts.integration.h2.core
 
 import com.dbobjekts.AnyColumn
 import com.dbobjekts.AnyColumnAndValue
-import com.dbobjekts.jdbc.ConnectionAdapter
+import com.dbobjekts.jdbc.ConnectionAdapterImpl
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -13,11 +13,11 @@ object EmployeeDepartment:Table("EMPLOYEE_DEPARTMENT"), HasUpdateBuilder<Employe
     val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "EMPLOYEE_ID", Employee.id)
     val departmentId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "DEPARTMENT_ID", Department.id)
     override val columns: List<AnyColumn> = listOf(employeeId,departmentId)
-    override fun updater(connection: ConnectionAdapter): EmployeeDepartmentUpdateBuilder = EmployeeDepartmentUpdateBuilder(connection)
-    override fun inserter(connection: ConnectionAdapter): EmployeeDepartmentInsertBuilder = EmployeeDepartmentInsertBuilder(connection)
+    override fun updater(connection: ConnectionAdapterImpl): EmployeeDepartmentUpdateBuilder = EmployeeDepartmentUpdateBuilder(connection)
+    override fun inserter(connection: ConnectionAdapterImpl): EmployeeDepartmentInsertBuilder = EmployeeDepartmentInsertBuilder(connection)
 }
 
-class EmployeeDepartmentUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(EmployeeDepartment, connection) {
+class EmployeeDepartmentUpdateBuilder(connection: ConnectionAdapterImpl) : UpdateBuilderBase(EmployeeDepartment, connection) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 
@@ -25,7 +25,7 @@ class EmployeeDepartmentUpdateBuilder(connection: ConnectionAdapter) : UpdateBui
     fun departmentId(value: Long): EmployeeDepartmentUpdateBuilder = ct.put(EmployeeDepartment.departmentId, value)
 }
 
-class EmployeeDepartmentInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(EmployeeDepartment, connection){
+class EmployeeDepartmentInsertBuilder(connection: ConnectionAdapterImpl):InsertBuilderBase(EmployeeDepartment, connection){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 

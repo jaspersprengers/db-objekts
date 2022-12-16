@@ -1,7 +1,7 @@
 package com.dbobjekts.statement.delete
 
 import com.dbobjekts.SQL
-import com.dbobjekts.jdbc.ConnectionAdapter
+import com.dbobjekts.jdbc.ConnectionAdapterImpl
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.TableJoinChain
 import com.dbobjekts.statement.SQLOptions
@@ -10,7 +10,7 @@ import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.util.StringUtil
 
-class DeleteStatementExecutor(connection: ConnectionAdapter) :StatementBase<Long>(connection) {
+class DeleteStatementExecutor(connection: ConnectionAdapterImpl) :StatementBase<Long>(connection) {
 
      internal fun withTable(table: Table): DeleteStatementExecutor {
         registerTable(table)

@@ -2,7 +2,7 @@ package com.dbobjekts.statement.select
 
 import com.dbobjekts.AnyColumn
 import com.dbobjekts.SQL
-import com.dbobjekts.jdbc.ConnectionAdapter
+import com.dbobjekts.jdbc.ConnectionAdapterImpl
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.TableJoinChain
 import com.dbobjekts.metadata.TableOrJoin
@@ -14,7 +14,7 @@ import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
 
 class SelectStatementExecutor<T, RSB : ResultRow<T>>(
-    connection: ConnectionAdapter,
+    connection: ConnectionAdapterImpl,
     internal val columns: List<AnyColumn>,
     internal val selectResultSet: RSB
 ) : StatementBase<SelectStatementExecutor<T, RSB>>(connection){

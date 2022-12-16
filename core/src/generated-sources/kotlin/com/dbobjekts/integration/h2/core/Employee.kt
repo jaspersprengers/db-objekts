@@ -2,7 +2,7 @@ package com.dbobjekts.integration.h2.core
 
 import com.dbobjekts.AnyColumn
 import com.dbobjekts.AnyColumnAndValue
-import com.dbobjekts.jdbc.ConnectionAdapter
+import com.dbobjekts.jdbc.ConnectionAdapterImpl
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -20,11 +20,11 @@ object Employee:Table("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, Emplo
     val children = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "CHILDREN")
     val hobbyId = com.dbobjekts.metadata.column.OptionalForeignKeyVarcharColumn(this, "HOBBY_ID", Hobby.id)
     override val columns: List<AnyColumn> = listOf(id,name,salary,married,dateOfBirth,children,hobbyId)
-    override fun updater(connection: ConnectionAdapter): EmployeeUpdateBuilder = EmployeeUpdateBuilder(connection)
-    override fun inserter(connection: ConnectionAdapter): EmployeeInsertBuilder = EmployeeInsertBuilder(connection)
+    override fun updater(connection: ConnectionAdapterImpl): EmployeeUpdateBuilder = EmployeeUpdateBuilder(connection)
+    override fun inserter(connection: ConnectionAdapterImpl): EmployeeInsertBuilder = EmployeeInsertBuilder(connection)
 }
 
-class EmployeeUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(Employee, connection) {
+class EmployeeUpdateBuilder(connection: ConnectionAdapterImpl) : UpdateBuilderBase(Employee, connection) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 
@@ -36,7 +36,7 @@ class EmployeeUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(E
     fun hobbyId(value: String?): EmployeeUpdateBuilder = ct.put(Employee.hobbyId, value)
 }
 
-class EmployeeInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(Employee, connection){
+class EmployeeInsertBuilder(connection: ConnectionAdapterImpl):InsertBuilderBase(Employee, connection){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 

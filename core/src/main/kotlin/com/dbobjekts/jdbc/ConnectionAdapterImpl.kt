@@ -2,30 +2,28 @@ package com.dbobjekts.jdbc
 
 import com.dbobjekts.AnySqlParameter
 import com.dbobjekts.SQL
+import com.dbobjekts.api.ConnectionAdapter
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.result.ColumnInResultRow
 import com.dbobjekts.result.ResultRow
-import com.dbobjekts.util.QueryLogger
 import com.dbobjekts.util.StatementLogger
 import com.dbobjekts.vendors.Vendor
 import com.dbobjekts.vendors.VendorSpecificProperties
 import java.sql.*
 
-data class ConnectionAdapter(
-    private val conn: Connection,
+data class ConnectionAdapterImpl (
+    override val jdbcConnection: Connection,
     val statementLogger: StatementLogger,
     private val _catalog: Catalog?,
-    val vendor: Vendor
-) {
+    override val vendor: Vendor
+) : ConnectionAdapter {
 
-    fun catalog(): Catalog = _catalog ?: throw IllegalStateException(
+    override fun catalog(): Catalog = _catalog ?: throw IllegalStateException(
         """
           This connection is not associated with an implementation of com.dbobjekts.metadata.Catalog.
           You need to provide this during the initialization in order to build queries.
           """
     )
-
-    val jdbcConnection: Connection = conn
 
     fun isValid(): Boolean = !this.jdbcConnection.isClosed && this.jdbcConnection.isValid(2000)
 

@@ -1,11 +1,12 @@
 package com.dbobjekts.fixture.h2
 
+import com.dbobjekts.api.Transaction
 import com.dbobjekts.fixture.TestDatabaseFacade
 import com.dbobjekts.integration.h2.Catalogdefinition
 import com.dbobjekts.integration.h2.core.*
 import com.dbobjekts.integration.h2.hr.Certificate
 import com.dbobjekts.integration.h2.hr.Hobby
-import com.dbobjekts.jdbc.Transaction
+import com.dbobjekts.jdbc.TransactionImpl
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.util.HikariDataSourceFactory
 import javax.sql.DataSource
@@ -13,8 +14,6 @@ import javax.sql.DataSource
 object H2DB : TestDatabaseFacade() {
 
     fun <T> newTransaction(fct: (Transaction) -> T) = getTransactionManager().newTransaction(fct)
-
-    fun <T> joinTransaction(fct: (Transaction) -> T) = getTransactionManager().joinTransaction(fct)
 
     override fun setupDatabaseObjects(forceDelete: Boolean) {
         getTransactionManager().newTransaction { createExampleCatalog(it) }

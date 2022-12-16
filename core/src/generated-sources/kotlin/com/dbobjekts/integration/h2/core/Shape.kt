@@ -2,7 +2,7 @@ package com.dbobjekts.integration.h2.core
 
 import com.dbobjekts.AnyColumn
 import com.dbobjekts.AnyColumnAndValue
-import com.dbobjekts.jdbc.ConnectionAdapter
+import com.dbobjekts.jdbc.ConnectionAdapterImpl
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -13,11 +13,11 @@ object Shape:Table("SHAPE"), HasUpdateBuilder<ShapeUpdateBuilder, ShapeInsertBui
     val height = com.dbobjekts.metadata.column.NullableDoubleColumn(this, "HEIGHT")
     val width = com.dbobjekts.metadata.column.NullableDoubleColumn(this, "WIDTH")
     override val columns: List<AnyColumn> = listOf(height,width)
-    override fun updater(connection: ConnectionAdapter): ShapeUpdateBuilder = ShapeUpdateBuilder(connection)
-    override fun inserter(connection: ConnectionAdapter): ShapeInsertBuilder = ShapeInsertBuilder(connection)
+    override fun updater(connection: ConnectionAdapterImpl): ShapeUpdateBuilder = ShapeUpdateBuilder(connection)
+    override fun inserter(connection: ConnectionAdapterImpl): ShapeInsertBuilder = ShapeInsertBuilder(connection)
 }
 
-class ShapeUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(Shape, connection) {
+class ShapeUpdateBuilder(connection: ConnectionAdapterImpl) : UpdateBuilderBase(Shape, connection) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 
@@ -25,7 +25,7 @@ class ShapeUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(Shap
     fun width(value: Double?): ShapeUpdateBuilder = ct.put(Shape.width, value)
 }
 
-class ShapeInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(Shape, connection){
+class ShapeInsertBuilder(connection: ConnectionAdapterImpl):InsertBuilderBase(Shape, connection){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 
