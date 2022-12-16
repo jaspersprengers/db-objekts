@@ -35,9 +35,9 @@ open class NullableLongColumn(table: Table, name: String) :  NullableColumn<Long
     override val valueClass: Class<*> = Long::class.java
 }
 
-open class ByteColumn(table: Table, name: String) : NonNullableColumn<Byte?>(name, table){
+open class ByteColumn(table: Table, name: String) : NonNullableColumn<Byte>(name, table){
     override val nullable: NullableColumn<Byte?> = NullableByteColumn(table, name)
-    override fun setValue(position: Int, statement: PreparedStatement, value: Byte?) = statement.setByte(position, value!!)
+    override fun setValue(position: Int, statement: PreparedStatement, value: Byte) = statement.setByte(position, value)
     override fun getValue(position: Int, resultSet: ResultSet): Byte = resultSet.getByte(position)
     override val columnClass: Class<*> = ByteColumn::class.java
     override val valueClass: Class<*> = Byte::class.java

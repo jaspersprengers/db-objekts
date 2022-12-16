@@ -8,12 +8,12 @@ class ResultRow1<A> : ResultRow<A>() {
     override fun extractRow(cols: List<ColumnInResultRow>,resultSet: ResultSet): A = extractValue(cols[0], resultSet) as A
 }
 
-class ResultRow2<A, B> : ResultRow<Pair<A, B>>() {
-    override fun extractRow(cols: List<ColumnInResultRow>,resultSet: ResultSet): Pair<A, B> = Pair(extractValue(cols[0], resultSet) as A, extractValue(cols[1], resultSet) as B)
+class ResultRow2<A, B> : ResultRow<Tuple2<A, B>>() {
+    override fun extractRow(cols: List<ColumnInResultRow>,resultSet: ResultSet): Tuple2<A, B> = Tuple2(extractValue(cols[0], resultSet) as A, extractValue(cols[1], resultSet) as B)
 }
 
-class ResultRow3<A, B, C> : ResultRow<Triple<A, B, C>>() {
-    override fun extractRow(cols: List<ColumnInResultRow>,resultSet: ResultSet): Triple<A, B, C> = Triple(extractValue(cols[0], resultSet) as A, extractValue(cols[1], resultSet) as B, extractValue(cols[2], resultSet) as C)
+class ResultRow3<A, B, C> : ResultRow<Tuple3<A, B, C>>() {
+    override fun extractRow(cols: List<ColumnInResultRow>,resultSet: ResultSet): Tuple3<A, B, C> = Tuple3(extractValue(cols[0], resultSet) as A, extractValue(cols[1], resultSet) as B, extractValue(cols[2], resultSet) as C)
 }
 
 class ResultRow4<A, B, C, D> : ResultRow<Tuple4<A, B, C, D>>() {

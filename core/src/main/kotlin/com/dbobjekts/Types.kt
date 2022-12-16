@@ -81,6 +81,23 @@ class PackageName(val parts: List<String>) {
     }
 }
 
+data class Tuple2<out T1, out T2>(
+    val first: T1,
+    val second: T2
+) : Serializable {
+
+    override fun toString(): String = "($first, $second)"
+}
+
+data class Tuple3<out T1, out T2, out T3>(
+    val first: T1,
+    val second: T2,
+    val third: T3
+) : Serializable {
+
+    override fun toString(): String = "($first, $second, $third)"
+}
+
 data class Tuple4<out T1, out T2, out T3, out T4>(
     val first: T1,
     val second: T2,

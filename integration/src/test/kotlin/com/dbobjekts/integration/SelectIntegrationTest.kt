@@ -1,5 +1,6 @@
 package com.dbobjekts.integration
 
+import com.dbobjekts.Tuple2
 import com.dbobjekts.fixture.h2.H2DB
 import com.dbobjekts.integration.h2.core.Address
 import com.dbobjekts.integration.h2.core.Country
@@ -49,7 +50,7 @@ class SelectIntegrationTest {
     @Test
     fun `test select two columns from two tables`() {
         H2DB.newTransaction({
-            val result: Pair<Double?, String?> =
+            val result: Tuple2<Double?, String?> =
                 it.select(e.salary, a.street).where(e.name.eq("Jane").and(a.street).eq("Zuidhoek")).first()
             assert(result.first == 300.50)
             assert(result.second == "Zuidhoek")
@@ -100,7 +101,7 @@ class SelectIntegrationTest {
     @Test
     fun `test select some columns from two tables`() {
         H2DB.newTransaction({ s ->
-            val nameStreet: Pair<String, String> = s.select(e.name, a.street).where(e.name.eq("Jane")).first()
+            val nameStreet: Tuple2<String, String> = s.select(e.name, a.street).where(e.name.eq("Jane")).first()
             assertEquals(nameStreet.second, "Zuidhoek")
         })
     }
@@ -115,7 +116,7 @@ class SelectIntegrationTest {
     @Test
     fun `test left join select person name and hobby name without where clause`() {
         H2DB.newTransaction({ s ->
-            val nameHobby: Pair<String, String?> = s.select(e.name, h.name.nullable).from(e.leftJoin(h)).noWhereClause().first();
+            val nameHobby: Tuple2<String, String?> = s.select(e.name, h.name.nullable).from(e.leftJoin(h)).noWhereClause().first();
         })
     }
 

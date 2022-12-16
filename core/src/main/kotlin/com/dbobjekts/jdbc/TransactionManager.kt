@@ -69,7 +69,6 @@ class TransactionManager(
         }
     }
 
-
     fun commit() {
         transactionCache.getIfExists()?.let {
             if (!transactionSettings.autoCommit)

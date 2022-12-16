@@ -1,5 +1,6 @@
 package com.dbobjekts.integration
 
+import com.dbobjekts.Tuple3
 import com.dbobjekts.fixture.h2.H2DB
 import com.dbobjekts.integration.h2.core.*
 import com.dbobjekts.integration.h2.custom.AddressType
@@ -76,7 +77,7 @@ class ForeignKeyTest {
     @Test
     fun `get all work addresses`() {
         H2DB.newTransaction { tr ->
-            val results: List<Triple<String?, String?, String?>> =
+            val results: List<Tuple3<String?, String?, String?>> =
                 tr.select(e.name, a.street, c.name).where(ea.kind.eq(AddressType.WORK)).orderAsc(e.name).asList()
             assertEquals("Jane", results[0].first)
             assertEquals("Jane's office", results[0].second)

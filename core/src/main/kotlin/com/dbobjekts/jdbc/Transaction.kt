@@ -5,11 +5,12 @@ import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.TableJoinChain
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.result.*
+import com.dbobjekts.statement.customsql.CustomSQLStatementBuilder
 import com.dbobjekts.statement.customsql.SQLStatementExecutor
 import com.dbobjekts.statement.delete.DeleteStatementExecutor
+import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.select.SelectStatementExecutor
 import com.dbobjekts.statement.update.HasUpdateBuilder
-import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
 class Transaction(val connection: ConnectionAdapter) {
@@ -37,6 +38,8 @@ class Transaction(val connection: ConnectionAdapter) {
         return SQLStatementExecutor<Long?, ResultRow1<Long>>(connection, SQL(sql), args.toList()).execute()
     }
 
+    fun select(sql: String, vararg args: Any): CustomSQLStatementBuilder = CustomSQLStatementBuilder(connection, SQL(sql), args.toList())
+
     fun <T> select(
         sql: String,
         c1: Column<T>,
@@ -51,7 +54,7 @@ class Transaction(val connection: ConnectionAdapter) {
         c1: Column<T1>,
         c2: Column<T2>,
         vararg args: Any
-    ): SQLStatementExecutor<Pair<T1, T2>, ResultRow2<T1, T2>> {
+    ): SQLStatementExecutor<Tuple2<T1, T2>, ResultRow2<T1, T2>> {
         val columns = listOf(c1, c2)
         return SQLStatementExecutor(connection, SQL(sql), args.toList(), columns, ResultRow2<T1, T2>())
     }
@@ -62,7 +65,7 @@ class Transaction(val connection: ConnectionAdapter) {
         c2: Column<T2>,
         c3: Column<T3>,
         vararg args: Any
-    ): SQLStatementExecutor<Triple<T1, T2, T3>, ResultRow3<T1, T2, T3>> {
+    ): SQLStatementExecutor<Tuple3<T1, T2, T3>, ResultRow3<T1, T2, T3>> {
         val columns = listOf(c1, c2, c3)
         return SQLStatementExecutor(connection, SQL(sql), args.toList(), columns, ResultRow3<T1, T2, T3>())
     }
@@ -162,14 +165,14 @@ class Transaction(val connection: ConnectionAdapter) {
     fun <T1, T2> select(
         c1: Column<T1>,
         c2: Column<T2>
-    ): SelectStatementExecutor<Pair<T1, T2>, ResultRow2<T1, T2>> =
+    ): SelectStatementExecutor<Tuple2<T1, T2>, ResultRow2<T1, T2>> =
         SelectStatementExecutor(connection, listOf(c1, c2), ResultRow2<T1, T2>())
 
     fun <T1, T2, T3> select(
         c1: Column<T1>,
         c2: Column<T2>,
         c3: Column<T3>
-    ): SelectStatementExecutor<Triple<T1, T2, T3>, ResultRow3<T1, T2, T3>> =
+    ): SelectStatementExecutor<Tuple3<T1, T2, T3>, ResultRow3<T1, T2, T3>> =
         SelectStatementExecutor(connection, listOf(c1, c2, c3), ResultRow3<T1, T2, T3>())
 
     fun <T1, T2, T3, T4> select(

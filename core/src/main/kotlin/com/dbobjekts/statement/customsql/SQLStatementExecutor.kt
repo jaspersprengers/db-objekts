@@ -22,7 +22,7 @@ open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
 
     constructor(connection: ConnectionAdapter, sql: SQL, args: List<Any>) : this(connection, sql, args, listOf(Columns.LONG), ResultRow1<Long>() as RSB)
 
-     val columnsToFetch: List<ColumnInResultRow> =
+    internal val columnsToFetch: List<ColumnInResultRow> =
         columnClasses.mapIndexed { index, column -> ColumnInResultRow(1 + index, column)}
 
     fun first(): T = executeForSelect().first()
