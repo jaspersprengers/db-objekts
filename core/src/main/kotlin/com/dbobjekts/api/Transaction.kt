@@ -11,11 +11,10 @@ import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.select.SelectStatementExecutor
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
+import java.sql.Connection
 
 
 interface Transaction {
-
-    //fun connection(): ConnectionAdapter
 
     fun <U : UpdateBuilderBase> update(provider: HasUpdateBuilder<U, *>): U
 
@@ -27,11 +26,9 @@ interface Transaction {
 
     fun isValid(): Boolean
 
-    fun connection(): ConnectionAdapter
+    fun connection(): Connection
 
     fun commit()
-
-    fun close()
 
     fun rollback()
 

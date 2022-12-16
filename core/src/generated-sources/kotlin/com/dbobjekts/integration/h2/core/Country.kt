@@ -2,7 +2,7 @@ package com.dbobjekts.integration.h2.core
 
 import com.dbobjekts.AnyColumn
 import com.dbobjekts.AnyColumnAndValue
-import com.dbobjekts.jdbc.ConnectionAdapterImpl
+import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -13,11 +13,11 @@ object Country:Table("COUNTRY"), HasUpdateBuilder<CountryUpdateBuilder, CountryI
     val id = com.dbobjekts.metadata.column.VarcharColumn(this, "ID")
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     override val columns: List<AnyColumn> = listOf(id,name)
-    override fun updater(connection: ConnectionAdapterImpl): CountryUpdateBuilder = CountryUpdateBuilder(connection)
-    override fun inserter(connection: ConnectionAdapterImpl): CountryInsertBuilder = CountryInsertBuilder(connection)
+    override fun updater(connection: ConnectionAdapter): CountryUpdateBuilder = CountryUpdateBuilder(connection)
+    override fun inserter(connection: ConnectionAdapter): CountryInsertBuilder = CountryInsertBuilder(connection)
 }
 
-class CountryUpdateBuilder(connection: ConnectionAdapterImpl) : UpdateBuilderBase(Country, connection) {
+class CountryUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(Country, connection) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 
@@ -25,7 +25,7 @@ class CountryUpdateBuilder(connection: ConnectionAdapterImpl) : UpdateBuilderBas
     fun name(value: String): CountryUpdateBuilder = ct.put(Country.name, value)
 }
 
-class CountryInsertBuilder(connection: ConnectionAdapterImpl):InsertBuilderBase(Country, connection){
+class CountryInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(Country, connection){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 

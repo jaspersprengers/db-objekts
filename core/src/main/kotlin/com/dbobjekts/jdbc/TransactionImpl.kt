@@ -14,7 +14,7 @@ import com.dbobjekts.statement.select.SelectStatementExecutor
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
-class TransactionImpl(val connection: ConnectionAdapterImpl) : Transaction{
+class TransactionImpl(val connection: ConnectionAdapter) : Transaction{
 
     override fun <U : UpdateBuilderBase> update(provider: HasUpdateBuilder<U, *>): U = provider.updater(connection)
 
@@ -25,11 +25,11 @@ class TransactionImpl(val connection: ConnectionAdapterImpl) : Transaction{
     override fun deleteFrom(tableJoinChain: TableJoinChain): DeleteStatementExecutor =
         DeleteStatementExecutor(connection).withJoinChain(tableJoinChain)
 
-    override fun close() {
+    fun close() {
         connection.close()
     }
 
-    override fun connection() = connection
+    override fun connection() = connection.jdbcConnection
 
     override fun isValid(): Boolean = connection.isValid()
 

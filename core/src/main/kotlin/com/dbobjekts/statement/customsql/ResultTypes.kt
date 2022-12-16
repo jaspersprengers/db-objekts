@@ -2,7 +2,7 @@ package com.dbobjekts.statement.customsql
 
 import com.dbobjekts.SQL
 import com.dbobjekts.*
-import com.dbobjekts.jdbc.ConnectionAdapterImpl
+import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Columns
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.result.*
@@ -16,7 +16,7 @@ import java.time.LocalTime
 import java.time.OffsetDateTime
 
 class CustomSQLStatementBuilder(
-    private val conn: ConnectionAdapterImpl,
+    private val conn: ConnectionAdapter,
     private val sql: SQL,
     private val args: List<Any>
 ) {

@@ -3,7 +3,7 @@ package com.dbobjekts.statement.insert
 import com.dbobjekts.AnyColumnAndValue
 import com.dbobjekts.AnySqlParameter
 import com.dbobjekts.SQL
-import com.dbobjekts.jdbc.ConnectionAdapterImpl
+import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.metadata.column.AutoKeyColumn
 import com.dbobjekts.metadata.column.SequenceKeyColumn
@@ -14,7 +14,7 @@ import com.dbobjekts.vendors.VendorSpecificProperties
 import java.lang.IllegalStateException
 
 class InsertStatementExecutor(
-    connection: ConnectionAdapterImpl,
+    connection: ConnectionAdapter,
     val values: List<AnyColumnAndValue>,
     val vendorSpecificProperties: VendorSpecificProperties
 ) : StatementBase<Long>(connection) {
@@ -63,7 +63,7 @@ class InsertStatementExecutor(
     }
 
     fun createKeyFromSequence(
-        connection: ConnectionAdapterImpl,
+        connection: ConnectionAdapter,
         sql: String
     ): Long = connection.fetchKey(SQL(sql)) ?: 0
 

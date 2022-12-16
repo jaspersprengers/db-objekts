@@ -2,7 +2,7 @@ package com.dbobjekts.integration.h2.core
 
 import com.dbobjekts.AnyColumn
 import com.dbobjekts.AnyColumnAndValue
-import com.dbobjekts.jdbc.ConnectionAdapterImpl
+import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -14,11 +14,11 @@ object Address:Table("ADDRESS"), HasUpdateBuilder<AddressUpdateBuilder, AddressI
     val street = com.dbobjekts.metadata.column.VarcharColumn(this, "STREET")
     val countryId = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "COUNTRY_ID", Country.id)
     override val columns: List<AnyColumn> = listOf(id,street,countryId)
-    override fun updater(connection: ConnectionAdapterImpl): AddressUpdateBuilder = AddressUpdateBuilder(connection)
-    override fun inserter(connection: ConnectionAdapterImpl): AddressInsertBuilder = AddressInsertBuilder(connection)
+    override fun updater(connection: ConnectionAdapter): AddressUpdateBuilder = AddressUpdateBuilder(connection)
+    override fun inserter(connection: ConnectionAdapter): AddressInsertBuilder = AddressInsertBuilder(connection)
 }
 
-class AddressUpdateBuilder(connection: ConnectionAdapterImpl) : UpdateBuilderBase(Address, connection) {
+class AddressUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(Address, connection) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 
@@ -26,7 +26,7 @@ class AddressUpdateBuilder(connection: ConnectionAdapterImpl) : UpdateBuilderBas
     fun countryId(value: String): AddressUpdateBuilder = ct.put(Address.countryId, value)
 }
 
-class AddressInsertBuilder(connection: ConnectionAdapterImpl):InsertBuilderBase(Address, connection){
+class AddressInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(Address, connection){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 

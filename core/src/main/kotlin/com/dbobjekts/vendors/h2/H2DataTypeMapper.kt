@@ -16,27 +16,37 @@ class H2DataTypeMapper : ColumnTypeMapper {
         val nullable = properties.isNullable
         val col = properties.jdbcType.uppercase().trim()
         return when (col) {
+            //character columns as string
             "CHARACTER" -> Columns.varcharColumn(nullable)
             "CHARACTER VARYING" -> Columns.varcharColumn(nullable)
             "CHARACTER LARGE OBJECT" -> Columns.varcharColumn(nullable)
             "VARCHAR_IGNORECASE" -> Columns.varcharColumn(nullable)
+            //binary columns
             "BINARY" -> Columns.byteArrayColumn(nullable)
             "BINARY VARYING" -> Columns.byteArrayColumn(nullable)
             "BINARY LARGE OBJECT" -> Columns.blobColumn(nullable)
+            "JSON" -> Columns.byteArrayColumn(nullable)
+            //tiny integers and boolean as INT
             "BOOLEAN" -> Columns.booleanColumn(nullable)
             "TINYINT" -> Columns.byteColumn(nullable)
             "SMALLINT" -> Columns.integerColumn(nullable)
             "INTEGER" -> Columns.integerColumn(nullable)
+            //large numbers and floats
             "BIGINT" -> Columns.longColumn(nullable)
             "NUMERIC" -> Columns.bigDecimalColumn(nullable)
+            "DECFLOAT" -> Columns.bigDecimalColumn(nullable)
             "REAL" -> Columns.floatColumn(nullable)
             "DOUBLE PRECISION" -> Columns.doubleColumn(nullable)
-            "DECFLOAT" -> Columns.bigDecimalColumn(nullable)
+            //date and time
             "DATE" -> Columns.dateColumn(nullable)
             "TIME" -> Columns.timeColumn(nullable)
             "TIME WITH TIME ZONE" -> Columns.offsetDateTimeColumn(nullable)
             "TIMESTAMP" -> Columns.timeStampColumn(nullable)
             "TIMESTAMP WITH TIME ZONE" -> Columns.offsetDateTimeColumn(nullable)
+            "ENUM" -> Columns.varcharColumn(nullable)
+            //special types
+            "UUID" -> if (nullable) UUID_NIL else UUID
+            //currently unsupported
             "INTERVAL" -> {
                 logger.warn("INTERVAL data type is not supported")
                 return null
@@ -47,14 +57,11 @@ class H2DataTypeMapper : ColumnTypeMapper {
                 return null
             }
 
-            "ENUM" -> Columns.varcharColumn(nullable)
             "GEOMETRY" -> {
                 logger.warn("GEOMETRY data type is not supported")
                 return null
             }
 
-            "JSON" -> Columns.byteArrayColumn(nullable)
-            "UUID" -> if (nullable) UUID_NIL else UUID
             "ARRAY" -> {
                 logger.warn("ARRAY data type is not supported")
                 return null
@@ -72,8 +79,30 @@ class H2DataTypeMapper : ColumnTypeMapper {
     companion object {
         private val table = DefaultTable
         private const val DUMMY = "dummy"
-        val numericTypes = setOf("int", "integer", "bigint")
-
+        val SUPPORTED_TYPES = listOf<String>(
+            "CHARACTER", "CHARACTER VARYING", "CHARACTER LARGE OBJECT",
+            "VARCHAR_IGNORECASE",
+            "BINARY",
+            "BINARY VARYING",
+            "BINARY LARGE OBJECT",
+            "JSON",
+            "BOOLEAN",
+            "TINYINT",
+            "SMALLINT",
+            "INTEGER",
+            "BIGINT",
+            "NUMERIC",
+            "DECFLOAT",
+            "REAL",
+            "DOUBLE PRECISION",
+            "DATE",
+            "TIME",
+            "TIME WITH TIME ZONE",
+            "TIMESTAMP",
+            "TIMESTAMP WITH TIME ZONE",
+            "ENUM",
+            "UUID"
+        )
         val UUID = UUIDColumn(table, DUMMY)
         val UUID_NIL = UUIDColumn(table, DUMMY)
 

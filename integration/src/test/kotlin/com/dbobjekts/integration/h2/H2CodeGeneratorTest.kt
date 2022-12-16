@@ -30,9 +30,10 @@ class H2CodeGeneratorTest {
             .mapColumnToCustomType(column = "kind", table="employee_address", columnType = AddressTypeColumn.INSTANCE )
         generator.outputConfigurer()
             .basePackageForSources("com.dbobjekts.integration.h3")
+            //.sourceWriter(writer)
             .outputDirectoryForGeneratedSources(Paths.get("../core/src/generated-sources/kotlin").toAbsolutePath().toString())
         generator.generate()
-        print(writer.toString())
+       // print(writer.toString())
 
     }
 }

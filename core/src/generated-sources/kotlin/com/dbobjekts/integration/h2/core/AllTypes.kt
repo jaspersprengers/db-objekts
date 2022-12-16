@@ -2,7 +2,7 @@ package com.dbobjekts.integration.h2.core
 
 import com.dbobjekts.AnyColumn
 import com.dbobjekts.AnyColumnAndValue
-import com.dbobjekts.jdbc.ConnectionAdapterImpl
+import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -28,11 +28,11 @@ object AllTypes:Table("ALL_TYPES"), HasUpdateBuilder<AllTypesUpdateBuilder, AllT
     val blobC = com.dbobjekts.metadata.column.NullableBlobColumn(this, "BLOB_C")
     val clobC = com.dbobjekts.metadata.column.NullableClobColumn(this, "CLOB_C")
     override val columns: List<AnyColumn> = listOf(tinyintC,smallintC,integerC,intC,charC,varcharC,bigintC,floatC,doubleC,timeC,dateC,timestampC,timestampTzC,booleanC,intBooleanC,blobC,clobC)
-    override fun updater(connection: ConnectionAdapterImpl): AllTypesUpdateBuilder = AllTypesUpdateBuilder(connection)
-    override fun inserter(connection: ConnectionAdapterImpl): AllTypesInsertBuilder = AllTypesInsertBuilder(connection)
+    override fun updater(connection: ConnectionAdapter): AllTypesUpdateBuilder = AllTypesUpdateBuilder(connection)
+    override fun inserter(connection: ConnectionAdapter): AllTypesInsertBuilder = AllTypesInsertBuilder(connection)
 }
 
-class AllTypesUpdateBuilder(connection: ConnectionAdapterImpl) : UpdateBuilderBase(AllTypes, connection) {
+class AllTypesUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(AllTypes, connection) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 
@@ -55,7 +55,7 @@ class AllTypesUpdateBuilder(connection: ConnectionAdapterImpl) : UpdateBuilderBa
     fun clobC(value: java.sql.Clob?): AllTypesUpdateBuilder = ct.put(AllTypes.clobC, value)
 }
 
-class AllTypesInsertBuilder(connection: ConnectionAdapterImpl):InsertBuilderBase(AllTypes, connection){
+class AllTypesInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(AllTypes, connection){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 

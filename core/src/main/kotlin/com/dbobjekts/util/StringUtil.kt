@@ -30,20 +30,21 @@ object StringUtil {
     fun concat(elements: List<String>): String =
         elements.filter { StringUtils.isNotEmpty(it) }.map { it.trim() }.joinToString(" ")
 
-    fun <T> concatLists(vararg el: List<T>) : List<T> {
+    fun <T> concatLists(vararg el: List<T>): List<T> {
         val buffer = mutableListOf<T>()
         el.forEach { buffer.addAll(it) }
         return buffer.toList()
     }
 
-    fun <T> concatToList(els: List<T>, el: T) : List<T> {
+    fun <T> concatToList(els: List<T>, el: T): List<T> {
         val buffer = mutableListOf<T>()
         buffer.addAll(els)
         buffer.add(el)
         return buffer.toList()
     }
 
-    fun <T> joinBy(items: List<T>, getter: (T) -> String, separator: String = ","): String = items.map { getter(it) }.joinToString(separator)
+    fun <T> joinBy(items: List<T>, getter: (T) -> String, separator: String = ","): String =
+        items.map { getter(it) }.joinToString(separator)
 
     fun joinBy(items: List<Any>, separator: String = ","): String = items.map { it.toString() }.joinToString(separator)
 
@@ -61,7 +62,9 @@ object StringUtil {
     fun classToString(clz: Class<*>): String =
         if (clz.isPrimitive)
             StringUtil.initUpperCase(clz.getSimpleName())
-        else {
+        else if (clz == ByteArray::class.java) {
+            "ByteArray"
+        } else {
             clz.getName()
                 .replace("java.lang.", "")
                 .replace("kotlin.", "")

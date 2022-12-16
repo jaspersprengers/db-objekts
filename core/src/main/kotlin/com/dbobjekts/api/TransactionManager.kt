@@ -1,6 +1,6 @@
 package com.dbobjekts.api
 
-import java.sql.Connection
+import com.dbobjekts.vendors.Vendor
 
 
 interface TransactionManager {
@@ -9,4 +9,5 @@ interface TransactionManager {
     fun commit()
     fun rollback()
     fun close()
+    val vendor: Vendor
 }

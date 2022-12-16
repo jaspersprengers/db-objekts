@@ -10,7 +10,7 @@ class DetermineVendor {
 
     operator fun invoke(transactionManager: TransactionManager): DBConnectionMetaData {
         return transactionManager.newTransaction {
-            val metaData = it.connection().jdbcConnection.metaData
+            val metaData = it.connection().metaData
             val vendor =
                 Vendors.byProductAndVersion(
                     metaData.getDatabaseProductName(),

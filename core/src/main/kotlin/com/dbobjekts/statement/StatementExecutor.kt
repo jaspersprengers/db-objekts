@@ -1,10 +1,10 @@
 package com.dbobjekts.statement
 
-import com.dbobjekts.jdbc.ConnectionAdapterImpl
+import com.dbobjekts.jdbc.ConnectionAdapter
 
 /**
   * Shared by all Statement implementations and ClauseElement
   */
  internal interface StatementExecutor {
-    val connection: ConnectionAdapterImpl
+    val connection: ConnectionAdapter
 }

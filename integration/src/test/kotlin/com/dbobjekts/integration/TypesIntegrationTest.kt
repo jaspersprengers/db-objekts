@@ -1,7 +1,7 @@
 package com.dbobjekts.integration
 
 import com.dbobjekts.fixture.h2.H2DB
-import com.dbobjekts.integration.h2.custom.AllTypes
+import com.dbobjekts.integration.h2.core.AllTypes
 import com.dbobjekts.metadata.column.BlobColumn
 import com.dbobjekts.metadata.column.ClobColumn
 import com.dbobjekts.statement.whereclause.SubClause
@@ -45,7 +45,7 @@ class TypesIntegrationTest {
                 .charC("C")
                 .varcharC("Hello")
                 .bigintC(999999L)
-                .floatC(42.43)
+                .floatC(42.43f)
                 .doubleC(44.44)
                 .timeC(time)
                 .dateC(date)

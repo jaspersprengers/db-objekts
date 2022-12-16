@@ -42,6 +42,7 @@ class SingletonTransactionLifecycleIntegrationTest {
     @AfterEach
     fun afterEachTest() {
         H2DB.newTransaction { tr ->
+            tr.connection()
             tr.deleteFrom(employee).where(employee.name.eq("Jared"))
         }
     }

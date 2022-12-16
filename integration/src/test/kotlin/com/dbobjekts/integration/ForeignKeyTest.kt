@@ -92,7 +92,7 @@ class ForeignKeyTest {
 
     @Test
     fun `get all private addresses`() {
-        val results = H2DB.newTransaction {
+        val results: List<Tuple3<String, String, String>> = H2DB.newTransaction {
             it.select(e.name, a.street, c.name).where(ea.kind.eq(AddressType.HOME)).orderAsc(e.name).asList()
         }
         assertEquals("Jane", results[0].first)

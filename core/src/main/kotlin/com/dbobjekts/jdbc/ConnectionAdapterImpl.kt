@@ -2,7 +2,6 @@ package com.dbobjekts.jdbc
 
 import com.dbobjekts.AnySqlParameter
 import com.dbobjekts.SQL
-import com.dbobjekts.api.ConnectionAdapter
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.result.ColumnInResultRow
 import com.dbobjekts.result.ResultRow
@@ -11,14 +10,14 @@ import com.dbobjekts.vendors.Vendor
 import com.dbobjekts.vendors.VendorSpecificProperties
 import java.sql.*
 
-data class ConnectionAdapterImpl (
-    override val jdbcConnection: Connection,
-    val statementLogger: StatementLogger,
+data class ConnectionAdapter (
+    internal val jdbcConnection: Connection,
+    internal val statementLogger: StatementLogger,
     private val _catalog: Catalog?,
-    override val vendor: Vendor
-) : ConnectionAdapter {
+    val vendor: Vendor
+)  {
 
-    override fun catalog(): Catalog = _catalog ?: throw IllegalStateException(
+    fun catalog(): Catalog = _catalog ?: throw IllegalStateException(
         """
           This connection is not associated with an implementation of com.dbobjekts.metadata.Catalog.
           You need to provide this during the initialization in order to build queries.

@@ -9,7 +9,7 @@ import com.dbobjekts.vendors.Vendors
 import com.google.common.cache.CacheLoader
 import java.sql.Connection
 
-class TransactionManagerImpl (
+class TransactionManagerImpl(
     private val dataSource: DataSourceAdapter,
     val catalog: Catalog,
     val transactionSettings: TransactionSettings = TransactionSettings(),
@@ -18,16 +18,18 @@ class TransactionManagerImpl (
 
     private val transactionCache = TransactionCache(this, transactionSettings)
 
+    override val vendor = Vendors.byName(catalog.vendor)
+
     override operator fun <T> invoke(fct: (Transaction) -> T): T = newTransaction(fct)
 
     override fun load(key: Long): Transaction = newTransaction()
 
-    private fun newTransaction(): Transaction {
+    private fun newTransaction(): TransactionImpl {
         val connection: Connection = dataSource.createConnection()
         require(!connection.isClosed, { "Connection is closed" })
         connection.setAutoCommit(transactionSettings.autoCommit)
         return TransactionImpl(
-            ConnectionAdapterImpl(
+            ConnectionAdapter(
                 connection,
                 statementLogger,
                 catalog,
@@ -55,19 +57,6 @@ class TransactionManagerImpl (
         }
     }
 
-    fun <T> joinTransaction(fct: (Transaction) -> T): T {
-        val currentTransaction = transactionCache.get()
-        try {
-            val result: T = fct(currentTransaction)
-            return TransactionResultValidator.validate(result)
-        } catch (e: Exception) {
-            statementLogger.error("Caught exception while executing query. Rolling back ", e)
-            currentTransaction.rollback()
-            transactionCache.evict()
-            throw e
-        }
-    }
-
     override fun commit() {
         transactionCache.getIfExists()?.let {
             if (!transactionSettings.autoCommit)
@@ -87,6 +76,7 @@ class TransactionManagerImpl (
     override fun close() {
         dataSource.close()
     }
+
 
     override fun toString(): String = "${dataSource} ${catalog}"
 

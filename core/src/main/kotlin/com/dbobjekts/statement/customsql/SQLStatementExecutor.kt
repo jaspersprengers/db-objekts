@@ -3,7 +3,7 @@ package com.dbobjekts.statement.customsql
 import com.dbobjekts.AnyColumn
 import com.dbobjekts.AnySqlParameter
 import com.dbobjekts.SQL
-import com.dbobjekts.jdbc.ConnectionAdapterImpl
+import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Columns
 import com.dbobjekts.result.ColumnInResultRow
 import com.dbobjekts.result.ResultRow1
@@ -13,14 +13,14 @@ import com.dbobjekts.statement.StatementExecutor
 
 
 open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
-    override val connection: ConnectionAdapterImpl,
+    override val connection: ConnectionAdapter,
     internal val sql: SQL,
     internal val args: List<Any>,
     columnClasses: List<AnyColumn>,
     internal val selectResultSet: RSB
 ) : StatementExecutor {
 
-    constructor(connection: ConnectionAdapterImpl, sql: SQL, args: List<Any>) : this(connection, sql, args, listOf(Columns.LONG), ResultRow1<Long>() as RSB)
+    constructor(connection: ConnectionAdapter, sql: SQL, args: List<Any>) : this(connection, sql, args, listOf(Columns.LONG), ResultRow1<Long>() as RSB)
 
     internal val columnsToFetch: List<ColumnInResultRow> =
         columnClasses.mapIndexed { index, column -> ColumnInResultRow(1 + index, column)}

@@ -2,7 +2,7 @@ package com.dbobjekts.integration.h2.custom
 
 import com.dbobjekts.AnyColumn
 import com.dbobjekts.AnyColumnAndValue
-import com.dbobjekts.jdbc.ConnectionAdapterImpl
+import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -33,11 +33,11 @@ object Tuples:Table("TUPLES"), HasUpdateBuilder<TuplesUpdateBuilder, TuplesInser
     val c21 = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "C21")
     val c22 = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "C22")
     override val columns: List<AnyColumn> = listOf(c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16,c17,c18,c19,c20,c21,c22)
-    override fun updater(connection: ConnectionAdapterImpl): TuplesUpdateBuilder = TuplesUpdateBuilder(connection)
-    override fun inserter(connection: ConnectionAdapterImpl): TuplesInsertBuilder = TuplesInsertBuilder(connection)
+    override fun updater(connection: ConnectionAdapter): TuplesUpdateBuilder = TuplesUpdateBuilder(connection)
+    override fun inserter(connection: ConnectionAdapter): TuplesInsertBuilder = TuplesInsertBuilder(connection)
 }
 
-class TuplesUpdateBuilder(connection: ConnectionAdapterImpl) : UpdateBuilderBase(Tuples, connection) {
+class TuplesUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(Tuples, connection) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 
@@ -65,7 +65,7 @@ class TuplesUpdateBuilder(connection: ConnectionAdapterImpl) : UpdateBuilderBase
     fun c22(value: Int?): TuplesUpdateBuilder = ct.put(Tuples.c22, value)
 }
 
-class TuplesInsertBuilder(connection: ConnectionAdapterImpl):InsertBuilderBase(Tuples, connection){
+class TuplesInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(Tuples, connection){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 
