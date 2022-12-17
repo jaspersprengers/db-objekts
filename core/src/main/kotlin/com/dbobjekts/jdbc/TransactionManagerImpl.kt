@@ -9,7 +9,7 @@ import com.dbobjekts.vendors.Vendors
 import com.google.common.cache.CacheLoader
 import java.sql.Connection
 
-class TransactionManagerImpl(
+internal class TransactionManagerImpl(
     private val dataSource: DataSourceAdapter,
     val catalog: Catalog,
     val transactionSettings: TransactionSettings = TransactionSettings(),
@@ -99,8 +99,10 @@ class TransactionManagerImpl(
             querySettings: TransactionSettings = TransactionSettings(),
             statementLogger: StatementLogger = StatementLogger()
         ): Boolean {
-            if (INSTANCE != null)
-                throw IllegalStateException("The singleton TransactionManager has already been initialized. You must call invalidate() first to close any open connections before you can call initialize() again.")
+            if (INSTANCE != null) {
+                statementLogger.error("The singleton TransactionManager has already been initialized. You must call invalidate() first to close any open connections before you can call initialize() again.")
+                return false
+            }
             val tr = TransactionManagerImpl(dataSource, catalog, querySettings, statementLogger)
             return tr.test().also { INSTANCE = tr }
         }

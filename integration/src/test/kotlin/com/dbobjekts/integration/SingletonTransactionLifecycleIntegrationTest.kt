@@ -3,10 +3,8 @@ package com.dbobjekts.integration
 import com.dbobjekts.api.Transaction
 import com.dbobjekts.fixture.h2.H2DB
 import com.dbobjekts.integration.h2.core.Employee
-import com.dbobjekts.jdbc.TransactionImpl
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -19,7 +17,6 @@ class SingletonTransactionLifecycleIntegrationTest {
         @BeforeAll
         @JvmStatic
         fun setup() {
-            H2DB.createTransactionManager(autoCommit = false)
             H2DB.setupDatabaseObjects()
         }
     }

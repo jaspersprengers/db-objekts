@@ -27,13 +27,12 @@ class H2CodeGeneratorTest {
             .sequenceForPrimaryKey("core", "address", "id", "ADDRESS_SEQ")
             .sequenceForPrimaryKey("core", "department", "id", "DEPARTMENT_SEQ")
             .sequenceForPrimaryKey("core", "certificate", "id", "CERTIFICATE_SEQ")
-            .mapColumnToCustomType(column = "kind", table="employee_address", columnType = AddressTypeColumn.INSTANCE )
         generator.outputConfigurer()
             .basePackageForSources("com.dbobjekts.integration.h2")
             //.sourceWriter(writer)
             .outputDirectoryForGeneratedSources(Paths.get("../core/src/generated-sources/kotlin").toAbsolutePath().toString())
         generator.generate()
-       // print(writer.toString())
+       print(writer.toString())
 
     }
 }

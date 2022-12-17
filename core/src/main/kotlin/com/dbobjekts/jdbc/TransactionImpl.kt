@@ -14,7 +14,7 @@ import com.dbobjekts.statement.select.SelectStatementExecutor
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
-class TransactionImpl(val connection: ConnectionAdapter) : Transaction{
+internal class TransactionImpl(val connection: ConnectionAdapter) : Transaction{
 
     override fun <U : UpdateBuilderBase> update(provider: HasUpdateBuilder<U, *>): U = provider.updater(connection)
 

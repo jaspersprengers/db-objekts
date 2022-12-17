@@ -48,7 +48,7 @@ class MySQLDataTypeMapper : ColumnTypeMapper {
     }
 
     companion object {
-        val numericTypes = setOf("int", "bigint", "decimal")
+
     }
 
 }

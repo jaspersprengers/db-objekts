@@ -15,7 +15,9 @@ open class JDBCTypeOverrideMapper(
     override operator fun invoke(properties: ColumnMappingProperties): AnyColumn? {
         val tableMatch = table?.let { properties.table.value == it } ?: true
         val schemaMatch = schema?.let { properties.schema.value == it } ?: true
-        return if (tableMatch && schemaMatch && properties.jdbcType.equals(jdbcType, true)) Columns.byName(columnType, properties.isNullable) else null
+        return if (tableMatch && schemaMatch && properties.jdbcType.equals(jdbcType, true))
+            Columns.byName(columnType, properties.isNullable)
+        else null
     }
 
 }

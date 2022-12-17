@@ -20,6 +20,21 @@ open class NullableIntegerColumn(table: Table, name: String) :  NullableColumn<I
     override val valueClass: Class<*> = Int::class.java
 }
 
+open class ShortColumn(table: Table, name: String) : NonNullableColumn<Short>(name, table){
+    override val nullable: NullableColumn<Short?> = NullableShortColumn(table, name)
+    override fun setValue(position: Int, statement: PreparedStatement, value: Short) = statement.setShort(position, value)
+    override fun getValue(position: Int, resultSet: ResultSet): Short = resultSet.getShort(position)
+    override val columnClass: Class<*> = ShortColumn::class.java
+    override val valueClass: Class<*> = Short::class.java
+}
+
+open class NullableShortColumn(table: Table, name: String) :  NullableColumn<Short?>(name, table, Types.SMALLINT){
+    override fun setValue(position: Int, statement: PreparedStatement, value: Short?) = statement.setShort(position, value!!)
+    override fun getValue(position: Int, resultSet: ResultSet): Short? = resultSet.getShort(position)
+    override val columnClass: Class<*> = ShortColumn::class.java
+    override val valueClass: Class<*> = Short::class.java
+}
+
 open class LongColumn(table: Table, name: String) : NonNullableColumn<Long>(name, table){
     override val nullable: NullableColumn<Long?> = NullableLongColumn(table, name)
     override fun setValue(position: Int, statement: PreparedStatement, value: Long) = statement.setLong(position, value)

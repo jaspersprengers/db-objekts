@@ -59,15 +59,21 @@ object StringUtil {
                 .replace("kotlin.", "")
         }
 
-    fun classToString(clz: Class<*>): String =
-        if (clz.isPrimitive)
+    fun classToString(clz: Class<*>): String {
+        println(clz.getName())
+        return if (clz.isPrimitive)
             StringUtil.initUpperCase(clz.getSimpleName())
         else if (clz == ByteArray::class.java) {
             "ByteArray"
+        } else if (clz.getName().contains("[Ljava.lang.Object;")) {
+            "Array<Any>"
+        } else if (clz == Object::class.java) {
+            "Any"
         } else {
             clz.getName()
                 .replace("java.lang.", "")
                 .replace("kotlin.", "")
         }
+    }
 
 }

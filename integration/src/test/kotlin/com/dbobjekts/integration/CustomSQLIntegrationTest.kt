@@ -4,10 +4,10 @@ import com.dbobjekts.Tuple9
 import com.dbobjekts.fixture.h2.H2DB
 import com.dbobjekts.integration.h2.core.Address
 import com.dbobjekts.integration.h2.core.Employee
-import com.dbobjekts.integration.h2.core.AllTypes
 import com.dbobjekts.integration.h2.hr.Hobby
 import com.dbobjekts.statement.customsql.ResultTypes
-import org.junit.jupiter.api.*
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.LocalDate
 

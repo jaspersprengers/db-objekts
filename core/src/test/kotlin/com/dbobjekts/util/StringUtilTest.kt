@@ -1,5 +1,8 @@
 package com.dbobjekts.util
 
+import com.dbobjekts.metadata.Columns
+import com.dbobjekts.vendors.h2.H2DataTypeMapper
+import com.dbobjekts.vendors.h2.ObjectArrayColumn
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -136,6 +139,18 @@ class StringUtilTest {
     @Test
     fun `capitalize camel case`() {
         assertEquals("Kameel", StringUtil.capitalCamel("kameel"))
+    }
+
+    @Test
+    fun `test value classes`(){
+
+        assertEquals("Int", StringUtil.classToString(Columns.INTEGER.valueClass))
+        assertEquals("java.time.LocalDate", StringUtil.classToString(Columns.DATE.valueClass))
+
+        assertEquals("Array<Any>", StringUtil.classToString(H2DataTypeMapper.OBJECT_ARRAY.valueClass))
+        assertEquals("Any", StringUtil.classToString(H2DataTypeMapper.H2_OBJECT.valueClass))
+        assertEquals("ByteArray", StringUtil.classToString(Columns.BYTE_ARRAY.valueClass))
+
     }
 
 }

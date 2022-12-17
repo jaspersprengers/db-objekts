@@ -11,45 +11,46 @@ class PostgreSQLDataTypeMapper : ColumnTypeMapper {
     override operator fun invoke(properties: ColumnMappingProperties): AnyColumn? {
         val nullable = properties.isNullable
         val col = properties.jdbcType.uppercase().trim()
-        return when (col){
-            "CHAR" -> Columns.varcharColumn(nullable)
-            "VARCHAR" -> Columns.varcharColumn(nullable)
-            "TINYTEXT" -> Columns.varcharColumn(nullable)
-            "TEXT" -> Columns.varcharColumn(nullable)
-            "MEDIUMTEXT" -> Columns.varcharColumn(nullable)
-            "LONGTEXT" -> Columns.varcharColumn(nullable)
+        return when (col) {
+            "bool" -> Columns.booleanColumn(nullable)
+            "bit" -> Columns.booleanColumn(nullable)
+            "int8" -> Columns.longColumn(nullable)
+            "bigserial" -> Columns.longColumn(nullable)
+            "oid" -> Columns.longColumn(nullable)
+            "bytea" -> Columns.byteArrayColumn(nullable)
+            "char" -> Columns.varcharColumn(nullable)
+            "bpchar" -> Columns.varcharColumn(nullable)
+            "numeric" -> Columns.bigDecimalColumn(nullable)
+            "int4" -> Columns.integerColumn(nullable)
+            "serial" -> Columns.integerColumn(nullable)
+            "int2" -> Columns.shortColumn(nullable)
+            "smallserial" -> Columns.shortColumn(nullable)
+            "float4" -> Columns.floatColumn(nullable)
+            "float8" -> Columns.doubleColumn(nullable)
+            "money" -> Columns.doubleColumn(nullable)
+            "name" -> Columns.varcharColumn(nullable)
+            "text" -> Columns.varcharColumn(nullable)
+            "varchar" -> Columns.varcharColumn(nullable)
+            "date" -> Columns.dateColumn(nullable)
+            "time" -> Columns.timeColumn(nullable)
+            "timetz" -> Columns.timeColumn(nullable)
+            "timestamp" -> Columns.timeStampColumn(nullable)
+            "timestamptz" -> Columns.offsetDateTimeColumn(nullable)
+            "cardinal_number" -> throw IllegalStateException("$col is not supported")
+            "character_data" -> throw IllegalStateException("$col is not supported")
+            "sql_identifier" -> throw IllegalStateException("$col is not supported")
+            "time_stamp" -> throw IllegalStateException("$col is not supported")
+            "yes_or_no" -> throw IllegalStateException("$col is not supported")
+            "xml" -> Columns.timeStampColumn(nullable)
+            "refcursor" -> throw IllegalStateException("$col is not supported")
+            "_abc" -> throw IllegalStateException("$col is not supported")
 
-            "BLOB" -> Columns.blobColumn(nullable)
-            "LONGBLOB" -> Columns.clobColumn(nullable)
-
-            "TINYINT" -> Columns.byteColumn(nullable)
-            "SMALLINT" -> Columns.integerColumn(nullable)
-            "MEDIUMINT" -> Columns.integerColumn(nullable)
-            "INT" -> Columns.integerColumn(nullable)
-            "BIGINT" -> Columns.longColumn(nullable)
-
-            "BINARY" -> Columns.varcharColumn(nullable)
-
-            "ENUM" -> Columns.integerColumn(nullable)
-            "SET" -> Columns.integerColumn(nullable)
-
-            "FLOAT" -> Columns.doubleColumn(nullable)
-            "DOUBLE" -> Columns.doubleColumn(nullable)
-            "DECIMAL" -> Columns.doubleColumn(nullable)
-
-            "DATE" -> Columns.dateColumn(nullable)
-            "DATETIME" -> Columns.dateColumn(nullable)
-            "TIMESTAMP" -> Columns.timeStampColumn(nullable)
-            "TIME" -> Columns.timeColumn(nullable)
-
-            "BOOLEAN" -> Columns.booleanColumn(nullable)
             else -> null
         }
     }
 
     companion object {
-        val numericTypes = setOf("int", "bigint", "decimal")
+
     }
 
 }
-

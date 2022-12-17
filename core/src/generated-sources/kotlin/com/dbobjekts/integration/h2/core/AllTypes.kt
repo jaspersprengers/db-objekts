@@ -59,7 +59,15 @@ object AllTypes:Table("ALL_TYPES"), HasUpdateBuilder<AllTypesUpdateBuilder, AllT
     val timestampwithtimezoneColNil = com.dbobjekts.metadata.column.NullableOffsetDateTimeColumn(this, "TIMESTAMPWITHTIMEZONE_COL_NIL")
     val uuidCol = com.dbobjekts.vendors.h2.UUIDColumn(this, "UUID_COL")
     val uuidColNil = com.dbobjekts.vendors.h2.NullableUUIDColumn(this, "UUID_COL_NIL")
-    override val columns: List<AnyColumn> = listOf(id,characterCol,characterColNil,charactervaryingCol,charactervaryingColNil,characterlargeobjectCol,characterlargeobjectColNil,varcharIgnorecaseCol,varcharIgnorecaseColNil,enumCol,enumColNil,binaryCol,binaryColNil,binaryvaryingCol,binaryvaryingColNil,binarylargeobjectCol,binarylargeobjectColNil,jsonCol,jsonColNil,booleanCol,booleanColNil,tinyintCol,tinyintColNil,smallintCol,smallintColNil,integerCol,integerColNil,bigintCol,bigintColNil,numericCol,numericColNil,decfloatCol,decfloatColNil,realCol,realColNil,doubleprecisionCol,doubleprecisionColNil,dateCol,dateColNil,timeCol,timeColNil,timewithtimezoneCol,timewithtimezoneColNil,timestampCol,timestampColNil,timestampwithtimezoneCol,timestampwithtimezoneColNil,uuidCol,uuidColNil)
+    val intervalCol = com.dbobjekts.vendors.h2.IntervalColumn(this, "INTERVAL_COL")
+    val intervalColNil = com.dbobjekts.vendors.h2.NullableIntervalColumn(this, "INTERVAL_COL_NIL")
+    val geometryCol = com.dbobjekts.metadata.column.VarcharColumn(this, "GEOMETRY_COL")
+    val geometryColNil = com.dbobjekts.metadata.column.NullableVarcharColumn(this, "GEOMETRY_COL_NIL")
+    val intArrayCol = com.dbobjekts.vendors.h2.ObjectArrayColumn(this, "INT_ARRAY_COL")
+    val intArrayColNil = com.dbobjekts.vendors.h2.NullableObjectArrayColumn(this, "INT_ARRAY_COL_NIL")
+    val objectCol = com.dbobjekts.vendors.h2.H2ObjectColumn(this, "OBJECT_COL")
+    val objectColNil = com.dbobjekts.vendors.h2.NullableH2ObjectColumn(this, "OBJECT_COL_NIL")
+    override val columns: List<AnyColumn> = listOf(id,characterCol,characterColNil,charactervaryingCol,charactervaryingColNil,characterlargeobjectCol,characterlargeobjectColNil,varcharIgnorecaseCol,varcharIgnorecaseColNil,enumCol,enumColNil,binaryCol,binaryColNil,binaryvaryingCol,binaryvaryingColNil,binarylargeobjectCol,binarylargeobjectColNil,jsonCol,jsonColNil,booleanCol,booleanColNil,tinyintCol,tinyintColNil,smallintCol,smallintColNil,integerCol,integerColNil,bigintCol,bigintColNil,numericCol,numericColNil,decfloatCol,decfloatColNil,realCol,realColNil,doubleprecisionCol,doubleprecisionColNil,dateCol,dateColNil,timeCol,timeColNil,timewithtimezoneCol,timewithtimezoneColNil,timestampCol,timestampColNil,timestampwithtimezoneCol,timestampwithtimezoneColNil,uuidCol,uuidColNil,intervalCol,intervalColNil,geometryCol,geometryColNil,intArrayCol,intArrayColNil,objectCol,objectColNil)
     override fun updater(connection: ConnectionAdapter): AllTypesUpdateBuilder = AllTypesUpdateBuilder(connection)
     override fun inserter(connection: ConnectionAdapter): AllTypesInsertBuilder = AllTypesInsertBuilder(connection)
 }
@@ -116,6 +124,14 @@ class AllTypesUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(A
     fun timestampwithtimezoneColNil(value: java.time.OffsetDateTime?): AllTypesUpdateBuilder = ct.put(AllTypes.timestampwithtimezoneColNil, value)
     fun uuidCol(value: java.util.UUID): AllTypesUpdateBuilder = ct.put(AllTypes.uuidCol, value)
     fun uuidColNil(value: java.util.UUID?): AllTypesUpdateBuilder = ct.put(AllTypes.uuidColNil, value)
+    fun intervalCol(value: org.h2.api.Interval): AllTypesUpdateBuilder = ct.put(AllTypes.intervalCol, value)
+    fun intervalColNil(value: org.h2.api.Interval?): AllTypesUpdateBuilder = ct.put(AllTypes.intervalColNil, value)
+    fun geometryCol(value: String): AllTypesUpdateBuilder = ct.put(AllTypes.geometryCol, value)
+    fun geometryColNil(value: String?): AllTypesUpdateBuilder = ct.put(AllTypes.geometryColNil, value)
+    fun intArrayCol(value: Array<Any>): AllTypesUpdateBuilder = ct.put(AllTypes.intArrayCol, value)
+    fun intArrayColNil(value: Array<Any>?): AllTypesUpdateBuilder = ct.put(AllTypes.intArrayColNil, value)
+    fun objectCol(value: Any): AllTypesUpdateBuilder = ct.put(AllTypes.objectCol, value)
+    fun objectColNil(value: Any?): AllTypesUpdateBuilder = ct.put(AllTypes.objectColNil, value)
 }
 
 class AllTypesInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(AllTypes, connection){
@@ -170,8 +186,16 @@ class AllTypesInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(All
     fun timestampwithtimezoneColNil(value: java.time.OffsetDateTime?): AllTypesInsertBuilder = ct.put(AllTypes.timestampwithtimezoneColNil, value)
     fun uuidCol(value: java.util.UUID): AllTypesInsertBuilder = ct.put(AllTypes.uuidCol, value)
     fun uuidColNil(value: java.util.UUID?): AllTypesInsertBuilder = ct.put(AllTypes.uuidColNil, value)
+    fun intervalCol(value: org.h2.api.Interval): AllTypesInsertBuilder = ct.put(AllTypes.intervalCol, value)
+    fun intervalColNil(value: org.h2.api.Interval?): AllTypesInsertBuilder = ct.put(AllTypes.intervalColNil, value)
+    fun geometryCol(value: String): AllTypesInsertBuilder = ct.put(AllTypes.geometryCol, value)
+    fun geometryColNil(value: String?): AllTypesInsertBuilder = ct.put(AllTypes.geometryColNil, value)
+    fun intArrayCol(value: Array<Any>): AllTypesInsertBuilder = ct.put(AllTypes.intArrayCol, value)
+    fun intArrayColNil(value: Array<Any>?): AllTypesInsertBuilder = ct.put(AllTypes.intArrayColNil, value)
+    fun objectCol(value: Any): AllTypesInsertBuilder = ct.put(AllTypes.objectCol, value)
+    fun objectColNil(value: Any?): AllTypesInsertBuilder = ct.put(AllTypes.objectColNil, value)
 
-    fun mandatoryColumns(characterCol: String, charactervaryingCol: String, characterlargeobjectCol: String, varcharIgnorecaseCol: String, enumCol: String, binaryCol: ByteArray, binaryvaryingCol: ByteArray, binarylargeobjectCol: java.sql.Blob, jsonCol: ByteArray, booleanCol: Boolean, tinyintCol: Byte, smallintCol: Int, integerCol: Int, bigintCol: Long, numericCol: java.math.BigDecimal, decfloatCol: java.math.BigDecimal, realCol: Float, doubleprecisionCol: Double, dateCol: java.time.LocalDate, timeCol: java.time.LocalTime, timewithtimezoneCol: java.time.OffsetDateTime, timestampCol: java.time.Instant, timestampwithtimezoneCol: java.time.OffsetDateTime, uuidCol: java.util.UUID) : AllTypesInsertBuilder {
+    fun mandatoryColumns(characterCol: String, charactervaryingCol: String, characterlargeobjectCol: String, varcharIgnorecaseCol: String, enumCol: String, binaryCol: ByteArray, binaryvaryingCol: ByteArray, binarylargeobjectCol: java.sql.Blob, jsonCol: ByteArray, booleanCol: Boolean, tinyintCol: Byte, smallintCol: Int, integerCol: Int, bigintCol: Long, numericCol: java.math.BigDecimal, decfloatCol: java.math.BigDecimal, realCol: Float, doubleprecisionCol: Double, dateCol: java.time.LocalDate, timeCol: java.time.LocalTime, timewithtimezoneCol: java.time.OffsetDateTime, timestampCol: java.time.Instant, timestampwithtimezoneCol: java.time.OffsetDateTime, uuidCol: java.util.UUID, intervalCol: org.h2.api.Interval, geometryCol: String, intArrayCol: Array<Any>, objectCol: Any) : AllTypesInsertBuilder {
       ct.put(AllTypes.characterCol, characterCol)
       ct.put(AllTypes.charactervaryingCol, charactervaryingCol)
       ct.put(AllTypes.characterlargeobjectCol, characterlargeobjectCol)
@@ -196,6 +220,10 @@ class AllTypesInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(All
       ct.put(AllTypes.timestampCol, timestampCol)
       ct.put(AllTypes.timestampwithtimezoneCol, timestampwithtimezoneCol)
       ct.put(AllTypes.uuidCol, uuidCol)
+      ct.put(AllTypes.intervalCol, intervalCol)
+      ct.put(AllTypes.geometryCol, geometryCol)
+      ct.put(AllTypes.intArrayCol, intArrayCol)
+      ct.put(AllTypes.objectCol, objectCol)
       return this
     }
 

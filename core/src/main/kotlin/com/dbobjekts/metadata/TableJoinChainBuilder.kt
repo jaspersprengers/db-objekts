@@ -88,9 +88,7 @@ class TableJoinChainBuilder(
         val sortedSet = sortedTables.toHashSet()
         val unUsed = tablesToJoin.filterNot { sortedSet.contains(it) }
         if (unUsed.isNotEmpty())
-            throw IllegalStateException(
-                "The following table(s) could not be joined: ${StringUtil.joinBy(unUsed, {it.dbName})}"
-            )
+            throw IllegalStateException("The following table(s) could not be joined: ${StringUtil.joinBy(unUsed, {it.dbName})}")
         val chain = TableJoinChain(sortedTables.first())
         sortedTables.drop(1).forEach {chain.leftJoin(it)}
         return chain

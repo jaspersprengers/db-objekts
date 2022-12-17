@@ -7,7 +7,7 @@ class TableJoinChain(val table: Table):TableOrJoin, Cloneable, SerializableToSQL
 
     private val joins: MutableList<JoinBase> = mutableListOf()
 
-     fun addJoin(join: JoinBase): TableJoinChain {
+    internal fun addJoin(join: JoinBase): TableJoinChain {
         joins += join
         return this
     }
@@ -25,12 +25,12 @@ class TableJoinChain(val table: Table):TableOrJoin, Cloneable, SerializableToSQL
     }
 
 
-     fun checkTableNotJoinedAlready(table: Table) {
+    internal  fun checkTableNotJoinedAlready(table: Table) {
         if (joins.any { it.containsTable(table) })
             throw IllegalArgumentException("Table ${table.tableName} is already present in join. You cannot add it again: ${toSQL()}")
     }
 
-    fun lastJoinTable(): Table = if (joins.isEmpty()) table else joins.last().rightPart.table
+    internal fun lastJoinTable(): Table = if (joins.isEmpty()) table else joins.last().rightPart.table
 
     private fun extractJoinedColumnPair(table: Table): Pair<AnyColumn, AnyColumn> {
         val head =
@@ -40,7 +40,7 @@ class TableJoinChain(val table: Table):TableOrJoin, Cloneable, SerializableToSQL
         return if (head == null) throw IllegalStateException("Cannot join ${table.toSQL()} to ${lastJoinTable().toSQL()}") else head
     }
 
-    fun canJoin(table: Table): Boolean {
+    internal fun canJoin(table: Table): Boolean {
         val head = if (joins.isEmpty()) getJoinPair(lastJoinTable(), lastJoinTable(), table)
         else joins.reversed().map { getJoinPair(it.leftPart.table, it.rightPart.table, table) }.filterNotNull().firstOrNull()
         return head != null

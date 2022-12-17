@@ -9,33 +9,33 @@ import com.dbobjekts.util.Errors
 import com.dbobjekts.util.ValidateDBObjectName
 
 abstract class Table(
-    val dbName: String
+    internal val dbName: String
 ) : TableOrJoin, SerializableToSQL {
 
-    abstract val columns: List<AnyColumn>
+    internal abstract val columns: List<AnyColumn>
 
     private lateinit var schema: Schema
 
-    val tableName: TableName = TableName(dbName)
+    internal val tableName: TableName = TableName(dbName)
 
     init {
         if (!ValidateDBObjectName(tableName.value))
             throw IllegalArgumentException("Not a valid table name: " + tableName)
     }
 
-    val foreignKeys: List<AnyForeignKey> by lazy { columns.filter { it is AnyForeignKey }.map { it as AnyForeignKey } }
+    internal val foreignKeys: List<AnyForeignKey> by lazy { columns.filter { it is AnyForeignKey }.map { it as AnyForeignKey } }
 
-    fun getForeignKeyToParent(parent: Table): AnyForeignKey? = foreignKeys.find { it.parentColumn.table == parent }
+    internal fun getForeignKeyToParent(parent: Table): AnyForeignKey? = foreignKeys.find { it.parentColumn.table == parent }
 
-    fun columnByName(column: String): AnyColumn? = columns.find { it.dbName == column }
+    internal fun columnByName(column: String): AnyColumn? = columns.find { it.dbName == column }
 
-    fun alias(): String = schema.aliasForTable(this)
+    internal fun alias(): String = schema.aliasForTable(this)
 
-    fun schemaAndName(): String = "${schema.dottedName}$tableName"
+    internal fun schemaAndName(): String = "${schema.dottedName}$tableName"
 
-    fun schemaName(): SchemaName = schema.schemaName
+    internal  fun schemaName(): SchemaName = schema.schemaName
 
-    fun withSchema(schema: Schema) {
+    internal fun withSchema(schema: Schema) {
         this.schema = schema
     }
 
@@ -46,13 +46,13 @@ abstract class Table(
     /**
      * The Table's primary key column, or None if no Column is configured as a primary key.
      */
-    fun primaryKey(): IsPrimaryKey? {
+    internal fun primaryKey(): IsPrimaryKey? {
         val idCols = columns.filter { it is IsPrimaryKey }
         Errors.require(idCols.size < 2, "table cannot have more than one primary key")
         return if (idCols.isNotEmpty()) idCols[0] as IsPrimaryKey else null
     }
 
-    fun hasForeignKeyTo(source: Table): Boolean = foreignKeys.any { it.parentColumn.table == source }
+    internal fun hasForeignKeyTo(source: Table): Boolean = foreignKeys.any { it.parentColumn.table == source }
 
     fun leftJoin(table: Table): TableJoinChain =
         TableJoinChain(this).addJoin(JoinFactory.createLeftJoin(this, table))

@@ -21,6 +21,9 @@ object Columns {
     val INTEGER = IntegerColumn(table, DUMMY)
     val INTEGER_NIL = NullableIntegerColumn(table, DUMMY)
 
+    val SHORT = ShortColumn(table, DUMMY)
+    val SHORT_NIL = NullableShortColumn(table, DUMMY)
+
     val BYTE_ARRAY = ByteArrayColumn(table, DUMMY)
     val BYTE_ARRAY_NIL = NullableByteArrayColumn(table, DUMMY)
 
@@ -77,6 +80,7 @@ object Columns {
     fun varcharColumn(nullable: Boolean = false) = if (nullable) VARCHAR_NIL else VARCHAR
     fun longColumn(nullable: Boolean = false) = if (nullable) LONG_NIL else LONG
     fun integerColumn(nullable: Boolean = false) = if (nullable) INTEGER_NIL else INTEGER
+    fun shortColumn(nullable: Boolean = false) = if (nullable) SHORT_NIL else SHORT
     fun byteArrayColumn(nullable: Boolean = false) = if (nullable) BYTE_ARRAY_NIL else BYTE_ARRAY
     fun blobColumn(nullable: Boolean = false) = if (nullable) BLOB_NIL else BLOB
     fun clobColumn(nullable: Boolean = false) = if (nullable) CLOB_NIL else CLOB

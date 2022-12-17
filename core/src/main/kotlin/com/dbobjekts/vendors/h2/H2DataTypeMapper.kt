@@ -7,7 +7,7 @@ import com.dbobjekts.metadata.Columns
 import com.dbobjekts.metadata.DefaultTable
 import org.slf4j.LoggerFactory
 
-//see http://h2database.com/html/datatypes.html#decfloat_type
+//see http://h2database.com/html/datatypes.html
 
 class H2DataTypeMapper : ColumnTypeMapper {
     private val logger = LoggerFactory.getLogger(H2DataTypeMapper::class.java)
@@ -15,59 +15,47 @@ class H2DataTypeMapper : ColumnTypeMapper {
     override operator fun invoke(properties: ColumnMappingProperties): AnyColumn? {
         val nullable = properties.isNullable
         val col = properties.jdbcType.uppercase().trim()
-        return when (col) {
+        val objectColumnPattern = Regex("(JAVA_OBJECT|OBJECT|OTHER)")
+
+        return when {
             //character columns as string
-            "CHARACTER" -> Columns.varcharColumn(nullable)
-            "CHARACTER VARYING" -> Columns.varcharColumn(nullable)
-            "CHARACTER LARGE OBJECT" -> Columns.varcharColumn(nullable)
-            "VARCHAR_IGNORECASE" -> Columns.varcharColumn(nullable)
+            col == "CHARACTER" -> Columns.varcharColumn(nullable)
+            col == "CHARACTER VARYING" -> Columns.varcharColumn(nullable)
+            col == "CHARACTER LARGE OBJECT" -> Columns.varcharColumn(nullable)
+            col == "VARCHAR_IGNORECASE" -> Columns.varcharColumn(nullable)
             //binary columns
-            "BINARY" -> Columns.byteArrayColumn(nullable)
-            "BINARY VARYING" -> Columns.byteArrayColumn(nullable)
-            "BINARY LARGE OBJECT" -> Columns.blobColumn(nullable)
-            "JSON" -> Columns.byteArrayColumn(nullable)
+            col == "BINARY" -> Columns.byteArrayColumn(nullable)
+            col == "BINARY VARYING" -> Columns.byteArrayColumn(nullable)
+            col == "BINARY LARGE OBJECT" -> Columns.blobColumn(nullable)
+            col == "JSON" -> Columns.byteArrayColumn(nullable)
             //tiny integers and boolean as INT
-            "BOOLEAN" -> Columns.booleanColumn(nullable)
-            "TINYINT" -> Columns.byteColumn(nullable)
-            "SMALLINT" -> Columns.integerColumn(nullable)
-            "INTEGER" -> Columns.integerColumn(nullable)
+            col == "BOOLEAN" -> Columns.booleanColumn(nullable)
+            col == "TINYINT" -> Columns.byteColumn(nullable)
+            col == "SMALLINT" -> Columns.integerColumn(nullable)
+            col == "INTEGER" -> Columns.integerColumn(nullable)
             //large numbers and floats
-            "BIGINT" -> Columns.longColumn(nullable)
-            "NUMERIC" -> Columns.bigDecimalColumn(nullable)
-            "DECFLOAT" -> Columns.bigDecimalColumn(nullable)
-            "REAL" -> Columns.floatColumn(nullable)
-            "DOUBLE PRECISION" -> Columns.doubleColumn(nullable)
+            col == "BIGINT" -> Columns.longColumn(nullable)
+            col == "NUMERIC" -> Columns.bigDecimalColumn(nullable)
+            col == "DECFLOAT" -> Columns.bigDecimalColumn(nullable)
+            col == "REAL" -> Columns.floatColumn(nullable)
+            col == "DOUBLE PRECISION" -> Columns.doubleColumn(nullable)
             //date and time
-            "DATE" -> Columns.dateColumn(nullable)
-            "TIME" -> Columns.timeColumn(nullable)
-            "TIME WITH TIME ZONE" -> Columns.offsetDateTimeColumn(nullable)
-            "TIMESTAMP" -> Columns.timeStampColumn(nullable)
-            "TIMESTAMP WITH TIME ZONE" -> Columns.offsetDateTimeColumn(nullable)
-            "ENUM" -> Columns.varcharColumn(nullable)
+            col == "DATE" -> Columns.dateColumn(nullable)
+            col == "TIME" -> Columns.timeColumn(nullable)
+            col == "TIME WITH TIME ZONE" -> Columns.offsetDateTimeColumn(nullable)
+            col == "TIMESTAMP" -> Columns.timeStampColumn(nullable)
+            col == "TIMESTAMP WITH TIME ZONE" -> Columns.offsetDateTimeColumn(nullable)
+            col == "ENUM" -> Columns.varcharColumn(nullable)
             //special types
-            "UUID" -> if (nullable) UUID_NIL else UUID
-            //currently unsupported
-            "INTERVAL" -> {
-                logger.warn("INTERVAL data type is not supported")
-                return null
-            }
+            col == "UUID" -> if (nullable) UUID_NIL else UUID
+            col.startsWith("INTERVAL") -> if (nullable) INTERVAL_NIL else INTERVAL
+            col.matches(objectColumnPattern) ->  if (nullable) H2_OBJECT_NIL else H2_OBJECT
 
-            "JAVA_OBJECT" -> {
-                logger.warn("JAVA_OBJECT data type is not supported")
-                return null
-            }
+            col.contains("GEOMETRY") -> Columns.varcharColumn(nullable)
 
-            "GEOMETRY" -> {
-                logger.warn("GEOMETRY data type is not supported")
-                return null
-            }
+            col.contains("ARRAY") -> if (nullable) OBJECT_ARRAY_NIL else OBJECT_ARRAY
 
-            "ARRAY" -> {
-                logger.warn("ARRAY data type is not supported")
-                return null
-            }
-
-            "ROW" -> {
+            col == "ROW" -> {
                 logger.warn("ROW data type is not supported")
                 return null
             }
@@ -79,33 +67,18 @@ class H2DataTypeMapper : ColumnTypeMapper {
     companion object {
         private val table = DefaultTable
         private const val DUMMY = "dummy"
-        val SUPPORTED_TYPES = listOf<String>(
-            "CHARACTER", "CHARACTER VARYING", "CHARACTER LARGE OBJECT",
-            "VARCHAR_IGNORECASE",
-            "BINARY",
-            "BINARY VARYING",
-            "BINARY LARGE OBJECT",
-            "JSON",
-            "BOOLEAN",
-            "TINYINT",
-            "SMALLINT",
-            "INTEGER",
-            "BIGINT",
-            "NUMERIC",
-            "DECFLOAT",
-            "REAL",
-            "DOUBLE PRECISION",
-            "DATE",
-            "TIME",
-            "TIME WITH TIME ZONE",
-            "TIMESTAMP",
-            "TIMESTAMP WITH TIME ZONE",
-            "ENUM",
-            "UUID"
-        )
+
         val UUID = UUIDColumn(table, DUMMY)
         val UUID_NIL = NullableUUIDColumn(table, DUMMY)
 
+        val INTERVAL = IntervalColumn(table, DUMMY)
+        val INTERVAL_NIL = NullableIntervalColumn(table, DUMMY)
+
+        val H2_OBJECT = H2ObjectColumn(table, DUMMY)
+        val H2_OBJECT_NIL = NullableH2ObjectColumn(table, DUMMY)
+
+        val OBJECT_ARRAY = ObjectArrayColumn(table, DUMMY)
+        val OBJECT_ARRAY_NIL = NullableObjectArrayColumn(table, DUMMY)
     }
 
 }

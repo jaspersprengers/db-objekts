@@ -2,29 +2,27 @@ package com.dbobjekts.codegen
 
 import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
 import com.dbobjekts.codegen.configbuilders.MappingConfigurer
-import com.dbobjekts.codegen.configbuilders.DatabaseSourceConfigurer
+import com.dbobjekts.codegen.configbuilders.DatabaseConfigurer
 import com.dbobjekts.codegen.configbuilders.OutputConfigurer
 import com.dbobjekts.codegen.exclusionfilters.ExclusionConfigurer
 import com.dbobjekts.codegen.metadata.DBCatalogDefinition
-import com.dbobjekts.codegen.parsers.CatalogParser
 import com.dbobjekts.codegen.parsers.DBParserFactory
 import com.dbobjekts.codegen.parsers.DBParserFactoryImpl
 import com.dbobjekts.codegen.writer.SourceFileWriter
 import com.dbobjekts.codegen.writer.SourcesGenerator
 import org.slf4j.LoggerFactory
-import org.xml.sax.helpers.ParserFactory
 
 open class CodeGenerator {
 
     private val logger = LoggerFactory.getLogger(CodeGenerator::class.java)
     private var exclusionConfigurer: ExclusionConfigurer = ExclusionConfigurer()
-    private val dbConfigurer = DatabaseSourceConfigurer()
+    private val dbConfigurer = DatabaseConfigurer()
     private val outputConfigurer = OutputConfigurer()
     private val mappingConfigurer = MappingConfigurer()
 
     internal var parserFactory: DBParserFactory = DBParserFactoryImpl()
 
-    fun dataSourceConfigurer(): DatabaseSourceConfigurer = dbConfigurer
+    fun dataSourceConfigurer(): DatabaseConfigurer = dbConfigurer
 
     fun outputConfigurer(): OutputConfigurer = outputConfigurer
 
@@ -53,13 +51,12 @@ open class CodeGenerator {
     }
 
     private fun build(): CodeGeneratorConfig {
-        dbConfigurer.validate()
 
         logger.info("Base package for generated source code: ${outputConfigurer.basePackage}")
 
         return CodeGeneratorConfig(
             vendor = dbConfigurer.vendor ?: throw IllegalStateException("Vendor is mandatory"),
-            dataSourceInfo = dbConfigurer.dataSourceConfigurer.toDataSourceInfo(),
+            dataSource = dbConfigurer.getDataSource(),
             exclusionConfigurer = exclusionConfigurer,
             basePackage = outputConfigurer.basePackage ?: throw IllegalStateException("Base package is mandatory"),
             customColumnMappers = mappingConfigurer.mappers.toList(),

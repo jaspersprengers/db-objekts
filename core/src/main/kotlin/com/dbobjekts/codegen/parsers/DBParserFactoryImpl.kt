@@ -1,15 +1,13 @@
 package com.dbobjekts.codegen.parsers
 
-import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
 import com.dbobjekts.codegen.configbuilders.DataSourceInfo
 import com.dbobjekts.jdbc.TransactionManagerBuilder
-import com.dbobjekts.vendors.mariadb.MariaDBCatalogParser
-import com.dbobjekts.jdbc.TransactionManagerImpl
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.util.HikariDataSourceFactory
 import com.dbobjekts.vendors.Vendors
 import com.dbobjekts.vendors.h2.H2CatalogParser
+import com.dbobjekts.vendors.mariadb.MariaDBCatalogParser
 import javax.sql.DataSource
 
 
@@ -18,9 +16,7 @@ class DBParserFactoryImpl : DBParserFactory {
     override fun create(
         codeGeneratorConfig: CodeGeneratorConfig
     ): CatalogParser {
-        val dataSource =
-            createDataSource(codeGeneratorConfig.dataSourceInfo ?: throw IllegalArgumentException("dataSourceInfo cannot be null"))
-        val builder = TransactionManagerBuilder().dataSource(dataSource)
+        val builder = TransactionManagerBuilder().dataSource(codeGeneratorConfig.dataSource)
 
         return when (val vendor = codeGeneratorConfig.vendor) {
             Vendors.MARIADB -> {
@@ -37,12 +33,4 @@ class DBParserFactoryImpl : DBParserFactory {
         }
     }
 
-    private fun createDataSource(dataSourceInfo: DataSourceInfo): DataSource {
-        return HikariDataSourceFactory.create(
-            url = dataSourceInfo.url,
-            username = dataSourceInfo.user,
-            password = dataSourceInfo.password,
-            driver = dataSourceInfo.driver
-        )
-    }
 }

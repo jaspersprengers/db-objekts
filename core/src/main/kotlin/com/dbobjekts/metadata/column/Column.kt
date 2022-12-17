@@ -91,7 +91,7 @@ abstract class NonNullableColumn<I>(
         setValue(position, statement, value ?: throw IllegalStateException("Cannot be null"))
     }
 
-    open fun defaultValue(): I = throw IllegalStateException("Retrieved null value for non-nullable column, or no default value available.")
+    open fun defaultValue(): I = throw IllegalStateException("Retrieved null value for non-nullable column '$tableDotName', or no default value available.")
 
 }
 

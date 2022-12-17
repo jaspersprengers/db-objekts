@@ -12,7 +12,7 @@ create table IF NOT EXISTS core.EMPLOYEE
     id            BIGINT primary key auto_increment,
     name          varchar(50) not null,
     salary        double      not null,
-    married       boolean     null,
+    married       BIT(1)     null,
     date_of_birth DATE        not null,
     children      SMALLINT    null,
     hobby_id      varchar(10) null,

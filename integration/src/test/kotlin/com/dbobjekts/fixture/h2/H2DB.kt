@@ -1,28 +1,30 @@
 package com.dbobjekts.fixture.h2
 
+import com.dbobjekts.api.DBObjekts
 import com.dbobjekts.api.Transaction
-import com.dbobjekts.fixture.TestDatabaseFacade
+import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.integration.h2.Catalogdefinition
 import com.dbobjekts.integration.h2.core.*
 import com.dbobjekts.integration.h2.hr.Certificate
 import com.dbobjekts.integration.h2.hr.Hobby
-import com.dbobjekts.jdbc.TransactionImpl
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.util.HikariDataSourceFactory
-import com.dbobjekts.vendors.h2.H2DataTypeMapper
+import com.dbobjekts.util.StatementLogger
+import org.slf4j.LoggerFactory
 import javax.sql.DataSource
 
-object H2DB : TestDatabaseFacade() {
-
+object H2DB {
+    private val logger = LoggerFactory.getLogger(H2DB::class.java)
+    
     fun <T> newTransaction(fct: (Transaction) -> T) = getTransactionManager().newTransaction(fct)
 
-    override fun setupDatabaseObjects(forceDelete: Boolean) {
+     fun setupDatabaseObjects(forceDelete: Boolean = false) {
         getTransactionManager().newTransaction { createExampleCatalog(it) }
         if (forceDelete)
             deleteAllTables()
     }
 
-    override fun deleteAllTables() {
+     fun deleteAllTables() {
         getTransactionManager().newTransaction { tr ->
             tr.deleteFrom(EmployeeAddress).noWhereClause()
             tr.deleteFrom(EmployeeDepartment).noWhereClause()
@@ -36,13 +38,25 @@ object H2DB : TestDatabaseFacade() {
         }
     }
 
-    override fun createDataSource(): DataSource = HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
+     fun createDataSource(): DataSource =
+        HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
 
-    override val catalog: Catalog = Catalogdefinition
+     val catalog: Catalog = Catalogdefinition
 
+    fun getTransactionManager(autoCommit: Boolean = true): TransactionManager {
+        DBObjekts.configure()
+            .dataSource(dataSource = createDataSource())
+            .catalog(catalog)
+            .customLogger(StatementLogger())
+            .autoCommit(autoCommit)
+            .buildForSingleton()
+        return DBObjekts.singletonTransactionManager()
+    }
+    
     private fun createExampleCatalog(transaction: Transaction) {
 
         transaction.execute("CREATE SCHEMA if not exists core authorization sa")
+
         transaction.execute("CREATE SCHEMA if not exists hr authorization sa")
 
         transaction.execute("CREATE SEQUENCE IF NOT EXISTS core.EMPLOYEE_SEQ START WITH 10")
@@ -117,8 +131,15 @@ object H2DB : TestDatabaseFacade() {
                 timestamp_col_nil             TIMESTAMP                   NULL,
                 timestampwithtimezone_col     TIMESTAMP WITH TIME ZONE    NOT NULL,
                 timestampwithtimezone_col_nil TIMESTAMP WITH TIME ZONE    NULL,
-                uuid_col                      UUID                        NOT NULL,
-                uuid_col_nil                  UUID                        NULL
+                uuid_col                      UUID                        NOT NULL,                             
+                uuid_col_nil                  UUID                        NULL,
+                interval_col                  INTERVAL MONTH                        NOT NULL,
+                interval_col_nil              INTERVAL MONTH                     NULL,
+                geometry_col_nil              GEOMETRY NULL,
+                int_array_col                 INTEGER ARRAY[10] NOT NULL,
+                int_array_col_nil           INTEGER ARRAY[10] NULL,
+                object_col                  JAVA_OBJECT NOT NULL,
+                object_col_nil              JAVA_OBJECT NULL
             );
         """.trimIndent()
 

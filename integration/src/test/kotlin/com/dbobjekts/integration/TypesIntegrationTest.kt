@@ -5,10 +5,14 @@ import com.dbobjekts.integration.h2.core.AllTypes
 import com.dbobjekts.metadata.column.BlobColumn
 import com.dbobjekts.metadata.column.ClobColumn
 import com.dbobjekts.statement.whereclause.SubClause
+import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
+import org.h2.api.Interval
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import java.io.Serializable
 import java.lang.Byte
 import java.math.BigDecimal
 import java.time.*
@@ -42,54 +46,61 @@ class TypesIntegrationTest {
         H2DB.newTransaction { tr ->
 
             val row = tr.insert(AllTypes)
-            .characterCol("C")
-            .characterColNil(null)
-            .charactervaryingCol("Hello world")
-            .charactervaryingColNil(null)
-            .characterlargeobjectCol("Hello world")
-            .characterlargeobjectColNil(null)
-            .varcharIgnorecaseCol("HeLlLo WoRlD")
-            .varcharIgnorecaseColNil(null)
-            .enumCol("maybe")
-            .enumColNil(null)
-            .binaryCol("bytearray".encodeToByteArray())
-            .binaryColNil(null)
-            .binaryvaryingCol("binary varying".encodeToByteArray())
-            .binaryvaryingColNil(null)
-            .binarylargeobjectCol(BlobColumn.ofString(fox))
-            .binarylargeobjectColNil(null)
-            .jsonCol("{\"value\": 42}".encodeToByteArray())
-            .jsonColNil(null)
-            .booleanCol(true)
-            .booleanColNil(null)
-            .tinyintCol(0B1)
-            .tinyintColNil(null)
-            .smallintCol(42)
-            .smallintColNil(null)
-            .integerCol(100_000)
-            .integerColNil(null)
-            .bigintCol(1_000_000_000L)
-            .bigintColNil(null)
-            .numericCol(BigDecimal.TEN)
-            .numericColNil(null)
-            .decfloatCol(BigDecimal.TEN)
-            .decfloatColNil(null)
-            .realCol(42.42f)
-            .realColNil(null)
-            .doubleprecisionCol(100_000.999999)
-            .doubleprecisionColNil(null)
-            .dateCol(date)
-            .dateColNil(null)
-            .timeCol(time)
-            .timeColNil(null)
-            .timewithtimezoneCol(dateTimeEuropeAsOffset)
-            .timewithtimezoneColNil(null)
-            .timestampCol(dateTimeEurope.toInstant())
-            .timestampColNil(null)
-            .timestampwithtimezoneCol(dateTimeEuropeAsOffset)
-            .timestampwithtimezoneColNil(null)
-            .uuidCol(UUID.randomUUID())
-            .uuidColNil(null).execute()
+                .characterCol("C")
+                .characterColNil(null)
+                .charactervaryingCol("Hello world")
+                .charactervaryingColNil(null)
+                .characterlargeobjectCol("Hello world")
+                .characterlargeobjectColNil(null)
+                .varcharIgnorecaseCol("HeLlLo WoRlD")
+                .varcharIgnorecaseColNil(null)
+                .enumCol("maybe")
+                .enumColNil(null)
+                .binaryCol("bytearray".encodeToByteArray())
+                .binaryColNil(null)
+                .binaryvaryingCol("binary varying".encodeToByteArray())
+                .binaryvaryingColNil(null)
+                .binarylargeobjectCol(BlobColumn.ofString(fox))
+                .binarylargeobjectColNil(null)
+                .jsonCol("{\"value\": 42}".encodeToByteArray())
+                .jsonColNil(null)
+                .booleanCol(true)
+                .booleanColNil(null)
+                .tinyintCol(0B1)
+                .tinyintColNil(null)
+                .smallintCol(42)
+                .smallintColNil(null)
+                .integerCol(100_000)
+                .integerColNil(null)
+                .bigintCol(1_000_000_000L)
+                .bigintColNil(null)
+                .numericCol(BigDecimal.TEN)
+                .numericColNil(null)
+                .decfloatCol(BigDecimal.TEN)
+                .decfloatColNil(null)
+                .realCol(42.42f)
+                .realColNil(null)
+                .doubleprecisionCol(100_000.999999)
+                .doubleprecisionColNil(null)
+                .dateCol(date)
+                .dateColNil(null)
+                .timeCol(time)
+                .timeColNil(null)
+                .timewithtimezoneCol(dateTimeEuropeAsOffset)
+                .timewithtimezoneColNil(null)
+                .timestampCol(dateTimeEurope.toInstant())
+                .timestampColNil(null)
+                .timestampwithtimezoneCol(dateTimeEuropeAsOffset)
+                .timestampwithtimezoneColNil(null)
+                .uuidCol(UUID.randomUUID())
+                .uuidColNil(null)
+                .intervalCol(Interval.ofMonths(15))
+                .intervalColNil(null)
+                //.geometryCol("GEOMETRY X'00000000013ff00000000000003ff0000000000000'")
+                //.geometryColNil(null)
+                .intArrayCol(arrayOf(1, 2, 3))
+                .objectCol(SerializableColumn("John"))
+                .execute()
 
             val where: SubClause = AllTypes.id.eq(row)
             assertEquals("C", tr.select(t.characterCol).where(where).first())
@@ -97,6 +108,10 @@ class TypesIntegrationTest {
             assertEquals("Hello world", tr.select(t.characterlargeobjectCol).where(where).first())
             assertEquals("HeLlLo WoRlD", tr.select(t.varcharIgnorecaseCol).where(where).first())
             assertEquals("maybe", tr.select(t.enumCol).where(where).first())
+
+            //assertEquals(15, tr.select(t.intervalCol).where(where).first().months)
+            //assertThat(tr.select(t.intArrayCol).where(where).first().asList()).containsExactly(1,2,3)
+            //assertThat(tr.select(t.objectCol).where(where).first().toString()).isEqualTo("name")
 
             /*assertEquals(42, tr.select(t.smallintC).where(where).first())
             assertEquals(424242, tr.select(t.intC).where(where).first())
@@ -116,4 +131,8 @@ class TypesIntegrationTest {
         }
 
     }
+}
+
+class SerializableColumn(var name: String) : Serializable{
+
 }
