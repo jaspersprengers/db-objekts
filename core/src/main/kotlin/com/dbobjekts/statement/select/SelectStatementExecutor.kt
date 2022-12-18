@@ -1,7 +1,6 @@
 package com.dbobjekts.statement.select
 
-import com.dbobjekts.AnyColumn
-import com.dbobjekts.SQL
+import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.TableJoinChain
@@ -95,7 +94,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         )
     }
 
-    private fun toSQL(): SQL {
+    private fun toSQL(): String {
         getWhereClause().getFlattenedConditions().forEach { registerTable(it.column.table) }
         val builder = SelectStatementSqlBuilder()
         builder.withWhereClause(getWhereClause())

@@ -1,8 +1,8 @@
 package com.dbobjekts.codegen.datatypemapper
 
-import com.dbobjekts.ColumnName
-import com.dbobjekts.SchemaName
-import com.dbobjekts.TableName
+import com.dbobjekts.api.ColumnName
+import com.dbobjekts.api.SchemaName
+import com.dbobjekts.api.TableName
 import com.dbobjekts.codegen.metadata.ColumnMetaData
 
 data class ColumnMappingProperties(val schema: SchemaName,

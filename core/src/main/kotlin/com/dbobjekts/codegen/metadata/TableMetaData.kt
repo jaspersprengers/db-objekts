@@ -1,7 +1,7 @@
 package com.dbobjekts.codegen.metadata
 
-import com.dbobjekts.SchemaName
-import com.dbobjekts.TableName
+import com.dbobjekts.api.SchemaName
+import com.dbobjekts.api.TableName
 
 data class TableMetaData(
     val schema: SchemaName,

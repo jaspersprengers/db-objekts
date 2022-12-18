@@ -1,6 +1,6 @@
 package com.dbobjekts.vendors.mariadb
 
-import com.dbobjekts.AnyColumn
+import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper
 import com.dbobjekts.metadata.ColumnFactory

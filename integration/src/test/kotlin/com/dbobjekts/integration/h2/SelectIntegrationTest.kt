@@ -1,6 +1,6 @@
 package com.dbobjekts.integration.h2
 
-import com.dbobjekts.Tuple2
+import com.dbobjekts.api.Tuple2
 import com.dbobjekts.integration.h2.core.Address
 import com.dbobjekts.integration.h2.core.Country
 import com.dbobjekts.integration.h2.core.Employee

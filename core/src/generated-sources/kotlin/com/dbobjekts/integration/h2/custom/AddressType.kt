@@ -1,6 +1,6 @@
 package com.dbobjekts.integration.h2.custom
 
-import com.dbobjekts.TableName
+import com.dbobjekts.api.TableName
 import com.dbobjekts.integration.mariadb.core.Employee
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.NonNullableColumn

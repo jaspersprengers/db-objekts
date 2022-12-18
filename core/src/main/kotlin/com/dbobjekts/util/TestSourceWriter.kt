@@ -1,6 +1,6 @@
 package com.dbobjekts.util
 
-import com.dbobjekts.PackageName
+import com.dbobjekts.api.PackageName
 import com.dbobjekts.codegen.writer.SourceWriter
 import java.util.*
 

@@ -1,6 +1,6 @@
 package com.dbobjekts.codegen.datatypemapper
 
-import com.dbobjekts.AnyColumn
+import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.metadata.column.NonNullableColumn
 

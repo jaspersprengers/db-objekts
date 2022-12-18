@@ -1,8 +1,7 @@
 package com.dbobjekts.codegen.configbuilders
 
-import com.dbobjekts.PackageName
+import com.dbobjekts.api.PackageName
 import com.dbobjekts.codegen.writer.SourceWriter
-import com.dbobjekts.util.StringUtil
 
 
 class OutputConfigurer {

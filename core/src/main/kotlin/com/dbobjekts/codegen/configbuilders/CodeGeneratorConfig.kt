@@ -1,13 +1,9 @@
 package com.dbobjekts.codegen.configbuilders
 
-import com.dbobjekts.PackageName
-import com.dbobjekts.SchemaName
-import com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper
+import com.dbobjekts.api.PackageName
 import com.dbobjekts.codegen.datatypemapper.CustomColumnTypeMapper
 import com.dbobjekts.codegen.datatypemapper.SequenceForPrimaryKeyMapper
 import com.dbobjekts.codegen.exclusionfilters.ExclusionConfigurer
-import com.dbobjekts.codegen.metadata.NoGeneratedPrimaryKeyStrategy
-import com.dbobjekts.codegen.metadata.PrimaryKeyStrategy
 import com.dbobjekts.vendors.Vendor
 import javax.sql.DataSource
 

@@ -1,9 +1,9 @@
 package com.dbobjekts.metadata
 
-import com.dbobjekts.AnyColumn
+import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.util.StringUtil
 
-class TableJoinChain(val table: Table):TableOrJoin, Cloneable, SerializableToSQL {
+class TableJoinChain(val table: Table) : TableOrJoin, Cloneable, SerializableToSQL {
 
     private val joins: MutableList<JoinBase> = mutableListOf()
 
@@ -25,7 +25,7 @@ class TableJoinChain(val table: Table):TableOrJoin, Cloneable, SerializableToSQL
     }
 
 
-    internal  fun checkTableNotJoinedAlready(table: Table) {
+    internal fun checkTableNotJoinedAlready(table: Table) {
         if (joins.any { it.containsTable(table) })
             throw IllegalArgumentException("Table ${table.tableName} is already present in join. You cannot add it again: ${toSQL()}")
     }
@@ -35,7 +35,7 @@ class TableJoinChain(val table: Table):TableOrJoin, Cloneable, SerializableToSQL
     private fun extractJoinedColumnPair(table: Table): Pair<AnyColumn, AnyColumn> {
         val head =
             if (joins.isEmpty()) getJoinPair(lastJoinTable(), lastJoinTable(), table)
-              else joins.reversed().map { getJoinPair(it.leftPart.table, it.rightPart.table, table) }.filterNotNull().firstOrNull()
+            else joins.reversed().map { getJoinPair(it.leftPart.table, it.rightPart.table, table) }.filterNotNull().firstOrNull()
 
         return if (head == null) throw IllegalStateException("Cannot join ${table.toSQL()} to ${lastJoinTable().toSQL()}") else head
     }
@@ -49,22 +49,22 @@ class TableJoinChain(val table: Table):TableOrJoin, Cloneable, SerializableToSQL
     private fun getJoinPair(left: Table, right: Table, tableToAdd: Table): Pair<AnyColumn, AnyColumn>? {
 
         left.getForeignKeyToParent(tableToAdd)?.let {
-            return Pair(it.column, tableToAdd.columnByName(it.parentColumn.dbName)?:throw java.lang.IllegalStateException(""))
+            return Pair(it.column, tableToAdd.columnByName(it.parentColumn.dbName) ?: throw java.lang.IllegalStateException(""))
         }
 
         right.getForeignKeyToParent(tableToAdd)?.let {
-            return Pair(it.column, tableToAdd.columnByName(it.parentColumn.dbName)?:throw java.lang.IllegalStateException(""))
+            return Pair(it.column, tableToAdd.columnByName(it.parentColumn.dbName) ?: throw java.lang.IllegalStateException(""))
         }
 
         tableToAdd.getForeignKeyToParent(left)?.let {
-            return Pair(left.columnByName(it.parentColumn.dbName)?:throw java.lang.IllegalStateException(""), it.column)
+            return Pair(left.columnByName(it.parentColumn.dbName) ?: throw java.lang.IllegalStateException(""), it.column)
         }
 
         tableToAdd.getForeignKeyToParent(right)?.let {
-            return Pair(right.columnByName(it.parentColumn.dbName)?:throw java.lang.IllegalStateException(""), it.column)
+            return Pair(right.columnByName(it.parentColumn.dbName) ?: throw java.lang.IllegalStateException(""), it.column)
         }
 
-    /*   *//* val lrFK = left.getForeignKeyToParent(tableToAdd)
+        /*   *//* val lrFK = left.getForeignKeyToParent(tableToAdd)
         if (lrFK != null) {
             val fk = lrFK
             return Pair(fk.column, tableToAdd.columnByName(fk.parentColumn.dbName)?:throw java.lang.IllegalStateException(""))

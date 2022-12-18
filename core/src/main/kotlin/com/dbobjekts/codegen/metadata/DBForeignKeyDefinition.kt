@@ -1,9 +1,6 @@
 package com.dbobjekts.codegen.metadata
 
-import com.dbobjekts.AnyColumn
-import com.dbobjekts.ColumnName
-import com.dbobjekts.SchemaName
-import com.dbobjekts.TableName
+import com.dbobjekts.api.*
 
 class DBForeignKeyDefinition(table: TableName,
                              columnName: ColumnName,

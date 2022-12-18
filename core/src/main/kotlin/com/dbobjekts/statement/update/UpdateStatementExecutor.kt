@@ -1,16 +1,13 @@
 package com.dbobjekts.statement.update
 
-import com.dbobjekts.AnyColumnAndValue
-import com.dbobjekts.AnySqlParameter
-import com.dbobjekts.SQL
+import com.dbobjekts.api.AnyColumnAndValue
+import com.dbobjekts.api.AnySqlParameter
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.statement.ColumnsForUpdate
 import com.dbobjekts.statement.SQLOptions
 import com.dbobjekts.statement.StatementBase
-import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
-import com.dbobjekts.statement.whereclause.WhereClause
 import com.dbobjekts.util.Errors
 import com.dbobjekts.util.StringUtil
 
@@ -50,11 +47,11 @@ class UpdateStatementExecutor(
         }
     }
 
-    fun toSQL(): SQL {
+    fun toSQL(): String {
         getWhereClause().getFlattenedConditions().forEach { registerTable(it.column.table) }
         val columns = columnsForUpdate.params.map { it.column.aliasDotName() + " = ?" }.joinToString(",")
         val clause = getWhereClause().build(SQLOptions(includeAlias = true))
-        return SQL(StringUtil.concat(listOf("update", joinChain().toSQL(), "set", columns, clause)))
+        return StringUtil.concat(listOf("update", joinChain().toSQL(), "set", columns, clause))
     }
 
     fun getAllParameters(): List<AnySqlParameter> {

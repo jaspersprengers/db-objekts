@@ -1,6 +1,7 @@
 package com.dbobjekts.metadata
 
-import com.dbobjekts.SchemaName
+import com.dbobjekts.api.SchemaName
+
 
 open class Schema(
     var catalog: Catalog,

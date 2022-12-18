@@ -1,7 +1,7 @@
 package com.dbobjekts.statement
 
-import com.dbobjekts.AnyColumnAndValue
-import com.dbobjekts.AnySqlParameter
+import com.dbobjekts.api.AnyColumnAndValue
+import com.dbobjekts.api.AnySqlParameter
 import com.dbobjekts.metadata.column.ColumnAndValue
 import com.dbobjekts.metadata.column.NullableColumnAndValue
 

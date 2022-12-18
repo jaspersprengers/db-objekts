@@ -1,6 +1,6 @@
 package com.dbobjekts.codegen.writer
 
-import com.dbobjekts.PackageName
+import com.dbobjekts.api.PackageName
 import com.dbobjekts.codegen.metadata.DBColumnDefinition
 import com.dbobjekts.codegen.metadata.DBForeignKeyDefinition
 import com.dbobjekts.codegen.metadata.DBTableDefinition
@@ -45,7 +45,7 @@ class TableSourcesBuilder(
         }
 
         val importLineBuilder = ImportLineBuilder()
-        val imports = listOf("AnyColumn","AnyColumnAndValue","jdbc.ConnectionAdapter","metadata.Table","statement.update.ColumnForWriteMapContainerImpl","statement.update.HasUpdateBuilder","statement.insert.InsertBuilderBase","statement.update.UpdateBuilderBase")
+        val imports = listOf("api.AnyColumn","api.AnyColumnAndValue","jdbc.ConnectionAdapter","metadata.Table","statement.update.ColumnForWriteMapContainerImpl","statement.update.HasUpdateBuilder","statement.insert.InsertBuilderBase","statement.update.UpdateBuilderBase")
         imports.forEach { importLineBuilder.add("com.dbobjekts.$it") }
         generateImportsForForeignKeys().forEach { importLineBuilder.add(it) }
         strBuilder.append(importLineBuilder.build())

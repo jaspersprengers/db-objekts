@@ -1,7 +1,7 @@
 package com.dbobjekts.metadata
 
-import com.dbobjekts.AnyColumn
-import com.dbobjekts.AnyForeignKey
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyForeignKey
 
 class ForeignKeyJoin(val parentColumn: AnyColumn,
                      val foreignKey: AnyForeignKey) {

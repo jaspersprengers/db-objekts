@@ -1,7 +1,7 @@
 package com.dbobjekts.integration.mariadb
 
-import com.dbobjekts.Tuple2
-import com.dbobjekts.Tuple4
+import com.dbobjekts.api.Tuple2
+import com.dbobjekts.api.Tuple4
 import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.integration.mariadb.Aliases.a

@@ -1,6 +1,6 @@
 package com.dbobjekts.integration.h2
 
-import com.dbobjekts.Tuple3
+import com.dbobjekts.api.Tuple3
 import com.dbobjekts.integration.h2.core.*
 import com.dbobjekts.integration.h2.custom.AddressType
 import com.dbobjekts.integration.h2.hr.*

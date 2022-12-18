@@ -1,8 +1,8 @@
 package com.dbobjekts.codegen
 
-import com.dbobjekts.PackageName
-import com.dbobjekts.SchemaName
-import com.dbobjekts.TableName
+import com.dbobjekts.api.PackageName
+import com.dbobjekts.api.SchemaName
+import com.dbobjekts.api.TableName
 import com.dbobjekts.codegen.exclusionfilters.ExclusionConfigurer
 import com.dbobjekts.codegen.exclusionfilters.TableExclusionFilter
 import com.dbobjekts.codegen.metadata.DBTableDefinition

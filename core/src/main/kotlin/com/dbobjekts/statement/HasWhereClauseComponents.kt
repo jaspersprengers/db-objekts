@@ -1,7 +1,7 @@
 package com.dbobjekts.statement
 
-import com.dbobjekts.AnyCondition
-import com.dbobjekts.AnySqlParameter
+import com.dbobjekts.api.AnyCondition
+import com.dbobjekts.api.AnySqlParameter
 import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.statement.whereclause.WhereClauseComponent
 

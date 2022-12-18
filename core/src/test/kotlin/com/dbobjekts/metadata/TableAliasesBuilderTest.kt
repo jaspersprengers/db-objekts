@@ -1,8 +1,8 @@
 package com.dbobjekts.metadata
 
-import com.dbobjekts.AnyColumn
-import com.dbobjekts.SchemaName
-import com.dbobjekts.TableName
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.SchemaName
+import com.dbobjekts.api.TableName
 import com.dbobjekts.integration.h2.core.EmployeeAddress
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

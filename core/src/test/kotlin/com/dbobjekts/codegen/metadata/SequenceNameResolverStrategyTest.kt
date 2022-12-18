@@ -1,10 +1,10 @@
 package com.dbobjekts.codegen.metadata
 
-import com.dbobjekts.ColumnName
-import com.dbobjekts.SchemaName
-import com.dbobjekts.TableName
-import com.dbobjekts.codegen.configbuilders.MappingConfigurer
+import com.dbobjekts.api.ColumnName
+import com.dbobjekts.api.SchemaName
+import com.dbobjekts.api.TableName
 import com.dbobjekts.codegen.configbuilders.GeneratedPrimaryKeyConfigurer
+import com.dbobjekts.codegen.configbuilders.MappingConfigurer
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test

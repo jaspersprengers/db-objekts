@@ -1,7 +1,9 @@
 package com.dbobjekts.api
 
-import com.dbobjekts.jdbc.*
-import com.dbobjekts.jdbc.TransactionImpl
+import com.dbobjekts.jdbc.ConnectionAdapter
+import com.dbobjekts.jdbc.DataSourceAdapter
+import com.dbobjekts.jdbc.TransactionCache
+import com.dbobjekts.jdbc.TransactionSettings
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.statement.TransactionResultValidator
 import com.dbobjekts.util.StatementLogger
@@ -24,11 +26,11 @@ class TransactionManager(
 
     override fun load(key: Long): Transaction = newTransaction()
 
-    private fun newTransaction(): TransactionImpl {
+    private fun newTransaction(): Transaction {
         val connection: Connection = dataSource.createConnection()
         require(!connection.isClosed, { "Connection is closed" })
         connection.setAutoCommit(transactionSettings.autoCommit)
-        return TransactionImpl(
+        return Transaction(
             ConnectionAdapter(
                 connection,
                 statementLogger,

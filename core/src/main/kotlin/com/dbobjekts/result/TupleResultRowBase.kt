@@ -1,6 +1,6 @@
 package com.dbobjekts.result
 
-import com.dbobjekts.AnyColumn
+import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.jdbc.JDBCResultSetAdapter
 import java.sql.ResultSet
 

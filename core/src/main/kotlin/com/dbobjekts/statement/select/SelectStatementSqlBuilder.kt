@@ -1,6 +1,5 @@
 package com.dbobjekts.statement.select
 
-import com.dbobjekts.SQL
 import com.dbobjekts.metadata.TableJoinChain
 import com.dbobjekts.result.ColumnInResultRow
 import com.dbobjekts.statement.SQLOptions
@@ -43,23 +42,26 @@ class SelectStatementSqlBuilder {
         return this
     }
 
-    protected fun whereClauseSql(): String = whereClause?.build(SQLOptions(includeAlias = true))?:""
+    protected fun whereClauseSql(): String = whereClause?.build(SQLOptions(includeAlias = true)) ?: ""
 
     protected fun orderBySql(): String = if (orderByClauses.isNotEmpty()) ("ORDER BY " + StringUtil.joinBy(orderByClauses, ",")) else ""
 
-    protected fun columnsToSelect(): String = StringUtil.joinBy(columnsToFetch, {"${it.column.table.alias()}.${it.column.dbName}"}, ",")
+    protected fun columnsToSelect(): String = StringUtil.joinBy(columnsToFetch, { "${it.column.table.alias()}.${it.column.dbName}" }, ",")
 
-    protected fun limitClause(): String = limitFunction?.invoke(limitBy)?:""
+    protected fun limitClause(): String = limitFunction?.invoke(limitBy) ?: ""
 
-    fun build(): SQL =
-        SQL(StringUtil.concat(listOf(
-            "select",
-            columnsToSelect(),
-            "from",
-            joinChain.toSQL(),
-            whereClauseSql(),
-            orderBySql(),
-            limitClause())))
+    fun build(): String =
+        StringUtil.concat(
+            listOf(
+                "select",
+                columnsToSelect(),
+                "from",
+                joinChain.toSQL(),
+                whereClauseSql(),
+                orderBySql(),
+                limitClause()
+            )
+        )
 
 
 }

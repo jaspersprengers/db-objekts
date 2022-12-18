@@ -1,6 +1,6 @@
 package com.dbobjekts.statement.select
 
-import com.dbobjekts.AnyColumn
+import com.dbobjekts.api.AnyColumn
 
 interface SelectOptions
 

@@ -1,11 +1,13 @@
 package com.dbobjekts
 
+import com.dbobjekts.api.PackageName
+import com.dbobjekts.api.SchemaName
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 
-class CoreValueClassesSpec {
+class CoreValueClassesTest {
 
 
     @Test

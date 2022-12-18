@@ -1,9 +1,9 @@
 package com.dbobjekts.metadata
 
-import com.dbobjekts.AnyColumn
-import com.dbobjekts.AnyForeignKey
-import com.dbobjekts.SchemaName
-import com.dbobjekts.TableName
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyForeignKey
+import com.dbobjekts.api.SchemaName
+import com.dbobjekts.api.TableName
 import com.dbobjekts.metadata.column.IsPrimaryKey
 import com.dbobjekts.util.Errors
 import com.dbobjekts.util.ValidateDBObjectName

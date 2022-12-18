@@ -1,6 +1,6 @@
 package com.dbobjekts.metadata
 
-import com.dbobjekts.AnyColumn
+import com.dbobjekts.api.AnyColumn
 
 
 class LeftJoin(leftPart: AnyColumn, rightPart: AnyColumn) : JoinBase(leftPart, rightPart) {

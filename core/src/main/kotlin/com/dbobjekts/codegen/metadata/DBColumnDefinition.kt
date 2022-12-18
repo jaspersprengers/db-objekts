@@ -1,9 +1,9 @@
 package com.dbobjekts.codegen.metadata
 
-import com.dbobjekts.AnyColumn
-import com.dbobjekts.ColumnName
-import com.dbobjekts.PackageName
-import com.dbobjekts.TableName
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.ColumnName
+import com.dbobjekts.api.PackageName
+import com.dbobjekts.api.TableName
 
 open class DBColumnDefinition(val tableName: TableName,
                               val columnName: ColumnName,

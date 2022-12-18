@@ -4,7 +4,7 @@ import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.metadata.column.*
 
 
-enum class Columns(val columnClass: NonNullableColumn<*>) {
+enum class Columns(val instance: NonNullableColumn<*>) {
     VARCHAR(ColumnFactory.VARCHAR),
     BYTE(ColumnFactory.BYTE),
     SHORT(ColumnFactory.SHORT),

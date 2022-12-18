@@ -1,7 +1,7 @@
 package com.dbobjekts.codegen.metadata
 
-import com.dbobjekts.PackageName
-import com.dbobjekts.SchemaName
+import com.dbobjekts.api.PackageName
+import com.dbobjekts.api.SchemaName
 
 data class DBSchemaDefinition(override val packageName: PackageName,
                               val schemaName: SchemaName,

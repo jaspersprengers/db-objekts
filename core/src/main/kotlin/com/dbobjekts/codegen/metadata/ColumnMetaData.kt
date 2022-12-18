@@ -1,6 +1,6 @@
 package com.dbobjekts.codegen.metadata
 
-import com.dbobjekts.ColumnName
+import com.dbobjekts.api.ColumnName
 
 data class ColumnMetaData(
     val columnName: ColumnName = ColumnName(""),

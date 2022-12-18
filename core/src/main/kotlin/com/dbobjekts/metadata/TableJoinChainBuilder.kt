@@ -1,6 +1,6 @@
 package com.dbobjekts.metadata
 
-import com.dbobjekts.AnyForeignKey
+import com.dbobjekts.api.AnyForeignKey
 import com.dbobjekts.util.StringUtil
 
 class TableJoinChainBuilder(

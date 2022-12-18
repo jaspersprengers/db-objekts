@@ -1,7 +1,7 @@
 package com.dbobjekts.integration.h2
 
-import com.dbobjekts.Tuple6
-import com.dbobjekts.Tuple9
+import com.dbobjekts.api.Tuple6
+import com.dbobjekts.api.Tuple9
 import com.dbobjekts.integration.h2.core.Address
 import com.dbobjekts.integration.h2.core.Employee
 import com.dbobjekts.integration.h2.hr.Hobby

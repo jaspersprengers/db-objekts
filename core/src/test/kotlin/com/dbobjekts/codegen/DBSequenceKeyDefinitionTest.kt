@@ -1,7 +1,7 @@
 package com.dbobjekts.codegen
 
-import com.dbobjekts.ColumnName
-import com.dbobjekts.TableName
+import com.dbobjekts.api.ColumnName
+import com.dbobjekts.api.TableName
 import com.dbobjekts.codegen.metadata.DBSequenceKeyDefinition
 import com.dbobjekts.metadata.ColumnFactory
 import org.junit.jupiter.api.Assertions.assertEquals

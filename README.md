@@ -251,7 +251,7 @@ Note that these constraints are executed server-side, as they are part of the SQ
 * Jasper Sprengers at jaspersprengers@outlook.com
 
 
-import com.dbobjekts.Tuple4
+import com.dbobjekts.api.Tuple4
 import com.dbobjekts.example.Aliases.c
 import com.dbobjekts.example.Aliases.ea
 import com.dbobjekts.example.Catalogdefinition

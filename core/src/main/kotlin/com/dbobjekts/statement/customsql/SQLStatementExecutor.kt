@@ -1,26 +1,25 @@
 package com.dbobjekts.statement.customsql
 
-import com.dbobjekts.AnyColumn
-import com.dbobjekts.AnySqlParameter
-import com.dbobjekts.SQL
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnySqlParameter
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.result.ColumnInResultRow
-import com.dbobjekts.result.ResultRow1
 import com.dbobjekts.result.ResultRow
+import com.dbobjekts.result.ResultRow1
 import com.dbobjekts.statement.SqlParameter
 import com.dbobjekts.statement.StatementExecutor
 
 
 open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
     override val connection: ConnectionAdapter,
-    internal val sql: SQL,
+    internal val sql: String,
     internal val args: List<Any>,
     columnClasses: List<AnyColumn>,
     internal val selectResultSet: RSB
 ) : StatementExecutor {
 
-    constructor(connection: ConnectionAdapter, sql: SQL, args: List<Any>) : this(connection, sql, args, listOf(ColumnFactory.LONG), ResultRow1<Long>() as RSB)
+    constructor(connection: ConnectionAdapter, sql: String, args: List<Any>) : this(connection, sql, args, listOf(ColumnFactory.LONG), ResultRow1<Long>() as RSB)
 
     internal val columnsToFetch: List<ColumnInResultRow> =
         columnClasses.mapIndexed { index, column -> ColumnInResultRow(1 + index, column)}

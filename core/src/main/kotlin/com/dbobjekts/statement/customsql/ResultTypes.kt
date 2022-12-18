@@ -1,7 +1,6 @@
 package com.dbobjekts.statement.customsql
 
-import com.dbobjekts.SQL
-import com.dbobjekts.*
+import com.dbobjekts.api.*
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.metadata.column.Column
@@ -9,15 +8,11 @@ import com.dbobjekts.result.*
 import java.math.BigDecimal
 import java.sql.Blob
 import java.sql.Clob
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.OffsetDateTime
+import java.time.*
 
 class CustomSQLStatementBuilder(
     private val conn: ConnectionAdapter,
-    private val sql: SQL,
+    private val sql: String,
     private val args: List<Any>
 ) {
     fun <T1> returning(ret: Returning1<T1>): SQLStatementExecutor<T1, ResultRow1<T1>> {
@@ -29,18 +24,22 @@ class CustomSQLStatementBuilder(
         val columns = listOf(ret.column1, ret.column2)
         return SQLStatementExecutor(conn, sql, args.toList(), columns, ResultRow2<T1, T2>())
     }
+
     fun <T1, T2, T3> returning(ret: Returning3<T1, T2, T3>): SQLStatementExecutor<Tuple3<T1, T2, T3>, ResultRow3<T1, T2, T3>> {
         val columns = listOf(ret.column1, ret.column2, ret.column3)
         return SQLStatementExecutor(conn, sql, args.toList(), columns, ResultRow3<T1, T2, T3>())
     }
+
     fun <T1, T2, T3, T4> returning(ret: Returning4<T1, T2, T3, T4>): SQLStatementExecutor<Tuple4<T1, T2, T3, T4>, ResultRow4<T1, T2, T3, T4>> {
         val columns = listOf(ret.column1, ret.column2, ret.column3, ret.column4)
         return SQLStatementExecutor(conn, sql, args.toList(), columns, ResultRow4<T1, T2, T3, T4>())
     }
+
     fun <T1, T2, T3, T4, T5> returning(ret: Returning5<T1, T2, T3, T4, T5>): SQLStatementExecutor<Tuple5<T1, T2, T3, T4, T5>, ResultRow5<T1, T2, T3, T4, T5>> {
         val columns = listOf(ret.column1, ret.column2, ret.column3, ret.column4, ret.column5)
         return SQLStatementExecutor(conn, sql, args.toList(), columns, ResultRow5<T1, T2, T3, T4, T5>())
     }
+
     fun <T1, T2, T3, T4, T5, T6> returning(ret: Returning6<T1, T2, T3, T4, T5, T6>): SQLStatementExecutor<Tuple6<T1, T2, T3, T4, T5, T6>, ResultRow6<T1, T2, T3, T4, T5, T6>> {
         val columns = listOf(ret.column1, ret.column2, ret.column3, ret.column4, ret.column5, ret.column6)
         return SQLStatementExecutor(conn, sql, args.toList(), columns, ResultRow6<T1, T2, T3, T4, T5, T6>())
@@ -50,12 +49,15 @@ class CustomSQLStatementBuilder(
         val columns = listOf(ret.column1, ret.column2, ret.column3, ret.column4, ret.column5, ret.column6, ret.column7)
         return SQLStatementExecutor(conn, sql, args.toList(), columns, ResultRow7<T1, T2, T3, T4, T5, T6, T7>())
     }
+
     fun <T1, T2, T3, T4, T5, T6, T7, T8> returning(ret: Returning8<T1, T2, T3, T4, T5, T6, T7, T8>): SQLStatementExecutor<Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>, ResultRow8<T1, T2, T3, T4, T5, T6, T7, T8>> {
         val columns = listOf(ret.column1, ret.column2, ret.column3, ret.column4, ret.column5, ret.column6, ret.column7, ret.column8)
         return SQLStatementExecutor(conn, sql, args.toList(), columns, ResultRow8<T1, T2, T3, T4, T5, T6, T7, T8>())
     }
+
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9> returning(ret: Returning9<T1, T2, T3, T4, T5, T6, T7, T8, T9>): SQLStatementExecutor<Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>, ResultRow9<T1, T2, T3, T4, T5, T6, T7, T8, T9>> {
-        val columns = listOf(ret.column1, ret.column2, ret.column3, ret.column4, ret.column5, ret.column6, ret.column7, ret.column8, ret.column9)
+        val columns =
+            listOf(ret.column1, ret.column2, ret.column3, ret.column4, ret.column5, ret.column6, ret.column7, ret.column8, ret.column9)
         return SQLStatementExecutor(conn, sql, args.toList(), columns, ResultRow9<T1, T2, T3, T4, T5, T6, T7, T8, T9>())
     }
 }
@@ -201,7 +203,8 @@ class Returning3<T1, T2, T3>(internal val column1: Column<T1>, internal val colu
     fun timeStamp(): Returning4<T1, T2, T3, Instant> = Returning4(column1, column2, column3, ColumnFactory.TIMESTAMP)
     fun timeStampNil(): Returning4<T1, T2, T3, Instant?> = Returning4(column1, column2, column3, ColumnFactory.TIMESTAMP_NIL)
     fun offsetDateTime(): Returning4<T1, T2, T3, OffsetDateTime> = Returning4(column1, column2, column3, ColumnFactory.OFFSET_DATETIME)
-    fun offsetDateTimeNil(): Returning4<T1, T2, T3, OffsetDateTime?> = Returning4(column1, column2, column3, ColumnFactory.OFFSET_DATETIME_NIL)
+    fun offsetDateTimeNil(): Returning4<T1, T2, T3, OffsetDateTime?> =
+        Returning4(column1, column2, column3, ColumnFactory.OFFSET_DATETIME_NIL)
 
 
 }
@@ -219,7 +222,9 @@ class Returning4<T1, T2, T3, T4>(
     fun int(): Returning5<T1, T2, T3, T4, Int> = Returning5(column1, column2, column3, column4, ColumnFactory.INTEGER)
     fun intNil(): Returning5<T1, T2, T3, T4, Int?> = Returning5(column1, column2, column3, column4, ColumnFactory.INTEGER_NIL)
     fun byteArray(): Returning5<T1, T2, T3, T4, ByteArray> = Returning5(column1, column2, column3, column4, ColumnFactory.BYTE_ARRAY)
-    fun byteArrayNil(): Returning5<T1, T2, T3, T4, ByteArray?> = Returning5(column1, column2, column3, column4, ColumnFactory.BYTE_ARRAY_NIL)
+    fun byteArrayNil(): Returning5<T1, T2, T3, T4, ByteArray?> =
+        Returning5(column1, column2, column3, column4, ColumnFactory.BYTE_ARRAY_NIL)
+
     fun blob(): Returning5<T1, T2, T3, T4, Blob> = Returning5(column1, column2, column3, column4, ColumnFactory.BLOB)
     fun blobNil(): Returning5<T1, T2, T3, T4, Blob?> = Returning5(column1, column2, column3, column4, ColumnFactory.BLOB_NIL)
     fun clob(): Returning5<T1, T2, T3, T4, Clob> = Returning5(column1, column2, column3, column4, ColumnFactory.CLOB)
@@ -233,11 +238,15 @@ class Returning4<T1, T2, T3, T4>(
     fun float(): Returning5<T1, T2, T3, T4, Float> = Returning5(column1, column2, column3, column4, ColumnFactory.FLOAT)
     fun floatNil(): Returning5<T1, T2, T3, T4, Float?> = Returning5(column1, column2, column3, column4, ColumnFactory.FLOAT_NIL)
     fun bigDecimal(): Returning5<T1, T2, T3, T4, BigDecimal> = Returning5(column1, column2, column3, column4, ColumnFactory.BIGDECIMAL)
-    fun bigDecimalNil(): Returning5<T1, T2, T3, T4, BigDecimal?> = Returning5(column1, column2, column3, column4, ColumnFactory.BIGDECIMAL_NIL)
+    fun bigDecimalNil(): Returning5<T1, T2, T3, T4, BigDecimal?> =
+        Returning5(column1, column2, column3, column4, ColumnFactory.BIGDECIMAL_NIL)
+
     fun date(): Returning5<T1, T2, T3, T4, LocalDate> = Returning5(column1, column2, column3, column4, ColumnFactory.DATE)
     fun dateNil(): Returning5<T1, T2, T3, T4, LocalDate?> = Returning5(column1, column2, column3, column4, ColumnFactory.DATE_NIL)
     fun dateTime(): Returning5<T1, T2, T3, T4, LocalDateTime> = Returning5(column1, column2, column3, column4, ColumnFactory.DATETIME)
-    fun dateTimeNil(): Returning5<T1, T2, T3, T4, LocalDateTime?> = Returning5(column1, column2, column3, column4, ColumnFactory.DATETIME_NIL)
+    fun dateTimeNil(): Returning5<T1, T2, T3, T4, LocalDateTime?> =
+        Returning5(column1, column2, column3, column4, ColumnFactory.DATETIME_NIL)
+
     fun time(): Returning5<T1, T2, T3, T4, LocalTime> = Returning5(column1, column2, column3, column4, ColumnFactory.TIME)
     fun timeNil(): Returning5<T1, T2, T3, T4, LocalTime?> = Returning5(column1, column2, column3, column4, ColumnFactory.TIME_NIL)
     fun timeStamp(): Returning5<T1, T2, T3, T4, Instant> = Returning5(column1, column2, column3, column4, ColumnFactory.TIMESTAMP)
@@ -259,12 +268,16 @@ class Returning5<T1, T2, T3, T4, T5>(
     internal val column5: Column<T5>
 ) {
     fun string(): Returning6<T1, T2, T3, T4, T5, String> = Returning6(column1, column2, column3, column4, column5, ColumnFactory.VARCHAR)
-    fun stringNil(): Returning6<T1, T2, T3, T4, T5, String?> = Returning6(column1, column2, column3, column4, column5, ColumnFactory.VARCHAR_NIL)
+    fun stringNil(): Returning6<T1, T2, T3, T4, T5, String?> =
+        Returning6(column1, column2, column3, column4, column5, ColumnFactory.VARCHAR_NIL)
+
     fun long(): Returning6<T1, T2, T3, T4, T5, Long> = Returning6(column1, column2, column3, column4, column5, ColumnFactory.LONG)
     fun longNil(): Returning6<T1, T2, T3, T4, T5, Long?> = Returning6(column1, column2, column3, column4, column5, ColumnFactory.LONG_NIL)
     fun int(): Returning6<T1, T2, T3, T4, T5, Int> = Returning6(column1, column2, column3, column4, column5, ColumnFactory.INTEGER)
     fun intNil(): Returning6<T1, T2, T3, T4, T5, Int?> = Returning6(column1, column2, column3, column4, column5, ColumnFactory.INTEGER_NIL)
-    fun byteArray(): Returning6<T1, T2, T3, T4, T5, ByteArray> = Returning6(column1, column2, column3, column4, column5, ColumnFactory.BYTE_ARRAY)
+    fun byteArray(): Returning6<T1, T2, T3, T4, T5, ByteArray> =
+        Returning6(column1, column2, column3, column4, column5, ColumnFactory.BYTE_ARRAY)
+
     fun byteArrayNil(): Returning6<T1, T2, T3, T4, T5, ByteArray?> =
         Returning6(column1, column2, column3, column4, column5, ColumnFactory.BYTE_ARRAY_NIL)
 
@@ -279,9 +292,13 @@ class Returning5<T1, T2, T3, T4, T5>(
         Returning6(column1, column2, column3, column4, column5, ColumnFactory.BOOLEAN_NIL)
 
     fun double(): Returning6<T1, T2, T3, T4, T5, Double> = Returning6(column1, column2, column3, column4, column5, ColumnFactory.DOUBLE)
-    fun doubleNil(): Returning6<T1, T2, T3, T4, T5, Double?> = Returning6(column1, column2, column3, column4, column5, ColumnFactory.DOUBLE_NIL)
+    fun doubleNil(): Returning6<T1, T2, T3, T4, T5, Double?> =
+        Returning6(column1, column2, column3, column4, column5, ColumnFactory.DOUBLE_NIL)
+
     fun float(): Returning6<T1, T2, T3, T4, T5, Float> = Returning6(column1, column2, column3, column4, column5, ColumnFactory.FLOAT)
-    fun floatNil(): Returning6<T1, T2, T3, T4, T5, Float?> = Returning6(column1, column2, column3, column4, column5, ColumnFactory.FLOAT_NIL)
+    fun floatNil(): Returning6<T1, T2, T3, T4, T5, Float?> =
+        Returning6(column1, column2, column3, column4, column5, ColumnFactory.FLOAT_NIL)
+
     fun bigDecimal(): Returning6<T1, T2, T3, T4, T5, BigDecimal> =
         Returning6(column1, column2, column3, column4, column5, ColumnFactory.BIGDECIMAL)
 
@@ -289,7 +306,9 @@ class Returning5<T1, T2, T3, T4, T5>(
         Returning6(column1, column2, column3, column4, column5, ColumnFactory.BIGDECIMAL_NIL)
 
     fun date(): Returning6<T1, T2, T3, T4, T5, LocalDate> = Returning6(column1, column2, column3, column4, column5, ColumnFactory.DATE)
-    fun dateNil(): Returning6<T1, T2, T3, T4, T5, LocalDate?> = Returning6(column1, column2, column3, column4, column5, ColumnFactory.DATE_NIL)
+    fun dateNil(): Returning6<T1, T2, T3, T4, T5, LocalDate?> =
+        Returning6(column1, column2, column3, column4, column5, ColumnFactory.DATE_NIL)
+
     fun dateTime(): Returning6<T1, T2, T3, T4, T5, LocalDateTime> =
         Returning6(column1, column2, column3, column4, column5, ColumnFactory.DATETIME)
 
@@ -297,8 +316,12 @@ class Returning5<T1, T2, T3, T4, T5>(
         Returning6(column1, column2, column3, column4, column5, ColumnFactory.DATETIME_NIL)
 
     fun time(): Returning6<T1, T2, T3, T4, T5, LocalTime> = Returning6(column1, column2, column3, column4, column5, ColumnFactory.TIME)
-    fun timeNil(): Returning6<T1, T2, T3, T4, T5, LocalTime?> = Returning6(column1, column2, column3, column4, column5, ColumnFactory.TIME_NIL)
-    fun timeStamp(): Returning6<T1, T2, T3, T4, T5, Instant> = Returning6(column1, column2, column3, column4, column5, ColumnFactory.TIMESTAMP)
+    fun timeNil(): Returning6<T1, T2, T3, T4, T5, LocalTime?> =
+        Returning6(column1, column2, column3, column4, column5, ColumnFactory.TIME_NIL)
+
+    fun timeStamp(): Returning6<T1, T2, T3, T4, T5, Instant> =
+        Returning6(column1, column2, column3, column4, column5, ColumnFactory.TIMESTAMP)
+
     fun timeStampNil(): Returning6<T1, T2, T3, T4, T5, Instant?> =
         Returning6(column1, column2, column3, column4, column5, ColumnFactory.TIMESTAMP_NIL)
 
@@ -325,11 +348,15 @@ class Returning6<T1, T2, T3, T4, T5, T6>(
     fun stringNil(): Returning7<T1, T2, T3, T4, T5, T6, String?> =
         Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.VARCHAR_NIL)
 
-    fun long(): Returning7<T1, T2, T3, T4, T5, T6, Long> = Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.LONG)
+    fun long(): Returning7<T1, T2, T3, T4, T5, T6, Long> =
+        Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.LONG)
+
     fun longNil(): Returning7<T1, T2, T3, T4, T5, T6, Long?> =
         Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.LONG_NIL)
 
-    fun int(): Returning7<T1, T2, T3, T4, T5, T6, Int> = Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.INTEGER)
+    fun int(): Returning7<T1, T2, T3, T4, T5, T6, Int> =
+        Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.INTEGER)
+
     fun intNil(): Returning7<T1, T2, T3, T4, T5, T6, Int?> =
         Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.INTEGER_NIL)
 
@@ -339,15 +366,21 @@ class Returning6<T1, T2, T3, T4, T5, T6>(
     fun byteArrayNil(): Returning7<T1, T2, T3, T4, T5, T6, ByteArray?> =
         Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.BYTE_ARRAY_NIL)
 
-    fun blob(): Returning7<T1, T2, T3, T4, T5, T6, Blob> = Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.BLOB)
+    fun blob(): Returning7<T1, T2, T3, T4, T5, T6, Blob> =
+        Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.BLOB)
+
     fun blobNil(): Returning7<T1, T2, T3, T4, T5, T6, Blob?> =
         Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.BLOB_NIL)
 
-    fun clob(): Returning7<T1, T2, T3, T4, T5, T6, Clob> = Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.CLOB)
+    fun clob(): Returning7<T1, T2, T3, T4, T5, T6, Clob> =
+        Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.CLOB)
+
     fun clobNil(): Returning7<T1, T2, T3, T4, T5, T6, Clob?> =
         Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.CLOB_NIL)
 
-    fun byte(): Returning7<T1, T2, T3, T4, T5, T6, Byte> = Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.BYTE)
+    fun byte(): Returning7<T1, T2, T3, T4, T5, T6, Byte> =
+        Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.BYTE)
+
     fun byteNil(): Returning7<T1, T2, T3, T4, T5, T6, Byte?> =
         Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.BYTE_NIL)
 
@@ -363,7 +396,9 @@ class Returning6<T1, T2, T3, T4, T5, T6>(
     fun doubleNil(): Returning7<T1, T2, T3, T4, T5, T6, Double?> =
         Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.DOUBLE_NIL)
 
-    fun float(): Returning7<T1, T2, T3, T4, T5, T6, Float> = Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.FLOAT)
+    fun float(): Returning7<T1, T2, T3, T4, T5, T6, Float> =
+        Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.FLOAT)
+
     fun floatNil(): Returning7<T1, T2, T3, T4, T5, T6, Float?> =
         Returning7(column1, column2, column3, column4, column5, column6, ColumnFactory.FLOAT_NIL)
 

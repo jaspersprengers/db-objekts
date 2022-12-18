@@ -1,6 +1,6 @@
 package com.dbobjekts.statement
 
-import com.dbobjekts.AnySqlParameter
+import com.dbobjekts.api.AnySqlParameter
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.metadata.column.ColumnAndValue
 import java.sql.PreparedStatement

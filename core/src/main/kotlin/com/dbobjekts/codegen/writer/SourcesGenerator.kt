@@ -1,6 +1,6 @@
 package com.dbobjekts.codegen.writer
 
-import com.dbobjekts.PackageName
+import com.dbobjekts.api.PackageName
 import com.dbobjekts.codegen.metadata.DBCatalogDefinition
 import com.dbobjekts.codegen.metadata.DBSchemaDefinition
 import com.dbobjekts.util.StringUtil

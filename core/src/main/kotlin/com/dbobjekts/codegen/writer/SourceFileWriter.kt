@@ -1,6 +1,6 @@
 package com.dbobjekts.codegen.writer
 
-import com.dbobjekts.PackageName
+import com.dbobjekts.api.PackageName
 import org.apache.commons.io.FileUtils
 import java.io.File
 import java.nio.charset.Charset

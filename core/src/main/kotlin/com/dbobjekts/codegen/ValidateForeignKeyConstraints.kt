@@ -1,7 +1,7 @@
 package com.dbobjekts.codegen
 
-import com.dbobjekts.SchemaName
-import com.dbobjekts.TableName
+import com.dbobjekts.api.SchemaName
+import com.dbobjekts.api.TableName
 import com.dbobjekts.codegen.metadata.DBCatalogDefinition
 
 object ValidateForeignKeyConstraints {

@@ -1,7 +1,6 @@
 package com.dbobjekts.util
 
-import com.dbobjekts.AnySqlParameter
-import com.dbobjekts.SQL
+import com.dbobjekts.api.AnySqlParameter
 import org.slf4j.LoggerFactory
 
 open class StatementLogger {
@@ -10,7 +9,7 @@ open class StatementLogger {
 
     private var lastMessage: String? = null
 
-    private var lastSQLStatement: SQL? = null
+    private var lastSQLStatement: String? = null
 
     private var lastParameters: List<AnySqlParameter> = listOf()
 
@@ -33,7 +32,7 @@ open class StatementLogger {
 
     fun lastSQLStatement(): String = lastSQLStatement?.toString() ?: "No SQL statement logged!"
 
-    internal fun logStatement(sql: SQL, parameters: List<AnySqlParameter>) {
+    internal fun logStatement(sql: String, parameters: List<AnySqlParameter>) {
         lastSQLStatement = sql
         lastParameters = parameters
     }

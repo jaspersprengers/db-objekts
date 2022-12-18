@@ -1,5 +1,6 @@
 package com.dbobjekts.codegen
 
+import com.dbobjekts.api.Columns
 import com.dbobjekts.codegen.parsers.TableMetaDataRow
 import com.dbobjekts.metadata.column.*
 import com.dbobjekts.metadata.column.AutoKeyLongColumn
@@ -50,7 +51,7 @@ class CodeGeneratorTest {
         validate("BIGINT", false, LongColumn::class.java)
         validate("INTEGER", false, IntegerColumn::class.java)
 
-        validate("BIGINT", true, AutoKeyLongColumn::class.java)
+        validate("BIGINT", true, LongColumn::class.java)
         validate("INTEGER", true, AutoKeyIntegerColumn::class.java)
 
         // auto increment setting supersedes a matching index

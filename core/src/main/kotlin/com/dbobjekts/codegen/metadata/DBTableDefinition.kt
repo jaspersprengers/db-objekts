@@ -1,8 +1,8 @@
 package com.dbobjekts.codegen.metadata
 
-import com.dbobjekts.PackageName
-import com.dbobjekts.SchemaName
-import com.dbobjekts.TableName
+import com.dbobjekts.api.PackageName
+import com.dbobjekts.api.SchemaName
+import com.dbobjekts.api.TableName
 
 data class DBTableDefinition(override val packageName: PackageName,
                              val schema: SchemaName,

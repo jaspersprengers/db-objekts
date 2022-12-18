@@ -1,7 +1,7 @@
 package com.dbobjekts.integration.h2.core
 
-import com.dbobjekts.AnyColumn
-import com.dbobjekts.AnyColumnAndValue
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyColumnAndValue
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl

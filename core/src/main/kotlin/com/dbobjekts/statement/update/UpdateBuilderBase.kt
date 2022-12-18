@@ -1,6 +1,6 @@
 package com.dbobjekts.statement.update
 
-import com.dbobjekts.AnyColumnAndValue
+import com.dbobjekts.api.AnyColumnAndValue
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.Column

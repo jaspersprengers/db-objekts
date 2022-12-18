@@ -1,6 +1,6 @@
 package com.dbobjekts.statement
 
-import com.dbobjekts.AnyColumn
+import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.statement.whereclause.ConditionFactory
 import com.dbobjekts.statement.whereclause.WhereClauseComponent

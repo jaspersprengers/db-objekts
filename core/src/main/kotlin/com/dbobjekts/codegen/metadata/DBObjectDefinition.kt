@@ -1,6 +1,6 @@
 package com.dbobjekts.codegen.metadata
 
-import com.dbobjekts.PackageName
+import com.dbobjekts.api.PackageName
 import com.dbobjekts.util.StringUtil
 
 interface DBObjectDefinition {

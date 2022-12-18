@@ -1,7 +1,7 @@
 package com.dbobjekts.metadata
 
-import com.dbobjekts.SchemaName
-import com.dbobjekts.TableName
+import com.dbobjekts.api.SchemaName
+import com.dbobjekts.api.TableName
 
 class SchemaAndTable(val schema: SchemaName, val table: TableName) : Comparable<SchemaAndTable> {
 
