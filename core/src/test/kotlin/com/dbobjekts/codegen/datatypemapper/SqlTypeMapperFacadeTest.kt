@@ -1,5 +1,6 @@
 package com.dbobjekts.codegen.datatypemapper
 
+import com.dbobjekts.metadata.Columns
 import com.dbobjekts.metadata.column.ColumnType
 import com.dbobjekts.vendors.Vendors
 import org.assertj.core.api.Assertions.assertThat
@@ -9,11 +10,11 @@ import org.junit.jupiter.api.Test
 
 class SqlTypeMapperFacadeTest {
 
-    val customMappers: List<ColumnTypeMapper> = listOf<ColumnTypeMapper>(JDBCTypeOverrideMapper("BIT", ColumnType.NUMBER_AS_BOOLEAN),
-        JDBCTypeOverrideMapper("INTEGER", ColumnType.LONG),
-        StandardColumnTypeMapper("person_id", ColumnType.LONG),
-        StandardColumnTypeMapper("employees", ColumnType.LONG),
-        StandardColumnTypeMapper("employees", ColumnType.LONG, schema = "hr"), )
+    val customMappers: List<ColumnTypeMapper> = listOf<ColumnTypeMapper>(JDBCTypeOverrideMapper("BIT", Columns.NUMBER_AS_BOOLEAN),
+        JDBCTypeOverrideMapper("INTEGER", Columns.LONG),
+        StandardColumnTypeMapper("person_id", Columns.LONG),
+        StandardColumnTypeMapper("employees", Columns.LONG),
+        StandardColumnTypeMapper("employees", Columns.LONG, schema = "hr"), )
     val mapper: ColumnTypeResolver = ColumnTypeResolver(Vendors.H2.defaultMapper, customMappers)
 
     @Test

@@ -15,6 +15,7 @@ import com.dbobjekts.integration.mariadb.core.Country
 import com.dbobjekts.integration.mariadb.core.Employee
 import com.dbobjekts.integration.mariadb.core.EmployeeAddress
 import com.dbobjekts.jdbc.TransactionManagerBuilder
+import com.dbobjekts.metadata.column.BooleanColumn
 import com.dbobjekts.metadata.column.ColumnType
 import com.dbobjekts.statement.customsql.ResultTypes
 import com.dbobjekts.util.HikariDataSourceFactory
@@ -73,7 +74,7 @@ class MariaIntegrationTest {
         generator.dataSourceConfigurer()
             .vendor(Vendors.MARIADB)
             .withDataSource(ds)
-        generator.mappingConfigurer().overrideTypeForColumnByJDBCType(jdbcType = "TINYINT", columnType = ColumnType.BOOLEAN)
+        generator.mappingConfigurer().overrideTypeForColumnByJDBCType(jdbcType = "TINYINT", columnType = BooleanColumn::class.java)
         generator.outputConfigurer()
             .basePackageForSources("com.dbobjekts.integration.mariadb")
             //.sourceWriter(writer)

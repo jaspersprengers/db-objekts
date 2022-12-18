@@ -135,7 +135,11 @@ object H2DB {
                 interval_col_nil              INTERVAL MONTH                     NULL,
                 geometry_col_nil              GEOMETRY NULL,
                 int_array_col                 INTEGER ARRAY[10] NOT NULL,
-                int_array_col_nil           INTEGER ARRAY[10] NULL
+                int_array_col_nil             INTEGER ARRAY[10] NULL,
+                address_int                   SMALLINT NOT NULL,
+                address_int_nil               SMALLINT NULL,
+                address_string                VARCHAR(10) not null,
+                address_string_nil            VARCHAR(10) null
             );
         """.trimIndent()
 

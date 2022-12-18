@@ -1,7 +1,11 @@
 package com.dbobjekts.codegen.configbuilders
 
-import com.dbobjekts.codegen.datatypemapper.*
-import com.dbobjekts.metadata.column.ColumnType
+import com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper
+import com.dbobjekts.codegen.datatypemapper.JDBCTypeOverrideMapper
+import com.dbobjekts.codegen.datatypemapper.SequenceForPrimaryKeyMapper
+import com.dbobjekts.codegen.datatypemapper.StandardColumnTypeMapper
+import com.dbobjekts.metadata.Columns
+import com.dbobjekts.metadata.column.NonNullableColumn
 
 
 class MappingConfigurer {
@@ -22,16 +26,16 @@ class MappingConfigurer {
      * @param schema if non-null, only look in provided schema. Otherwise, apply across the board
      * @param table if non-null, only look in provided schema. Otherwise, apply across the board
      */
-    fun overrideTypeForColumnByName(
+    fun <C : NonNullableColumn<*>> overrideTypeForColumnByName(
         column: String,
-        columnType: ColumnType,
+        columnType: Class<C>,
         schema: String? = null,
         table: String? = null,
         exactMatch: Boolean = false
     ): MappingConfigurer {
         mappers += StandardColumnTypeMapper(
             columnNamePattern = column,
-            columnType = columnType,
+            columnType = Columns.forClass(columnType),
             schema = schema,
             table = table,
             exactMatch = exactMatch
@@ -47,15 +51,15 @@ class MappingConfigurer {
      * @param schema if non-null, only look in provided schema. Otherwise, apply across the board
      * @param table if non-null, only look in provided schema. Otherwise, apply across the board
      */
-    fun overrideTypeForColumnByJDBCType(
+    fun <C : NonNullableColumn<*>> overrideTypeForColumnByJDBCType(
         jdbcType: String,
-        columnType: ColumnType,
+        columnType: Class<C>,
         schema: String? = null,
         table: String? = null
     ): MappingConfigurer {
         mappers += JDBCTypeOverrideMapper(
             jdbcType = jdbcType,
-            columnType = columnType,
+            columnType = Columns.forClass(columnType),
             schema = schema,
             table = table
         )

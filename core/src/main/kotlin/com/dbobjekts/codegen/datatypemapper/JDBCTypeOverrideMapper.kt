@@ -1,13 +1,12 @@
 package com.dbobjekts.codegen.datatypemapper
 
 import com.dbobjekts.AnyColumn
-import com.dbobjekts.metadata.Columns
-import com.dbobjekts.metadata.column.ColumnType
+import com.dbobjekts.metadata.column.NonNullableColumn
 
 
 open class JDBCTypeOverrideMapper(
     val jdbcType: String,
-    val columnType: ColumnType,
+    val columnType: NonNullableColumn<*>,
     val table: String? = null,
     val schema: String? = null
 ) : ColumnTypeMapper {
@@ -16,7 +15,7 @@ open class JDBCTypeOverrideMapper(
         val tableMatch = table?.let { properties.table.value == it } ?: true
         val schemaMatch = schema?.let { properties.schema.value == it } ?: true
         return if (tableMatch && schemaMatch && properties.jdbcType.equals(jdbcType, true))
-            Columns.byName(columnType, properties.isNullable)
+            if (properties.isNullable) columnType.nullable else columnType
         else null
     }
 

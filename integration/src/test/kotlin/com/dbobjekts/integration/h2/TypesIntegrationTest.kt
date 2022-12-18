@@ -1,6 +1,7 @@
 package com.dbobjekts.integration.h2
 
 import com.dbobjekts.integration.h2.core.AllTypes
+import com.dbobjekts.integration.h2.custom.AddressType
 import com.dbobjekts.metadata.column.BlobColumn
 import com.dbobjekts.statement.whereclause.SubClause
 import org.assertj.core.api.Assertions.assertThat
@@ -93,6 +94,8 @@ class TypesIntegrationTest {
                 .uuidColNil(null)
                 .intervalCol(Interval.ofMonths(15))
                 .intervalColNil(null)
+                .addressInt(AddressType.HOME)
+                .addressString(AddressType.WORK)
                 //.geometryCol("GEOMETRY X'00000000013ff00000000000003ff0000000000000'")
                 //.geometryColNil(null)
                 .intArrayCol(arrayOf(1, 2, 3))
@@ -121,6 +124,9 @@ class TypesIntegrationTest {
             //assertThat(tr.select(t.intArrayCol).first().asList()).containsExactly(1,2,3)
             //assertThat(tr.select(t.objectCol).first().toString()).isEqualTo("John")
             assertEquals(uuid, tr.select(t.uuidCol).first())
+
+            assertEquals(AddressType.HOME, tr.select(t.addressInt).first())
+            assertEquals(AddressType.WORK, tr.select(t.addressString).first())
 
             assertEquals(time.withNano(0), tr.select(t.timeCol).first())
             assertEquals(date, tr.select(t.dateCol).first())
