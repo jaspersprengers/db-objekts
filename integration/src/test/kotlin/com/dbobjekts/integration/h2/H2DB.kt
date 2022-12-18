@@ -24,15 +24,15 @@ object H2DB {
 
     fun deleteAllTables() {
         getTransactionManager().newTransaction { tr ->
-            tr.deleteFrom(EmployeeAddress).noWhereClause()
-            tr.deleteFrom(EmployeeDepartment).noWhereClause()
-            tr.deleteFrom(Department).noWhereClause()
-            tr.deleteFrom(Address).noWhereClause()
-            tr.deleteFrom(Certificate).noWhereClause()
-            tr.deleteFrom(Employee).noWhereClause()
-            tr.deleteFrom(Country).noWhereClause()
-            tr.deleteFrom(Hobby).noWhereClause()
-            //tr.deleteFrom(Shape).noWhereClause()
+            tr.deleteFrom(EmployeeAddress).where()
+            tr.deleteFrom(EmployeeDepartment).where()
+            tr.deleteFrom(Department).where()
+            tr.deleteFrom(Address).where()
+            tr.deleteFrom(Certificate).where()
+            tr.deleteFrom(Employee).where()
+            tr.deleteFrom(Country).where()
+            tr.deleteFrom(Hobby).where()
+            //tr.deleteFrom(Shape).where()
         }
     }
 

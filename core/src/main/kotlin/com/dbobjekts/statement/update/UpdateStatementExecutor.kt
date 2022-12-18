@@ -65,10 +65,5 @@ class UpdateStatementExecutor(
         return StringUtil.concatLists(columnsForUpdate.params.toList(), whereClauseParameters)
     }
 
-    override fun getWhereClause(): WhereClause =
-        if (!whereClauseIsSpecified()) throw IllegalStateException("Missing mandatory where clause for delete statement. " +
-                "If you want to update without any restrictions you must explicitly provide the noWhereClause() call in your query.") else _whereClause
-
-
 
 }

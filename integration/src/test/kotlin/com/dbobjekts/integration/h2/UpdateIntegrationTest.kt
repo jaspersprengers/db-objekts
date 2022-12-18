@@ -51,14 +51,14 @@ class UpdateIntegrationTest {
         assertEquals(2, H2DB.newTransaction { it.select(e.salary).where(e.salary.ge(33.0).and(e.salary).le(34.0)).asList().size })
         assertEquals(3, H2DB.newTransaction { it.select(e.salary).where(e.salary.within(31.0, 33.0, 35.0)).asList().size })
 
-        assertEquals(39.0, H2DB.newTransaction { it.select(e.salary).orderDesc(e.salary).noWhereClause().first() })
-        assertEquals(30.0, H2DB.newTransaction { it.select(e.salary).orderAsc(e.salary).noWhereClause().first() })
-        assertEquals(36.0, H2DB.newTransaction { it.select(e.salary).orderAsc(e.name).noWhereClause().first() })
-        assertEquals(39.0, H2DB.newTransaction { it.select(e.salary).orderDesc(e.name).noWhereClause().first() })
+        assertEquals(39.0, H2DB.newTransaction { it.select(e.salary).orderDesc(e.salary).first() })
+        assertEquals(30.0, H2DB.newTransaction { it.select(e.salary).orderAsc(e.salary).first() })
+        assertEquals(36.0, H2DB.newTransaction { it.select(e.salary).orderAsc(e.name).first() })
+        assertEquals(39.0, H2DB.newTransaction { it.select(e.salary).orderDesc(e.name).first() })
 
         insert("Oliver", 31)
         insert("Karl", 30)
-        val entities = H2DB.newTransaction { it.select(e.name).orderAsc(e.salary).orderDesc(e.name).noWhereClause().asList() }
+        val entities = H2DB.newTransaction { it.select(e.name).orderAsc(e.salary).orderDesc(e.name).asList() }
         assertEquals("Karl", entities[0])
         assertEquals("Charlie", entities[1])
         assertEquals("Oliver", entities[2])
@@ -223,7 +223,7 @@ class UpdateIntegrationTest {
     @Order(15)
     fun `delete without whereclause`() {
         H2DB.newTransaction { s ->
-            s.deleteFrom(Employee).noWhereClause()
+            s.deleteFrom(Employee).where()
         }
     }
 }

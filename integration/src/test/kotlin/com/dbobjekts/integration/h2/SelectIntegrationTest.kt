@@ -59,7 +59,7 @@ class SelectIntegrationTest {
     fun `test select two rows with custom mapper`() {
         H2DB.newTransaction({
             val buffer = mutableListOf<String?>()
-            it.select(e.name).noWhereClause().orderAsc(e.name).forEachRow({ row ->
+            it.select(e.name).orderAsc(e.name).forEachRow({ row ->
                 buffer.add(row)
                 //there are three rows in the resultset, but we stop fetching after two
                 buffer.size != 2
@@ -83,7 +83,7 @@ class SelectIntegrationTest {
     fun `test select all without where clause`() {
         H2DB.newTransaction({ s ->
             val ret = {
-                s.select(e.id).noWhereClause().first()
+                s.select(e.id).first()
             }
         })
     }
@@ -91,7 +91,7 @@ class SelectIntegrationTest {
     @Test
     fun `test select all with optionally one row`() {
         H2DB.newTransaction({ s ->
-            val ret = s.select(e.name).noWhereClause().orderAsc(e.name).first()
+            val ret = s.select(e.name).orderAsc(e.name).first()
             assertNotNull(ret)
             assertEquals("Arthur", ret)
         })
@@ -129,7 +129,7 @@ class SelectIntegrationTest {
     @Test
     fun `test left join select person name and hobby name without where clause`() {
         H2DB.newTransaction({ s ->
-            val (name, hobby) = s.select(e.name, h.name.nullable).from(e.leftJoin(h)).noWhereClause().first();
+            val (name, hobby) = s.select(e.name, h.name.nullable).from(e.leftJoin(h)).first();
             assertThat(hobby).isNull()
         })
     }

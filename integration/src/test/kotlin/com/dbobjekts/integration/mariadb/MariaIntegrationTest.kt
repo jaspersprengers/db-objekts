@@ -54,14 +54,14 @@ class MariaIntegrationTest {
             TransactionManagerBuilder().dataSource(ds).catalog(CoreCatalog).buildForSingleton()
             tm = DBObjekts.singletonTransactionManager()
             /*tm { tr ->
-                tr.deleteFrom(EmployeeAddress).noWhereClause()
-                tr.deleteFrom(EmployeeDepartment).noWhereClause()
-                tr.deleteFrom(Department).noWhereClause()
-                tr.deleteFrom(Address).noWhereClause()
-                tr.deleteFrom(Certificate).noWhereClause()
-                tr.deleteFrom(Employee).noWhereClause()
-                tr.deleteFrom(Country).noWhereClause()
-                tr.deleteFrom(Hobby).noWhereClause()
+                tr.deleteFrom(EmployeeAddress).where()
+                tr.deleteFrom(EmployeeDepartment).where()
+                tr.deleteFrom(Department).where()
+                tr.deleteFrom(Address).where()
+                tr.deleteFrom(Certificate).where()
+                tr.deleteFrom(Employee).where()
+                tr.deleteFrom(Country).where()
+                tr.deleteFrom(Hobby).where()
             }*/
         }
     }
@@ -127,7 +127,7 @@ class MariaIntegrationTest {
 
             // This query selects name and salary for all rows in the employee table. Notice we have imported the 'e' alias from the Aliases object. This is a handy shortcut that refers to the exact same Employee object.
             // Consider the different methods to retrieve results
-            assertThat(tr.select(e.name, e.salary).noWhereClause().asList()).hasSize(4)
+            assertThat(tr.select(e.name, e.salary).asList()).hasSize(4)
             val asNullable: Tuple2<String, Double>? =
                 tr.select(e.name, e.salary).where(e.name.eq("Vlad")).firstOrNull()// Null when no match
             assertThat(asNullable).isNull()

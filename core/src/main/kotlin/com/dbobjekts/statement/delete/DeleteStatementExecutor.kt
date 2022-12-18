@@ -11,14 +11,14 @@ import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.statement.whereclause.WhereClause
 import com.dbobjekts.util.StringUtil
 
-class DeleteStatementExecutor(connection: ConnectionAdapter) :StatementBase<Long>(connection) {
+class DeleteStatementExecutor(connection: ConnectionAdapter) : StatementBase<Long>(connection) {
 
-     internal fun withTable(table: Table): DeleteStatementExecutor {
+    internal fun withTable(table: Table): DeleteStatementExecutor {
         registerTable(table)
-       return this
+        return this
     }
 
-     internal fun withJoinChain(tableJoinChain: TableJoinChain): DeleteStatementExecutor {
+    internal fun withJoinChain(tableJoinChain: TableJoinChain): DeleteStatementExecutor {
         registerJoinChain(tableJoinChain)
         return this
     }
@@ -28,19 +28,15 @@ class DeleteStatementExecutor(connection: ConnectionAdapter) :StatementBase<Long
         return execute()
     }
 
-    fun noWhereClause(): Long = where(EmptyWhereClause)
+    fun where(): Long = where(EmptyWhereClause)
 
     private fun execute(): Long {
         val wc = getWhereClause()
-        wc.getFlattenedConditions().forEach {registerTable(it.column.table)}
+        wc.getFlattenedConditions().forEach { registerTable(it.column.table) }
         val alias = if (connection.vendorSpecificProperties.supportsJoinsInUpdateAndDelete()) "${joinChain().table.alias()}.*" else ""
         val sql = SQL(StringUtil.concat(listOf("delete", alias, "from", joinChain().toSQL(), wc.build(SQLOptions(includeAlias = true)))))
         val params = wc.getParameters()
         return connection.prepareAndExecuteDeleteStatement(sql, params)
     }
-
-    override fun getWhereClause(): WhereClause =
-        if (!whereClauseIsSpecified()) throw IllegalStateException("Missing mandatory where clause for delete statement. " +
-                "If you want to delete without any restrictions you must explicitly provide the noWhereClause() call in your query.") else _whereClause
 
 }

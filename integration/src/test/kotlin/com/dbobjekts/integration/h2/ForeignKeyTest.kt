@@ -107,7 +107,7 @@ class ForeignKeyTest {
     fun `get employees with hobbies`() {
         H2DB.newTransaction { tr ->
             tr.update(e).hobbyId("c").where(e.name.eq("John"))
-            val rows = tr.select(e.name, h.name).from(e.innerJoin(h)).noWhereClause().asList()
+            val rows = tr.select(e.name, h.name).from(e.innerJoin(h)).asList()
             assertThat(rows).hasSize(1)
             assertEquals("curling", rows[0].second)
         }

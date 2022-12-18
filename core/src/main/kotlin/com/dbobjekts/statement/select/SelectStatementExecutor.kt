@@ -17,7 +17,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
     connection: ConnectionAdapter,
     internal val columns: List<AnyColumn>,
     internal val selectResultSet: RSB
-) : StatementBase<SelectStatementExecutor<T, RSB>>(connection){
+) : StatementBase<SelectStatementExecutor<T, RSB>>(connection) {
 
     init {
         columns.forEach { registerTable(it.table) }
@@ -59,7 +59,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         return this
     }
 
-    fun noWhereClause(): SelectStatementExecutor<T, RSB> = where(EmptyWhereClause)
+    fun where(): SelectStatementExecutor<T, RSB> = where(EmptyWhereClause)
 
     fun first(): T = execute().first()
 
