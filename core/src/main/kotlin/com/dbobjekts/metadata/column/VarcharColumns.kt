@@ -12,7 +12,6 @@ open class VarcharColumn(table: Table, name: String) : NonNullableColumn<String>
     override fun setValue(position: Int, statement: PreparedStatement, value: String) =
         statement.setString(position, value)
 
-    override val columnClass: Class<*> = VarcharColumn::class.java
     override val valueClass: Class<*> = String::class.java
 }
 
@@ -22,7 +21,6 @@ open class NullableVarcharColumn(table: Table, name: String) : NullableColumn<St
     override fun setValue(position: Int, statement: PreparedStatement, value: String?) =
         statement.setString(position, value)
 
-    override val columnClass: Class<*> = NullableVarcharColumn::class.java
     override val valueClass: Class<*> = String::class.java
 }
 
@@ -36,7 +34,6 @@ class BlobColumn(table: Table, name: String) : NonNullableColumn<Blob>(name, tab
     override fun getValue(position: Int, resultSet: ResultSet): Blob? = resultSet.getBlob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Blob) =
         statement.setBlob(position, value)
-    override val columnClass: Class<*> = BlobColumn::class.java
     override val valueClass: Class<*> = Blob::class.java
     companion object {
         fun ofString(value: String, charset: Charset = Charset.defaultCharset()) =
@@ -50,7 +47,6 @@ class NullableBlobColumn(table: Table, name: String) : NullableColumn<Blob?>(nam
     override fun getValue(position: Int, resultSet: ResultSet): Blob? = resultSet.getBlob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Blob?) =
         statement.setBlob(position, value)
-    override val columnClass: Class<*> = NullableBlobColumn::class.java
     override val valueClass: Class<*> = Blob::class.java
 }
 
@@ -67,7 +63,6 @@ class ClobColumn(table: Table, name: String) : NonNullableColumn<Clob>(name, tab
     companion object {
         fun ofString(value: String) = SerialClob(value.toCharArray())
     }
-    override val columnClass: Class<*> = ClobColumn::class.java
     override val valueClass: Class<*> = Clob::class.java
 }
 
@@ -75,7 +70,6 @@ class NullableClobColumn(table: Table, name: String) : NullableColumn<Clob?>(nam
     override fun getValue(position: Int, resultSet: ResultSet): Clob? = resultSet.getClob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Clob?) =
         statement.setClob(position, value)
-    override val columnClass: Class<*> = NullableClobColumn::class.java
     override val valueClass: Class<*> = Clob::class.java
 }
 
@@ -84,7 +78,6 @@ class ByteArrayColumn(table: Table, name: String) : NonNullableColumn<ByteArray>
     override fun getValue(position: Int, resultSet: ResultSet): ByteArray? = resultSet.getBytes(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: ByteArray) =
         statement.setBytes(position, value)
-    override val columnClass: Class<*> = ByteArrayColumn::class.java
     override val valueClass: Class<*> = ByteArray::class.java
 }
 
@@ -92,7 +85,6 @@ class NullableByteArrayColumn(table: Table, name: String) : NullableColumn<ByteA
     override fun getValue(position: Int, resultSet: ResultSet): ByteArray? = resultSet.getBytes(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: ByteArray?) =
         statement.setBytes(position, value)
-    override val columnClass: Class<*> = NullableByteArrayColumn::class.java
     override val valueClass: Class<*> = ByteArray::class.java
 }
 

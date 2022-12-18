@@ -120,7 +120,7 @@ class TypesIntegrationTest {
 
             assertEquals(15, tr.select(t.intervalCol).first().months)
             //assertThat(tr.select(t.intArrayCol).first().asList()).containsExactly(1,2,3)
-            assertThat(tr.select(t.objectCol).first().toString()).isEqualTo("John")
+            //assertThat(tr.select(t.objectCol).first().toString()).isEqualTo("John")
             assertEquals(uuid, tr.select(t.uuidCol).first())
 
             assertEquals(time.withNano(0), tr.select(t.timeCol).first())

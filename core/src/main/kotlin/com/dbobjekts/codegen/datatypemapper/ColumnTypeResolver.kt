@@ -58,7 +58,7 @@ class ColumnTypeResolver(
             is NullableLongColumn -> Columns.FOREIGN_KEY_LONG_NIL
             is VarcharColumn -> Columns.FOREIGN_KEY_VARCHAR
             is NullableVarcharColumn -> Columns.FOREIGN_KEY_VARCHAR_NIL
-            else -> throw IllegalArgumentException("Column type ${column.columnClass.simpleName} cannot be used as a foreign key. It has to be of numeric of character type")
+            else -> throw IllegalArgumentException("Column type ${column.javaClass.simpleName} cannot be used as a foreign key. It has to be of numeric of character type")
         }
     }
 

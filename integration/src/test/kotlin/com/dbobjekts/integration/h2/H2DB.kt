@@ -39,6 +39,7 @@ object H2DB {
 
      fun createDataSource(): DataSource =
         HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
+    //HikariDataSourceFactory.create(url = "jdbc:h2:tcp://localhost:9092/~/test", username = "test", password = "test", driver = "org.h2.Driver")
 
      val catalog: Catalog = Catalogdefinition
 
@@ -54,9 +55,9 @@ object H2DB {
     
     private fun createExampleCatalog(transaction: Transaction) {
 
-        transaction.execute("CREATE SCHEMA if not exists core authorization sa")
+        transaction.execute("CREATE SCHEMA if not exists core")
 
-        transaction.execute("CREATE SCHEMA if not exists hr authorization sa")
+        transaction.execute("CREATE SCHEMA if not exists hr")
 
         transaction.execute("CREATE SEQUENCE IF NOT EXISTS core.EMPLOYEE_SEQ START WITH 10")
         transaction.execute("CREATE SEQUENCE IF NOT EXISTS core.ADDRESS_SEQ START WITH 10")

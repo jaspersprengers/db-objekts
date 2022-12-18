@@ -21,7 +21,6 @@ class TimeColumn(table: Table, name: String) : NonNullableColumn<LocalTime>(name
     override fun setValue(position: Int, statement: PreparedStatement, value: LocalTime) =
         statement.setTime(position, DateUtil.toTime(value))
 
-    override val columnClass: Class<*> = TimeColumn::class.java
     override val valueClass: Class<*> = LocalTime::class.java
 }
 
@@ -32,7 +31,6 @@ class NullableTimeColumn(table: Table, name: String) : NullableColumn<LocalTime?
     override fun setValue(position: Int, statement: PreparedStatement, value: LocalTime?) =
         statement.setTime(position, DateUtil.toTime(value!!))
 
-    override val columnClass: Class<*> = NullableTimeColumn::class.java
     override val valueClass: Class<*> = LocalTime::class.java
 }
 
@@ -47,7 +45,6 @@ class TimeStampColumn(table: Table, name: String) : NonNullableColumn<Instant>(n
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Instant) =
         statement.setTimestamp(position, DateUtil.toSqlTimeStamp(value))
-    override val columnClass: Class<*> = TimeStampColumn::class.java
     override val valueClass: Class<*> = Instant::class.java
 }
 
@@ -56,7 +53,6 @@ class NullableTimeStampColumn(table: Table, name: String) : NullableColumn<Insta
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Instant?) =
         statement.setTimestamp(position, DateUtil.toSqlTimeStamp(value!!))
-    override val columnClass: Class<*> = NullableTimeStampColumn::class.java
     override val valueClass: Class<*> = Instant::class.java
 
 }
@@ -73,7 +69,6 @@ class OffsetDateTimeColumn(table: Table, name: String) : NonNullableColumn<Offse
     override fun setValue(position: Int, statement: PreparedStatement, value: OffsetDateTime) {
         statement.setObject(position, value)
     }
-    override val columnClass: Class<*> = OffsetDateTimeColumn::class.java
     override val valueClass: Class<*> = OffsetDateTime::class.java
 }
 
@@ -83,7 +78,6 @@ class NullableOffsetDateTimeColumn(table: Table, name: String) : NullableColumn<
     override fun setValue(position: Int, statement: PreparedStatement, value: OffsetDateTime?) {
         statement.setObject(position, value)
     }
-    override val columnClass: Class<*> = NullableOffsetDateTimeColumn::class.java
     override val valueClass: Class<*> = OffsetDateTime::class.java
 }
 
@@ -101,7 +95,6 @@ class DateColumn(table: Table, name: String) : NonNullableColumn<LocalDate>(name
 
     override fun setValue(position: Int, statement: PreparedStatement, value: LocalDate) =
         statement.setDate(position, DateUtil.toSqlDate(value))
-    override val columnClass: Class<*> = DateColumn::class.java
     override val valueClass: Class<*> = LocalDate::class.java
 }
 class NullableDateColumn(table: Table, name: String) : NullableColumn<LocalDate?>(name, table, Types.DATE){
@@ -112,7 +105,6 @@ class NullableDateColumn(table: Table, name: String) : NullableColumn<LocalDate?
 
     override fun setValue(position: Int, statement: PreparedStatement, value: LocalDate?) =
         statement.setDate(position, DateUtil.toSqlDate(value!!))
-    override val columnClass: Class<*> = NullableDateColumn::class.java
     override val valueClass: Class<*> = LocalDate::class.java
 
 }
@@ -123,7 +115,6 @@ class DateTimeColumn(table: Table, name: String) : NonNullableColumn<LocalDateTi
 
     override fun setValue(position: Int, statement: PreparedStatement, value: LocalDateTime) =
         statement.setTimestamp(position, DateUtil.toSqlTimeStamp(value))
-    override val columnClass: Class<*> = DateTimeColumn::class.java
     override val valueClass: Class<*> = LocalDateTime::class.java
 }
 class NullableDateTimeColumn(table: Table, name: String) : NullableColumn<LocalDateTime?>(name, table, Types.TIMESTAMP){
@@ -131,6 +122,5 @@ class NullableDateTimeColumn(table: Table, name: String) : NullableColumn<LocalD
 
     override fun setValue(position: Int, statement: PreparedStatement, value: LocalDateTime?) =
         statement.setTimestamp(position, DateUtil.toSqlTimeStamp(value!!))
-    override val columnClass: Class<*> = NullableDateTimeColumn::class.java
     override val valueClass: Class<*> = LocalDateTime::class.java
 }

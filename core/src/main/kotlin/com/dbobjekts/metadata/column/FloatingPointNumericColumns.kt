@@ -17,7 +17,6 @@ class DoubleColumn(table: Table, name: String) : NonNullableColumn<Double>(name,
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Double) =
         statement.setDouble(position, value as Double)
-    override val columnClass: Class<*> = DoubleColumn::class.java
     override val valueClass: Class<*> = Double::class.java
 
 }
@@ -27,7 +26,6 @@ class NullableDoubleColumn(table: Table, name: String) : NullableColumn<Double?>
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Double?) =
         statement.setDouble(position, value!!)
-    override val columnClass: Class<*> = NullableDoubleColumn::class.java
     override val valueClass: Class<*> = Double::class.java
 }
 
@@ -42,7 +40,6 @@ class FloatColumn(table: Table, name: String) : NonNullableColumn<Float>(name, t
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Float) =
         statement.setFloat(position, value as Float)
-    override val columnClass: Class<*> = FloatColumn::class.java
     override val valueClass: Class<*> = Float::class.java
 }
 
@@ -51,7 +48,6 @@ class NullableFloatColumn(table: Table, name: String) : NullableColumn<Float?>(n
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Float?) =
         statement.setFloat(position, value!!)
-    override val columnClass: Class<*> = NullableFloatColumn::class.java
     override val valueClass: Class<*> = Float::class.java
 }
 
@@ -66,7 +62,6 @@ class BigDecimalColumn(table: Table, name: String) : NonNullableColumn<BigDecima
 
     override fun setValue(position: Int, statement: PreparedStatement, value: BigDecimal) =
         statement.setBigDecimal(position, value as BigDecimal)
-    override val columnClass: Class<*> = BigDecimalColumn::class.java
     override val valueClass: Class<*> = BigDecimal::class.java
 }
 
@@ -75,6 +70,5 @@ class NullableBigDecimalColumn(table: Table, name: String) : NullableColumn<BigD
 
     override fun setValue(position: Int, statement: PreparedStatement, value: BigDecimal?) =
         statement.setBigDecimal(position, value!!)
-    override val columnClass: Class<*> = NullableBigDecimalColumn::class.java
     override val valueClass: Class<*> = BigDecimal::class.java
 }

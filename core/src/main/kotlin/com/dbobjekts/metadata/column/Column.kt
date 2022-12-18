@@ -36,8 +36,6 @@ abstract class Column<I>(
         return clause
     }
 
-    internal abstract val columnClass: Class<*>
-
     internal abstract val valueClass: Class<*>
 
     internal abstract fun retrieveValue(position: Int, rs: ResultSet): I?
@@ -110,7 +108,7 @@ abstract class NullableColumn<I>(
 
     internal abstract fun getValue(position: Int, resultSet: ResultSet): I?
     internal abstract fun setValue(position: Int, statement: PreparedStatement, value: I)
-    internal override fun putValue(position: Int, statement: PreparedStatement, value: I?) {
+    override fun putValue(position: Int, statement: PreparedStatement, value: I?) {
         if (value == null)
             statement.setNull(position, sqlType)
         else
