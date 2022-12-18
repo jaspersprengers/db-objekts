@@ -3,7 +3,7 @@ package com.dbobjekts.codegen
 import com.dbobjekts.ColumnName
 import com.dbobjekts.TableName
 import com.dbobjekts.codegen.metadata.DBSequenceKeyDefinition
-import com.dbobjekts.metadata.Columns
+import com.dbobjekts.metadata.ColumnFactory
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 class DBSequenceKeyDefinitionTest {
 
     val key = DBSequenceKeyDefinition(
-        TableName("people"), ColumnName("id"), "people_seq", Columns.SEQUENCE_LONG, "comment"
+        TableName("people"), ColumnName("id"), "people_seq", ColumnFactory.SEQUENCE_LONG, "comment"
     )
 
 

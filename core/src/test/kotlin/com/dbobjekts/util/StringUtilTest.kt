@@ -1,8 +1,7 @@
 package com.dbobjekts.util
 
-import com.dbobjekts.metadata.Columns
+import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.vendors.h2.H2DataTypeMapper
-import com.dbobjekts.vendors.h2.ObjectArrayColumn
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -144,12 +143,12 @@ class StringUtilTest {
     @Test
     fun `test value classes`(){
 
-        assertEquals("Int", StringUtil.classToString(Columns.INTEGER.valueClass))
-        assertEquals("java.time.LocalDate", StringUtil.classToString(Columns.DATE.valueClass))
+        assertEquals("Int", StringUtil.classToString(ColumnFactory.INTEGER.valueClass))
+        assertEquals("java.time.LocalDate", StringUtil.classToString(ColumnFactory.DATE.valueClass))
 
         assertEquals("Array<Any>", StringUtil.classToString(H2DataTypeMapper.OBJECT_ARRAY.valueClass))
 
-        assertEquals("ByteArray", StringUtil.classToString(Columns.BYTE_ARRAY.valueClass))
+        assertEquals("ByteArray", StringUtil.classToString(ColumnFactory.BYTE_ARRAY.valueClass))
 
     }
 

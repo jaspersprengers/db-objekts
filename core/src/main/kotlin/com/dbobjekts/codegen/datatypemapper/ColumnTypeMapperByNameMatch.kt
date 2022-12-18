@@ -2,20 +2,23 @@ package com.dbobjekts.codegen.datatypemapper
 
 import com.dbobjekts.metadata.column.NonNullableColumn
 
-
-open class JDBCTypeOverrideMapper<C : NonNullableColumn<*>>(
-    val jdbcType: String,
+class ColumnTypeMapperByNameMatch<C : NonNullableColumn<*>>(
+    val columnNamePattern: String,
     val columnType: Class<C>,
     val table: String? = null,
-    val schema: String? = null
+    val schema: String? = null,
+    val exactMatch: Boolean = false
 ) : CustomColumnTypeMapper<C>() {
 
     override fun invoke(properties: ColumnMappingProperties): Class<C>? {
         val tableMatch = table?.let { properties.table.value.equals(it, true) } ?: true
         val schemaMatch = schema?.let { properties.schema.value.equals(it, true) } ?: true
-        return if (tableMatch && schemaMatch && properties.jdbcType.equals(jdbcType, true))
-            columnType
-        else null
+        return properties.column.value.let { col ->
+            if (schemaMatch && tableMatch && if (exactMatch) columnNamePattern.equals(col, true) else col.contains(columnNamePattern, true)) {
+                columnType
+            } else null
+        }
     }
+
 
 }

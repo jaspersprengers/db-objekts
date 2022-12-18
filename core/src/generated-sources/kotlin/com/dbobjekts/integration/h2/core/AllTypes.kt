@@ -65,7 +65,7 @@ object AllTypes:Table("ALL_TYPES"), HasUpdateBuilder<AllTypesUpdateBuilder, AllT
     val intArrayCol = com.dbobjekts.vendors.h2.ObjectArrayColumn(this, "INT_ARRAY_COL")
     val intArrayColNil = com.dbobjekts.vendors.h2.NullableObjectArrayColumn(this, "INT_ARRAY_COL_NIL")
     val addressInt = com.dbobjekts.integration.h2.custom.AddressTypeAsIntegerColumn(this, "ADDRESS_INT")
-    val addressIntNil = com.dbobjekts.integration.h2.custom.NullableAddressTypeAsIntegerColumn(this, "ADDRESS_INT_NIL")
+    val addressIntNil = com.dbobjekts.integration.h2.custom.AddressTypeAsIntegerColumn(this, "ADDRESS_INT_NIL")
     val addressString = com.dbobjekts.integration.h2.custom.AddressTypeAsStringColumn(this, "ADDRESS_STRING")
     val addressStringNil = com.dbobjekts.integration.h2.custom.AddressTypeAsStringColumn(this, "ADDRESS_STRING_NIL")
     override val columns: List<AnyColumn> = listOf(id,characterCol,characterColNil,charactervaryingCol,charactervaryingColNil,characterlargeobjectCol,characterlargeobjectColNil,varcharIgnorecaseCol,varcharIgnorecaseColNil,enumCol,enumColNil,binaryCol,binaryColNil,binaryvaryingCol,binaryvaryingColNil,binarylargeobjectCol,binarylargeobjectColNil,jsonCol,jsonColNil,booleanCol,booleanColNil,tinyintCol,tinyintColNil,smallintCol,smallintColNil,integerCol,integerColNil,bigintCol,bigintColNil,numericCol,numericColNil,decfloatCol,decfloatColNil,realCol,realColNil,doubleprecisionCol,doubleprecisionColNil,dateCol,dateColNil,timeCol,timeColNil,timewithtimezoneCol,timewithtimezoneColNil,timestampCol,timestampColNil,timestampwithtimezoneCol,timestampwithtimezoneColNil,uuidCol,uuidColNil,intervalCol,intervalColNil,geometryColNil,intArrayCol,intArrayColNil,addressInt,addressIntNil,addressString,addressStringNil)
@@ -131,7 +131,7 @@ class AllTypesUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(A
     fun intArrayCol(value: Array<Any>): AllTypesUpdateBuilder = ct.put(AllTypes.intArrayCol, value)
     fun intArrayColNil(value: Array<Any>?): AllTypesUpdateBuilder = ct.put(AllTypes.intArrayColNil, value)
     fun addressInt(value: com.dbobjekts.integration.h2.custom.AddressType): AllTypesUpdateBuilder = ct.put(AllTypes.addressInt, value)
-    fun addressIntNil(value: com.dbobjekts.integration.h2.custom.AddressType?): AllTypesUpdateBuilder = ct.put(AllTypes.addressIntNil, value)
+    fun addressIntNil(value: com.dbobjekts.integration.h2.custom.AddressType): AllTypesUpdateBuilder = ct.put(AllTypes.addressIntNil, value)
     fun addressString(value: com.dbobjekts.integration.h2.custom.AddressType): AllTypesUpdateBuilder = ct.put(AllTypes.addressString, value)
     fun addressStringNil(value: com.dbobjekts.integration.h2.custom.AddressType): AllTypesUpdateBuilder = ct.put(AllTypes.addressStringNil, value)
 }
@@ -194,11 +194,11 @@ class AllTypesInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(All
     fun intArrayCol(value: Array<Any>): AllTypesInsertBuilder = ct.put(AllTypes.intArrayCol, value)
     fun intArrayColNil(value: Array<Any>?): AllTypesInsertBuilder = ct.put(AllTypes.intArrayColNil, value)
     fun addressInt(value: com.dbobjekts.integration.h2.custom.AddressType): AllTypesInsertBuilder = ct.put(AllTypes.addressInt, value)
-    fun addressIntNil(value: com.dbobjekts.integration.h2.custom.AddressType?): AllTypesInsertBuilder = ct.put(AllTypes.addressIntNil, value)
+    fun addressIntNil(value: com.dbobjekts.integration.h2.custom.AddressType): AllTypesInsertBuilder = ct.put(AllTypes.addressIntNil, value)
     fun addressString(value: com.dbobjekts.integration.h2.custom.AddressType): AllTypesInsertBuilder = ct.put(AllTypes.addressString, value)
     fun addressStringNil(value: com.dbobjekts.integration.h2.custom.AddressType): AllTypesInsertBuilder = ct.put(AllTypes.addressStringNil, value)
 
-    fun mandatoryColumns(characterCol: String, charactervaryingCol: String, characterlargeobjectCol: String, varcharIgnorecaseCol: String, enumCol: String, binaryCol: ByteArray, binaryvaryingCol: ByteArray, binarylargeobjectCol: java.sql.Blob, jsonCol: ByteArray, booleanCol: Boolean, tinyintCol: Byte, smallintCol: Int, integerCol: Int, bigintCol: Long, numericCol: java.math.BigDecimal, decfloatCol: java.math.BigDecimal, realCol: Float, doubleprecisionCol: Double, dateCol: java.time.LocalDate, timeCol: java.time.LocalTime, timewithtimezoneCol: java.time.OffsetDateTime, timestampCol: java.time.Instant, timestampwithtimezoneCol: java.time.OffsetDateTime, uuidCol: java.util.UUID, intervalCol: org.h2.api.Interval, intArrayCol: Array<Any>, addressInt: com.dbobjekts.integration.h2.custom.AddressType, addressString: com.dbobjekts.integration.h2.custom.AddressType, addressStringNil: com.dbobjekts.integration.h2.custom.AddressType) : AllTypesInsertBuilder {
+    fun mandatoryColumns(characterCol: String, charactervaryingCol: String, characterlargeobjectCol: String, varcharIgnorecaseCol: String, enumCol: String, binaryCol: ByteArray, binaryvaryingCol: ByteArray, binarylargeobjectCol: java.sql.Blob, jsonCol: ByteArray, booleanCol: Boolean, tinyintCol: Byte, smallintCol: Int, integerCol: Int, bigintCol: Long, numericCol: java.math.BigDecimal, decfloatCol: java.math.BigDecimal, realCol: Float, doubleprecisionCol: Double, dateCol: java.time.LocalDate, timeCol: java.time.LocalTime, timewithtimezoneCol: java.time.OffsetDateTime, timestampCol: java.time.Instant, timestampwithtimezoneCol: java.time.OffsetDateTime, uuidCol: java.util.UUID, intervalCol: org.h2.api.Interval, intArrayCol: Array<Any>, addressInt: com.dbobjekts.integration.h2.custom.AddressType, addressIntNil: com.dbobjekts.integration.h2.custom.AddressType, addressString: com.dbobjekts.integration.h2.custom.AddressType, addressStringNil: com.dbobjekts.integration.h2.custom.AddressType) : AllTypesInsertBuilder {
       ct.put(AllTypes.characterCol, characterCol)
       ct.put(AllTypes.charactervaryingCol, charactervaryingCol)
       ct.put(AllTypes.characterlargeobjectCol, characterlargeobjectCol)
@@ -226,6 +226,7 @@ class AllTypesInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(All
       ct.put(AllTypes.intervalCol, intervalCol)
       ct.put(AllTypes.intArrayCol, intArrayCol)
       ct.put(AllTypes.addressInt, addressInt)
+      ct.put(AllTypes.addressIntNil, addressIntNil)
       ct.put(AllTypes.addressString, addressString)
       ct.put(AllTypes.addressStringNil, addressStringNil)
       return this

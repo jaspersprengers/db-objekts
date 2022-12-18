@@ -1,6 +1,8 @@
-package com.dbobjekts.jdbc
+package com.dbobjekts.api
 
-import com.dbobjekts.api.TransactionManager
+import com.dbobjekts.jdbc.DataSourceAdapter
+import com.dbobjekts.jdbc.DataSourceAdapterImpl
+import com.dbobjekts.jdbc.TransactionSettings
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.util.HikariDataSourceAdapterImpl
 import com.dbobjekts.util.StatementLogger
@@ -9,6 +11,7 @@ import com.zaxxer.hikari.HikariDataSource
 import javax.sql.DataSource
 
 class TransactionManagerBuilder {
+
     internal lateinit var dataSource: DataSourceAdapter
     internal lateinit var catalog: Catalog
     internal var statementLogger: StatementLogger = StatementLogger()
@@ -47,11 +50,11 @@ class TransactionManagerBuilder {
     }
 
     fun build(): TransactionManager {
-        return TransactionManagerImpl(dataSource, catalog, querySettings, statementLogger)
+        return TransactionManager(dataSource, catalog, querySettings, statementLogger)
     }
 
     fun buildForSingleton() {
-        TransactionManagerImpl.initialize(dataSource, catalog, querySettings, statementLogger)
+        TransactionManager.initialize(dataSource, catalog, querySettings, statementLogger)
     }
 
 }

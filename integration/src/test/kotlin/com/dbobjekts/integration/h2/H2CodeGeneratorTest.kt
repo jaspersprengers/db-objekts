@@ -25,6 +25,7 @@ class H2CodeGeneratorTest {
             .sequenceForPrimaryKey("core", "address", "id", "ADDRESS_SEQ")
             .sequenceForPrimaryKey("core", "department", "id", "DEPARTMENT_SEQ")
             .sequenceForPrimaryKey("hr", "certificate", "id", "CERTIFICATE_SEQ")
+            .overrideTypeForColumnByName(table="EMPLOYEE_ADDRESS", column = "KIND", columnType = AddressTypeAsStringColumn::class.java)
             .overrideTypeForColumnByName(column = "address_string", columnType = AddressTypeAsStringColumn::class.java)
             .overrideTypeForColumnByName(column = "address_int", columnType = AddressTypeAsIntegerColumn::class.java)
         generator.outputConfigurer()

@@ -2,7 +2,6 @@ package com.dbobjekts.integration.mariadb
 
 import com.dbobjekts.Tuple2
 import com.dbobjekts.Tuple4
-import com.dbobjekts.api.DBObjekts
 import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.integration.mariadb.Aliases.a
@@ -14,9 +13,8 @@ import com.dbobjekts.integration.mariadb.core.Address
 import com.dbobjekts.integration.mariadb.core.Country
 import com.dbobjekts.integration.mariadb.core.Employee
 import com.dbobjekts.integration.mariadb.core.EmployeeAddress
-import com.dbobjekts.jdbc.TransactionManagerBuilder
+import com.dbobjekts.api.TransactionManagerBuilder
 import com.dbobjekts.metadata.column.BooleanColumn
-import com.dbobjekts.metadata.column.ColumnType
 import com.dbobjekts.statement.customsql.ResultTypes
 import com.dbobjekts.util.HikariDataSourceFactory
 import com.dbobjekts.util.TestSourceWriter
@@ -53,7 +51,7 @@ class MariaIntegrationTest {
                     password = "test", driver = "org.mariadb.jdbc.Driver"
                 )
             TransactionManagerBuilder().dataSource(ds).catalog(CoreCatalog).buildForSingleton()
-            tm = DBObjekts.singletonTransactionManager()
+            tm = TransactionManager.singletonInstance()
             /*tm { tr ->
                 tr.deleteFrom(EmployeeAddress).where()
                 tr.deleteFrom(EmployeeDepartment).where()

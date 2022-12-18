@@ -3,45 +3,45 @@ package com.dbobjekts.vendors.postgresql
 import com.dbobjekts.AnyColumn
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper
-import com.dbobjekts.metadata.Columns
+import com.dbobjekts.metadata.ColumnFactory
 
 
 class PostgreSQLDataTypeMapper : ColumnTypeMapper {
 
-    override operator fun invoke(properties: ColumnMappingProperties): AnyColumn? {
+    override fun map(properties: ColumnMappingProperties): AnyColumn? {
         val nullable = properties.isNullable
         val col = properties.jdbcType.uppercase().trim()
         return when (col) {
-            "bool" -> Columns.booleanColumn(nullable)
-            "bit" -> Columns.booleanColumn(nullable)
-            "int8" -> Columns.longColumn(nullable)
-            "bigserial" -> Columns.longColumn(nullable)
-            "oid" -> Columns.longColumn(nullable)
-            "bytea" -> Columns.byteArrayColumn(nullable)
-            "char" -> Columns.varcharColumn(nullable)
-            "bpchar" -> Columns.varcharColumn(nullable)
-            "numeric" -> Columns.bigDecimalColumn(nullable)
-            "int4" -> Columns.integerColumn(nullable)
-            "serial" -> Columns.integerColumn(nullable)
-            "int2" -> Columns.shortColumn(nullable)
-            "smallserial" -> Columns.shortColumn(nullable)
-            "float4" -> Columns.floatColumn(nullable)
-            "float8" -> Columns.doubleColumn(nullable)
-            "money" -> Columns.doubleColumn(nullable)
-            "name" -> Columns.varcharColumn(nullable)
-            "text" -> Columns.varcharColumn(nullable)
-            "varchar" -> Columns.varcharColumn(nullable)
-            "date" -> Columns.dateColumn(nullable)
-            "time" -> Columns.timeColumn(nullable)
-            "timetz" -> Columns.timeColumn(nullable)
-            "timestamp" -> Columns.timeStampColumn(nullable)
-            "timestamptz" -> Columns.offsetDateTimeColumn(nullable)
+            "bool" -> ColumnFactory.booleanColumn(nullable)
+            "bit" -> ColumnFactory.booleanColumn(nullable)
+            "int8" -> ColumnFactory.longColumn(nullable)
+            "bigserial" -> ColumnFactory.longColumn(nullable)
+            "oid" -> ColumnFactory.longColumn(nullable)
+            "bytea" -> ColumnFactory.byteArrayColumn(nullable)
+            "char" -> ColumnFactory.varcharColumn(nullable)
+            "bpchar" -> ColumnFactory.varcharColumn(nullable)
+            "numeric" -> ColumnFactory.bigDecimalColumn(nullable)
+            "int4" -> ColumnFactory.integerColumn(nullable)
+            "serial" -> ColumnFactory.integerColumn(nullable)
+            "int2" -> ColumnFactory.shortColumn(nullable)
+            "smallserial" -> ColumnFactory.shortColumn(nullable)
+            "float4" -> ColumnFactory.floatColumn(nullable)
+            "float8" -> ColumnFactory.doubleColumn(nullable)
+            "money" -> ColumnFactory.doubleColumn(nullable)
+            "name" -> ColumnFactory.varcharColumn(nullable)
+            "text" -> ColumnFactory.varcharColumn(nullable)
+            "varchar" -> ColumnFactory.varcharColumn(nullable)
+            "date" -> ColumnFactory.dateColumn(nullable)
+            "time" -> ColumnFactory.timeColumn(nullable)
+            "timetz" -> ColumnFactory.timeColumn(nullable)
+            "timestamp" -> ColumnFactory.timeStampColumn(nullable)
+            "timestamptz" -> ColumnFactory.offsetDateTimeColumn(nullable)
             "cardinal_number" -> throw IllegalStateException("$col is not supported")
             "character_data" -> throw IllegalStateException("$col is not supported")
             "sql_identifier" -> throw IllegalStateException("$col is not supported")
             "time_stamp" -> throw IllegalStateException("$col is not supported")
             "yes_or_no" -> throw IllegalStateException("$col is not supported")
-            "xml" -> Columns.timeStampColumn(nullable)
+            "xml" -> ColumnFactory.timeStampColumn(nullable)
             "refcursor" -> throw IllegalStateException("$col is not supported")
             "_abc" -> throw IllegalStateException("$col is not supported")
 

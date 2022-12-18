@@ -1,14 +1,12 @@
 package com.dbobjekts.metadata
 
-import com.dbobjekts.AnyColumn
 import com.dbobjekts.metadata.column.*
-import java.lang.IllegalStateException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZonedDateTime
 
 
-object Columns {
+object ColumnFactory {
 
     private val table = DefaultTable
     private const val DUMMY = "dummy"
@@ -116,29 +114,6 @@ object Columns {
             is Boolean -> BOOLEAN
             else -> throw IllegalArgumentException("Type $value not supported for parameter: only Int, Long, Double, Date or String")
         } as Column<T>
-
-    fun <T> forClass(clz: Class<T>): Column<T> {
-        return when (clz.simpleName) {
-            "boolean" -> BOOLEAN
-            "Boolean" -> BOOLEAN
-            "byte" -> BYTE
-            "Byte" -> BYTE
-            "int" -> INTEGER
-            "Integer" -> INTEGER
-            "long" -> LONG
-            "Long" -> LONG
-            "double" -> DOUBLE
-            "Double" -> DOUBLE
-            "float" -> FLOAT
-            "Float" -> FLOAT
-            "String" -> VARCHAR
-            "LocalDate" -> DATE
-            "LocalDateTime" -> DATETIME
-            "LocalTime" -> TIME
-            "OffsetDateTime" -> OFFSET_DATETIME
-            else -> throw java.lang.IllegalArgumentException("Could not map class $clz to known Column implementation.")
-        } as Column<T>
-    }
 
 
 }

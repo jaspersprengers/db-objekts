@@ -3,46 +3,46 @@ package com.dbobjekts.vendors.mysql
 import com.dbobjekts.AnyColumn
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper
-import com.dbobjekts.metadata.Columns
+import com.dbobjekts.metadata.ColumnFactory
 
 
 class MySQLDataTypeMapper : ColumnTypeMapper {
 
-    override operator fun invoke(properties: ColumnMappingProperties): AnyColumn? {
+    override fun map(properties: ColumnMappingProperties): AnyColumn? {
         val nullable = properties.isNullable
         val col = properties.jdbcType.uppercase().trim()
         return when (col){
-            "CHAR" -> Columns.varcharColumn(nullable)
-            "VARCHAR" -> Columns.varcharColumn(nullable)
-            "TINYTEXT" -> Columns.varcharColumn(nullable)
-            "TEXT" -> Columns.varcharColumn(nullable)
-            "MEDIUMTEXT" -> Columns.varcharColumn(nullable)
-            "LONGTEXT" -> Columns.varcharColumn(nullable)
+            "CHAR" -> ColumnFactory.varcharColumn(nullable)
+            "VARCHAR" -> ColumnFactory.varcharColumn(nullable)
+            "TINYTEXT" -> ColumnFactory.varcharColumn(nullable)
+            "TEXT" -> ColumnFactory.varcharColumn(nullable)
+            "MEDIUMTEXT" -> ColumnFactory.varcharColumn(nullable)
+            "LONGTEXT" -> ColumnFactory.varcharColumn(nullable)
 
-            "BLOB" -> Columns.blobColumn(nullable)
-            "LONGBLOB" -> Columns.clobColumn(nullable)
+            "BLOB" -> ColumnFactory.blobColumn(nullable)
+            "LONGBLOB" -> ColumnFactory.clobColumn(nullable)
 
-            "TINYINT" -> Columns.byteColumn(nullable)
-            "SMALLINT" -> Columns.integerColumn(nullable)
-            "MEDIUMINT" -> Columns.integerColumn(nullable)
-            "INT" -> Columns.integerColumn(nullable)
-            "BIGINT" -> Columns.longColumn(nullable)
+            "TINYINT" -> ColumnFactory.byteColumn(nullable)
+            "SMALLINT" -> ColumnFactory.integerColumn(nullable)
+            "MEDIUMINT" -> ColumnFactory.integerColumn(nullable)
+            "INT" -> ColumnFactory.integerColumn(nullable)
+            "BIGINT" -> ColumnFactory.longColumn(nullable)
 
-            "BINARY" -> Columns.varcharColumn(nullable)
+            "BINARY" -> ColumnFactory.varcharColumn(nullable)
 
-            "ENUM" -> Columns.integerColumn(nullable)
-            "SET" -> Columns.integerColumn(nullable)
+            "ENUM" -> ColumnFactory.integerColumn(nullable)
+            "SET" -> ColumnFactory.integerColumn(nullable)
 
-            "FLOAT" -> Columns.doubleColumn(nullable)
-            "DOUBLE" -> Columns.doubleColumn(nullable)
-            "DECIMAL" -> Columns.doubleColumn(nullable)
+            "FLOAT" -> ColumnFactory.doubleColumn(nullable)
+            "DOUBLE" -> ColumnFactory.doubleColumn(nullable)
+            "DECIMAL" -> ColumnFactory.doubleColumn(nullable)
 
-            "DATE" -> Columns.dateColumn(nullable)
-            "DATETIME" -> Columns.dateColumn(nullable)
-            "TIMESTAMP" -> Columns.timeStampColumn(nullable)
-            "TIME" -> Columns.timeColumn(nullable)
+            "DATE" -> ColumnFactory.dateColumn(nullable)
+            "DATETIME" -> ColumnFactory.dateColumn(nullable)
+            "TIMESTAMP" -> ColumnFactory.timeStampColumn(nullable)
+            "TIME" -> ColumnFactory.timeColumn(nullable)
 
-            "BOOLEAN" -> Columns.booleanColumn(nullable)
+            "BOOLEAN" -> ColumnFactory.booleanColumn(nullable)
             else -> null
         }
     }

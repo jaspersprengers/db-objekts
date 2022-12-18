@@ -1,6 +1,5 @@
 package com.dbobjekts.integration.h2
 
-import com.dbobjekts.api.DBObjekts
 import com.dbobjekts.api.Transaction
 import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.integration.h2.core.*
@@ -42,13 +41,13 @@ object H2DB {
     val catalog: Catalog = Catalogdefinition
 
     fun getTransactionManager(autoCommit: Boolean = true): TransactionManager {
-        DBObjekts.configure()
+        TransactionManager.builder()
             .dataSource(dataSource = createDataSource())
             .catalog(catalog)
             .customLogger(StatementLogger())
             .autoCommit(autoCommit)
             .buildForSingleton()
-        return DBObjekts.singletonTransactionManager()
+        return TransactionManager.singletonInstance()
     }
 
     private fun createExampleCatalog(transaction: Transaction) {

@@ -1,6 +1,5 @@
 package com.dbobjekts.codegen
 
-import com.dbobjekts.AnyColumn
 import com.dbobjekts.PackageName
 import com.dbobjekts.SchemaName
 import com.dbobjekts.TableName
@@ -8,15 +7,12 @@ import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.codegen.datatypemapper.ColumnTypeResolver
 import com.dbobjekts.codegen.metadata.*
-import com.dbobjekts.metadata.Columns
-import com.dbobjekts.metadata.column.IntegerColumn
-import com.dbobjekts.metadata.column.LongColumn
 import org.slf4j.LoggerFactory
 
 /**
  * Yields a DBTableDefinition
  */
-class TableBuilder(
+internal class TableBuilder(
     val packageName: PackageName,
     val schema: SchemaName,
     val tableName: TableName,

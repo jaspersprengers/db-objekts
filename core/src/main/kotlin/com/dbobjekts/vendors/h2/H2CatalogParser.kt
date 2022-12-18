@@ -6,8 +6,6 @@ import com.dbobjekts.codegen.parsers.CatalogParser
 import com.dbobjekts.codegen.parsers.ForeignKeyMetaDataRow
 import com.dbobjekts.codegen.parsers.TableMetaDataRow
 import com.dbobjekts.jdbc.DetermineVendor
-import com.dbobjekts.metadata.Columns.VARCHAR
-import com.dbobjekts.metadata.Columns.VARCHAR_NIL
 import com.dbobjekts.statement.customsql.ResultTypes
 import org.slf4j.LoggerFactory
 

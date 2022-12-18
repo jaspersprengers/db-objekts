@@ -3,7 +3,7 @@ package com.dbobjekts.vendors.h2
 import com.dbobjekts.AnyColumn
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper
-import com.dbobjekts.metadata.Columns
+import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.metadata.DefaultTable
 import org.slf4j.LoggerFactory
 
@@ -12,46 +12,46 @@ import org.slf4j.LoggerFactory
 class H2DataTypeMapper : ColumnTypeMapper {
     private val logger = LoggerFactory.getLogger(H2DataTypeMapper::class.java)
 
-    override operator fun invoke(properties: ColumnMappingProperties): AnyColumn? {
+    override fun map(properties: ColumnMappingProperties): AnyColumn? {
         val nullable = properties.isNullable
         val col = properties.jdbcType.uppercase().trim()
         val objectColumnPattern = Regex("(JAVA_OBJECT|OBJECT|OTHER)")
 
         return when {
             //character columns as string
-            col == "CHARACTER" -> Columns.varcharColumn(nullable)
-            col == "CHARACTER VARYING" -> Columns.varcharColumn(nullable)
-            col == "CHARACTER LARGE OBJECT" -> Columns.varcharColumn(nullable)
-            col == "VARCHAR_IGNORECASE" -> Columns.varcharColumn(nullable)
+            col == "CHARACTER" -> ColumnFactory.varcharColumn(nullable)
+            col == "CHARACTER VARYING" -> ColumnFactory.varcharColumn(nullable)
+            col == "CHARACTER LARGE OBJECT" -> ColumnFactory.varcharColumn(nullable)
+            col == "VARCHAR_IGNORECASE" -> ColumnFactory.varcharColumn(nullable)
             //binary columns
-            col == "BINARY" -> Columns.byteArrayColumn(nullable)
-            col == "BINARY VARYING" -> Columns.byteArrayColumn(nullable)
-            col == "BINARY LARGE OBJECT" -> Columns.blobColumn(nullable)
-            col == "JSON" -> Columns.byteArrayColumn(nullable)
+            col == "BINARY" -> ColumnFactory.byteArrayColumn(nullable)
+            col == "BINARY VARYING" -> ColumnFactory.byteArrayColumn(nullable)
+            col == "BINARY LARGE OBJECT" -> ColumnFactory.blobColumn(nullable)
+            col == "JSON" -> ColumnFactory.byteArrayColumn(nullable)
             //tiny integers and boolean as INT
-            col == "BOOLEAN" -> Columns.booleanColumn(nullable)
-            col == "TINYINT" -> Columns.byteColumn(nullable)
-            col == "SMALLINT" -> Columns.integerColumn(nullable)
-            col == "INTEGER" -> Columns.integerColumn(nullable)
+            col == "BOOLEAN" -> ColumnFactory.booleanColumn(nullable)
+            col == "TINYINT" -> ColumnFactory.byteColumn(nullable)
+            col == "SMALLINT" -> ColumnFactory.integerColumn(nullable)
+            col == "INTEGER" -> ColumnFactory.integerColumn(nullable)
             //large numbers and floats
-            col == "BIGINT" -> Columns.longColumn(nullable)
-            col == "NUMERIC" -> Columns.bigDecimalColumn(nullable)
-            col == "DECFLOAT" -> Columns.bigDecimalColumn(nullable)
-            col == "REAL" -> Columns.floatColumn(nullable)
-            col == "DOUBLE PRECISION" -> Columns.doubleColumn(nullable)
+            col == "BIGINT" -> ColumnFactory.longColumn(nullable)
+            col == "NUMERIC" -> ColumnFactory.bigDecimalColumn(nullable)
+            col == "DECFLOAT" -> ColumnFactory.bigDecimalColumn(nullable)
+            col == "REAL" -> ColumnFactory.floatColumn(nullable)
+            col == "DOUBLE PRECISION" -> ColumnFactory.doubleColumn(nullable)
             //date and time
-            col == "DATE" -> Columns.dateColumn(nullable)
-            col == "TIME" -> Columns.timeColumn(nullable)
-            col == "TIME WITH TIME ZONE" -> Columns.offsetDateTimeColumn(nullable)
-            col == "TIMESTAMP" -> Columns.timeStampColumn(nullable)
-            col == "TIMESTAMP WITH TIME ZONE" -> Columns.offsetDateTimeColumn(nullable)
-            col == "ENUM" -> Columns.varcharColumn(nullable)
+            col == "DATE" -> ColumnFactory.dateColumn(nullable)
+            col == "TIME" -> ColumnFactory.timeColumn(nullable)
+            col == "TIME WITH TIME ZONE" -> ColumnFactory.offsetDateTimeColumn(nullable)
+            col == "TIMESTAMP" -> ColumnFactory.timeStampColumn(nullable)
+            col == "TIMESTAMP WITH TIME ZONE" -> ColumnFactory.offsetDateTimeColumn(nullable)
+            col == "ENUM" -> ColumnFactory.varcharColumn(nullable)
             //special types
             col == "UUID" -> if (nullable) UUID_NIL else UUID
             col.startsWith("INTERVAL") -> if (nullable) INTERVAL_NIL else INTERVAL
             //col.matches(objectColumnPattern) ->  Columns.
 
-            col.contains("GEOMETRY") -> Columns.varcharColumn(nullable)
+            col.contains("GEOMETRY") -> ColumnFactory.varcharColumn(nullable)
 
             col.contains("ARRAY") -> if (nullable) OBJECT_ARRAY_NIL else OBJECT_ARRAY
 

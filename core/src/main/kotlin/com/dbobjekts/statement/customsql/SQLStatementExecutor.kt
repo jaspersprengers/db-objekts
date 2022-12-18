@@ -4,7 +4,7 @@ import com.dbobjekts.AnyColumn
 import com.dbobjekts.AnySqlParameter
 import com.dbobjekts.SQL
 import com.dbobjekts.jdbc.ConnectionAdapter
-import com.dbobjekts.metadata.Columns
+import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.result.ColumnInResultRow
 import com.dbobjekts.result.ResultRow1
 import com.dbobjekts.result.ResultRow
@@ -20,7 +20,7 @@ open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
     internal val selectResultSet: RSB
 ) : StatementExecutor {
 
-    constructor(connection: ConnectionAdapter, sql: SQL, args: List<Any>) : this(connection, sql, args, listOf(Columns.LONG), ResultRow1<Long>() as RSB)
+    constructor(connection: ConnectionAdapter, sql: SQL, args: List<Any>) : this(connection, sql, args, listOf(ColumnFactory.LONG), ResultRow1<Long>() as RSB)
 
     internal val columnsToFetch: List<ColumnInResultRow> =
         columnClasses.mapIndexed { index, column -> ColumnInResultRow(1 + index, column)}
@@ -53,7 +53,7 @@ open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
 
 
     private fun <T> createParameter(position: Int, value: T): SqlParameter<T> =
-        SqlParameter<T>(position, Columns.getColumnForValue(value), value)
+        SqlParameter<T>(position, ColumnFactory.getColumnForValue(value), value)
 
 
     fun executeForSelect(): RSB =

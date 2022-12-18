@@ -1,19 +1,15 @@
 package com.dbobjekts.codegen.configbuilders
 
-import com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper
-import com.dbobjekts.codegen.datatypemapper.JDBCTypeOverrideMapper
-import com.dbobjekts.codegen.datatypemapper.SequenceForPrimaryKeyMapper
-import com.dbobjekts.codegen.datatypemapper.StandardColumnTypeMapper
-import com.dbobjekts.metadata.Columns
+import com.dbobjekts.codegen.datatypemapper.*
 import com.dbobjekts.metadata.column.NonNullableColumn
 
 
 class MappingConfigurer {
 
-    internal val mappers: MutableList<ColumnTypeMapper> = mutableListOf()
+    internal val mappers: MutableList<CustomColumnTypeMapper<*>> = mutableListOf()
     internal val sequenceMappers: MutableList<SequenceForPrimaryKeyMapper> = mutableListOf()
 
-    fun addColumnTypeMapper(mapper: ColumnTypeMapper): MappingConfigurer {
+    fun addColumnTypeMapper(mapper: CustomColumnTypeMapper<*>): MappingConfigurer {
         mappers += mapper
         return this
     }
@@ -33,9 +29,9 @@ class MappingConfigurer {
         table: String? = null,
         exactMatch: Boolean = false
     ): MappingConfigurer {
-        mappers += StandardColumnTypeMapper(
+        mappers += ColumnTypeMapperByNameMatch(
             columnNamePattern = column,
-            columnType = Columns.forClass(columnType),
+            columnType = columnType,
             schema = schema,
             table = table,
             exactMatch = exactMatch
@@ -59,7 +55,7 @@ class MappingConfigurer {
     ): MappingConfigurer {
         mappers += JDBCTypeOverrideMapper(
             jdbcType = jdbcType,
-            columnType = Columns.forClass(columnType),
+            columnType = columnType,
             schema = schema,
             table = table
         )

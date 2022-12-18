@@ -1,7 +1,7 @@
 package com.dbobjekts.codegen.datatypemapper
 
-import com.dbobjekts.metadata.Columns
-import com.dbobjekts.metadata.column.ColumnType
+import com.dbobjekts.metadata.column.LongColumn
+import com.dbobjekts.metadata.column.NumberAsBooleanColumn
 import com.dbobjekts.vendors.Vendors
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
@@ -10,11 +10,13 @@ import org.junit.jupiter.api.Test
 
 class SqlTypeMapperFacadeTest {
 
-    val customMappers: List<ColumnTypeMapper> = listOf<ColumnTypeMapper>(JDBCTypeOverrideMapper("BIT", Columns.NUMBER_AS_BOOLEAN),
-        JDBCTypeOverrideMapper("INTEGER", Columns.LONG),
-        StandardColumnTypeMapper("person_id", Columns.LONG),
-        StandardColumnTypeMapper("employees", Columns.LONG),
-        StandardColumnTypeMapper("employees", Columns.LONG, schema = "hr"), )
+    val customMappers: List<CustomColumnTypeMapper<*>> = listOf<CustomColumnTypeMapper<*>>(
+        JDBCTypeOverrideMapper("BIT", NumberAsBooleanColumn::class.java),
+        JDBCTypeOverrideMapper("INTEGER", LongColumn::class.java),
+        ColumnTypeMapperByNameMatch("person_id", LongColumn::class.java),
+        ColumnTypeMapperByNameMatch("employees", LongColumn::class.java),
+        ColumnTypeMapperByNameMatch("employees", LongColumn::class.java, schema = "hr"),
+    )
     val mapper: ColumnTypeResolver = ColumnTypeResolver(Vendors.H2.defaultMapper, customMappers)
 
     @Test
@@ -55,9 +57,25 @@ class SqlTypeMapperFacadeTest {
     }
 
     @Test
-    fun `map schema and column to long column`(){
-        assertThat(mapper.mapDataType(ColumnMappingProperties.of(schema = "hr", column = "employees", jdbcType = "whatever"))::class.java.simpleName).isEqualTo("LongColumn")
-        assertThat(mapper.mapDataType(ColumnMappingProperties.of(schema = "finance", column = "employees", jdbcType = "whatever"))::class.java.simpleName).isEqualTo("LongColumn")
+    fun `map schema and column to long column`() {
+        assertThat(
+            mapper.mapDataType(
+                ColumnMappingProperties.of(
+                    schema = "hr",
+                    column = "employees",
+                    jdbcType = "whatever"
+                )
+            )::class.java.simpleName
+        ).isEqualTo("LongColumn")
+        assertThat(
+            mapper.mapDataType(
+                ColumnMappingProperties.of(
+                    schema = "finance",
+                    column = "employees",
+                    jdbcType = "whatever"
+                )
+            )::class.java.simpleName
+        ).isEqualTo("LongColumn")
     }
 }
 

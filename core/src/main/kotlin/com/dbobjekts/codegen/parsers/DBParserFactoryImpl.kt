@@ -1,14 +1,11 @@
 package com.dbobjekts.codegen.parsers
 
 import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
-import com.dbobjekts.codegen.configbuilders.DataSourceInfo
-import com.dbobjekts.jdbc.TransactionManagerBuilder
+import com.dbobjekts.api.TransactionManagerBuilder
 import com.dbobjekts.metadata.Catalog
-import com.dbobjekts.util.HikariDataSourceFactory
 import com.dbobjekts.vendors.Vendors
 import com.dbobjekts.vendors.h2.H2CatalogParser
 import com.dbobjekts.vendors.mariadb.MariaDBCatalogParser
-import javax.sql.DataSource
 
 
 class DBParserFactoryImpl : DBParserFactory {
