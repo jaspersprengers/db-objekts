@@ -1,9 +1,7 @@
-package com.dbobjekts.integration
+package com.dbobjekts.integration.h2
 
 import com.dbobjekts.Tuple3
-import com.dbobjekts.fixture.h2.H2DB
 import com.dbobjekts.integration.h2.core.*
-import com.dbobjekts.integration.h2.custom.AddressType
 import com.dbobjekts.integration.h2.hr.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals

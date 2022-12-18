@@ -5,7 +5,6 @@ import com.dbobjekts.Tuple4
 import com.dbobjekts.api.DBObjekts
 import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.codegen.CodeGenerator
-import com.dbobjekts.fixture.MariaDBWrapper
 import com.dbobjekts.integration.mariadb.Aliases.a
 import com.dbobjekts.integration.mariadb.Aliases.c
 import com.dbobjekts.integration.mariadb.Aliases.e

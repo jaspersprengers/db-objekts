@@ -1,4 +1,4 @@
-package com.dbobjekts.fixture
+package com.dbobjekts.integration.mariadb
 
 import org.testcontainers.containers.BindMode
 import org.testcontainers.containers.MariaDBContainer

@@ -1,7 +1,6 @@
-package com.dbobjekts.integration
+package com.dbobjekts.integration.h2
 
 import com.dbobjekts.api.Transaction
-import com.dbobjekts.fixture.h2.H2DB
 import com.dbobjekts.integration.h2.core.Employee
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals

@@ -1,9 +1,8 @@
-package com.dbobjekts.fixture.h2
+package com.dbobjekts.integration.h2
 
 import com.dbobjekts.api.DBObjekts
 import com.dbobjekts.api.Transaction
 import com.dbobjekts.api.TransactionManager
-import com.dbobjekts.integration.h2.Catalogdefinition
 import com.dbobjekts.integration.h2.core.*
 import com.dbobjekts.integration.h2.hr.Certificate
 import com.dbobjekts.integration.h2.hr.Hobby

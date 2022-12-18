@@ -1,7 +1,6 @@
-package com.dbobjekts.integration
+package com.dbobjekts.integration.h2
 
 import com.dbobjekts.Tuple9
-import com.dbobjekts.fixture.h2.H2DB
 import com.dbobjekts.integration.h2.core.Address
 import com.dbobjekts.integration.h2.core.Employee
 import com.dbobjekts.integration.h2.hr.Hobby

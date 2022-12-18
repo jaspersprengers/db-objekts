@@ -1,12 +1,8 @@
 package com.dbobjekts.integration.h2
 
 import com.dbobjekts.codegen.CodeGenerator
-import com.dbobjekts.fixture.h2.H2DB
-import com.dbobjekts.integration.h2.custom.AddressTypeColumn
-import com.dbobjekts.util.PathUtil
 import com.dbobjekts.util.TestSourceWriter
 import org.junit.jupiter.api.Test
-import org.testcontainers.utility.PathUtils
 import java.nio.file.Paths
 
 

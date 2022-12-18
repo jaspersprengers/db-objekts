@@ -1,19 +1,14 @@
-package com.dbobjekts.integration
+package com.dbobjekts.integration.h2
 
-import com.dbobjekts.fixture.h2.H2DB
 import com.dbobjekts.integration.h2.core.AllTypes
 import com.dbobjekts.metadata.column.BlobColumn
-import com.dbobjekts.metadata.column.ClobColumn
 import com.dbobjekts.statement.whereclause.SubClause
-import org.assertj.core.api.Assertions
-import org.assertj.core.api.Assertions.assertThat
 import org.h2.api.Interval
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.io.Serializable
-import java.lang.Byte
 import java.math.BigDecimal
 import java.time.*
 import java.util.*
