@@ -14,16 +14,15 @@ import javax.sql.DataSource
 
 object H2DB {
     private val logger = LoggerFactory.getLogger(H2DB::class.java)
-    
+
     fun <T> newTransaction(fct: (Transaction) -> T) = getTransactionManager().newTransaction(fct)
 
-     fun setupDatabaseObjects(forceDelete: Boolean = false) {
+    fun setupDatabaseObjects() {
         getTransactionManager().newTransaction { createExampleCatalog(it) }
-        if (forceDelete)
-            deleteAllTables()
+        deleteAllTables()
     }
 
-     fun deleteAllTables() {
+    fun deleteAllTables() {
         getTransactionManager().newTransaction { tr ->
             tr.deleteFrom(EmployeeAddress).noWhereClause()
             tr.deleteFrom(EmployeeDepartment).noWhereClause()
@@ -37,11 +36,10 @@ object H2DB {
         }
     }
 
-     fun createDataSource(): DataSource =
+    fun createDataSource(): DataSource =
         HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
-    //HikariDataSourceFactory.create(url = "jdbc:h2:tcp://localhost:9092/~/test", username = "test", password = "test", driver = "org.h2.Driver")
 
-     val catalog: Catalog = Catalogdefinition
+    val catalog: Catalog = Catalogdefinition
 
     fun getTransactionManager(autoCommit: Boolean = true): TransactionManager {
         DBObjekts.configure()
@@ -52,7 +50,7 @@ object H2DB {
             .buildForSingleton()
         return DBObjekts.singletonTransactionManager()
     }
-    
+
     private fun createExampleCatalog(transaction: Transaction) {
 
         transaction.execute("CREATE SCHEMA if not exists core")
@@ -137,9 +135,7 @@ object H2DB {
                 interval_col_nil              INTERVAL MONTH                     NULL,
                 geometry_col_nil              GEOMETRY NULL,
                 int_array_col                 INTEGER ARRAY[10] NOT NULL,
-                int_array_col_nil           INTEGER ARRAY[10] NULL,
-                object_col                  JAVA_OBJECT NOT NULL,
-                object_col_nil              JAVA_OBJECT NULL
+                int_array_col_nil           INTEGER ARRAY[10] NULL
             );
         """.trimIndent()
 

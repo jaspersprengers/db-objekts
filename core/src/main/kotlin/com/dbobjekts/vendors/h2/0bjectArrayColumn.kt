@@ -13,11 +13,9 @@ import java.sql.Types
 class ObjectArrayColumn(table: Table, name: String) : ObjectColumn<Array<Any>>(table, name, Array::class.java) {
 
     override val nullable: NullableColumn<Array<Any>?> = NullableObjectArrayColumn(table, name)
-    override val valueClass: Class<*> = Array<Any>::class.java
 }
 
 
 class NullableObjectArrayColumn(table: Table, name: String) : NullableObjectColumn<Array<Any>?>(table, name, Array::class.java) {
 
-    override val valueClass: Class<*> = Array<Any>::class.java
 }

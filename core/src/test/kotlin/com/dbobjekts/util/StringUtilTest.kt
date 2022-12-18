@@ -148,7 +148,7 @@ class StringUtilTest {
         assertEquals("java.time.LocalDate", StringUtil.classToString(Columns.DATE.valueClass))
 
         assertEquals("Array<Any>", StringUtil.classToString(H2DataTypeMapper.OBJECT_ARRAY.valueClass))
-        assertEquals("Any", StringUtil.classToString(H2DataTypeMapper.H2_OBJECT.valueClass))
+
         assertEquals("ByteArray", StringUtil.classToString(Columns.BYTE_ARRAY.valueClass))
 
     }

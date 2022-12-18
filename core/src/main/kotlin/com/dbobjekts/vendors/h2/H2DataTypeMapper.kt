@@ -49,7 +49,7 @@ class H2DataTypeMapper : ColumnTypeMapper {
             //special types
             col == "UUID" -> if (nullable) UUID_NIL else UUID
             col.startsWith("INTERVAL") -> if (nullable) INTERVAL_NIL else INTERVAL
-            col.matches(objectColumnPattern) ->  if (nullable) H2_OBJECT_NIL else H2_OBJECT
+            //col.matches(objectColumnPattern) ->  Columns.
 
             col.contains("GEOMETRY") -> Columns.varcharColumn(nullable)
 
@@ -73,9 +73,6 @@ class H2DataTypeMapper : ColumnTypeMapper {
 
         val INTERVAL = IntervalColumn(table, DUMMY)
         val INTERVAL_NIL = NullableIntervalColumn(table, DUMMY)
-
-        val H2_OBJECT = H2ObjectColumn(table, DUMMY)
-        val H2_OBJECT_NIL = NullableH2ObjectColumn(table, DUMMY)
 
         val OBJECT_ARRAY = ObjectArrayColumn(table, DUMMY)
         val OBJECT_ARRAY_NIL = NullableObjectArrayColumn(table, DUMMY)

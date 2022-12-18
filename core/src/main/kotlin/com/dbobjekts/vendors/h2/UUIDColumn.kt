@@ -10,11 +10,9 @@ import java.util.UUID
 class UUIDColumn(table: Table, name: String) : ObjectColumn<UUID>(table, name, UUID::class.java) {
 
     override val nullable: NullableColumn<UUID?> = NullableUUIDColumn(table, name)
-    override val valueClass: Class<*> = UUID::class.java
 }
 
 
 class NullableUUIDColumn(table: Table, name: String) : NullableObjectColumn<UUID?>(table, name, UUID::class.java) {
 
-    override val valueClass: Class<*> = UUID::class.java
 }

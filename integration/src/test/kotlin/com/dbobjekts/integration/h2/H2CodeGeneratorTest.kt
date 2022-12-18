@@ -22,7 +22,7 @@ class H2CodeGeneratorTest {
             .sequenceForPrimaryKey("core", "employee", "id", "EMPLOYEE_SEQ")
             .sequenceForPrimaryKey("core", "address", "id", "ADDRESS_SEQ")
             .sequenceForPrimaryKey("core", "department", "id", "DEPARTMENT_SEQ")
-            .sequenceForPrimaryKey("core", "certificate", "id", "CERTIFICATE_SEQ")
+            .sequenceForPrimaryKey("hr", "certificate", "id", "CERTIFICATE_SEQ")
         generator.outputConfigurer()
             .basePackageForSources("com.dbobjekts.integration.h2")
             //.sourceWriter(writer)

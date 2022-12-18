@@ -7,7 +7,7 @@ import java.sql.ResultSet
 import java.sql.Types
 
 abstract class SerializableColumn<E : Serializable>(table: Table,
-                                                    name: String) : NonNullableColumn<E>(name, table){
+                                                    name: String) : NonNullableColumn<E>(name, table, String::class.java){
     override  fun getValue(position: Int, resultSet: ResultSet): E? = resultSet.getString(position)?.let { parse(it) }
 
     override  fun setValue(position: Int, statement: PreparedStatement, value: E) = statement.setString(position, value.toString())
@@ -17,7 +17,7 @@ abstract class SerializableColumn<E : Serializable>(table: Table,
 }
 
 abstract class NullableSerializableColumn<E : Serializable>(table: Table,
-                                                            name: String) : NullableColumn<E?>(name, table, Types.VARCHAR){
+                                                            name: String) : NullableColumn<E?>(name, table, Types.VARCHAR, String::class.java){
     override fun getValue(position: Int, resultSet: ResultSet): E? = resultSet.getString(position)?.let { parse(it) }
 
     override fun setValue(position: Int, statement: PreparedStatement, value: E?) = statement.setString(position, value.toString())

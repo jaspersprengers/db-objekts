@@ -96,7 +96,6 @@ class TypesIntegrationTest {
                 //.geometryCol("GEOMETRY X'00000000013ff00000000000003ff0000000000000'")
                 //.geometryColNil(null)
                 .intArrayCol(arrayOf(1, 2, 3))
-                .objectCol("John")
                 .execute()
 
             assertEquals("C", tr.select(t.characterCol).first())

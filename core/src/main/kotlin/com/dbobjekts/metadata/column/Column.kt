@@ -19,7 +19,8 @@ import java.sql.ResultSet
  */
 abstract class Column<I>(
     val dbName: String,
-    val table: Table
+    val table: Table,
+    internal val valueClass: Class<*>
 ) : ConditionFactory<I, SubClause> {
     init {
         if (!ValidateDBObjectName(dbName))
@@ -35,8 +36,6 @@ abstract class Column<I>(
         clause.addCondition(this, And, symbol, values, secondColumn)
         return clause
     }
-
-    internal abstract val valueClass: Class<*>
 
     internal abstract fun retrieveValue(position: Int, rs: ResultSet): I?
 
@@ -65,8 +64,9 @@ abstract class Column<I>(
 
 abstract class NonNullableColumn<I>(
     name: String,
-    table: Table
-) : Column<I>(name, table) {
+    table: Table,
+    valueClass: Class<*>
+) : Column<I>(name, table, valueClass) {
     abstract val nullable: NullableColumn<I?>
     override fun create(value: I?): ColumnAndValue<I> = NonNullableColumnAndValue(
         this, value ?: throw IllegalArgumentException("Value cannot be null in non-null column")
@@ -94,8 +94,9 @@ abstract class NonNullableColumn<I>(
 abstract class NullableColumn<I>(
     name: String = "dummy",
     table: Table = DefaultTable,
-    val sqlType: Int
-) : Column<I>(name, table) {
+    val sqlType: Int,
+    valueClass: Class<*>
+) : Column<I>(name, table, valueClass) {
     override fun create(value: I?): ColumnAndValue<I> = NullableColumnAndValue(this, value)
 
     internal fun setNull(): ColumnAndValue<I> = NullableColumnAndValue(this, null)

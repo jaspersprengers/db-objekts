@@ -18,6 +18,7 @@ enum class AddressType : Serializable {
     override val valueClass: Class<*> = AddressType::class.java
 }*/
 
+/*
 class NullableAddressTypeColumn(table: Table, name: String) : NullableEnumAsStringColumn<AddressType>(table, name) {
     override fun parse(str: String): AddressType = AddressType.valueOf(str)
 
@@ -71,3 +72,4 @@ abstract class NullableEnumAsStringColumn<E : Enum<E>>(
     abstract fun parse(ordinal: String): E?
 
 }
+*/

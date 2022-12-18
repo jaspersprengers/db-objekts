@@ -12,7 +12,7 @@ import com.dbobjekts.integration.h2.core.Employee
 
 
 object Certificate:Table("CERTIFICATE"), HasUpdateBuilder<CertificateUpdateBuilder, CertificateInsertBuilder> {
-    val id = com.dbobjekts.metadata.column.LongColumn(this, "ID")
+    val id = com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "ID", "CERTIFICATE_SEQ")
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "EMPLOYEE_ID", Employee.id)
     override val columns: List<AnyColumn> = listOf(id,name,employeeId)
@@ -24,7 +24,6 @@ class CertificateUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBas
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 
-    fun id(value: Long): CertificateUpdateBuilder = ct.put(Certificate.id, value)
     fun name(value: String): CertificateUpdateBuilder = ct.put(Certificate.name, value)
     fun employeeId(value: Long): CertificateUpdateBuilder = ct.put(Certificate.employeeId, value)
 }
@@ -33,12 +32,10 @@ class CertificateInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(
     private val ct = ColumnForWriteMapContainerImpl(this)
     override protected fun data(): Set<AnyColumnAndValue> = ct.data
 
-    fun id(value: Long): CertificateInsertBuilder = ct.put(Certificate.id, value)
     fun name(value: String): CertificateInsertBuilder = ct.put(Certificate.name, value)
     fun employeeId(value: Long): CertificateInsertBuilder = ct.put(Certificate.employeeId, value)
 
-    fun mandatoryColumns(id: Long, name: String, employeeId: Long) : CertificateInsertBuilder {
-      ct.put(Certificate.id, id)
+    fun mandatoryColumns(name: String, employeeId: Long) : CertificateInsertBuilder {
       ct.put(Certificate.name, name)
       ct.put(Certificate.employeeId, employeeId)
       return this

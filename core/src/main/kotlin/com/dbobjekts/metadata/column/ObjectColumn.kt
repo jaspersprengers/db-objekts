@@ -10,7 +10,7 @@ abstract class ObjectColumn<E>(
     table: Table,
     name: String,
     val clz: Class<*>
-) : NonNullableColumn<E>(name, table) {
+) : NonNullableColumn<E>(name, table, clz) {
     override fun getValue(position: Int, resultSet: ResultSet): E? = resultSet.getObject(position, clz) as E
 
     override fun setValue(position: Int, statement: PreparedStatement, value: E) = statement.setObject(position, value)
@@ -21,7 +21,7 @@ abstract class NullableObjectColumn<E>(
     table: Table,
     name: String,
     val clz: Class<*>
-) : NullableColumn<E?>(name, table, Types.VARCHAR) {
+) : NullableColumn<E?>(name, table, Types.VARCHAR, clz) {
     override fun getValue(position: Int, resultSet: ResultSet): E? = resultSet.getObject(position, clz) as E
 
     override fun setValue(position: Int, statement: PreparedStatement, value: E?) = statement.setObject(position, value)
