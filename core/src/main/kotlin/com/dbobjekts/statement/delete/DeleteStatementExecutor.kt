@@ -8,6 +8,7 @@ import com.dbobjekts.statement.SQLOptions
 import com.dbobjekts.statement.StatementBase
 import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
+import com.dbobjekts.statement.whereclause.WhereClause
 import com.dbobjekts.util.StringUtil
 
 class DeleteStatementExecutor(connection: ConnectionAdapter) :StatementBase<Long>(connection) {
@@ -37,5 +38,9 @@ class DeleteStatementExecutor(connection: ConnectionAdapter) :StatementBase<Long
         val params = wc.getParameters()
         return connection.prepareAndExecuteDeleteStatement(sql, params)
     }
+
+    override fun getWhereClause(): WhereClause =
+        if (!whereClauseIsSpecified()) throw IllegalStateException("Missing mandatory where clause for delete statement. " +
+                "If you want to delete without any restrictions you must explicitly provide the noWhereClause() call in your query.") else _whereClause
 
 }

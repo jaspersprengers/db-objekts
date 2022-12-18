@@ -8,7 +8,9 @@ import com.dbobjekts.metadata.Table
 import com.dbobjekts.statement.ColumnsForUpdate
 import com.dbobjekts.statement.SQLOptions
 import com.dbobjekts.statement.StatementBase
+import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
+import com.dbobjekts.statement.whereclause.WhereClause
 import com.dbobjekts.util.Errors
 import com.dbobjekts.util.StringUtil
 
@@ -33,10 +35,10 @@ class UpdateStatementExecutor(
 
     fun where(subclause: SubClause): Long {
         withWhereClause(subclause)
-        return execute()
+      /*  return execute()
     }
 
-    fun execute(): Long {
+    fun execute(): Long {*/
         val sql = toSQL()
         val allParams: List<AnySqlParameter> = getAllParameters()
         connection.statementLogger.logStatement(sql, allParams)
@@ -48,20 +50,25 @@ class UpdateStatementExecutor(
         }
     }
 
-     fun toSQL(): SQL {
+    fun toSQL(): SQL {
         getWhereClause().getFlattenedConditions().forEach { registerTable(it.column.table) }
-        val columns = columnsForUpdate.params.map { it.column!!.aliasDotName() + " = ?" }.joinToString(",")
+        val columns = columnsForUpdate.params.map { it.column.aliasDotName() + " = ?" }.joinToString(",")
         val clause = getWhereClause().build(SQLOptions(includeAlias = true))
         return SQL(StringUtil.concat(listOf("update", joinChain().toSQL(), "set", columns, clause)))
     }
 
-     fun getAllParameters(): List<AnySqlParameter> {
+    fun getAllParameters(): List<AnySqlParameter> {
         //parameters in the SET portion of the statement (a=3, b=5) are appended with those in the whereclause
         val nmbUpdateParameters = columnsForUpdate.numberOfParameters()
         val whereClauseParameters = getWhereClause().getParameters()
             .mapIndexed { index, sqlParameter -> sqlParameter.copy(oneBasedPosition = 1 + index + nmbUpdateParameters) }
         return StringUtil.concatLists(columnsForUpdate.params.toList(), whereClauseParameters)
     }
+
+    override fun getWhereClause(): WhereClause =
+        if (!whereClauseIsSpecified()) throw IllegalStateException("Missing mandatory where clause for delete statement. " +
+                "If you want to update without any restrictions you must explicitly provide the noWhereClause() call in your query.") else _whereClause
+
 
 
 }

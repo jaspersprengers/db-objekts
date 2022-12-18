@@ -88,7 +88,7 @@ abstract class Table(
 
     override fun toSQL(): String = "${schema.dottedName}$tableName ${alias()}"
 
-    override fun toString(): String = schemaAndName()
+    override fun toString(): String = toSQL()
 
 }
 

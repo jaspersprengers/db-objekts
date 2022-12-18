@@ -21,8 +21,6 @@ data class Condition<I, W : WhereClauseComponent>(
 
     override fun toString(): String = column.dbName + symbol + (values ?: "null")
 
-    override val notEqualsOperator = "<>"
-
     override fun createSubClause(
         symbol: String,
         values: List<I>?,

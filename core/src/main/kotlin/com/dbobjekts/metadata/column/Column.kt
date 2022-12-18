@@ -28,9 +28,7 @@ abstract class Column<I>(
 
     override fun toString() = "${table.tableName}.$dbName"
 
-    abstract fun create(value: I?): ColumnAndValue<I>
-
-    override val notEqualsOperator = " <>"
+    internal abstract fun create(value: I?): ColumnAndValue<I>
 
     override fun createSubClause(symbol: String, values: List<I>?, secondColumn: Column<I>?): SubClause {
         val clause = SubClause()
@@ -38,17 +36,17 @@ abstract class Column<I>(
         return clause
     }
 
-    abstract val columnClass: Class<*>
+    internal abstract val columnClass: Class<*>
 
-    abstract val valueClass: Class<*>
+    internal abstract val valueClass: Class<*>
 
-    abstract fun retrieveValue(position: Int, rs: ResultSet): I?
+    internal abstract fun retrieveValue(position: Int, rs: ResultSet): I?
 
-    abstract fun putValue(position: Int, statement: PreparedStatement, value: I?)
+    internal abstract fun putValue(position: Int, statement: PreparedStatement, value: I?)
 
-    val tableDotName: String = table.tableName.value + "." + dbName
+    internal val tableDotName: String = table.tableName.value + "." + dbName
 
-    fun aliasDotName(): String = table.alias() + "." + dbName
+    internal fun aliasDotName(): String = table.alias() + "." + dbName
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -85,8 +83,8 @@ abstract class NonNullableColumn<I>(
         return if (rs.wasNull()) defaultValue() else value
     }
 
-    abstract fun getValue(position: Int, resultSet: ResultSet): I?
-    abstract fun setValue(position: Int, statement: PreparedStatement, value: I)
+    internal abstract fun getValue(position: Int, resultSet: ResultSet): I?
+    internal abstract fun setValue(position: Int, statement: PreparedStatement, value: I)
     override fun putValue(position: Int, statement: PreparedStatement, value: I?) {
         setValue(position, statement, value ?: throw IllegalStateException("Cannot be null"))
     }
@@ -102,7 +100,7 @@ abstract class NullableColumn<I>(
 ) : Column<I>(name, table) {
     override fun create(value: I?): ColumnAndValue<I> = NullableColumnAndValue(this, value)
 
-    fun setNull(): ColumnAndValue<I> = NullableColumnAndValue(this, null)
+    internal fun setNull(): ColumnAndValue<I> = NullableColumnAndValue(this, null)
 
     override fun retrieveValue(position: Int, rs: ResultSet): I? {
         val value = getValue(position, rs)
@@ -110,9 +108,9 @@ abstract class NullableColumn<I>(
             null else value
     }
 
-    abstract fun getValue(position: Int, resultSet: ResultSet): I?
-    abstract fun setValue(position: Int, statement: PreparedStatement, value: I)
-    override fun putValue(position: Int, statement: PreparedStatement, value: I?) {
+    internal abstract fun getValue(position: Int, resultSet: ResultSet): I?
+    internal abstract fun setValue(position: Int, statement: PreparedStatement, value: I)
+    internal override fun putValue(position: Int, statement: PreparedStatement, value: I?) {
         if (value == null)
             statement.setNull(position, sqlType)
         else

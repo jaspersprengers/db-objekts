@@ -46,8 +46,10 @@ abstract class StatementBase<W>(internal val connection: ConnectionAdapter) {
         this._whereClause = WhereClause(clause, connection.vendor)
     }
 
-    internal fun getWhereClause(): WhereClause =
-        if (!this::_whereClause.isInitialized) WhereClause(EmptyWhereClause, connection.vendor) else _whereClause
+    internal fun whereClauseIsSpecified() = this::_whereClause.isInitialized
+
+    open internal fun getWhereClause(): WhereClause =
+        if (!whereClauseIsSpecified()) WhereClause(EmptyWhereClause, connection.vendor) else _whereClause
 
     internal fun registerTablesInColumn(values: List<AnyColumnAndValue>) {
         val tables = values.map { it.column.table }.toSet()

@@ -74,6 +74,7 @@ class SelectIntegrationTest {
     @Test
     fun `test select, IN whereclause`() {
         H2DB.newTransaction({ s ->
+            s.select(e.name).asList()
             val name = s.select(e.name).where(e.name.within("John", "Jane").and(e.married).eq(true)).first()
             assert(name == "John")
         })

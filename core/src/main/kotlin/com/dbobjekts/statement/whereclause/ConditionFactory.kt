@@ -19,14 +19,14 @@ import com.dbobjekts.metadata.column.Column
      *
      * @param value a non-null value
      */
-    fun ne(value: I): W = if (value == null) throw IllegalArgumentException("Cannot supply null argument. Use isNotNull()") else createSimpleCondition(value, notEqualsOperator)
+    fun ne(value: I): W = if (value == null) throw IllegalArgumentException("Cannot supply null argument. Use isNotNull()") else createSimpleCondition(value, "<>")
 
      fun isNotNull(): W = createIsNullCondition("is not null")
 
     /**
      * operator for column-to-column condition: Results in SQL: column1 <> column2
      */
-    fun ne(column: Column<I>): W = createColumnCondition(column, notEqualsOperator)
+    fun ne(column: Column<I>): W = createColumnCondition(column, "<>")
 
     /**
      * Less-than comparison operator. Results in SQL: my_column < ?
@@ -117,9 +117,6 @@ import com.dbobjekts.metadata.column.Column
     private fun createLikeCondition(v: String, sql: String): W =
         createSubClause(sql, listOf(v as I), null)
 
-
     fun createSubClause(symbol: String, values: List<I>?, secondColumn: Column<I>?): W
-
-    val notEqualsOperator: String
 
 }

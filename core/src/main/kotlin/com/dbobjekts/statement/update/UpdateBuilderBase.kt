@@ -41,19 +41,13 @@ abstract class UpdateBuilderBase(
     internal val connection: ConnectionAdapter
 ) {
     abstract protected fun data(): Set<AnyColumnAndValue>
-    private var whereClause: SubClause? = null
 
     //it's important that the order of insertion is observed, and the same column can't be added twice.
-    fun where(subclause: SubClause): UpdateBuilderBase {
-        whereClause = subclause
-        return this
-    }
-
-    fun execute(): Long {
+    fun where(whereClause: SubClause): Long {
         if (data().isEmpty())
             throw IllegalStateException("Need at least one column to update")
         val stm = UpdateStatementExecutor(connection, table, data().toList())
-        return stm.where(whereClause ?: EmptyWhereClause)
+        return stm.where(whereClause )
     }
 
 }

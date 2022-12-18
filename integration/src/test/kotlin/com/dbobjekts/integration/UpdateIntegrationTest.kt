@@ -85,7 +85,7 @@ class UpdateIntegrationTest {
     @Order(2)
     fun `update name for existing e`() {
         H2DB.newTransaction { tr ->
-            tr.update(e).name("Janet").where(e.name.eq("Bob")).execute()
+            tr.update(e).name("Janet").where(e.name.eq("Bob"))
             assertEquals("Janet", tr.select(e.name).where(e.name.eq("Janet")).first())
         }
     }
@@ -94,7 +94,7 @@ class UpdateIntegrationTest {
     @Order(3)
     fun `update date of birth for existing e`() {
         H2DB.newTransaction { tr ->
-            tr.update(e).dateOfBirth(LocalDate.of(1970, 10, 10)).where(e.name.eq("Janet")).execute()
+            tr.update(e).dateOfBirth(LocalDate.of(1970, 10, 10)).where(e.name.eq("Janet"))
             assertEquals("1970-10-10", tr.select(e.dateOfBirth).where(e.name.eq("Janet")).first().toString())
         }
     }
@@ -103,7 +103,7 @@ class UpdateIntegrationTest {
     @Order(4)
     fun `update salary for existing e`() {
         H2DB.newTransaction { tr ->
-            tr.update(e).salary(3300.50).where(e.name.eq("Janet")).execute()
+            tr.update(e).salary(3300.50).where(e.name.eq("Janet"))
             assertEquals(3300.50, tr.select(e.salary).where(e.name.eq("Janet")).first())
         }
     }
@@ -113,7 +113,7 @@ class UpdateIntegrationTest {
     fun `update marital status for existing e`() {
         H2DB.newTransaction { tr ->
             tr.update(e)
-            tr.update(e).married(false).where(e.name.eq("Janet")).execute()
+            tr.update(e).married(false).where(e.name.eq("Janet"))
             assertFalse(tr.select(e.married).where(e.name.eq("Janet")).first() ?: false)
         }
     }
@@ -122,7 +122,7 @@ class UpdateIntegrationTest {
     @Order(6)
     fun `update number of children to two`() {
         H2DB.newTransaction { tr ->
-            tr.update(e).children(2).where(e.name.eq("Janet")).execute()
+            tr.update(e).children(2).where(e.name.eq("Janet"))
             assertEquals(2, tr.select(e.children).where(e.name.eq("Janet")).first())
         }
     }
@@ -131,7 +131,7 @@ class UpdateIntegrationTest {
     @Order(7)
     fun `update number of children to zero`() {
         H2DB.newTransaction { tr ->
-            tr.update(e).children(0).where(e.name.eq("Janet")).execute()
+            tr.update(e).children(0).where(e.name.eq("Janet"))
             assertEquals(0, tr.select(e.children).where(e.name.eq("Janet")).first())
         }
     }
@@ -140,7 +140,7 @@ class UpdateIntegrationTest {
     @Order(8)
     fun `update number of children to null`() {
         H2DB.newTransaction { tr ->
-            tr.update(e).children(null).where(e.name.eq("Janet")).execute()
+            tr.update(e).children(null).where(e.name.eq("Janet"))
             assertNull(tr.select(e.children).where(e.name.eq("Janet")).first())
         }
     }
@@ -150,7 +150,7 @@ class UpdateIntegrationTest {
     fun `update hobbies to curling`() {
         H2DB.newTransaction { tr ->
             tr.insert(h).id("c").name("curling").execute()
-            tr.update(e).hobbyId("c").where(e.name.eq("Janet")).execute()
+            tr.update(e).hobbyId("c").where(e.name.eq("Janet"))
             assertEquals("curling", tr.select(h.name).where(e.name.eq("Janet")).first())
         }
     }
@@ -159,7 +159,7 @@ class UpdateIntegrationTest {
     @Order(10)
     fun `update hobbies to None`() {
         H2DB.newTransaction { tr ->
-            tr.update(e).hobbyId(null).where(e.name.eq("Janet")).execute()
+            tr.update(e).hobbyId(null).where(e.name.eq("Janet"))
 
             assertEquals(0, tr.select(h.name).where(e.name.eq("Janet")).asList().size)
         }

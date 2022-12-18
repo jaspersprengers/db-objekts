@@ -90,7 +90,7 @@ class MariaIntegrationTest {
 
             val id = tr.insert(Employee).mandatoryColumns("Bill", 3050.3, LocalDate.of(1980, 5, 7)).execute()
             assertThat(id).isPositive()
-            tr.update(Employee).salary(4000.0).married(true).where(e.id.eq(id)).execute()
+            tr.update(Employee).salary(4000.0).married(true).where(e.id.eq(id))
 
             val optionalHobby: Tuple2<String, String?> = tr.select(e.name, h.name.nullable)
                 .from(e.leftJoin(h))

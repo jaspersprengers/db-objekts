@@ -1,5 +1,5 @@
 package com.dbobjekts.metadata
 
-interface SerializableToSQL {
+internal interface SerializableToSQL {
     fun toSQL(): String
 }
