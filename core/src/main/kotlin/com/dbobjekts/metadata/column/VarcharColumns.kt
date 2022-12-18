@@ -41,6 +41,8 @@ class BlobColumn(table: Table, name: String) : NonNullableColumn<Blob>(name, tab
     companion object {
         fun ofString(value: String, charset: Charset = Charset.defaultCharset()) =
             SerialBlob(value.toByteArray(charset))
+        fun serialize(blob: Blob) =
+            String(blob.binaryStream.readAllBytes())
     }
 }
 

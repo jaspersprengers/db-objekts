@@ -3,6 +3,7 @@ package com.dbobjekts.integration.h2
 import com.dbobjekts.integration.h2.core.AllTypes
 import com.dbobjekts.metadata.column.BlobColumn
 import com.dbobjekts.statement.whereclause.SubClause
+import org.assertj.core.api.Assertions.assertThat
 import org.h2.api.Interval
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -38,6 +39,7 @@ class TypesIntegrationTest {
     fun `save and retrieve`() {
         val fox = "The quick brown fox"
         val t = AllTypes
+        val uuid = UUID.randomUUID()
         H2DB.newTransaction { tr ->
 
             val row = tr.insert(AllTypes)
@@ -87,47 +89,48 @@ class TypesIntegrationTest {
                 .timestampColNil(null)
                 .timestampwithtimezoneCol(dateTimeEuropeAsOffset)
                 .timestampwithtimezoneColNil(null)
-                .uuidCol(UUID.randomUUID())
+                .uuidCol(uuid)
                 .uuidColNil(null)
                 .intervalCol(Interval.ofMonths(15))
                 .intervalColNil(null)
                 //.geometryCol("GEOMETRY X'00000000013ff00000000000003ff0000000000000'")
                 //.geometryColNil(null)
                 .intArrayCol(arrayOf(1, 2, 3))
-                .objectCol(SerializableColumn("John"))
+                .objectCol("John")
                 .execute()
 
-            val where: SubClause = AllTypes.id.eq(row)
-            assertEquals("C", tr.select(t.characterCol).where(where).first())
-            assertEquals("Hello world", tr.select(t.charactervaryingCol).where(where).first())
-            assertEquals("Hello world", tr.select(t.characterlargeobjectCol).where(where).first())
-            assertEquals("HeLlLo WoRlD", tr.select(t.varcharIgnorecaseCol).where(where).first())
-            assertEquals("maybe", tr.select(t.enumCol).where(where).first())
+            assertEquals("C", tr.select(t.characterCol).first())
+            assertEquals("Hello world", tr.select(t.charactervaryingCol).first())
+            assertEquals("Hello world", tr.select(t.characterlargeobjectCol).first())
+            assertEquals("HeLlLo WoRlD", tr.select(t.varcharIgnorecaseCol).first())
+            assertEquals("maybe", tr.select(t.enumCol).first())
+            assertThat(tr.select(t.binaryCol).first()).hasSize(1024)
+            assertThat(String(tr.select(t.binaryvaryingCol).first())).isEqualTo("binary varying")
+            assertThat(BlobColumn.serialize(tr.select(t.binarylargeobjectCol).first())).isEqualTo("The quick brown fox")
 
-            //assertEquals(15, tr.select(t.intervalCol).where(where).first().months)
-            //assertThat(tr.select(t.intArrayCol).where(where).first().asList()).containsExactly(1,2,3)
-            //assertThat(tr.select(t.objectCol).where(where).first().toString()).isEqualTo("name")
 
-            /*assertEquals(42, tr.select(t.smallintC).where(where).first())
-            assertEquals(424242, tr.select(t.intC).where(where).first())
-            assertEquals("C", tr.select(t.charC).where(where).first())
-            assertEquals("Hello", tr.select(t.varcharC).where(where).first())
-            assertEquals(999999L, tr.select(t.bigintC).where(where).first())
-            assertEquals(42.43f, tr.select(t.floatC).where(where).first())
-            assertEquals(44.44, tr.select(t.doubleC).where(where).first())*/
-            assertEquals(time.withNano(0), tr.select(t.timeCol).where(where).first())
-            assertEquals(date, tr.select(t.dateCol).where(where).first())
-            assertEquals(dateTimeEurope.toInstant(), tr.select(t.timestampCol).where(where).first())
-            assertEquals(dateTimeEuropeAsOffset, tr.select(t.timestampwithtimezoneCol).where(where).first())
-            assertTrue(tr.select(t.booleanCol).where(where).first() ?: false)
-            //assertTrue(tr.select(t.intBooleanC).where(where).first())
-            //assertEquals(19, tr.select(t.blobC).where(where).first())?.length())
+            assertEquals(0B1, tr.select(t.tinyintCol).first())
+            assertEquals(42, tr.select(t.smallintCol).first())
+            assertEquals(100_000, tr.select(t.integerCol).first())
+            assertEquals(1_000_000_000L, tr.select(t.bigintCol).first())
+            assertEquals(10, tr.select(t.numericCol).first().toLong())
+            assertEquals(10, tr.select(t.decfloatCol).first().toLong())
+            assertEquals(42.42f, tr.select(t.realCol).first())
+            assertEquals(100_000.999999, tr.select(t.doubleprecisionCol).first())
+
+            assertEquals(15, tr.select(t.intervalCol).first().months)
+            //assertThat(tr.select(t.intArrayCol).first().asList()).containsExactly(1,2,3)
+            assertThat(tr.select(t.objectCol).first().toString()).isEqualTo("John")
+            assertEquals(uuid, tr.select(t.uuidCol).first())
+
+            assertEquals(time.withNano(0), tr.select(t.timeCol).first())
+            assertEquals(date, tr.select(t.dateCol).first())
+            assertEquals(dateTimeEurope.toInstant(), tr.select(t.timestampCol).first())
+            assertEquals(dateTimeEuropeAsOffset, tr.select(t.timestampwithtimezoneCol).first())
+            assertTrue(tr.select(t.booleanCol).first())
+
 
         }
 
     }
-}
-
-class SerializableColumn(var name: String) : Serializable{
-
 }
