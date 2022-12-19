@@ -1,12 +1,12 @@
 package com.dbobjekts.vendors.h2
 
 import com.dbobjekts.api.TransactionManager
+import com.dbobjekts.api.Tuple8
 import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
 import com.dbobjekts.codegen.parsers.CatalogParser
 import com.dbobjekts.codegen.parsers.ForeignKeyMetaDataRow
 import com.dbobjekts.codegen.parsers.TableMetaDataRow
 import com.dbobjekts.jdbc.DetermineVendor
-import com.dbobjekts.statement.customsql.ResultTypes
 import org.slf4j.LoggerFactory
 
 /**
@@ -39,9 +39,11 @@ class H2CatalogParser(codeGeneratorConfig: CodeGeneratorConfig,
                 order by c.TABLE_SCHEMA, c.TABLE_NAME, c.ORDINAL_POSITION
             """.trimIndent()
 
-            val rows =  it.select(
-                sql
-            ).returning(ResultTypes.string().string().string().string().stringNil().string().stringNil().string()).asList()
+            val rows: List<Tuple8<String, String, String, String, String?, String, String?, String>> = it.sql(sql)
+                .withResultTypes()
+                    .string().string().string().string().stringNil().string().stringNil().string()
+                 .asList()
+
             rows.map({tuple ->
                 TableMetaDataRow(
                     schema = tuple.v1,
@@ -67,8 +69,10 @@ class H2CatalogParser(codeGeneratorConfig: CodeGeneratorConfig,
                     where u.CONSTRAINT_TYPE = 'FOREIGN KEY'
             """.trimIndent()
             //CORE,EMPLOYEE_ADDRESS,ADDRESS_ID,CORE,ADDRESS,ID
-            val rows = it.select(sql)
-                .returning(ResultTypes.string().string().string().string().string().string()).asList()
+            /*val rows = it.select(sql)
+                .returning(ResultTypes.string().string().string().string().string().string()).asList()*/
+            val rows = it.sql(sql).withResultTypes().string().string().string().string().string().string().asList()
+
             rows.map({tuple ->
                 ForeignKeyMetaDataRow(
                     schema = tuple.v1,

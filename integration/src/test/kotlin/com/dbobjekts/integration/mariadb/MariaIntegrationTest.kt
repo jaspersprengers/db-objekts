@@ -1,8 +1,9 @@
 package com.dbobjekts.integration.mariadb
 
+import com.dbobjekts.api.TransactionManager
+import com.dbobjekts.api.TransactionManagerBuilder
 import com.dbobjekts.api.Tuple2
 import com.dbobjekts.api.Tuple4
-import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.integration.mariadb.Aliases.a
 import com.dbobjekts.integration.mariadb.Aliases.c
@@ -13,9 +14,7 @@ import com.dbobjekts.integration.mariadb.core.Address
 import com.dbobjekts.integration.mariadb.core.Country
 import com.dbobjekts.integration.mariadb.core.Employee
 import com.dbobjekts.integration.mariadb.core.EmployeeAddress
-import com.dbobjekts.api.TransactionManagerBuilder
 import com.dbobjekts.metadata.column.BooleanColumn
-import com.dbobjekts.statement.customsql.ResultTypes
 import com.dbobjekts.util.HikariDataSourceFactory
 import com.dbobjekts.util.TestSourceWriter
 import com.dbobjekts.vendors.Vendors
@@ -101,10 +100,9 @@ class MariaIntegrationTest {
             tr.insert(Country).mandatoryColumns("be", "Belgium").execute()
             tr.insert(Country).mandatoryColumns("de", "Germany").execute()
 
-            val row = tr.select(
+            val row = tr.sql(
                 "select name, salary, married from core.EMPLOYEE where date_of_birth > ?", LocalDate.of(1980, 1, 1)
-            )
-                .returning(ResultTypes.string().doubleNil().booleanNil()).first()
+            ).withResultTypes().string().doubleNil().booleanNil().first()
             assertThat(row.first).isEqualTo("Bill")
             assertThat(row.second).isEqualTo(4000.0)
             assertThat(row.third).isTrue()

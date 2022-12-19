@@ -1,6 +1,5 @@
 package com.dbobjekts.api
 
-import com.dbobjekts.*
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.TableJoinChain
@@ -47,7 +46,7 @@ class Transaction(internal val connection: ConnectionAdapter){
         return SQLStatementExecutor<Long?, ResultRow1<Long>>(connection, sql, args.toList()).execute()
     }
 
-    fun select(sql: String, vararg args: Any): CustomSQLStatementBuilder =
+    fun sql(sql: String, vararg args: Any): CustomSQLStatementBuilder =
         CustomSQLStatementBuilder(connection, sql, args.toList())
 
     fun <I1> select(column1: Column<I1>): SelectStatementExecutor<I1, ResultRow1<I1>> =

@@ -6,7 +6,6 @@ import com.dbobjekts.codegen.parsers.CatalogParser
 import com.dbobjekts.codegen.parsers.ForeignKeyMetaDataRow
 import com.dbobjekts.codegen.parsers.TableMetaDataRow
 import com.dbobjekts.jdbc.DetermineVendor
-import com.dbobjekts.statement.customsql.ResultTypes
 
 /**
  * Accesses a live database to extract information from all the schemas
@@ -38,9 +37,7 @@ class MariaDBCatalogParser(
                 order by t.TABLE_SCHEMA, t.TABLE_NAME, c.ORDINAL_POSITION asc
             """.trimIndent()
 
-            val rows = it.select(
-                sql
-            ).returning(ResultTypes.string().string().string().string().stringNil().string().stringNil().string()).asList()
+            val rows = it.sql(sql).withResultTypes().string().string().string().string().stringNil().string().stringNil().string().asList()
             rows.map({ tuple ->
                 TableMetaDataRow(
                     schema = tuple.v1,
@@ -68,8 +65,7 @@ class MariaDBCatalogParser(
                 from information_schema.KEY_COLUMN_USAGE u where REFERENCED_TABLE_NAME is not null
             """.trimIndent()
 
-            val rows = it.select(sql)
-                .returning(ResultTypes.string().string().string().string().string().string()).asList()
+            val rows = it.sql(sql).withResultTypes().string().string().string().string().string().string().asList()
             rows.map({ tuple ->
                 ForeignKeyMetaDataRow(
                     schema = tuple.v1,
