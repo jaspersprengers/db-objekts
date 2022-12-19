@@ -78,13 +78,13 @@ class ForeignKeyTest {
         H2DB.newTransaction { tr ->
             val results: List<Tuple3<String?, String?, String?>> =
                 tr.select(e.name, a.street, c.name).where(ea.kind.eq(AddressType.WORK)).orderAsc(e.name).asList()
-            assertEquals("Jane", results[0].first)
-            assertEquals("Jane's office", results[0].second)
-            assertEquals("France", results[0].third)
+            assertEquals("Jane", results[0].v1)
+            assertEquals("Jane's office", results[0].v2)
+            assertEquals("France", results[0].v3)
 
-            assertEquals("John", results[1].first)
-            assertEquals("John's office", results[1].second)
-            assertEquals("USA", results[1].third)
+            assertEquals("John", results[1].v1)
+            assertEquals("John's office", results[1].v2)
+            assertEquals("USA", results[1].v3)
         }
     }
 
@@ -94,13 +94,13 @@ class ForeignKeyTest {
         val results: List<Tuple3<String, String, String>> = H2DB.newTransaction {
             it.select(e.name, a.street, c.name).where(ea.kind.eq(AddressType.HOME)).orderAsc(e.name).asList()
         }
-        assertEquals("Jane", results[0].first)
-        assertEquals("Home sweet home", results[0].second)
-        assertEquals("Netherlands", results[0].third)
+        assertEquals("Jane", results[0].v1)
+        assertEquals("Home sweet home", results[0].v2)
+        assertEquals("Netherlands", results[0].v3)
 
-        assertEquals("John", results[1].first)
-        assertEquals("Home sweet home", results[1].second)
-        assertEquals("Netherlands", results[1].third)
+        assertEquals("John", results[1].v1)
+        assertEquals("Home sweet home", results[1].v2)
+        assertEquals("Netherlands", results[1].v3)
 
     }
 
@@ -110,7 +110,7 @@ class ForeignKeyTest {
             tr.update(e).hobbyId("c").where(e.name.eq("John"))
             val rows = tr.select(e.name, h.name).from(e.innerJoin(h)).asList()
             assertThat(rows).hasSize(1)
-            assertEquals("curling", rows[0].second)
+            assertEquals("curling", rows[0].v2)
         }
     }
 
@@ -118,8 +118,8 @@ class ForeignKeyTest {
     fun `get employees address and departments`() {
         H2DB.newTransaction { tr ->
             val rows = tr.select(a.street, d.name).where(e.name.eq("John")).asList()
-            assertEquals("Home sweet home", rows[0].first)
-            assertEquals("IT", rows[0].second)
+            assertEquals("Home sweet home", rows[0].v1)
+            assertEquals("IT", rows[0].v2)
         }
     }
 
@@ -127,8 +127,8 @@ class ForeignKeyTest {
     fun `test outer join on matching row`() {
         H2DB.newTransaction { tr ->
             val row = tr.select(e.name, ce.name.nullable).where(e.name.eq("John").and(ce.name).eq("BSC")).first()
-            assertEquals("John", row.first)
-            assertEquals("BSC", row.second)
+            assertEquals("John", row.v1)
+            assertEquals("BSC", row.v2)
         }
     }
 

@@ -51,8 +51,8 @@ class SelectIntegrationTest {
         H2DB.newTransaction({
             val result: Tuple2<Double?, String?> =
                 it.select(e.salary, a.street).where(e.name.eq("Jane").and(a.street).eq("Zuidhoek")).first()
-            assert(result.first == 300.50)
-            assert(result.second == "Zuidhoek")
+            assert(result.v1 == 300.50)
+            assert(result.v2 == "Zuidhoek")
         })
     }
 
@@ -102,7 +102,7 @@ class SelectIntegrationTest {
     fun `test select some columns from two tables`() {
         H2DB.newTransaction({ s ->
             val nameStreet: Tuple2<String, String> = s.select(e.name, a.street).where(e.name.eq("Jane")).first()
-            assertEquals(nameStreet.second, "Zuidhoek")
+            assertEquals(nameStreet.v2, "Zuidhoek")
         })
     }
 
@@ -139,8 +139,8 @@ class SelectIntegrationTest {
     fun `test select the same column twice as a list is OK`() {
         val result =
             H2DB.newTransaction({ s -> s.select(e.name, e.name).where(e.name.eq("Arthur")).first() })
-        assertEquals("Arthur", result.first)
-        assertEquals("Arthur", result.second)
+        assertEquals("Arthur", result.v1)
+        assertEquals("Arthur", result.v2)
     }
 
     @Test

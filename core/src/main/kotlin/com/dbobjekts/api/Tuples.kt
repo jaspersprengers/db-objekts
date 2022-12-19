@@ -3,30 +3,30 @@ package com.dbobjekts.api
 import java.io.Serializable
 
 data class Tuple2<out T1, out T2>(
-    val first: T1,
-    val second: T2
+    val v1: T1,
+    val v2: T2
 ) : Serializable {
 
-    override fun toString(): String = "($first, $second)"
+    override fun toString(): String = "($v1, $v2)"
 }
 
 data class Tuple3<out T1, out T2, out T3>(
-    val first: T1,
-    val second: T2,
-    val third: T3
+    val v1: T1,
+    val v2: T2,
+    val v3: T3
 ) : Serializable {
 
-    override fun toString(): String = "($first, $second, $third)"
+    override fun toString(): String = "($v1, $v2, $v3)"
 }
 
 data class Tuple4<out T1, out T2, out T3, out T4>(
-    val first: T1,
-    val second: T2,
-    val third: T3,
-    val fourth: T4
+    val v1: T1,
+    val v2: T2,
+    val v3: T3,
+    val v4: T4
 ) : Serializable {
 
-    override fun toString(): String = "($first, $second, $third, $fourth)"
+    override fun toString(): String = "($v1, $v2, $v3, $v4)"
 }
 
 data class Tuple5<out T1, out T2, out T3, out T4, out T5>(

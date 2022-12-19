@@ -87,27 +87,31 @@ class MariaIntegrationTe0st {
     fun `five minute tutorial`() {
         tm { tr ->
 
-            val id = tr.insert(Employee).mandatoryColumns("Bill", 3050.3, LocalDate.of(1980, 5, 7)).execute()
-            assertThat(id).isPositive()
-            tr.update(Employee).salary(4000.0).married(true).where(e.id.eq(id))
-
-            val optionalHobby: Tuple2<String, String?> = tr.select(e.name, h.name.nullable)
-                .from(e.leftJoin(h))
-                .where(e.salary.gt(3000.0)).first()
-            assertThat(optionalHobby.first).isEqualTo("Bill")
-            assertThat(optionalHobby.second).isNull()
-
-            // The mandatoryColumns method helps you to provide all non-nullable fields for the insert.
+            // Let's start with some reference data. The mandatoryColumns method helps you to provide all non-nullable fields for the insert.
             tr.insert(Country).mandatoryColumns("nl", "Netherlands").execute()
             tr.insert(Country).mandatoryColumns("be", "Belgium").execute()
             tr.insert(Country).mandatoryColumns("de", "Germany").execute()
 
+            // Insert statement in tables with an auto-generated ID return a positive Long with the newly created row primary key.
+            val id = tr.insert(Employee).mandatoryColumns("Bill", 3050.3, LocalDate.of(1980, 5, 7)).execute()
+            assertThat(id).isPositive()
+            // now we can update Bill's record by id
+            tr.update(Employee).salary(4000.0).married(true).where(e.id.eq(id))
+
+            //The 'name' column in the Hobby project is non-null, and so is the corresponding Column implementation
+            // However, in an outer join, it can be null and therefore we pick the nullable counterpart of the column value, which return String?
+            val optionalHobby: Tuple2<String, String?> = tr.select(e.name, h.name.nullable)
+                .from(e.leftJoin(h))
+                .where(e.salary.gt(3000.0)).first()
+            assertThat(optionalHobby.v1).isEqualTo("Bill")
+            assertThat(optionalHobby.v2).isNull()
+
             val row = tr.sql(
                 "select name, salary, married from core.EMPLOYEE where date_of_birth > ?", LocalDate.of(1980, 1, 1)
             ).withResultTypes().string().doubleNil().booleanNil().first()
-            assertThat(row.first).isEqualTo("Bill")
-            assertThat(row.second).isEqualTo(4000.0)
-            assertThat(row.third).isTrue()
+            assertThat(row.v1).isEqualTo("Bill")
+            assertThat(row.v2).isEqualTo(4000.0)
+            assertThat(row.v3).isTrue()
 
             // We have Pete, Jane and Bob. If an insert resulted in a generated primary key value, it is returned as a Long from the execute() method.
             val petesId: Long = tr.insert(Employee).mandatoryColumns("Pete", 5020.34, LocalDate.of(1980, 5, 7)).married(true).execute()
