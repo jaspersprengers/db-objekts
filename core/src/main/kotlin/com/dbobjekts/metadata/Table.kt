@@ -29,7 +29,7 @@ abstract class Table(
 
     internal fun columnByName(column: String): AnyColumn? = columns.find { it.dbName == column }
 
-    fun alias(): String = schema.aliasForTable(this)
+    internal fun alias(): String = schema.aliasForTable(this)
 
     internal fun schemaAndName(): String = "${schema.dottedName}$tableName"
 
@@ -52,39 +52,14 @@ abstract class Table(
         return if (idCols.isNotEmpty()) idCols[0] as IsPrimaryKey else null
     }
 
-    internal fun hasForeignKeyTo(source: Table): Boolean = foreignKeys.any { it.parentColumn.table == source }
-
     fun leftJoin(table: Table): TableJoinChain =
         TableJoinChain(this).addJoin(JoinFactory.createLeftJoin(this, table))
-
-
-    fun leftJoin(tableToJoin: AnyColumn, keyInCurrentTable: AnyColumn): TableJoinChain {
-        validateThatKeyIsForCurrentTable(keyInCurrentTable)
-        return TableJoinChain(this).addJoin(JoinFactory.createLeftJoin(keyInCurrentTable, tableToJoin))
-    }
 
     fun rightJoin(table: Table): TableJoinChain =
         TableJoinChain(this).addJoin(JoinFactory.createRightJoin(this, table))
 
-
-    fun rightJoin(tableToJoin: AnyColumn, keyInCurrentTable: AnyColumn): TableJoinChain {
-        validateThatKeyIsForCurrentTable(keyInCurrentTable)
-        return TableJoinChain(this).addJoin(JoinFactory.createRightJoin(keyInCurrentTable, tableToJoin))
-    }
-
     fun innerJoin(table: Table): TableJoinChain =
         TableJoinChain(this).addJoin(JoinFactory.createInnerJoin(this, table))
-
-
-    fun innerJoin(tableToJoin: AnyColumn, keyInCurrentTable: AnyColumn): TableJoinChain {
-        validateThatKeyIsForCurrentTable(keyInCurrentTable)
-        return TableJoinChain(this).addJoin(JoinFactory.createInnerJoin(keyInCurrentTable, tableToJoin))
-    }
-
-    private fun validateThatKeyIsForCurrentTable(left: AnyColumn) {
-        if (left.table != this)
-            throw IllegalStateException("The second argument of the *join() call is a column in table ${left.table.tableName}, but it should be the column of the table you wish to join, namely ${tableName}.")
-    }
 
     override fun toSQL(): String = "${schema.dottedName}$tableName ${alias()}"
 
