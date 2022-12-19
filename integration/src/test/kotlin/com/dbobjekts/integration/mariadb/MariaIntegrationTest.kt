@@ -1,9 +1,6 @@
 package com.dbobjekts.integration.mariadb
 
-import com.dbobjekts.api.TransactionManager
-import com.dbobjekts.api.TransactionManagerBuilder
-import com.dbobjekts.api.Tuple2
-import com.dbobjekts.api.Tuple4
+import com.dbobjekts.api.*
 import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.integration.mariadb.Aliases.a
 import com.dbobjekts.integration.mariadb.Aliases.c
@@ -16,7 +13,6 @@ import com.dbobjekts.integration.mariadb.core.Employee
 import com.dbobjekts.integration.mariadb.core.EmployeeAddress
 import com.dbobjekts.metadata.column.BooleanColumn
 import com.dbobjekts.util.HikariDataSourceFactory
-import com.dbobjekts.util.TestSourceWriter
 import com.dbobjekts.vendors.Vendors
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -24,7 +20,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.testcontainers.junit.jupiter.Container
-import org.testcontainers.junit.jupiter.Testcontainers
 import java.nio.file.Paths
 import java.time.LocalDate
 import javax.sql.DataSource
@@ -106,19 +101,19 @@ class MariaIntegrationTe0st {
             assertThat(optionalHobby.v1).isEqualTo("Bill")
             assertThat(optionalHobby.v2).isNull()
 
-            val row = tr.sql(
+            val row: Tuple3<String, Double?, Boolean?> = tr.sql(
                 "select name, salary, married from core.EMPLOYEE where date_of_birth > ?", LocalDate.of(1980, 1, 1)
             ).withResultTypes().string().doubleNil().booleanNil().first()
             assertThat(row.v1).isEqualTo("Bill")
             assertThat(row.v2).isEqualTo(4000.0)
             assertThat(row.v3).isTrue()
 
-            // We have Pete, Jane and Bob. If an insert resulted in a generated primary key value, it is returned as a Long from the execute() method.
+            // We have Pete, Jane and Bob.
             val petesId: Long = tr.insert(Employee).mandatoryColumns("Pete", 5020.34, LocalDate.of(1980, 5, 7)).married(true).execute()
             val janesId: Long = tr.insert(Employee).mandatoryColumns("Jane", 6020.0, LocalDate.of(1978, 5, 7)).married(false).execute()
             tr.insert(Employee).mandatoryColumns("Bob", 3020.34, LocalDate.of(1980, 5, 7)).execute()
 
-            // Jane works in Belgium, Pete works in Germany, and they both live in the Netherlands.
+            // Jane works in Belgium, Pete works in Germany, and they both live together in the Netherlands.
             val janesWorkAddress: Long = tr.insert(Address).mandatoryColumns("Rue d'Eglise", "be").execute()
             val petesWorkAddress: Long = tr.insert(Address).street("Kirchstrasse").countryId("de").execute()
             val janeAndPetesHomeAddress: Long = tr.insert(Address).mandatoryColumns("Kerkstraat", "nl").execute()
@@ -131,16 +126,18 @@ class MariaIntegrationTe0st {
             // This query selects name and salary for all rows in the employee table. Notice we have imported the 'e' alias from the Aliases object. This is a handy shortcut that refers to the exact same Employee object.
             // Consider the different methods to retrieve results
             assertThat(tr.select(e.name, e.salary).asList()).hasSize(4)
-            val asNullable: Tuple2<String, Double>? =
+            val noResults =
                 tr.select(e.name, e.salary).where(e.name.eq("Vlad")).firstOrNull()// Null when no match
-            assertThat(asNullable).isNull()
-            assertThatThrownBy { tr.select(e.name, e.salary).where(e.name.eq("Vlad")).first() }// throws when no match }
+            assertThat(noResults).isNull()
+            //if you call first() on an empty result, it throws
+            assertThatThrownBy { tr.select(e.name, e.salary).where(e.name.eq("Vlad")).first() }
 
             //Nested conditions in the where-clause are possible:
             val listOfIds = tr.select(e.id).where(e.salary.gt(6000.0).or(e.married.eq(true).and(e.salary).isNotNull())).asList()
             assertThat(listOfIds).hasSize(3)
 
             //Pete and Jane live on the same address
+            // Note that all the table joins are made automatically
             val results: List<Tuple4<String, LocalDate, String, String>> =
                 tr.select(e.name, e.dateOfBirth, ea.kind, c.name).where(a.street.eq("Kerkstraat"))
                     .orderDesc(e.name).asList()
