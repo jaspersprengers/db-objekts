@@ -14,8 +14,6 @@ class H2CodeGeneratorTest {
     fun `create schemas`() {
 
         H2DB.setupDatabaseObjects()
-
-        val writer = TestSourceWriter()
         val generator = CodeGenerator()
         generator.dataSourceConfigurer()
             .vendor("H2")
@@ -31,9 +29,8 @@ class H2CodeGeneratorTest {
         generator.outputConfigurer()
             .basePackageForSources("com.dbobjekts.integration.h2")
             //.sourceWriter(writer)
-            .outputDirectoryForGeneratedSources(Paths.get("../core/src/generated-sources/kotlin").toAbsolutePath().toString())
+            .outputDirectoryForGeneratedSources(Paths.get("./src/generated-sources/kotlin").toAbsolutePath().toString())
         generator.generate()
-       print(writer.toString())
 
     }
 }

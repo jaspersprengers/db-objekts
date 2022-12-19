@@ -56,7 +56,7 @@ class ExclusionConfigurer() {
      * Partitions tables into a Pair with first element the excluded tables, secondly the included tables.
      *
      */
-    internal fun partition(tables: List<DBTableDefinition>): Pair<List<DBTableDefinition>, List<DBTableDefinition>> {
+    fun partition(tables: List<DBTableDefinition>): Pair<List<DBTableDefinition>, List<DBTableDefinition>> {
         return tables.partition { tableIsExcluded(it.schema.value, it.tableName.value) }
     }
 

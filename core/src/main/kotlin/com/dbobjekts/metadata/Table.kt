@@ -12,7 +12,7 @@ abstract class Table(
     internal val dbName: String
 ) : TableOrJoin, SerializableToSQL {
 
-    internal abstract val columns: List<AnyColumn>
+    abstract val columns: List<AnyColumn>
 
     private lateinit var schema: Schema
 
@@ -23,17 +23,17 @@ abstract class Table(
             throw IllegalArgumentException("Not a valid table name: " + tableName)
     }
 
-    internal val foreignKeys: List<AnyForeignKey> by lazy { columns.filter { it is AnyForeignKey }.map { it as AnyForeignKey } }
+    val foreignKeys: List<AnyForeignKey> by lazy { columns.filter { it is AnyForeignKey }.map { it as AnyForeignKey } }
 
     internal fun getForeignKeyToParent(parent: Table): AnyForeignKey? = foreignKeys.find { it.parentColumn.table == parent }
 
     internal fun columnByName(column: String): AnyColumn? = columns.find { it.dbName == column }
 
-    internal fun alias(): String = schema.aliasForTable(this)
+    fun alias(): String = schema.aliasForTable(this)
 
     internal fun schemaAndName(): String = "${schema.dottedName}$tableName"
 
-    internal  fun schemaName(): SchemaName = schema.schemaName
+    fun schemaName(): SchemaName = schema.schemaName
 
     internal fun withSchema(schema: Schema) {
         this.schema = schema

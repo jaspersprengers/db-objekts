@@ -20,7 +20,7 @@ open class CodeGenerator {
     private val outputConfigurer = OutputConfigurer()
     private val mappingConfigurer = MappingConfigurer()
 
-    internal var parserFactory: DBParserFactory = DBParserFactoryImpl()
+    var parserFactory: DBParserFactory = DBParserFactoryImpl()
 
     fun dataSourceConfigurer(): DatabaseConfigurer = dbConfigurer
 

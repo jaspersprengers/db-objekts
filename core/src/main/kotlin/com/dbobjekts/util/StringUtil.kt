@@ -60,7 +60,6 @@ object StringUtil {
         }
 
     fun classToString(clz: Class<*>): String {
-        println(clz.getName())
         return if (clz.isPrimitive)
             StringUtil.initUpperCase(clz.getSimpleName())
         else if (clz == ByteArray::class.java) {

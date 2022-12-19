@@ -19,7 +19,6 @@ class CodeGeneratorTest {
             .configureDataSource().url("jdbc:h2:mem:test").user("sa")
         generator.outputConfigurer()
             .basePackageForSources("com.dbobjekts.integration.h2")
-            .outputDirectoryForGeneratedSources(PathUtil.getGeneratedSourceDir())
         return generator
     }
 

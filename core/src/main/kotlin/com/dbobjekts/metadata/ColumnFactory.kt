@@ -12,69 +12,69 @@ object ColumnFactory {
     private const val DUMMY = "dummy"
 
     val VARCHAR = VarcharColumn(table, DUMMY)
-    internal val VARCHAR_NIL = NullableVarcharColumn(table, DUMMY)
+    val VARCHAR_NIL = NullableVarcharColumn(table, DUMMY)
 
     val LONG = LongColumn(table, DUMMY)
-    internal val LONG_NIL = NullableLongColumn(table, DUMMY)
+    val LONG_NIL = NullableLongColumn(table, DUMMY)
 
     val INTEGER = IntegerColumn(table, DUMMY)
-    internal val INTEGER_NIL = NullableIntegerColumn(table, DUMMY)
+    val INTEGER_NIL = NullableIntegerColumn(table, DUMMY)
 
     val SHORT = ShortColumn(table, DUMMY)
-    internal val SHORT_NIL = NullableShortColumn(table, DUMMY)
+    val SHORT_NIL = NullableShortColumn(table, DUMMY)
 
     val BYTE_ARRAY = ByteArrayColumn(table, DUMMY)
-    internal val BYTE_ARRAY_NIL = NullableByteArrayColumn(table, DUMMY)
+    val BYTE_ARRAY_NIL = NullableByteArrayColumn(table, DUMMY)
 
     val BLOB = BlobColumn(table, DUMMY)
-    internal val BLOB_NIL = NullableBlobColumn(table, DUMMY)
+    val BLOB_NIL = NullableBlobColumn(table, DUMMY)
 
     val CLOB = ClobColumn(table, DUMMY)
-    internal val CLOB_NIL = NullableClobColumn(table, DUMMY)
+    val CLOB_NIL = NullableClobColumn(table, DUMMY)
 
     val BYTE = ByteColumn(table, DUMMY)
-    internal val BYTE_NIL = NullableByteColumn(table, DUMMY)
+    val BYTE_NIL = NullableByteColumn(table, DUMMY)
 
     val BOOLEAN = BooleanColumn(table, DUMMY)
-    internal val BOOLEAN_NIL = NullableBooleanColumn(table, DUMMY)
+    val BOOLEAN_NIL = NullableBooleanColumn(table, DUMMY)
 
     val NUMBER_AS_BOOLEAN = NumberAsBooleanColumn(table, DUMMY)
-    internal val NUMBER_AS_BOOLEAN_NIL = NullableNumberAsBooleanColumn(table, DUMMY)
+    val NUMBER_AS_BOOLEAN_NIL = NullableNumberAsBooleanColumn(table, DUMMY)
 
     val DOUBLE = DoubleColumn(table, DUMMY)
-    internal val DOUBLE_NIL = NullableDoubleColumn(table, DUMMY)
+    val DOUBLE_NIL = NullableDoubleColumn(table, DUMMY)
 
     val FLOAT = FloatColumn(table, DUMMY)
-    internal val FLOAT_NIL = NullableFloatColumn(table, DUMMY)
+    val FLOAT_NIL = NullableFloatColumn(table, DUMMY)
 
     val BIGDECIMAL = BigDecimalColumn(table, DUMMY)
-    internal val BIGDECIMAL_NIL = NullableBigDecimalColumn(table, DUMMY)
+    val BIGDECIMAL_NIL = NullableBigDecimalColumn(table, DUMMY)
 
     val DATE = DateColumn(table, DUMMY)
-    internal val DATE_NIL = NullableDateColumn(table, DUMMY)
+    val DATE_NIL = NullableDateColumn(table, DUMMY)
 
     val DATETIME = DateTimeColumn(table, DUMMY)
-    internal val DATETIME_NIL = NullableDateTimeColumn(table, DUMMY)
+    val DATETIME_NIL = NullableDateTimeColumn(table, DUMMY)
 
     val TIME = TimeColumn(table, DUMMY)
-    internal val TIME_NIL = NullableTimeColumn(table, DUMMY)
+    val TIME_NIL = NullableTimeColumn(table, DUMMY)
 
     val TIMESTAMP = TimeStampColumn(table, DUMMY)
-    internal val TIMESTAMP_NIL = NullableTimeStampColumn(table, DUMMY)
+    val TIMESTAMP_NIL = NullableTimeStampColumn(table, DUMMY)
 
     val OFFSET_DATETIME = OffsetDateTimeColumn(table, DUMMY)
-    internal val OFFSET_DATETIME_NIL = NullableOffsetDateTimeColumn(table, DUMMY)
+    val OFFSET_DATETIME_NIL = NullableOffsetDateTimeColumn(table, DUMMY)
 
-    internal val AUTOKEY_LONG = AutoKeyLongColumn(table, DUMMY)
-    internal val AUTOKEY_INTEGER = AutoKeyIntegerColumn(table, DUMMY)
-    internal val SEQUENCE_LONG = SequenceKeyLongColumn(table, DUMMY, "")
-    internal val SEQUENCE_INTEGER = SequenceKeyIntegerColumn(table, DUMMY, "")
-    internal val FOREIGN_KEY_LONG = ForeignKeyLongColumn(table, DUMMY, LONG)
-    internal val FOREIGN_KEY_LONG_NIL = OptionalForeignKeyLongColumn(table, DUMMY, LONG)
-    internal val FOREIGN_KEY_INT = ForeignKeyIntColumn(table, DUMMY, INTEGER)
-    internal val FOREIGN_KEY_INT_NIL = OptionalForeignKeyIntColumn(table, DUMMY, INTEGER)
-    internal val FOREIGN_KEY_VARCHAR = ForeignKeyVarcharColumn(table, DUMMY, VARCHAR)
-    internal val FOREIGN_KEY_VARCHAR_NIL = OptionalForeignKeyVarcharColumn(table, DUMMY, VARCHAR)
+    val AUTOKEY_LONG = AutoKeyLongColumn(table, DUMMY)
+    val AUTOKEY_INTEGER = AutoKeyIntegerColumn(table, DUMMY)
+    val SEQUENCE_LONG = SequenceKeyLongColumn(table, DUMMY, "")
+    val SEQUENCE_INTEGER = SequenceKeyIntegerColumn(table, DUMMY, "")
+    val FOREIGN_KEY_LONG = ForeignKeyLongColumn(table, DUMMY, LONG)
+    val FOREIGN_KEY_LONG_NIL = OptionalForeignKeyLongColumn(table, DUMMY, LONG)
+    val FOREIGN_KEY_INT = ForeignKeyIntColumn(table, DUMMY, INTEGER)
+    val FOREIGN_KEY_INT_NIL = OptionalForeignKeyIntColumn(table, DUMMY, INTEGER)
+    val FOREIGN_KEY_VARCHAR = ForeignKeyVarcharColumn(table, DUMMY, VARCHAR)
+    val FOREIGN_KEY_VARCHAR_NIL = OptionalForeignKeyVarcharColumn(table, DUMMY, VARCHAR)
 
     internal fun varcharColumn(nullable: Boolean = false) = if (nullable) VARCHAR_NIL else VARCHAR
     internal fun longColumn(nullable: Boolean = false) = if (nullable) LONG_NIL else LONG

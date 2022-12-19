@@ -45,7 +45,7 @@ class SqlTypeMapperFacadeTest {
 
     @Test
     fun `varchar takes default mapping`() {
-        val columnType = mapper.mapDataType(ColumnMappingProperties.of(column = "name", jdbcType = "VARCHAR", isNullable = false))
+        val columnType = mapper.mapDataType(ColumnMappingProperties.of(column = "name", jdbcType = "CHARACTER", isNullable = false))
         assertEquals("VarcharColumn", columnType::class.java.simpleName)
     }
 

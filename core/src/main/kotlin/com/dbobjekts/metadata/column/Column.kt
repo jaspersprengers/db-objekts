@@ -81,8 +81,8 @@ abstract class NonNullableColumn<I>(
         return if (rs.wasNull()) defaultValue() else value
     }
 
-    internal abstract fun getValue(position: Int, resultSet: ResultSet): I?
-    internal abstract fun setValue(position: Int, statement: PreparedStatement, value: I)
+    abstract fun getValue(position: Int, resultSet: ResultSet): I?
+    abstract fun setValue(position: Int, statement: PreparedStatement, value: I)
     override fun putValue(position: Int, statement: PreparedStatement, value: I?) {
         setValue(position, statement, value ?: throw IllegalStateException("Cannot be null"))
     }
@@ -107,8 +107,8 @@ abstract class NullableColumn<I>(
             null else value
     }
 
-    internal abstract fun getValue(position: Int, resultSet: ResultSet): I?
-    internal abstract fun setValue(position: Int, statement: PreparedStatement, value: I)
+    abstract fun getValue(position: Int, resultSet: ResultSet): I?
+    abstract fun setValue(position: Int, statement: PreparedStatement, value: I)
     override fun putValue(position: Int, statement: PreparedStatement, value: I?) {
         if (value == null)
             statement.setNull(position, sqlType)

@@ -34,7 +34,7 @@ open class Catalog(
         return table
     }
 
-    fun schemaByName(name: String): Schema? = schemas.find { it.schemaName.value.contentEquals(name) }
+    fun schemaByName(name: String): Schema? = schemas.find { it.schemaName.value.contentEquals(name, true) }
 
     fun aliasForTable(table: Table): String = aliases.aliasForSchemaAndTable(table.schemaName(), table.tableName)
 

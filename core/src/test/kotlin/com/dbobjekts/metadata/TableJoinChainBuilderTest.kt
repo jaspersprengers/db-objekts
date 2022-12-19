@@ -1,7 +1,5 @@
 package com.dbobjekts.metadata
-import com.dbobjekts.integration.h2.Catalogdefinition
-import com.dbobjekts.integration.h2.core.*
-import com.dbobjekts.integration.h2.hr.Hobby
+import com.dbobjekts.*
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -50,14 +48,14 @@ class TableJoinChainBuilderTest {
 
     @Test
     fun `one table in schema`() {
-        assertChain(TableJoinChainBuilder(Catalogdefinition, Employee, listOf(Employee)).build(), "core.EMPLOYEE e")
+        assertChain(TableJoinChainBuilder(Catalogdefinition, Employee, listOf(Employee)).build(), "CORE.EMPLOYEE e")
     }
 
     @Test
     fun `two joined tables in schema`() {
         assertChain(
             TableJoinChainBuilder(Catalogdefinition, Employee, listOf(Employee, Hobby)).build(),
-            "core.EMPLOYEE e left join hr.HOBBY h on e.HOBBY_ID = h.ID"
+            "CORE.EMPLOYEE e left join HR.HOBBY h on e.HOBBY_ID = h.ID"
         )
     }
 
@@ -65,7 +63,7 @@ class TableJoinChainBuilderTest {
     fun `two tables joined through n-m table`() {
         assertChain(
             TableJoinChainBuilder(Catalogdefinition, Employee, listOf(Employee, Address, Hobby)).build(),
-            "core.EMPLOYEE e left join core.EMPLOYEE_ADDRESS ea on e.ID = ea.EMPLOYEE_ID left join hr.HOBBY h on e.HOBBY_ID = h.ID left join core.ADDRESS a on ea.ADDRESS_ID = a.ID"
+            "CORE.EMPLOYEE e left join CORE.EMPLOYEE_ADDRESS ea on e.ID = ea.EMPLOYEE_ID left join HR.HOBBY h on e.HOBBY_ID = h.ID left join CORE.ADDRESS a on ea.ADDRESS_ID = a.ID"
         )
     }
 

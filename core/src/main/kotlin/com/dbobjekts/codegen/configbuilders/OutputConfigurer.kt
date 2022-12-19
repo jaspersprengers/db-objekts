@@ -16,6 +16,9 @@ class OutputConfigurer {
     }
 
     fun outputDirectoryForGeneratedSources(path: String): OutputConfigurer {
+        if (customSourceWriter != null) {
+            throw IllegalStateException("Cannot set output directory when using a custom source writer.")
+        }
         require(ValidateFile(path, isDir = true), { "$path is not a valid directory" })
         basedirOpt = path
         return this

@@ -1,7 +1,9 @@
 package com.dbobjekts.metadata
 
-import com.dbobjekts.integration.h2.Catalogdefinition
-import com.dbobjekts.integration.h2.core.*
+import com.dbobjekts.Catalogdefinition
+import com.dbobjekts.Core
+import com.dbobjekts.Employee
+import com.dbobjekts.Hr
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -9,41 +11,35 @@ import org.junit.jupiter.api.Test
 
 class SchemaTest {
 
-
     @Test
-    fun `Catalog has two schemas`() {
-        assertEquals(Catalogdefinition.schemas.size, 5)
+    fun `Catalog has one schema`() {
+        assertEquals(Catalogdefinition.schemas.size, 2)
     }
 
     @Test
     fun `Catalog has schema default`() {
-        assertNotNull(Catalogdefinition.schemaByName("core"))
-        assertEquals("h2", Catalogdefinition.vendor)
+        assertNotNull(Catalogdefinition.schemaByName("HR"))
+        assertEquals("H2", Catalogdefinition.vendor)
     }
 
     @Test
     fun `Schema has one table`() {
-        assertEquals(7, Core.tables.size)
+        assertEquals(6, Core.tables.size)
     }
 
     @Test
     fun `Schema has reference to catalog`() {
-        assertEquals(Catalogdefinition, Core.catalog)
+        assertEquals(Catalogdefinition, Hr.catalog)
     }
 
 
     @Test
     fun `Table Employee has reference to Schema core`() {
-        assertEquals("core", Employee.schemaName().value)
+        assertEquals("CORE", Employee.schemaName().value)
     }
 
     @Test
     fun `Alias for table is e`() {
         assertEquals("e", Employee.alias())
-        assertEquals("a", Address.alias())
-        assertEquals("c", Country.alias())
-        assertEquals("d", Department.alias())
-        assertEquals("ea", EmployeeAddress.alias())
-        assertEquals("ed", EmployeeDepartment.alias())
     }
 }
