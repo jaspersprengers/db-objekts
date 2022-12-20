@@ -46,7 +46,7 @@ class MariaIntegrationTe0st {
                     username = "root",
                     password = "test", driver = "org.mariadb.jdbc.Driver"
                 )
-            TransactionManager.setup(ds, CoreCatalog)
+            TransactionManager.initialize(ds, CoreCatalog)
             tm = TransactionManager.singleton()
             /*tm { tr ->
                 tr.deleteFrom(EmployeeAddress).where()

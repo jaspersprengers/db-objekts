@@ -1,5 +1,6 @@
 package com.dbobjekts.statement.update
 
+import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyColumnAndValue
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
@@ -9,9 +10,21 @@ import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
 
-interface HasUpdateBuilder<U : UpdateBuilderBase, I : InsertBuilderBase> {
-    fun updater(connection: ConnectionAdapter): U
+class TableMetaData<U : UpdateBuilderBase, I : InsertBuilderBase>(
+    val columns: List<AnyColumn>,
+    val updater: U,
+    val inserter: I){
 
+}
+
+interface HasUpdateBuilder<U : UpdateBuilderBase, I : InsertBuilderBase> {
+    /**
+     * FOR DB-OBJEKTS INTERNAL USE ONLY.
+     */
+    fun updater(connection: ConnectionAdapter): U
+    /**
+     * FOR DB-OBJEKTS INTERNAL USE ONLY.
+     */
     fun inserter(connection: ConnectionAdapter): I
 }
 

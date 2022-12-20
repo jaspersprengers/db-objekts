@@ -7,7 +7,6 @@ import com.dbobjekts.integration.h2.hr.Certificate
 import com.dbobjekts.integration.h2.hr.Hobby
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.util.HikariDataSourceFactory
-import com.dbobjekts.util.StatementLogger
 import org.slf4j.LoggerFactory
 import javax.sql.DataSource
 
@@ -41,7 +40,9 @@ object H2DB {
     val catalog: Catalog = Catalogdefinition
 
     fun getTransactionManager(): TransactionManager {
-        TransactionManager.setup(createDataSource(), catalog)
+        if (!TransactionManager.isInitalized()) {
+            TransactionManager.initialize(createDataSource(), catalog)
+        }
         return TransactionManager.singleton()
     }
 

@@ -77,7 +77,7 @@ class TransactionManager(
         private var INSTANCE: TransactionManager? = null
 
         // FOR THE SINGLETON
-        fun setup(
+        fun initialize(
             dataSource: DataSource,
             catalog: Catalog
         ): Boolean {
@@ -93,7 +93,7 @@ class TransactionManager(
 
         fun <T> newTransaction(fct: (Transaction) -> T): T = ensure().newTransaction(fct)
 
-        fun isValid(): Boolean = INSTANCE != null
+        fun isInitalized(): Boolean = INSTANCE != null
 
         internal fun invalidate() {
             INSTANCE?.close()

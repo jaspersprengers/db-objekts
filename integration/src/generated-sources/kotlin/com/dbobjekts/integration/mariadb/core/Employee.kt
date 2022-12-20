@@ -9,6 +9,7 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 import com.dbobjekts.integration.mariadb.hr.Hobby
+import com.dbobjekts.statement.update.TableMetaData
 
 
 object Employee:Table("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, EmployeeInsertBuilder> {
@@ -23,6 +24,7 @@ object Employee:Table("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, Emplo
     override val columns: List<AnyColumn> = listOf(id,name,salary,married,dateOfBirth,children,hobbyId,managerId)
     override fun updater(connection: ConnectionAdapter): EmployeeUpdateBuilder = EmployeeUpdateBuilder(connection)
     override fun inserter(connection: ConnectionAdapter): EmployeeInsertBuilder = EmployeeInsertBuilder(connection)
+
 }
 
 class EmployeeUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(Employee, connection) {

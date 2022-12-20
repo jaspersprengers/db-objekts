@@ -38,6 +38,8 @@ class Transaction(internal val connection: ConnectionAdapter){
 
     internal fun isValid(): Boolean = connection.isValid()
 
+    fun statementLog() = connection.statementLogger
+
     fun commit() = connection.commit()
 
     fun rollback() = connection.rollback()

@@ -5,6 +5,7 @@ import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.metadata.Schema
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.*
+import com.dbobjekts.statement.update.TableMetaData
 
 object Hr : Schema("HR", listOf(Certificate, Hobby))
 
@@ -26,6 +27,7 @@ object Certificate : Table("CERTIFICATE") {
     val name = VarcharColumn(this, "NAME")
     val employeeId = ForeignKeyLongColumn(this, "EMPLOYEE_ID", Employee.id)
     override val columns: List<AnyColumn> = listOf(id, name, employeeId)
+    //val metaData = TableMetaData(columns, EmployeeUpdateBuilder(connection), EmployeeInsertBuilder(connection))
 }
 
 object Hobby : Table("HOBBY") {

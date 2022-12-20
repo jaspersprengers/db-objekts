@@ -15,22 +15,31 @@ open class StatementLogger {
 
     private var lastResult: Any? = null
 
-    fun info(msg: String) {
+    internal fun info(msg: String) {
         logger.info(msg)
         lastMessage = msg
     }
 
-    fun error(msg: String) {
+    internal fun error(msg: String) {
         logger.error(msg)
         lastMessage = "Error $msg"
     }
 
-    fun error(msg: String, e: Throwable) {
+    internal fun error(msg: String, e: Throwable) {
         logger.error(msg, e)
         lastMessage = "Error $msg ${e.message}"
     }
 
-    fun lastSQLStatement(): String = lastSQLStatement?.toString() ?: "No SQL statement logged!"
+    fun lastSQLStatement(): String {
+       if (lastSQLStatement == null)
+           return "No statement logged"
+        val params = lastParameters.map { "param ${it.oneBasedPosition}: '${it.value}'" }.joinToString("\n")
+        return """
+        Query: $lastSQLStatement
+        $params
+        Result: $lastResult
+        """.trimIndent()
+    }
 
     internal fun logStatement(sql: String, parameters: List<AnySqlParameter>) {
         lastSQLStatement = sql

@@ -7,12 +7,12 @@
             </Pattern>
         </layout>
     </appender>
-<!--
 
-    <logger name="com.dbobjekts" level="debug" additivity="false">
+
+    <logger name="com.zaxxer.hikari" level="WARN" additivity="false">
         <appender-ref ref="CONSOLE"/>
     </logger>
--->
+
 
     <root level="debug">
         <appender-ref ref="CONSOLE"/>
