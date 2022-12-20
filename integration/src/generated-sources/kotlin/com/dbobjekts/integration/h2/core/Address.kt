@@ -2,8 +2,8 @@ package com.dbobjekts.integration.h2.core
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyColumnAndValue
-import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.WriteQueryAccessors
 import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
@@ -14,21 +14,20 @@ object Address:Table("ADDRESS"), HasUpdateBuilder<AddressUpdateBuilder, AddressI
     val street = com.dbobjekts.metadata.column.VarcharColumn(this, "STREET")
     val countryId = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "COUNTRY_ID", Country.id)
     override val columns: List<AnyColumn> = listOf(id,street,countryId)
-    override fun updater(connection: ConnectionAdapter): AddressUpdateBuilder = AddressUpdateBuilder(connection)
-    override fun inserter(connection: ConnectionAdapter): AddressInsertBuilder = AddressInsertBuilder(connection)
+    override val metadata: WriteQueryAccessors<AddressUpdateBuilder, AddressInsertBuilder> = WriteQueryAccessors(AddressUpdateBuilder(), AddressInsertBuilder())
 }
 
-class AddressUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(Address, connection) {
+class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
     private val ct = ColumnForWriteMapContainerImpl(this)
-    override protected fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun data(): Set<AnyColumnAndValue> = ct.data
 
     fun street(value: String): AddressUpdateBuilder = ct.put(Address.street, value)
     fun countryId(value: String): AddressUpdateBuilder = ct.put(Address.countryId, value)
 }
 
-class AddressInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(Address, connection){
+class AddressInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
-    override protected fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun data(): Set<AnyColumnAndValue> = ct.data
 
     fun street(value: String): AddressInsertBuilder = ct.put(Address.street, value)
     fun countryId(value: String): AddressInsertBuilder = ct.put(Address.countryId, value)

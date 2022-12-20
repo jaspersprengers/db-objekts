@@ -37,7 +37,7 @@ class TableSourcesBuilder(
 
 
     fun build(): String {
-        val msb = InsertMethodSourceBuilder(model)
+        val updateMethodSourceBuilder = InsertMethodSourceBuilder(model)
         strBuilder.append("package ${model.packageName}\n\n")
 
         fun generateField(column: DBColumnDefinition) {
@@ -45,7 +45,7 @@ class TableSourcesBuilder(
         }
 
         val importLineBuilder = ImportLineBuilder()
-        val imports = listOf("api.AnyColumn","api.AnyColumnAndValue","jdbc.ConnectionAdapter","metadata.Table","statement.update.ColumnForWriteMapContainerImpl","statement.update.HasUpdateBuilder","statement.insert.InsertBuilderBase","statement.update.UpdateBuilderBase")
+        val imports = listOf("api.AnyColumn","api.AnyColumnAndValue","metadata.Table","metadata.WriteQueryAccessors","statement.update.ColumnForWriteMapContainerImpl","statement.update.HasUpdateBuilder","statement.insert.InsertBuilderBase","statement.update.UpdateBuilderBase")
         imports.forEach { importLineBuilder.add("com.dbobjekts.$it") }
         generateImportsForForeignKeys().forEach { importLineBuilder.add(it) }
         strBuilder.append(importLineBuilder.build())
@@ -59,10 +59,9 @@ class TableSourcesBuilder(
         val columnNames = model.columns.map { it.asFieldName() }.joinToString(",")
         strBuilder.appendLine("    override val columns: List<AnyColumn> = listOf($columnNames)")
 
-        strBuilder.appendLine(msb.sourceForUpdateMethod())
-        strBuilder.appendLine(msb.sourceForInsertMethod())
+        strBuilder.appendLine(updateMethodSourceBuilder.sourceForMetaDataVal())
         strBuilder.appendLine("}")
-        strBuilder.appendLine(msb.sourceForBuilderClasses())
+        strBuilder.appendLine(updateMethodSourceBuilder.sourceForBuilderClasses())
         return strBuilder.toString()
     }
 

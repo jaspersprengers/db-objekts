@@ -1,29 +1,17 @@
 package com.dbobjekts.integration.mariadb
 
-import com.dbobjekts.api.*
+import com.dbobjekts.api.Catalogs
+import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.codegen.CodeGenerator
-import com.dbobjekts.integration.mariadb.Aliases.a
-import com.dbobjekts.integration.mariadb.Aliases.c
-import com.dbobjekts.integration.mariadb.Aliases.e
-import com.dbobjekts.integration.mariadb.Aliases.ea
-import com.dbobjekts.integration.mariadb.Aliases.h
-import com.dbobjekts.integration.mariadb.core.Address
-import com.dbobjekts.integration.mariadb.core.Country
-import com.dbobjekts.integration.mariadb.core.Employee
-import com.dbobjekts.integration.mariadb.core.EmployeeAddress
 import com.dbobjekts.metadata.column.BooleanColumn
 import com.dbobjekts.util.HikariDataSourceFactory
 import com.dbobjekts.vendors.Vendors
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.testcontainers.junit.jupiter.Container
 import java.nio.file.Paths
-import java.time.LocalDate
 import javax.sql.DataSource
-
 
 
 //@Testcontainers
@@ -46,7 +34,7 @@ class MariaIntegrationTe0st {
                     username = "root",
                     password = "test", driver = "org.mariadb.jdbc.Driver"
                 )
-            TransactionManager.setup(ds, CoreCatalog)
+            TransactionManager.initialize(ds, Catalogs.EMPTY_MARIADB_CATALOG)
             tm = TransactionManager.singleton()
             /*tm { tr ->
                 tr.deleteFrom(EmployeeAddress).where()
@@ -77,8 +65,9 @@ class MariaIntegrationTe0st {
 
     }
 
-    @Disabled
-    @Test
+    //@Disabled
+    //@Test
+    /*
     fun `five minute tutorial`() {
         tm { tr ->
 
@@ -165,7 +154,7 @@ class MariaIntegrationTe0st {
 
         }
     }
-
+*/
 
 
 }

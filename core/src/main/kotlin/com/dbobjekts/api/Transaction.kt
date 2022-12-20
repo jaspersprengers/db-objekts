@@ -15,11 +15,19 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
 import java.lang.IllegalArgumentException
 
-class Transaction(internal val connection: ConnectionAdapter){
+class Transaction(internal val connection: ConnectionAdapter) {
 
-    fun <U : UpdateBuilderBase> update(provider: HasUpdateBuilder<U, *>): U = provider.updater(connection)
+    fun <U : UpdateBuilderBase> update(provider: HasUpdateBuilder<U, *>): U {
+        val updater = provider.metadata.updater
+        updater.connection = connection
+        return updater
+    }
 
-    fun <I : InsertBuilderBase> insert(provider: HasUpdateBuilder<*, I>): I = provider.inserter(connection)
+    fun <I : InsertBuilderBase> insert(provider: HasUpdateBuilder<*, I>): I {
+        val inserter = provider.metadata.inserter
+        inserter.connection = connection
+        return inserter
+    }
 
     fun deleteFrom(tableOrJoin: TableOrJoin): DeleteStatementExecutor {
         val statement = DeleteStatementExecutor(connection)
@@ -37,6 +45,8 @@ class Transaction(internal val connection: ConnectionAdapter){
     internal fun connection() = connection.jdbcConnection
 
     internal fun isValid(): Boolean = connection.isValid()
+
+    fun statementLog() = connection.statementLogger
 
     fun commit() = connection.commit()
 

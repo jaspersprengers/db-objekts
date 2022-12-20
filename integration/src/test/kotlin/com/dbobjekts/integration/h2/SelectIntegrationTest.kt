@@ -124,6 +124,7 @@ class SelectIntegrationTest {
                 )
                     .where(Country.name.eq("Netherlands")).first()
             ).isEqualTo("Jane")
+            println(s.statementLog().lastSQLStatement())
         })
     }
 
