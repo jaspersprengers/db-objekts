@@ -14,13 +14,12 @@ object EmployeeAddress:Table("EMPLOYEE_ADDRESS"), HasUpdateBuilder<EmployeeAddre
     val addressId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "ADDRESS_ID", Address.id)
     val kind = com.dbobjekts.integration.h2.custom.AddressTypeAsStringColumn(this, "KIND")
     override val columns: List<AnyColumn> = listOf(employeeId,addressId,kind)
-    override val metadata: WriteQueryAccessors<EmployeeAddressUpdateBuilder, EmployeeAddressInsertBuilder> = WriteQueryAccessors(EmployeeAddressUpdateBuilder(), EmployeeAddressInsertBuilder())
+    override fun metadata(): WriteQueryAccessors<EmployeeAddressUpdateBuilder, EmployeeAddressInsertBuilder> = WriteQueryAccessors(EmployeeAddressUpdateBuilder(), EmployeeAddressInsertBuilder())
 }
 
 class EmployeeAddressUpdateBuilder() : UpdateBuilderBase(EmployeeAddress) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
-    override fun clear(){ct.data.clear()}
 
     fun employeeId(value: Long): EmployeeAddressUpdateBuilder = ct.put(EmployeeAddress.employeeId, value)
     fun addressId(value: Long): EmployeeAddressUpdateBuilder = ct.put(EmployeeAddress.addressId, value)
@@ -30,7 +29,7 @@ class EmployeeAddressUpdateBuilder() : UpdateBuilderBase(EmployeeAddress) {
 class EmployeeAddressInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
-    override fun clear(){ct.data.clear()}
+    
 
     fun employeeId(value: Long): EmployeeAddressInsertBuilder = ct.put(EmployeeAddress.employeeId, value)
     fun addressId(value: Long): EmployeeAddressInsertBuilder = ct.put(EmployeeAddress.addressId, value)

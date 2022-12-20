@@ -69,13 +69,12 @@ object AllTypes:Table("ALL_TYPES"), HasUpdateBuilder<AllTypesUpdateBuilder, AllT
     val addressString = com.dbobjekts.integration.h2.custom.AddressTypeAsStringColumn(this, "ADDRESS_STRING")
     val addressStringNil = com.dbobjekts.integration.h2.custom.AddressTypeAsStringColumn(this, "ADDRESS_STRING_NIL")
     override val columns: List<AnyColumn> = listOf(id,characterCol,characterColNil,charactervaryingCol,charactervaryingColNil,characterlargeobjectCol,characterlargeobjectColNil,varcharIgnorecaseCol,varcharIgnorecaseColNil,enumCol,enumColNil,binaryCol,binaryColNil,binaryvaryingCol,binaryvaryingColNil,binarylargeobjectCol,binarylargeobjectColNil,jsonCol,jsonColNil,booleanCol,booleanColNil,tinyintCol,tinyintColNil,smallintCol,smallintColNil,integerCol,integerColNil,bigintCol,bigintColNil,numericCol,numericColNil,decfloatCol,decfloatColNil,realCol,realColNil,doubleprecisionCol,doubleprecisionColNil,dateCol,dateColNil,timeCol,timeColNil,timewithtimezoneCol,timewithtimezoneColNil,timestampCol,timestampColNil,timestampwithtimezoneCol,timestampwithtimezoneColNil,uuidCol,uuidColNil,intervalCol,intervalColNil,geometryColNil,intArrayCol,intArrayColNil,addressInt,addressIntNil,addressString,addressStringNil)
-    override val metadata: WriteQueryAccessors<AllTypesUpdateBuilder, AllTypesInsertBuilder> = WriteQueryAccessors(AllTypesUpdateBuilder(), AllTypesInsertBuilder())
+    override fun metadata(): WriteQueryAccessors<AllTypesUpdateBuilder, AllTypesInsertBuilder> = WriteQueryAccessors(AllTypesUpdateBuilder(), AllTypesInsertBuilder())
 }
 
 class AllTypesUpdateBuilder() : UpdateBuilderBase(AllTypes) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
-    override fun clear(){ct.data.clear()}
 
     fun characterCol(value: String): AllTypesUpdateBuilder = ct.put(AllTypes.characterCol, value)
     fun characterColNil(value: String?): AllTypesUpdateBuilder = ct.put(AllTypes.characterColNil, value)
@@ -139,7 +138,7 @@ class AllTypesUpdateBuilder() : UpdateBuilderBase(AllTypes) {
 class AllTypesInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
-    override fun clear(){ct.data.clear()}
+    
 
     fun characterCol(value: String): AllTypesInsertBuilder = ct.put(AllTypes.characterCol, value)
     fun characterColNil(value: String?): AllTypesInsertBuilder = ct.put(AllTypes.characterColNil, value)

@@ -14,13 +14,12 @@ object Address:Table("ADDRESS"), HasUpdateBuilder<AddressUpdateBuilder, AddressI
     val street = com.dbobjekts.metadata.column.VarcharColumn(this, "STREET")
     val countryId = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "COUNTRY_ID", Country.id)
     override val columns: List<AnyColumn> = listOf(id,street,countryId)
-    override val metadata: WriteQueryAccessors<AddressUpdateBuilder, AddressInsertBuilder> = WriteQueryAccessors(AddressUpdateBuilder(), AddressInsertBuilder())
+    override fun metadata(): WriteQueryAccessors<AddressUpdateBuilder, AddressInsertBuilder> = WriteQueryAccessors(AddressUpdateBuilder(), AddressInsertBuilder())
 }
 
 class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
-    override fun clear(){ct.data.clear()}
 
     fun street(value: String): AddressUpdateBuilder = ct.put(Address.street, value)
     fun countryId(value: String): AddressUpdateBuilder = ct.put(Address.countryId, value)
@@ -29,7 +28,7 @@ class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
 class AddressInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
-    override fun clear(){ct.data.clear()}
+    
 
     fun street(value: String): AddressInsertBuilder = ct.put(Address.street, value)
     fun countryId(value: String): AddressInsertBuilder = ct.put(Address.countryId, value)

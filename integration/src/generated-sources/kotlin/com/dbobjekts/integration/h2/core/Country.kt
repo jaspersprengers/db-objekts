@@ -13,13 +13,12 @@ object Country:Table("COUNTRY"), HasUpdateBuilder<CountryUpdateBuilder, CountryI
     val id = com.dbobjekts.metadata.column.VarcharColumn(this, "ID")
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     override val columns: List<AnyColumn> = listOf(id,name)
-    override val metadata: WriteQueryAccessors<CountryUpdateBuilder, CountryInsertBuilder> = WriteQueryAccessors(CountryUpdateBuilder(), CountryInsertBuilder())
+    override fun metadata(): WriteQueryAccessors<CountryUpdateBuilder, CountryInsertBuilder> = WriteQueryAccessors(CountryUpdateBuilder(), CountryInsertBuilder())
 }
 
 class CountryUpdateBuilder() : UpdateBuilderBase(Country) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
-    override fun clear(){ct.data.clear()}
 
     fun id(value: String): CountryUpdateBuilder = ct.put(Country.id, value)
     fun name(value: String): CountryUpdateBuilder = ct.put(Country.name, value)
@@ -28,7 +27,7 @@ class CountryUpdateBuilder() : UpdateBuilderBase(Country) {
 class CountryInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
-    override fun clear(){ct.data.clear()}
+    
 
     fun id(value: String): CountryInsertBuilder = ct.put(Country.id, value)
     fun name(value: String): CountryInsertBuilder = ct.put(Country.name, value)

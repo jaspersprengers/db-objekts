@@ -33,13 +33,12 @@ object Tuples:Table("TUPLES"), HasUpdateBuilder<TuplesUpdateBuilder, TuplesInser
     val c21 = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "C21")
     val c22 = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "C22")
     override val columns: List<AnyColumn> = listOf(c1,c2,c3,c4,c5,c6,c7,c8,c9,c10,c11,c12,c13,c14,c15,c16,c17,c18,c19,c20,c21,c22)
-    override val metadata: WriteQueryAccessors<TuplesUpdateBuilder, TuplesInsertBuilder> = WriteQueryAccessors(TuplesUpdateBuilder(), TuplesInsertBuilder())
+    override fun metadata(): WriteQueryAccessors<TuplesUpdateBuilder, TuplesInsertBuilder> = WriteQueryAccessors(TuplesUpdateBuilder(), TuplesInsertBuilder())
 }
 
 class TuplesUpdateBuilder() : UpdateBuilderBase(Tuples) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
-    override fun clear(){ct.data.clear()}
 
     fun c1(value: Int?): TuplesUpdateBuilder = ct.put(Tuples.c1, value)
     fun c2(value: Int?): TuplesUpdateBuilder = ct.put(Tuples.c2, value)
@@ -68,7 +67,7 @@ class TuplesUpdateBuilder() : UpdateBuilderBase(Tuples) {
 class TuplesInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
-    override fun clear(){ct.data.clear()}
+    
 
     fun c1(value: Int?): TuplesInsertBuilder = ct.put(Tuples.c1, value)
     fun c2(value: Int?): TuplesInsertBuilder = ct.put(Tuples.c2, value)

@@ -13,13 +13,12 @@ object EmployeeDepartment:Table("EMPLOYEE_DEPARTMENT"), HasUpdateBuilder<Employe
     val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "EMPLOYEE_ID", Employee.id)
     val departmentId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "DEPARTMENT_ID", Department.id)
     override val columns: List<AnyColumn> = listOf(employeeId,departmentId)
-    override val metadata: WriteQueryAccessors<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder> = WriteQueryAccessors(EmployeeDepartmentUpdateBuilder(), EmployeeDepartmentInsertBuilder())
+    override fun metadata(): WriteQueryAccessors<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder> = WriteQueryAccessors(EmployeeDepartmentUpdateBuilder(), EmployeeDepartmentInsertBuilder())
 }
 
 class EmployeeDepartmentUpdateBuilder() : UpdateBuilderBase(EmployeeDepartment) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
-    override fun clear(){ct.data.clear()}
 
     fun employeeId(value: Long): EmployeeDepartmentUpdateBuilder = ct.put(EmployeeDepartment.employeeId, value)
     fun departmentId(value: Long): EmployeeDepartmentUpdateBuilder = ct.put(EmployeeDepartment.departmentId, value)
@@ -28,7 +27,7 @@ class EmployeeDepartmentUpdateBuilder() : UpdateBuilderBase(EmployeeDepartment) 
 class EmployeeDepartmentInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
-    override fun clear(){ct.data.clear()}
+    
 
     fun employeeId(value: Long): EmployeeDepartmentInsertBuilder = ct.put(EmployeeDepartment.employeeId, value)
     fun departmentId(value: Long): EmployeeDepartmentInsertBuilder = ct.put(EmployeeDepartment.departmentId, value)

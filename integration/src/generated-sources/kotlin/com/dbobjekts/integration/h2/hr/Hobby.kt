@@ -13,13 +13,12 @@ object Hobby:Table("HOBBY"), HasUpdateBuilder<HobbyUpdateBuilder, HobbyInsertBui
     val id = com.dbobjekts.metadata.column.VarcharColumn(this, "ID")
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     override val columns: List<AnyColumn> = listOf(id,name)
-    override val metadata: WriteQueryAccessors<HobbyUpdateBuilder, HobbyInsertBuilder> = WriteQueryAccessors(HobbyUpdateBuilder(), HobbyInsertBuilder())
+    override fun metadata(): WriteQueryAccessors<HobbyUpdateBuilder, HobbyInsertBuilder> = WriteQueryAccessors(HobbyUpdateBuilder(), HobbyInsertBuilder())
 }
 
 class HobbyUpdateBuilder() : UpdateBuilderBase(Hobby) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
-    override fun clear(){ct.data.clear()}
 
     fun id(value: String): HobbyUpdateBuilder = ct.put(Hobby.id, value)
     fun name(value: String): HobbyUpdateBuilder = ct.put(Hobby.name, value)
@@ -28,7 +27,7 @@ class HobbyUpdateBuilder() : UpdateBuilderBase(Hobby) {
 class HobbyInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
-    override fun clear(){ct.data.clear()}
+    
 
     fun id(value: String): HobbyInsertBuilder = ct.put(Hobby.id, value)
     fun name(value: String): HobbyInsertBuilder = ct.put(Hobby.name, value)

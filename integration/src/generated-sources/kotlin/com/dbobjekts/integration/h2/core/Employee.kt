@@ -20,13 +20,12 @@ object Employee:Table("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, Emplo
     val children = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "CHILDREN")
     val hobbyId = com.dbobjekts.metadata.column.OptionalForeignKeyVarcharColumn(this, "HOBBY_ID", Hobby.id)
     override val columns: List<AnyColumn> = listOf(id,name,salary,married,dateOfBirth,children,hobbyId)
-    override val metadata: WriteQueryAccessors<EmployeeUpdateBuilder, EmployeeInsertBuilder> = WriteQueryAccessors(EmployeeUpdateBuilder(), EmployeeInsertBuilder())
+    override fun metadata(): WriteQueryAccessors<EmployeeUpdateBuilder, EmployeeInsertBuilder> = WriteQueryAccessors(EmployeeUpdateBuilder(), EmployeeInsertBuilder())
 }
 
 class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
-    override fun clear(){ct.data.clear()}
 
     fun name(value: String): EmployeeUpdateBuilder = ct.put(Employee.name, value)
     fun salary(value: Double): EmployeeUpdateBuilder = ct.put(Employee.salary, value)
@@ -39,7 +38,7 @@ class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
 class EmployeeInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
-    override fun clear(){ct.data.clear()}
+    
 
     fun name(value: String): EmployeeInsertBuilder = ct.put(Employee.name, value)
     fun salary(value: Double): EmployeeInsertBuilder = ct.put(Employee.salary, value)

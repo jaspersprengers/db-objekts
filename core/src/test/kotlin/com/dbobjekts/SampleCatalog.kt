@@ -31,19 +31,19 @@ object Certificate : Table("CERTIFICATE"), HasUpdateBuilder<CertificateUpdateBui
     val employeeId = ForeignKeyLongColumn(this, "EMPLOYEE_ID", Employee.id)
     override val columns = listOf(id, name, employeeId)
 
-    override val metadata: WriteQueryAccessors<CertificateUpdateBuilder, CertificateInsertBuilder> =
+    override fun metadata(): WriteQueryAccessors<CertificateUpdateBuilder, CertificateInsertBuilder> =
         WriteQueryAccessors(CertificateUpdateBuilder(), CertificateInsertBuilder())
 }
 
 class CertificateUpdateBuilder() : UpdateBuilderBase(Certificate) {
-    override fun clear(){}
+
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
 }
 
 class CertificateInsertBuilder() : InsertBuilderBase() {
-    override fun clear(){}
+
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
@@ -53,19 +53,19 @@ object Hobby : Table("HOBBY"), HasUpdateBuilder<HobbyUpdateBuilder, HobbyInsertB
     val id = VarcharColumn(this, "ID")
     val name = VarcharColumn(this, "NAME")
     override val columns = listOf(id, name)
-    override val metadata: WriteQueryAccessors<HobbyUpdateBuilder, HobbyInsertBuilder> =
+    override fun metadata(): WriteQueryAccessors<HobbyUpdateBuilder, HobbyInsertBuilder> =
         WriteQueryAccessors(HobbyUpdateBuilder(), HobbyInsertBuilder())
 }
 
 class HobbyUpdateBuilder() : UpdateBuilderBase(Hobby) {
-    override fun clear(){}
+
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
 }
 
 class HobbyInsertBuilder() : InsertBuilderBase() {
-    override fun clear(){}
+
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
@@ -77,19 +77,19 @@ object Country : Table("COUNTRY"), HasUpdateBuilder<CountryUpdateBuilder, Countr
     val id = VarcharColumn(this, "ID")
     val name = VarcharColumn(this, "NAME")
     override val columns = listOf(id, name)
-    override val metadata: WriteQueryAccessors<CountryUpdateBuilder, CountryInsertBuilder> =
+    override fun metadata(): WriteQueryAccessors<CountryUpdateBuilder, CountryInsertBuilder> =
         WriteQueryAccessors(CountryUpdateBuilder(), CountryInsertBuilder())
 }
 
 class CountryUpdateBuilder() : UpdateBuilderBase(Country) {
-    override fun clear(){}
+
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
 }
 
 class CountryInsertBuilder() : InsertBuilderBase() {
-    override fun clear(){}
+
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
@@ -99,19 +99,19 @@ object Department : Table("DEPARTMENT"), HasUpdateBuilder<DepartmentUpdateBuilde
     val id = SequenceKeyLongColumn(this, "ID", "DEPARTMENT_SEQ")
     val name = VarcharColumn(this, "NAME")
     override val columns = listOf(id, name)
-    override val metadata: WriteQueryAccessors<DepartmentUpdateBuilder, DepartmentInsertBuilder> =
+    override fun metadata(): WriteQueryAccessors<DepartmentUpdateBuilder, DepartmentInsertBuilder> =
         WriteQueryAccessors(DepartmentUpdateBuilder(), DepartmentInsertBuilder())
 }
 
 class DepartmentUpdateBuilder() : UpdateBuilderBase(Department) {
-    override fun clear(){}
+
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
 }
 
 class DepartmentInsertBuilder() : InsertBuilderBase() {
-    override fun clear(){}
+
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
@@ -126,19 +126,19 @@ object Employee : Table("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, Emp
     val children = NullableIntegerColumn(this, "CHILDREN")
     val hobbyId = OptionalForeignKeyVarcharColumn(this, "HOBBY_ID", Hobby.id)
     override val columns = listOf(id, name, salary, married, dateOfBirth, children, hobbyId)
-    override val metadata: WriteQueryAccessors<EmployeeUpdateBuilder, EmployeeInsertBuilder> =
+    override fun metadata(): WriteQueryAccessors<EmployeeUpdateBuilder, EmployeeInsertBuilder> =
         WriteQueryAccessors(EmployeeUpdateBuilder(), EmployeeInsertBuilder())
 }
 
 class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
-    override fun clear(){}
+
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
 }
 
 class EmployeeInsertBuilder() : InsertBuilderBase() {
-    override fun clear(){}
+
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
@@ -149,19 +149,19 @@ object EmployeeAddress : Table("EMPLOYEE_ADDRESS"), HasUpdateBuilder<EmployeeAdd
     val addressId = ForeignKeyLongColumn(this, "ADDRESS_ID", Address.id)
     val kind = VarcharColumn(this, "KIND")
     override val columns = listOf(employeeId, addressId, kind)
-    override val metadata: WriteQueryAccessors<EmployeeAddressUpdateBuilder, EmployeeAddressInsertBuilder> =
+    override fun metadata(): WriteQueryAccessors<EmployeeAddressUpdateBuilder, EmployeeAddressInsertBuilder> =
         WriteQueryAccessors(EmployeeAddressUpdateBuilder(), EmployeeAddressInsertBuilder())
 }
 
 class EmployeeAddressUpdateBuilder() : UpdateBuilderBase(EmployeeAddress) {
-    override fun clear(){}
+
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
 }
 
 class EmployeeAddressInsertBuilder() : InsertBuilderBase() {
-    override fun clear(){}
+
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
@@ -172,19 +172,19 @@ object Address : Table("ADDRESS"), HasUpdateBuilder<AddressUpdateBuilder, Addres
     val street = VarcharColumn(this, "STREET")
     val countryId = ForeignKeyVarcharColumn(this, "COUNTRY_ID", Country.id)
     override val columns = listOf(id, street, countryId)
-    override val metadata: WriteQueryAccessors<AddressUpdateBuilder, AddressInsertBuilder> =
+    override fun metadata(): WriteQueryAccessors<AddressUpdateBuilder, AddressInsertBuilder> =
         WriteQueryAccessors(AddressUpdateBuilder(), AddressInsertBuilder())
 }
 
 class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
-    override fun clear(){}
+
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
 }
 
 class AddressInsertBuilder() : InsertBuilderBase() {
-    override fun clear(){}
+
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
@@ -195,19 +195,19 @@ object EmployeeDepartment : Table("EMPLOYEE_DEPARTMENT"),
     val employeeId = ForeignKeyLongColumn(this, "EMPLOYEE_ID", Employee.id)
     val departmentId = ForeignKeyLongColumn(this, "DEPARTMENT_ID", Department.id)
     override val columns = listOf(employeeId, departmentId)
-    override val metadata: WriteQueryAccessors<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder> =
+    override fun metadata(): WriteQueryAccessors<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder> =
         WriteQueryAccessors(EmployeeDepartmentUpdateBuilder(), EmployeeDepartmentInsertBuilder())
 }
 
 class EmployeeDepartmentUpdateBuilder() : UpdateBuilderBase(EmployeeDepartment) {
-    override fun clear(){}
+
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
 }
 
 class EmployeeDepartmentInsertBuilder() : InsertBuilderBase() {
-    override fun clear(){}
+
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
