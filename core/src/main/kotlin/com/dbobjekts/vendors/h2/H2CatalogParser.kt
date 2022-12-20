@@ -18,7 +18,7 @@ class H2CatalogParser(codeGeneratorConfig: CodeGeneratorConfig,
     private val log = LoggerFactory.getLogger(H2CatalogParser::class.java)
 
     override fun extractCatalogs(): List<String> =
-        DetermineVendor().invoke(transactionManager).catalogs
+        DetermineVendor(transactionManager).catalogs
 
 
     override fun extractColumnAndTableMetaDataFromDB(): List<TableMetaDataRow> {

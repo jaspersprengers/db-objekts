@@ -6,7 +6,7 @@ import com.dbobjekts.util.StringUtil
 import com.dbobjekts.vendors.Vendors
 
 
-class DetermineVendor {
+object DetermineVendor {
 
     operator fun invoke(transactionManager: TransactionManager): DBConnectionMetaData {
         return transactionManager.newTransaction {

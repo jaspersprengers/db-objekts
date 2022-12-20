@@ -42,4 +42,4 @@ open class Catalog (
 
 }
 
-object NilSchemaCatalog : Catalog("H2")
+internal object PlaceHolderCatalog : Catalog("")

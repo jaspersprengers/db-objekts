@@ -3,10 +3,13 @@ package com.dbobjekts.api
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.jdbc.DataSourceAdapter
 import com.dbobjekts.jdbc.DataSourceAdapterImpl
+import com.dbobjekts.jdbc.DetermineVendor
 import com.dbobjekts.metadata.Catalog
+import com.dbobjekts.metadata.PlaceHolderCatalog
 import com.dbobjekts.statement.TransactionResultValidator
 import com.dbobjekts.util.HikariDataSourceAdapterImpl
 import com.dbobjekts.util.StatementLogger
+import com.dbobjekts.vendors.Vendor
 import com.dbobjekts.vendors.Vendors
 import com.zaxxer.hikari.HikariDataSource
 import org.slf4j.LoggerFactory
@@ -15,20 +18,25 @@ import javax.sql.DataSource
 
 class TransactionManager(
     dataSource: DataSource,
-    val catalog: Catalog
+    val catalog: Catalog = PlaceHolderCatalog
 ) {
+
     private val dataSourceAdapter: DataSourceAdapter
+    val vendor: Vendor
 
     init {
         dataSourceAdapter = when (dataSource) {
             is HikariDataSource -> HikariDataSourceAdapterImpl(dataSource)
             else -> DataSourceAdapterImpl(dataSource)
         }
+        val metaData = DetermineVendor(this)
+        if ( catalog.vendor.isNotBlank() && !catalog.vendor.contentEquals(metaData.vendor.name))
+            throw java.lang.IllegalStateException("You provided a Catalog implementation that is associated with vendor ${catalog.vendor}, but you connected to a ${metaData.vendor.name} DataSource.")
+        vendor = metaData.vendor
     }
 
     private val statementLogger: StatementLogger = StatementLogger()
 
-    val vendor = Vendors.byName(catalog.vendor)
 
     operator fun <T> invoke(fct: (Transaction) -> T): T = newTransaction(fct)
 
@@ -40,7 +48,7 @@ class TransactionManager(
                 connection,
                 statementLogger,
                 catalog,
-                Vendors.byName(catalog.vendor)
+                vendor
             )
         )
     }
@@ -66,11 +74,6 @@ class TransactionManager(
 
     override fun toString(): String = "${dataSourceAdapter} ${catalog}"
 
-    private fun test(): Boolean {
-        val tr = newTransaction()
-        return tr.isValid().also { tr.close() }
-    }
-
     companion object {
         private val logger = LoggerFactory.getLogger(TransactionManager::class.java)
 
@@ -79,14 +82,13 @@ class TransactionManager(
         // FOR THE SINGLETON
         fun setup(
             dataSource: DataSource,
-            catalog: Catalog
-        ): Boolean {
+            catalog: Catalog = PlaceHolderCatalog
+        ) {
             if (INSTANCE != null) {
                 logger.error("The singleton TransactionManager has already been initialized. You must call invalidate() first to close any open connections before you can call initialize() again.")
-                return false
+                return
             }
-            val tr = TransactionManager(dataSource, catalog)
-            return tr.test().also { INSTANCE = tr }
+            INSTANCE = TransactionManager(dataSource, catalog)
         }
 
         fun singleton(): TransactionManager = ensure()

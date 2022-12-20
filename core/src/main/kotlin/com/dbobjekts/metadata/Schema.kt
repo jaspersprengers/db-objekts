@@ -9,7 +9,7 @@ open class Schema(
     val tables: List<Table>
 ) {
 
-    constructor(name: String, tables: List<Table>) : this(NilSchemaCatalog, SchemaName(name), tables)
+    constructor(name: String, tables: List<Table>) : this(PlaceHolderCatalog, SchemaName(name), tables)
 
     init {
         tables.forEach { it.withSchema(this) }

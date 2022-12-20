@@ -17,7 +17,7 @@ class MariaDBCatalogParser(
     CatalogParser(codeGeneratorConfig) {
 
     override fun extractCatalogs(): List<String> =
-        DetermineVendor().invoke(transactionManager).catalogs
+        DetermineVendor(transactionManager).catalogs
 
 
     override fun extractColumnAndTableMetaDataFromDB(): List<TableMetaDataRow> {
