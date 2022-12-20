@@ -5,7 +5,7 @@ import java.sql.Connection
 import javax.sql.DataSource
 import org.slf4j.LoggerFactory
 
-open class DataSourceAdapterImpl<DS : DataSource>(val dataSource: DS) : DataSourceAdapter {
+open class DataSourceAdapterImpl<DS : DataSource>(override val dataSource: DS) : DataSourceAdapter {
     val logger = LoggerFactory.getLogger(DataSourceAdapterImpl::class.java)
 
     override fun close() {

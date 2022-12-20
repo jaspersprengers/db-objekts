@@ -12,18 +12,19 @@ import com.dbobjekts.util.StatementLogger
 import com.dbobjekts.vendors.Vendor
 import com.dbobjekts.vendors.Vendors
 import com.zaxxer.hikari.HikariDataSource
-import org.slf4j.LoggerFactory
 import java.sql.Connection
 import javax.sql.DataSource
 
 class TransactionManager(
     dataSource: DataSource,
-    val catalog: Catalog = PlaceHolderCatalog
+    val catalog: Catalog,
+    private val customConnectionProvider: ((DataSource) -> Connection)? = null
 ) {
 
     private val dataSourceAdapter: DataSourceAdapter
     private val statementLogger: StatementLogger
     val vendor: Vendor
+
     init {
         vendor = Vendors.byName(catalog.vendor)
         statementLogger = StatementLogger()
@@ -32,17 +33,20 @@ class TransactionManager(
             else -> DataSourceAdapterImpl(dataSource)
         }
         val metaData = DetermineVendor(this)
-        if ( !catalog.vendor.contentEquals(metaData.vendor.name))
+        if (!catalog.vendor.contentEquals(metaData.vendor.name))
             throw java.lang.IllegalStateException("You provided a Catalog implementation that is associated with vendor ${catalog.vendor}, but you connected to a ${metaData.vendor.name} DataSource.")
     }
 
 
     operator fun <T> invoke(fct: (Transaction) -> T): T = newTransaction(fct)
 
-    private fun newTransaction(): Transaction {
-        val connection: Connection = dataSourceAdapter.createConnection()
+    fun <T> newTransaction(fct: (Transaction) -> T): T {
+
+        val connection: Connection = customConnectionProvider?.invoke(dataSourceAdapter.dataSource)
+            ?: dataSourceAdapter.createConnection()
+
         require(!connection.isClosed, { "Connection is closed" })
-        return Transaction(
+        val transaction = Transaction(
             ConnectionAdapter(
                 connection,
                 statementLogger,
@@ -50,10 +54,6 @@ class TransactionManager(
                 vendor
             )
         )
-    }
-
-    fun <T> newTransaction(fct: (Transaction) -> T): T {
-        val transaction = newTransaction()
         try {
             val result: T = fct(transaction)
             transaction.commit()
@@ -74,38 +74,32 @@ class TransactionManager(
     override fun toString(): String = "${dataSourceAdapter} ${catalog}"
 
     companion object {
-        private val logger = LoggerFactory.getLogger(TransactionManager::class.java)
+        fun builder() = TransactionManagerBuilder()
+    }
 
-        private var INSTANCE: TransactionManager? = null
+    class TransactionManagerBuilder {
+        private lateinit var dataSource: DataSource
+        private var catalog: Catalog? = null
+        private var connectionFactory: ((DataSource) -> Connection)? = null
 
-        // FOR THE SINGLETON
-        fun initialize(
-            dataSource: DataSource,
-            catalog: Catalog = PlaceHolderCatalog
-        ) {
-            if (INSTANCE != null) {
-                logger.error("The singleton TransactionManager has already been initialized. You must call invalidate() first to close any open connections before you can call initialize() again.")
-                return
-            }
-            INSTANCE = TransactionManager(dataSource, catalog)
+        fun withDataSource(dataSource: DataSource): TransactionManagerBuilder {
+            this.dataSource = dataSource
+            return this
         }
 
-        fun singleton(): TransactionManager = ensure()
-
-        fun <T> newTransaction(fct: (Transaction) -> T): T = ensure().newTransaction(fct)
-
-        fun isInitalized(): Boolean = INSTANCE != null
-
-        internal fun invalidate() {
-            INSTANCE?.close()
-            INSTANCE = null
+        fun withCatalog(catalog: Catalog): TransactionManagerBuilder {
+            this.catalog = catalog
+            return this
         }
 
-        private fun ensure(): TransactionManager = INSTANCE ?: throw IllegalStateException(
-            "Singleton TransactionManager has not been initialized yet or was invalidated. " +
-                    "You need to call TransactionManager.builder() and finish with a call to configureSingleton()"
-        )
+        fun withCustomConnectionProvider(factory: (DataSource) -> Connection): TransactionManagerBuilder {
+            this.connectionFactory = factory
+            return this
+        }
 
+        fun build(): TransactionManager {
+            return TransactionManager(dataSource, catalog ?: PlaceHolderCatalog)
+        }
     }
 
 }

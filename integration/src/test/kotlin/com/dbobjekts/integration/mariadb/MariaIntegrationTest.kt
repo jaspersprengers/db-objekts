@@ -1,6 +1,5 @@
 package com.dbobjekts.integration.mariadb
 
-import com.dbobjekts.api.Catalogs
 import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.metadata.column.BooleanColumn
@@ -34,8 +33,7 @@ class MariaIntegrationTe0st {
                     username = "root",
                     password = "test", driver = "org.mariadb.jdbc.Driver"
                 )
-            TransactionManager.initialize(ds)
-            tm = TransactionManager.singleton()
+            tm = TransactionManager.builder().withDataSource(ds).build()
             /*tm { tr ->
                 tr.deleteFrom(EmployeeAddress).where()
                 tr.deleteFrom(EmployeeDepartment).where()

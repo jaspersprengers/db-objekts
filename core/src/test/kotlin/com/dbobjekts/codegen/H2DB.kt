@@ -1,9 +1,7 @@
 package com.dbobjekts.codegen
 
-import com.dbobjekts.api.Catalogs
 import com.dbobjekts.api.Transaction
 import com.dbobjekts.api.TransactionManager
-import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.util.HikariDataSourceFactory
 import org.slf4j.LoggerFactory
 import javax.sql.DataSource
@@ -11,19 +9,16 @@ import javax.sql.DataSource
 object H2DB {
     private val logger = LoggerFactory.getLogger(H2DB::class.java)
 
+    val transactionManager = TransactionManager.builder()
+        .withDataSource(createDataSource()).build()
+
     fun setupDatabaseObjects() {
-        getTransactionManager().newTransaction { createExampleCatalog(it) }
+        transactionManager.newTransaction { createExampleCatalog(it) }
     }
 
     fun createDataSource(): DataSource =
         HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
 
-    fun getTransactionManager(): TransactionManager {
-        if (!TransactionManager.isInitalized()) {
-            TransactionManager.initialize(createDataSource())
-        }
-        return TransactionManager.singleton()
-    }
 
     private fun createExampleCatalog(transaction: Transaction) {
 

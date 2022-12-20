@@ -20,18 +20,19 @@ class TableSourcesBuilder(
             it is DBForeignKeyDefinition && it.parentSchema.value != model.schema.value
         }.map { col ->
             val fk = col as DBForeignKeyDefinition
-            "${basePackage.createSubPackageForSchema(fk.parentSchema)}.${fk.parentTable.capitalCamelCase()}\n"}.distinct()
+            "${basePackage.createSubPackageForSchema(fk.parentSchema)}.${fk.parentTable.capitalCamelCase()}\n"
+        }.distinct()
 
     /**
      *
      */
     private fun generateFieldComment(column: DBColumnDefinition): TableSourcesBuilder {
-       /* strBuilder.append("    /**\n")
-        if (column.comment.isDefined) {
-            strBuilder.append("     * ${column.comment.get}\n")
-        }
-        strBuilder.append("     * Corresponds to ${tableDefinition.name}.${column.name} of type ${column.typeName}\n")
-        strBuilder.append("     */\n")*/
+        /* strBuilder.append("    /**\n")
+         if (column.comment.isDefined) {
+             strBuilder.append("     * ${column.comment.get}\n")
+         }
+         strBuilder.append("     * Corresponds to ${tableDefinition.name}.${column.name} of type ${column.typeName}\n")
+         strBuilder.append("     */\n")*/
         return this
     }
 
@@ -45,7 +46,16 @@ class TableSourcesBuilder(
         }
 
         val importLineBuilder = ImportLineBuilder()
-        val imports = listOf("api.AnyColumn","api.AnyColumnAndValue","metadata.Table","metadata.WriteQueryAccessors","statement.update.ColumnForWriteMapContainerImpl","statement.update.HasUpdateBuilder","statement.insert.InsertBuilderBase","statement.update.UpdateBuilderBase")
+        val imports = listOf(
+            "api.AnyColumn",
+            "api.AnyColumnAndValue",
+            "metadata.Table",
+            "metadata.WriteQueryAccessors",
+            "statement.update.ColumnForWriteMapContainerImpl",
+            "statement.update.HasUpdateBuilder",
+            "statement.insert.InsertBuilderBase",
+            "statement.update.UpdateBuilderBase"
+        )
         imports.forEach { importLineBuilder.add("com.dbobjekts.$it") }
         generateImportsForForeignKeys().forEach { importLineBuilder.add(it) }
         strBuilder.append(importLineBuilder.build())
