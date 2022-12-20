@@ -2,34 +2,39 @@ package com.dbobjekts.api
 
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.jdbc.DataSourceAdapter
-import com.dbobjekts.jdbc.TransactionCache
-import com.dbobjekts.jdbc.TransactionSettings
+import com.dbobjekts.jdbc.DataSourceAdapterImpl
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.statement.TransactionResultValidator
+import com.dbobjekts.util.HikariDataSourceAdapterImpl
 import com.dbobjekts.util.StatementLogger
 import com.dbobjekts.vendors.Vendors
-import com.google.common.cache.CacheLoader
+import com.zaxxer.hikari.HikariDataSource
+import org.slf4j.LoggerFactory
 import java.sql.Connection
+import javax.sql.DataSource
 
 class TransactionManager(
-    private val dataSource: DataSourceAdapter,
-    val catalog: Catalog,
-    val transactionSettings: TransactionSettings = TransactionSettings(),
-    val statementLogger: StatementLogger = StatementLogger()
-) : CacheLoader<Long, Transaction>() {
+    dataSource: DataSource,
+    val catalog: Catalog
+) {
+    private val dataSourceAdapter: DataSourceAdapter
 
-    private val transactionCache = TransactionCache(this, transactionSettings)
+    init {
+        dataSourceAdapter = when (dataSource) {
+            is HikariDataSource -> HikariDataSourceAdapterImpl(dataSource)
+            else -> DataSourceAdapterImpl(dataSource)
+        }
+    }
+
+    private val statementLogger: StatementLogger = StatementLogger()
 
     val vendor = Vendors.byName(catalog.vendor)
 
     operator fun <T> invoke(fct: (Transaction) -> T): T = newTransaction(fct)
 
-    override fun load(key: Long): Transaction = newTransaction()
-
     private fun newTransaction(): Transaction {
-        val connection: Connection = dataSource.createConnection()
+        val connection: Connection = dataSourceAdapter.createConnection()
         require(!connection.isClosed, { "Connection is closed" })
-        connection.setAutoCommit(transactionSettings.autoCommit)
         return Transaction(
             ConnectionAdapter(
                 connection,
@@ -44,43 +49,22 @@ class TransactionManager(
         val transaction = newTransaction()
         try {
             val result: T = fct(transaction)
-            if (!transactionSettings.autoCommit) {
-                transaction.commit()
-            }
+            transaction.commit()
             return TransactionResultValidator.validate(result)
         } catch (e: Exception) {
             statementLogger.error("Caught exception while executing query for select. Rolling back", e)
-            if (!transactionSettings.autoCommit) {
-                transaction.rollback()
-            }
+            transaction.rollback()
             throw e
         } finally {
             transaction.close()
         }
     }
 
-    fun commit() {
-        transactionCache.getIfExists()?.let {
-            if (!transactionSettings.autoCommit)
-                it.commit()
-        }
-        transactionCache.evict()
-    }
-
-    fun rollback() {
-        transactionCache.getIfExists()?.let({
-            if (!transactionSettings.autoCommit)
-                it.rollback()
-        })
-        transactionCache.evict()
-    }
-
     fun close() {
-        dataSource.close()
+        dataSourceAdapter.close()
     }
 
-
-    override fun toString(): String = "${dataSource} ${catalog}"
+    override fun toString(): String = "${dataSourceAdapter} ${catalog}"
 
     private fun test(): Boolean {
         val tr = newTransaction()
@@ -88,36 +72,28 @@ class TransactionManager(
     }
 
     companion object {
-        internal var INSTANCE: TransactionManager? = null
+        private val logger = LoggerFactory.getLogger(TransactionManager::class.java)
 
-        fun builder(): TransactionManagerBuilder =
-            TransactionManagerBuilder()
-
+        private var INSTANCE: TransactionManager? = null
 
         // FOR THE SINGLETON
-        internal fun initialize(
-            dataSource: DataSourceAdapter,
-            catalog: Catalog,
-            querySettings: TransactionSettings = TransactionSettings(),
-            statementLogger: StatementLogger = StatementLogger()
+        fun setup(
+            dataSource: DataSource,
+            catalog: Catalog
         ): Boolean {
             if (INSTANCE != null) {
-                statementLogger.error("The singleton TransactionManager has already been initialized. You must call invalidate() first to close any open connections before you can call initialize() again.")
+                logger.error("The singleton TransactionManager has already been initialized. You must call invalidate() first to close any open connections before you can call initialize() again.")
                 return false
             }
-            val tr = TransactionManager(dataSource, catalog, querySettings, statementLogger)
+            val tr = TransactionManager(dataSource, catalog)
             return tr.test().also { INSTANCE = tr }
         }
 
-        fun singletonInstance(): TransactionManager = ensure()
+        fun singleton(): TransactionManager = ensure()
 
         fun <T> newTransaction(fct: (Transaction) -> T): T = ensure().newTransaction(fct)
 
-        fun commit() = ensure().commit()
-
-        fun rollback() = ensure().rollback()
-
-        fun isConfigured(): Boolean = INSTANCE != null
+        fun isValid(): Boolean = INSTANCE != null
 
         internal fun invalidate() {
             INSTANCE?.close()

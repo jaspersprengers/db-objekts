@@ -40,14 +40,9 @@ object H2DB {
 
     val catalog: Catalog = Catalogdefinition
 
-    fun getTransactionManager(autoCommit: Boolean = true): TransactionManager {
-        TransactionManager.builder()
-            .dataSource(dataSource = createDataSource())
-            .catalog(catalog)
-            .customLogger(StatementLogger())
-            .autoCommit(autoCommit)
-            .buildForSingleton()
-        return TransactionManager.singletonInstance()
+    fun getTransactionManager(): TransactionManager {
+        TransactionManager.setup(createDataSource(), catalog)
+        return TransactionManager.singleton()
     }
 
     private fun createExampleCatalog(transaction: Transaction) {

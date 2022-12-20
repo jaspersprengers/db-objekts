@@ -13,7 +13,7 @@ class CustomSQLIntegrationTest {
         H2DB.setupDatabaseObjects()
         H2DB.newTransaction({
             //it.insert(AllTypes)
-            val dob = LocalDate.of(1990, 12, 5)
+            LocalDate.of(1990, 12, 5)
             it.insert(Hobby).mandatoryColumns("chess", "The game of champions").execute()
             it.insert(Employee).mandatoryColumns("John", 300.50, LocalDate.of(1990, 12, 5)).hobbyId("chess").execute()
             val (id, name, salary, married, children, hobby) =

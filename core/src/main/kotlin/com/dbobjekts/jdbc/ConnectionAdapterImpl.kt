@@ -64,7 +64,6 @@ data class ConnectionAdapter (
         return selectResultSet
     }
 
-
     fun <T, RS : ResultRow<T>> prepareAndExecuteForSelectWithRowIterator(
         sql: String,
         parameters: List<AnySqlParameter>,

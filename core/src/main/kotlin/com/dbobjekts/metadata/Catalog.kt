@@ -3,10 +3,10 @@ package com.dbobjekts.metadata
 import com.dbobjekts.vendors.Vendor
 import java.lang.IllegalStateException
 
-open class Catalog(
+open class Catalog (
     val vendor: String,
     val schemas: List<Schema> = listOf()
-) {
+)  {
 
     constructor(vendor: Vendor, schemas: List<Schema> = listOf()) : this(vendor.name, schemas)
 
