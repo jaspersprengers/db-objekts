@@ -2,8 +2,8 @@ package com.dbobjekts.integration.h2.core
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyColumnAndValue
-import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.WriteQueryAccessors
 import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
@@ -20,13 +20,12 @@ object Employee:Table("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, Emplo
     val children = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "CHILDREN")
     val hobbyId = com.dbobjekts.metadata.column.OptionalForeignKeyVarcharColumn(this, "HOBBY_ID", Hobby.id)
     override val columns: List<AnyColumn> = listOf(id,name,salary,married,dateOfBirth,children,hobbyId)
-    override fun updater(connection: ConnectionAdapter): EmployeeUpdateBuilder = EmployeeUpdateBuilder(connection)
-    override fun inserter(connection: ConnectionAdapter): EmployeeInsertBuilder = EmployeeInsertBuilder(connection)
+    override val metadata: WriteQueryAccessors<EmployeeUpdateBuilder, EmployeeInsertBuilder> = WriteQueryAccessors(EmployeeUpdateBuilder(), EmployeeInsertBuilder())
 }
 
-class EmployeeUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(Employee, connection) {
+class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
     private val ct = ColumnForWriteMapContainerImpl(this)
-    override protected fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun data(): Set<AnyColumnAndValue> = ct.data
 
     fun name(value: String): EmployeeUpdateBuilder = ct.put(Employee.name, value)
     fun salary(value: Double): EmployeeUpdateBuilder = ct.put(Employee.salary, value)
@@ -36,9 +35,9 @@ class EmployeeUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(E
     fun hobbyId(value: String?): EmployeeUpdateBuilder = ct.put(Employee.hobbyId, value)
 }
 
-class EmployeeInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(Employee, connection){
+class EmployeeInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
-    override protected fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun data(): Set<AnyColumnAndValue> = ct.data
 
     fun name(value: String): EmployeeInsertBuilder = ct.put(Employee.name, value)
     fun salary(value: Double): EmployeeInsertBuilder = ct.put(Employee.salary, value)

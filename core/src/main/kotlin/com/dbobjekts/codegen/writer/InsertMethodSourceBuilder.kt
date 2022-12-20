@@ -29,13 +29,11 @@ class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
         FieldData(fieldName, dataType, defaultClause, isNullable, autoGenPk)
     }
 
-    fun sourceForUpdateMethod(): String = sourceForUpdateOrInsertMethod("updater", "Update")
+    fun sourceForMetaDataVal(): String {
+        val updateBuilder = "${tableName}UpdateBuilder"
+        val insertBuilder = "${tableName}InsertBuilder"
 
-    fun sourceForInsertMethod(): String = sourceForUpdateOrInsertMethod("inserter", "Insert")
-
-    private fun sourceForUpdateOrInsertMethod(methodName: String, updateOrInsert: String): String {
-        val cls = "${tableName}${updateOrInsert}Builder"
-        return "    override fun $methodName(connection: ConnectionAdapter): $cls = $cls(connection)"
+        return "    override val metadata: WriteQueryAccessors<$updateBuilder, $insertBuilder> = WriteQueryAccessors($updateBuilder(), $insertBuilder())"
     }
 
     fun sourceForBuilderClasses(): String {
@@ -56,16 +54,16 @@ ${nonNullFields.map { f -> "      ct.put($tableName.${f.field}, ${f.field})" }.j
         val insertBuilder = "${tableName}InsertBuilder"
 
 return """
-class $updateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase($tableName, connection) {
+class $updateBuilder() : UpdateBuilderBase($tableName) {
     private val ct = ColumnForWriteMapContainerImpl(this)
-    override protected fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun data(): Set<AnyColumnAndValue> = ct.data
 
 ${allMethodsExceptPK.map { d -> writeMethod(d, "Update", updateBuilder) }.joinToString("\n")}
 }
 
-class $insertBuilder(connection: ConnectionAdapter):InsertBuilderBase($tableName, connection){
+class $insertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
-    override protected fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun data(): Set<AnyColumnAndValue> = ct.data
 
 ${allMethodsExceptPK.map { d -> writeMethod(d, "Insert", insertBuilder) }.joinToString("\n")}
 $mandatoryColumnsMethod

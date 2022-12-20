@@ -2,8 +2,8 @@ package com.dbobjekts.integration.h2.core
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyColumnAndValue
-import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.WriteQueryAccessors
 import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
@@ -69,13 +69,12 @@ object AllTypes:Table("ALL_TYPES"), HasUpdateBuilder<AllTypesUpdateBuilder, AllT
     val addressString = com.dbobjekts.integration.h2.custom.AddressTypeAsStringColumn(this, "ADDRESS_STRING")
     val addressStringNil = com.dbobjekts.integration.h2.custom.AddressTypeAsStringColumn(this, "ADDRESS_STRING_NIL")
     override val columns: List<AnyColumn> = listOf(id,characterCol,characterColNil,charactervaryingCol,charactervaryingColNil,characterlargeobjectCol,characterlargeobjectColNil,varcharIgnorecaseCol,varcharIgnorecaseColNil,enumCol,enumColNil,binaryCol,binaryColNil,binaryvaryingCol,binaryvaryingColNil,binarylargeobjectCol,binarylargeobjectColNil,jsonCol,jsonColNil,booleanCol,booleanColNil,tinyintCol,tinyintColNil,smallintCol,smallintColNil,integerCol,integerColNil,bigintCol,bigintColNil,numericCol,numericColNil,decfloatCol,decfloatColNil,realCol,realColNil,doubleprecisionCol,doubleprecisionColNil,dateCol,dateColNil,timeCol,timeColNil,timewithtimezoneCol,timewithtimezoneColNil,timestampCol,timestampColNil,timestampwithtimezoneCol,timestampwithtimezoneColNil,uuidCol,uuidColNil,intervalCol,intervalColNil,geometryColNil,intArrayCol,intArrayColNil,addressInt,addressIntNil,addressString,addressStringNil)
-    override fun updater(connection: ConnectionAdapter): AllTypesUpdateBuilder = AllTypesUpdateBuilder(connection)
-    override fun inserter(connection: ConnectionAdapter): AllTypesInsertBuilder = AllTypesInsertBuilder(connection)
+    override val metadata: WriteQueryAccessors<AllTypesUpdateBuilder, AllTypesInsertBuilder> = WriteQueryAccessors(AllTypesUpdateBuilder(), AllTypesInsertBuilder())
 }
 
-class AllTypesUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(AllTypes, connection) {
+class AllTypesUpdateBuilder() : UpdateBuilderBase(AllTypes) {
     private val ct = ColumnForWriteMapContainerImpl(this)
-    override protected fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun data(): Set<AnyColumnAndValue> = ct.data
 
     fun characterCol(value: String): AllTypesUpdateBuilder = ct.put(AllTypes.characterCol, value)
     fun characterColNil(value: String?): AllTypesUpdateBuilder = ct.put(AllTypes.characterColNil, value)
@@ -136,9 +135,9 @@ class AllTypesUpdateBuilder(connection: ConnectionAdapter) : UpdateBuilderBase(A
     fun addressStringNil(value: com.dbobjekts.integration.h2.custom.AddressType): AllTypesUpdateBuilder = ct.put(AllTypes.addressStringNil, value)
 }
 
-class AllTypesInsertBuilder(connection: ConnectionAdapter):InsertBuilderBase(AllTypes, connection){
+class AllTypesInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
-    override protected fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun data(): Set<AnyColumnAndValue> = ct.data
 
     fun characterCol(value: String): AllTypesInsertBuilder = ct.put(AllTypes.characterCol, value)
     fun characterColNil(value: String?): AllTypesInsertBuilder = ct.put(AllTypes.characterColNil, value)

@@ -1,10 +1,8 @@
-package com.dbobjekts.integration.h2
+package com.dbobjekts.codegen
 
+import com.dbobjekts.api.Catalogs
 import com.dbobjekts.api.Transaction
 import com.dbobjekts.api.TransactionManager
-import com.dbobjekts.integration.h2.core.*
-import com.dbobjekts.integration.h2.hr.Certificate
-import com.dbobjekts.integration.h2.hr.Hobby
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.util.HikariDataSourceFactory
 import org.slf4j.LoggerFactory
@@ -13,35 +11,16 @@ import javax.sql.DataSource
 object H2DB {
     private val logger = LoggerFactory.getLogger(H2DB::class.java)
 
-    fun <T> newTransaction(fct: (Transaction) -> T) = getTransactionManager().newTransaction(fct)
-
     fun setupDatabaseObjects() {
         getTransactionManager().newTransaction { createExampleCatalog(it) }
-        deleteAllTables()
-    }
-
-    fun deleteAllTables() {
-        getTransactionManager().newTransaction { tr ->
-            tr.deleteFrom(EmployeeAddress).where()
-            tr.deleteFrom(EmployeeDepartment).where()
-            tr.deleteFrom(Department).where()
-            tr.deleteFrom(Address).where()
-            tr.deleteFrom(Certificate).where()
-            tr.deleteFrom(Employee).where()
-            tr.deleteFrom(Country).where()
-            tr.deleteFrom(Hobby).where()
-            //tr.deleteFrom(Shape).where()
-        }
     }
 
     fun createDataSource(): DataSource =
         HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
 
-    val catalog: Catalog = TestCatalog
-
     fun getTransactionManager(): TransactionManager {
         if (!TransactionManager.isInitalized()) {
-            TransactionManager.initialize(createDataSource(), catalog)
+            TransactionManager.initialize(createDataSource(), Catalogs.EMPTY_H2_CATALOG)
         }
         return TransactionManager.singleton()
     }
