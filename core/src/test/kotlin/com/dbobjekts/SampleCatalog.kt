@@ -36,12 +36,14 @@ object Certificate : Table("CERTIFICATE"), HasUpdateBuilder<CertificateUpdateBui
 }
 
 class CertificateUpdateBuilder() : UpdateBuilderBase(Certificate) {
+    override fun clear(){}
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
 }
 
 class CertificateInsertBuilder() : InsertBuilderBase() {
+    override fun clear(){}
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
@@ -56,12 +58,14 @@ object Hobby : Table("HOBBY"), HasUpdateBuilder<HobbyUpdateBuilder, HobbyInsertB
 }
 
 class HobbyUpdateBuilder() : UpdateBuilderBase(Hobby) {
+    override fun clear(){}
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
 }
 
 class HobbyInsertBuilder() : InsertBuilderBase() {
+    override fun clear(){}
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
@@ -78,12 +82,14 @@ object Country : Table("COUNTRY"), HasUpdateBuilder<CountryUpdateBuilder, Countr
 }
 
 class CountryUpdateBuilder() : UpdateBuilderBase(Country) {
+    override fun clear(){}
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
 }
 
 class CountryInsertBuilder() : InsertBuilderBase() {
+    override fun clear(){}
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
@@ -98,12 +104,14 @@ object Department : Table("DEPARTMENT"), HasUpdateBuilder<DepartmentUpdateBuilde
 }
 
 class DepartmentUpdateBuilder() : UpdateBuilderBase(Department) {
+    override fun clear(){}
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
 }
 
 class DepartmentInsertBuilder() : InsertBuilderBase() {
+    override fun clear(){}
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
@@ -123,12 +131,14 @@ object Employee : Table("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, Emp
 }
 
 class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
+    override fun clear(){}
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
 }
 
 class EmployeeInsertBuilder() : InsertBuilderBase() {
+    override fun clear(){}
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
@@ -144,12 +154,14 @@ object EmployeeAddress : Table("EMPLOYEE_ADDRESS"), HasUpdateBuilder<EmployeeAdd
 }
 
 class EmployeeAddressUpdateBuilder() : UpdateBuilderBase(EmployeeAddress) {
+    override fun clear(){}
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
 }
 
 class EmployeeAddressInsertBuilder() : InsertBuilderBase() {
+    override fun clear(){}
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
@@ -165,12 +177,14 @@ object Address : Table("ADDRESS"), HasUpdateBuilder<AddressUpdateBuilder, Addres
 }
 
 class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
+    override fun clear(){}
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
 }
 
 class AddressInsertBuilder() : InsertBuilderBase() {
+    override fun clear(){}
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
@@ -186,12 +200,14 @@ object EmployeeDepartment : Table("EMPLOYEE_DEPARTMENT"),
 }
 
 class EmployeeDepartmentUpdateBuilder() : UpdateBuilderBase(EmployeeDepartment) {
+    override fun clear(){}
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }
 }
 
 class EmployeeDepartmentInsertBuilder() : InsertBuilderBase() {
+    override fun clear(){}
     override fun data(): Set<AnyColumnAndValue> {
         TODO("Not yet implemented")
     }

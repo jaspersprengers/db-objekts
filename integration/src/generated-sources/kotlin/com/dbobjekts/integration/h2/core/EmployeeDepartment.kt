@@ -19,6 +19,7 @@ object EmployeeDepartment:Table("EMPLOYEE_DEPARTMENT"), HasUpdateBuilder<Employe
 class EmployeeDepartmentUpdateBuilder() : UpdateBuilderBase(EmployeeDepartment) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
     fun employeeId(value: Long): EmployeeDepartmentUpdateBuilder = ct.put(EmployeeDepartment.employeeId, value)
     fun departmentId(value: Long): EmployeeDepartmentUpdateBuilder = ct.put(EmployeeDepartment.departmentId, value)
@@ -27,6 +28,7 @@ class EmployeeDepartmentUpdateBuilder() : UpdateBuilderBase(EmployeeDepartment) 
 class EmployeeDepartmentInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
     fun employeeId(value: Long): EmployeeDepartmentInsertBuilder = ct.put(EmployeeDepartment.employeeId, value)
     fun departmentId(value: Long): EmployeeDepartmentInsertBuilder = ct.put(EmployeeDepartment.departmentId, value)

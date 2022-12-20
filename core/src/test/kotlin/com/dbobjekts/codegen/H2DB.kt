@@ -20,7 +20,7 @@ object H2DB {
 
     fun getTransactionManager(): TransactionManager {
         if (!TransactionManager.isInitalized()) {
-            TransactionManager.initialize(createDataSource(), Catalogs.EMPTY_H2_CATALOG)
+            TransactionManager.initialize(createDataSource())
         }
         return TransactionManager.singleton()
     }

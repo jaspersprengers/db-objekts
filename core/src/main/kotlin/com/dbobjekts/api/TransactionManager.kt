@@ -22,20 +22,19 @@ class TransactionManager(
 ) {
 
     private val dataSourceAdapter: DataSourceAdapter
+    private val statementLogger: StatementLogger
     val vendor: Vendor
-
     init {
+        vendor = Vendors.byName(catalog.vendor)
+        statementLogger = StatementLogger()
         dataSourceAdapter = when (dataSource) {
             is HikariDataSource -> HikariDataSourceAdapterImpl(dataSource)
             else -> DataSourceAdapterImpl(dataSource)
         }
         val metaData = DetermineVendor(this)
-        if ( catalog.vendor.isNotBlank() && !catalog.vendor.contentEquals(metaData.vendor.name))
+        if ( !catalog.vendor.contentEquals(metaData.vendor.name))
             throw java.lang.IllegalStateException("You provided a Catalog implementation that is associated with vendor ${catalog.vendor}, but you connected to a ${metaData.vendor.name} DataSource.")
-        vendor = metaData.vendor
     }
-
-    private val statementLogger: StatementLogger = StatementLogger()
 
 
     operator fun <T> invoke(fct: (Transaction) -> T): T = newTransaction(fct)

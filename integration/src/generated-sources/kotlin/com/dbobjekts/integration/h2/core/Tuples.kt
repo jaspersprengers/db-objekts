@@ -39,6 +39,7 @@ object Tuples:Table("TUPLES"), HasUpdateBuilder<TuplesUpdateBuilder, TuplesInser
 class TuplesUpdateBuilder() : UpdateBuilderBase(Tuples) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
     fun c1(value: Int?): TuplesUpdateBuilder = ct.put(Tuples.c1, value)
     fun c2(value: Int?): TuplesUpdateBuilder = ct.put(Tuples.c2, value)
@@ -67,6 +68,7 @@ class TuplesUpdateBuilder() : UpdateBuilderBase(Tuples) {
 class TuplesInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
     fun c1(value: Int?): TuplesInsertBuilder = ct.put(Tuples.c1, value)
     fun c2(value: Int?): TuplesInsertBuilder = ct.put(Tuples.c2, value)

@@ -1,6 +1,7 @@
 package com.dbobjekts.metadata
 
 import com.dbobjekts.vendors.Vendor
+import com.dbobjekts.vendors.Vendors
 import java.lang.IllegalStateException
 
 open class Catalog (
@@ -42,4 +43,4 @@ open class Catalog (
 
 }
 
-internal object PlaceHolderCatalog : Catalog("")
+internal object PlaceHolderCatalog : Catalog(Vendors.H2.name)

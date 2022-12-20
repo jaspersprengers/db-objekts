@@ -7,7 +7,8 @@ import com.dbobjekts.util.Errors
 
 abstract class InsertBuilderBase() {
     internal lateinit var connection: ConnectionAdapter
-    abstract protected fun data(): Set<AnyColumnAndValue>
+    abstract fun data(): Set<AnyColumnAndValue>
+    abstract fun clear()
 
     internal fun validate() = Errors.require(data().isNotEmpty(), "You must supply at least one column to insert")
 

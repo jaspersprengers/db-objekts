@@ -19,6 +19,7 @@ object Department:Table("DEPARTMENT"), HasUpdateBuilder<DepartmentUpdateBuilder,
 class DepartmentUpdateBuilder() : UpdateBuilderBase(Department) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
     fun name(value: String): DepartmentUpdateBuilder = ct.put(Department.name, value)
 }
@@ -26,6 +27,7 @@ class DepartmentUpdateBuilder() : UpdateBuilderBase(Department) {
 class DepartmentInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
     fun name(value: String): DepartmentInsertBuilder = ct.put(Department.name, value)
 

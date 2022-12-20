@@ -57,6 +57,7 @@ return """
 class $updateBuilder() : UpdateBuilderBase($tableName) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
 ${allMethodsExceptPK.map { d -> writeMethod(d, "Update", updateBuilder) }.joinToString("\n")}
 }
@@ -64,6 +65,7 @@ ${allMethodsExceptPK.map { d -> writeMethod(d, "Update", updateBuilder) }.joinTo
 class $insertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
 ${allMethodsExceptPK.map { d -> writeMethod(d, "Insert", insertBuilder) }.joinToString("\n")}
 $mandatoryColumnsMethod

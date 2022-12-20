@@ -23,9 +23,9 @@ class H2CodeGeneratorTest {
             .sequenceForPrimaryKey("hr", "certificate", "id", "CERTIFICATE_SEQ")
         generator.outputConfigurer()
             .basePackageForSources("com.dbobjekts.integration.h2")
-           // .sourceWriter(writer)
+            //.sourceWriter(writer)
             .outputDirectoryForGeneratedSources(Paths.get("../integration/src/generated-sources/kotlin").toAbsolutePath().toString())
         generator.generate()
-        //println(writer)
+        println(writer)
     }
 }

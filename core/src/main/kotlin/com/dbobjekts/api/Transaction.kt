@@ -20,12 +20,14 @@ class Transaction(internal val connection: ConnectionAdapter) {
     fun <U : UpdateBuilderBase> update(provider: HasUpdateBuilder<U, *>): U {
         val updater = provider.metadata.updater
         updater.connection = connection
+        updater.clear()
         return updater
     }
 
     fun <I : InsertBuilderBase> insert(provider: HasUpdateBuilder<*, I>): I {
-        val inserter = provider.metadata.inserter
+        val inserter: I = provider.metadata.inserter
         inserter.connection = connection
+        inserter.clear()
         return inserter
     }
 

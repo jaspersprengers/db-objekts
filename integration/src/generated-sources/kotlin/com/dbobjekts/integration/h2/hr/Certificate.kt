@@ -22,6 +22,7 @@ object Certificate:Table("CERTIFICATE"), HasUpdateBuilder<CertificateUpdateBuild
 class CertificateUpdateBuilder() : UpdateBuilderBase(Certificate) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
     fun name(value: String): CertificateUpdateBuilder = ct.put(Certificate.name, value)
     fun employeeId(value: Long): CertificateUpdateBuilder = ct.put(Certificate.employeeId, value)
@@ -30,6 +31,7 @@ class CertificateUpdateBuilder() : UpdateBuilderBase(Certificate) {
 class CertificateInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
     fun name(value: String): CertificateInsertBuilder = ct.put(Certificate.name, value)
     fun employeeId(value: Long): CertificateInsertBuilder = ct.put(Certificate.employeeId, value)

@@ -12,7 +12,7 @@ import java.sql.*
 data class ConnectionAdapter (
     internal val jdbcConnection: Connection,
     internal val statementLogger: StatementLogger,
-    private val _catalog: Catalog?,
+    private val _catalog: Catalog,
     val vendor: Vendor
 )  {
 

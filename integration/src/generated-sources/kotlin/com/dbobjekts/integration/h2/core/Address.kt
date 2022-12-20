@@ -20,6 +20,7 @@ object Address:Table("ADDRESS"), HasUpdateBuilder<AddressUpdateBuilder, AddressI
 class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
     fun street(value: String): AddressUpdateBuilder = ct.put(Address.street, value)
     fun countryId(value: String): AddressUpdateBuilder = ct.put(Address.countryId, value)
@@ -28,6 +29,7 @@ class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
 class AddressInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
     fun street(value: String): AddressInsertBuilder = ct.put(Address.street, value)
     fun countryId(value: String): AddressInsertBuilder = ct.put(Address.countryId, value)

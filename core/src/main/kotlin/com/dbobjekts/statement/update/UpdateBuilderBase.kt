@@ -41,6 +41,7 @@ class ColumnForWriteMapContainerImpl<T>(val builder: T) : ColumnForWriteMapConta
 abstract class UpdateBuilderBase(
     internal val table: Table) {
     abstract protected fun data(): Set<AnyColumnAndValue>
+    abstract fun clear()
     internal  lateinit var connection: ConnectionAdapter
     //it's important that the order of insertion is observed, and the same column can't be added twice.
     fun where(whereClause: SubClause): Long {

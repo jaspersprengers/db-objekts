@@ -19,6 +19,7 @@ object Hobby:Table("HOBBY"), HasUpdateBuilder<HobbyUpdateBuilder, HobbyInsertBui
 class HobbyUpdateBuilder() : UpdateBuilderBase(Hobby) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
     fun id(value: String): HobbyUpdateBuilder = ct.put(Hobby.id, value)
     fun name(value: String): HobbyUpdateBuilder = ct.put(Hobby.name, value)
@@ -27,6 +28,7 @@ class HobbyUpdateBuilder() : UpdateBuilderBase(Hobby) {
 class HobbyInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
     fun id(value: String): HobbyInsertBuilder = ct.put(Hobby.id, value)
     fun name(value: String): HobbyInsertBuilder = ct.put(Hobby.name, value)

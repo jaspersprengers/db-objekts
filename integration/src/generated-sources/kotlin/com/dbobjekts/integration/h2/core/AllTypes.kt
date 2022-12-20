@@ -75,6 +75,7 @@ object AllTypes:Table("ALL_TYPES"), HasUpdateBuilder<AllTypesUpdateBuilder, AllT
 class AllTypesUpdateBuilder() : UpdateBuilderBase(AllTypes) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
     fun characterCol(value: String): AllTypesUpdateBuilder = ct.put(AllTypes.characterCol, value)
     fun characterColNil(value: String?): AllTypesUpdateBuilder = ct.put(AllTypes.characterColNil, value)
@@ -138,6 +139,7 @@ class AllTypesUpdateBuilder() : UpdateBuilderBase(AllTypes) {
 class AllTypesInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
     fun characterCol(value: String): AllTypesInsertBuilder = ct.put(AllTypes.characterCol, value)
     fun characterColNil(value: String?): AllTypesInsertBuilder = ct.put(AllTypes.characterColNil, value)

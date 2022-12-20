@@ -19,6 +19,7 @@ object Shape:Table("SHAPE"), HasUpdateBuilder<ShapeUpdateBuilder, ShapeInsertBui
 class ShapeUpdateBuilder() : UpdateBuilderBase(Shape) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
     fun height(value: Double?): ShapeUpdateBuilder = ct.put(Shape.height, value)
     fun width(value: Double?): ShapeUpdateBuilder = ct.put(Shape.width, value)
@@ -27,6 +28,7 @@ class ShapeUpdateBuilder() : UpdateBuilderBase(Shape) {
 class ShapeInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
+    override fun clear(){ct.data.clear()}
 
     fun height(value: Double?): ShapeInsertBuilder = ct.put(Shape.height, value)
     fun width(value: Double?): ShapeInsertBuilder = ct.put(Shape.width, value)
