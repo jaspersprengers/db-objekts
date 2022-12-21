@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeAll
 import java.time.LocalDate
 
 
-class ForeignKeyTest {
+class ForeignKeyComponentTest {
 
     companion object {
 

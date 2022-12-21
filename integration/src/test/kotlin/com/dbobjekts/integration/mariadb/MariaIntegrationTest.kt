@@ -1,20 +1,31 @@
 package com.dbobjekts.integration.mariadb
 
 import com.dbobjekts.api.TransactionManager
+import com.dbobjekts.api.Tuple2
+import com.dbobjekts.api.Tuple3
+import com.dbobjekts.api.Tuple4
 import com.dbobjekts.codegen.CodeGenerator
+import com.dbobjekts.integration.h2.core.Address
+import com.dbobjekts.integration.h2.core.Country
+import com.dbobjekts.integration.h2.core.Employee
+import com.dbobjekts.integration.h2.core.EmployeeAddress
+import com.dbobjekts.integration.h2.custom.AddressType
 import com.dbobjekts.metadata.column.BooleanColumn
 import com.dbobjekts.util.HikariDataSourceFactory
 import com.dbobjekts.vendors.Vendors
+import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
 import java.nio.file.Paths
+import java.time.LocalDate
 import javax.sql.DataSource
 
-
-//@Testcontainers
-class MariaIntegrationTe0st {
+@Testcontainers
+class MariaDBComponentTest {
 
     companion object {
         @Container
@@ -26,7 +37,7 @@ class MariaIntegrationTe0st {
         @JvmStatic
         @BeforeAll
         fun setup() {
-            val port = 3306//CONTAINER.firstMappedPort
+            val port = CONTAINER.firstMappedPort
             ds = HikariDataSourceFactory
                 .create(
                     url = "jdbc:mariadb://localhost:$port/test",
@@ -62,10 +73,9 @@ class MariaIntegrationTe0st {
         generator.generate()
 
     }
-
+/*
     //@Disabled
-    //@Test
-    /*
+    @Test
     fun `five minute tutorial`() {
         tm { tr ->
 
@@ -105,10 +115,10 @@ class MariaIntegrationTe0st {
             val petesWorkAddress: Long = tr.insert(Address).street("Kirchstrasse").countryId("de").execute()
             val janeAndPetesHomeAddress: Long = tr.insert(Address).mandatoryColumns("Kerkstraat", "nl").execute()
 
-            tr.insert(EmployeeAddress).mandatoryColumns(janesId, janesWorkAddress, "WORK").execute()
-            tr.insert(EmployeeAddress).mandatoryColumns(petesId, petesWorkAddress, "WORK").execute()
-            tr.insert(EmployeeAddress).mandatoryColumns(petesId, janeAndPetesHomeAddress, "HOME").execute()
-            tr.insert(EmployeeAddress).mandatoryColumns(janesId, janeAndPetesHomeAddress, "HOME").execute()
+            tr.insert(EmployeeAddress).mandatoryColumns(janesId, janesWorkAddress, AddressType.WORK).execute()
+            tr.insert(EmployeeAddress).mandatoryColumns(petesId, petesWorkAddress, AddressType.WORK).execute()
+            tr.insert(EmployeeAddress).mandatoryColumns(petesId, janeAndPetesHomeAddress, AddressType.HOME).execute()
+            tr.insert(EmployeeAddress).mandatoryColumns(janesId, janeAndPetesHomeAddress, AddressType.HOME).execute()
 
             // This query selects name and salary for all rows in the employee table. Notice we have imported the 'e' alias from the Aliases object. This is a handy shortcut that refers to the exact same Employee object.
             // Consider the different methods to retrieve results
@@ -133,7 +143,7 @@ class MariaIntegrationTe0st {
             val (name, dob, addressType, country) = results.get(0)
             assertThat(name).isEqualTo("Pete")
             assertThat(dob).isEqualTo(LocalDate.of(1980, 5, 7))
-            assertThat(addressType).isEqualTo("HOME")
+            assertThat(addressType).isEqualTo(AddressType.HOME)
             assertThat(country).isEqualTo("Netherlands")
 
             //Select with range
@@ -151,8 +161,5 @@ class MariaIntegrationTe0st {
             ).hasSize(4)
 
         }
-    }
-*/
-
-
+    }*/
 }

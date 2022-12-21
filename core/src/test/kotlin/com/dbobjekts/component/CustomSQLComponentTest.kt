@@ -6,7 +6,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-class CustomSQLIntegrationTest {
+class CustomSQLComponentTest {
 
     @Test
     fun `test select two columns from two tables`() {

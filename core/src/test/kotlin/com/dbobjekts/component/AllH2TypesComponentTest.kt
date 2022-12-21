@@ -3,20 +3,18 @@ package com.dbobjekts.component
 import com.dbobjekts.integration.h2.core.AllTypes
 import com.dbobjekts.integration.h2.custom.AddressType
 import com.dbobjekts.metadata.column.BlobColumn
-import com.dbobjekts.statement.whereclause.SubClause
 import org.assertj.core.api.Assertions.assertThat
 import org.h2.api.Interval
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import java.io.Serializable
 import java.math.BigDecimal
 import java.time.*
 import java.util.*
 
 
-class TypesIntegrationTest {
+class AllH2TypesComponentTest {
 
     companion object {
         @BeforeAll

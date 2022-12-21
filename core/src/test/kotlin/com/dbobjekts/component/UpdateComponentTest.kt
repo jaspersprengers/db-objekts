@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Assertions.*
 import java.time.LocalDate
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
-class UpdateIntegrationTest {
+class UpdateComponentTest {
 
     val e = Employee
     val h = Hobby
