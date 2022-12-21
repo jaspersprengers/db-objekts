@@ -21,8 +21,8 @@ class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
 
-    fun street(value: String): AddressUpdateBuilder = ct.put(Address.street, value)
-    fun countryId(value: String): AddressUpdateBuilder = ct.put(Address.countryId, value)
+    fun street(value: String): AddressUpdateBuilder = put(Address.street, value)
+    fun countryId(value: String): AddressUpdateBuilder = put(Address.countryId, value)
 }
 
 class AddressInsertBuilder():InsertBuilderBase(){
@@ -30,12 +30,12 @@ class AddressInsertBuilder():InsertBuilderBase(){
     override fun data(): Set<AnyColumnAndValue> = ct.data
     
 
-    fun street(value: String): AddressInsertBuilder = ct.put(Address.street, value)
-    fun countryId(value: String): AddressInsertBuilder = ct.put(Address.countryId, value)
+    fun street(value: String): AddressInsertBuilder = put(Address.street, value)
+    fun countryId(value: String): AddressInsertBuilder = put(Address.countryId, value)
 
     fun mandatoryColumns(street: String, countryId: String) : AddressInsertBuilder {
-      ct.put(Address.street, street)
-      ct.put(Address.countryId, countryId)
+        mandatory(Address.street, street)
+        mandatory(Address.countryId, countryId)
       return this
     }
 

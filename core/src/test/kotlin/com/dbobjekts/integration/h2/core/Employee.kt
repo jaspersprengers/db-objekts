@@ -24,33 +24,32 @@ object Employee:Table("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, Emplo
 }
 
 class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
-    private val ct = ColumnForWriteMapContainerImpl(this)
-    override fun data(): Set<AnyColumnAndValue> = ct.data
+    //private val ct = ColumnForWriteMapContainerImpl(this)
+    override fun data(): Set<AnyColumnAndValue> = setOf()
 
-    fun name(value: String): EmployeeUpdateBuilder = ct.put(Employee.name, value)
-    fun salary(value: Double): EmployeeUpdateBuilder = ct.put(Employee.salary, value)
-    fun married(value: Boolean?): EmployeeUpdateBuilder = ct.put(Employee.married, value)
-    fun dateOfBirth(value: java.time.LocalDate): EmployeeUpdateBuilder = ct.put(Employee.dateOfBirth, value)
-    fun children(value: Int?): EmployeeUpdateBuilder = ct.put(Employee.children, value)
-    fun hobbyId(value: String?): EmployeeUpdateBuilder = ct.put(Employee.hobbyId, value)
+    fun name(value: String): EmployeeUpdateBuilder =  put(Employee.name, value) //put(Employee.name, value)
+    fun salary(value: Double): EmployeeUpdateBuilder = put(Employee.salary, value)
+    fun married(value: Boolean?): EmployeeUpdateBuilder = put(Employee.married, value)
+    fun dateOfBirth(value: java.time.LocalDate): EmployeeUpdateBuilder = put(Employee.dateOfBirth, value)
+    fun children(value: Int?): EmployeeUpdateBuilder = put(Employee.children, value)
+    fun hobbyId(value: String?): EmployeeUpdateBuilder = put(Employee.hobbyId, value)
 }
 
 class EmployeeInsertBuilder():InsertBuilderBase(){
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
     
-
-    fun name(value: String): EmployeeInsertBuilder = ct.put(Employee.name, value)
-    fun salary(value: Double): EmployeeInsertBuilder = ct.put(Employee.salary, value)
-    fun married(value: Boolean?): EmployeeInsertBuilder = ct.put(Employee.married, value)
-    fun dateOfBirth(value: java.time.LocalDate): EmployeeInsertBuilder = ct.put(Employee.dateOfBirth, value)
-    fun children(value: Int?): EmployeeInsertBuilder = ct.put(Employee.children, value)
-    fun hobbyId(value: String?): EmployeeInsertBuilder = ct.put(Employee.hobbyId, value)
+    fun name(value: String): EmployeeInsertBuilder = put(Employee.name, value)
+    fun salary(value: Double): EmployeeInsertBuilder = put(Employee.salary, value)
+    fun married(value: Boolean?): EmployeeInsertBuilder = put(Employee.married, value)
+    fun dateOfBirth(value: java.time.LocalDate): EmployeeInsertBuilder = put(Employee.dateOfBirth, value)
+    fun children(value: Int?): EmployeeInsertBuilder = put(Employee.children, value)
+    fun hobbyId(value: String?): EmployeeInsertBuilder = put(Employee.hobbyId, value)
 
     fun mandatoryColumns(name: String, salary: Double, dateOfBirth: java.time.LocalDate) : EmployeeInsertBuilder {
-      ct.put(Employee.name, name)
-      ct.put(Employee.salary, salary)
-      ct.put(Employee.dateOfBirth, dateOfBirth)
+        mandatory(Employee.name, name)
+        mandatory(Employee.salary, salary)
+        mandatory(Employee.dateOfBirth, dateOfBirth)
       return this
     }
 

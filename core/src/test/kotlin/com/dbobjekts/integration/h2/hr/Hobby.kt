@@ -20,8 +20,8 @@ class HobbyUpdateBuilder() : UpdateBuilderBase(Hobby) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
 
-    fun id(value: String): HobbyUpdateBuilder = ct.put(Hobby.id, value)
-    fun name(value: String): HobbyUpdateBuilder = ct.put(Hobby.name, value)
+    fun id(value: String): HobbyUpdateBuilder = put(Hobby.id, value)
+    fun name(value: String): HobbyUpdateBuilder = put(Hobby.name, value)
 }
 
 class HobbyInsertBuilder():InsertBuilderBase(){
@@ -29,12 +29,12 @@ class HobbyInsertBuilder():InsertBuilderBase(){
     override fun data(): Set<AnyColumnAndValue> = ct.data
     
 
-    fun id(value: String): HobbyInsertBuilder = ct.put(Hobby.id, value)
-    fun name(value: String): HobbyInsertBuilder = ct.put(Hobby.name, value)
+    fun id(value: String): HobbyInsertBuilder = put(Hobby.id, value)
+    fun name(value: String): HobbyInsertBuilder = put(Hobby.name, value)
 
     fun mandatoryColumns(id: String, name: String) : HobbyInsertBuilder {
-      ct.put(Hobby.id, id)
-      ct.put(Hobby.name, name)
+      mandatory(Hobby.id, id)
+      mandatory(Hobby.name, name)
       return this
     }
 

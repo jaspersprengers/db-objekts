@@ -20,7 +20,7 @@ class DepartmentUpdateBuilder() : UpdateBuilderBase(Department) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     override fun data(): Set<AnyColumnAndValue> = ct.data
 
-    fun name(value: String): DepartmentUpdateBuilder = ct.put(Department.name, value)
+    fun name(value: String): DepartmentUpdateBuilder = put(Department.name, value)
 }
 
 class DepartmentInsertBuilder():InsertBuilderBase(){
@@ -28,10 +28,10 @@ class DepartmentInsertBuilder():InsertBuilderBase(){
     override fun data(): Set<AnyColumnAndValue> = ct.data
     
 
-    fun name(value: String): DepartmentInsertBuilder = ct.put(Department.name, value)
+    fun name(value: String): DepartmentInsertBuilder = put(Department.name, value)
 
     fun mandatoryColumns(name: String) : DepartmentInsertBuilder {
-      ct.put(Department.name, name)
+      mandatory(Department.name, name)
       return this
     }
 

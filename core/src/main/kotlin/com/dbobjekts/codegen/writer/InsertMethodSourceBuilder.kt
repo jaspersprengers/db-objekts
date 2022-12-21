@@ -38,7 +38,7 @@ class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
 
     fun sourceForBuilderClasses(): String {
 
-        fun writeMethod(data: FieldData, updateOrInsert: String = "Update", returnType: String) =  "    fun ${data.field}(value: ${data.fieldType}): $returnType = ct.put($tableName.${data.field}, value)"
+        fun writeMethod(data: FieldData, updateOrInsert: String = "Update", returnType: String) =  "    fun ${data.field}(value: ${data.fieldType}): $returnType = put($tableName.${data.field}, value)"
 
         val (pk, allMethodsExceptPK) = fields.partition { it.autoGenPK }
         val (nullFields, nonNullFields) = allMethodsExceptPK.partition { it.nullable || it.autoGenPK}
@@ -46,7 +46,7 @@ class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
         val mandatoryColumnsMethod = if (nonNullFields.isEmpty()) "" else
 """
     fun mandatoryColumns(${nonNullFields.map { f -> "${f.field}: ${f.fieldType}" }.joinToString(", ")}) : ${tableName}InsertBuilder {
-${nonNullFields.map { f -> "      ct.put($tableName.${f.field}, ${f.field})" }.joinToString("\n")}
+${nonNullFields.map { f -> "      mandatory($tableName.${f.field}, ${f.field})" }.joinToString("\n")}
       return this
     }
 """
@@ -55,15 +55,11 @@ ${nonNullFields.map { f -> "      ct.put($tableName.${f.field}, ${f.field})" }.j
 
 return """
 class $updateBuilder() : UpdateBuilderBase($tableName) {
-    private val ct = ColumnForWriteMapContainerImpl(this)
-    override fun data(): Set<AnyColumnAndValue> = ct.data
 
 ${allMethodsExceptPK.map { d -> writeMethod(d, "Update", updateBuilder) }.joinToString("\n")}
 }
 
 class $insertBuilder():InsertBuilderBase(){
-    private val ct = ColumnForWriteMapContainerImpl(this)
-    override fun data(): Set<AnyColumnAndValue> = ct.data
     
 
 ${allMethodsExceptPK.map { d -> writeMethod(d, "Insert", insertBuilder) }.joinToString("\n")}

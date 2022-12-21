@@ -40,13 +40,20 @@ class ColumnForWriteMapContainerImpl<T>(val builder: T) : ColumnForWriteMapConta
 
 abstract class UpdateBuilderBase(
     internal val table: Table) {
+    private val ct = ColumnForWriteMapContainerImpl(this)
     abstract protected fun data(): Set<AnyColumnAndValue>
     internal  lateinit var connection: ConnectionAdapter
+
+    protected fun <B : UpdateBuilderBase, C> put(col: Column<C>, value: C?): B{
+        ct.put(col, value)
+        return this as B
+    }
+
     //it's important that the order of insertion is observed, and the same column can't be added twice.
     fun where(whereClause: SubClause): Long {
-        if (data().isEmpty())
+        if (ct.data.isEmpty())
             throw IllegalStateException("Need at least one column to update")
-        val stm = UpdateStatementExecutor(connection, table, data().toList())
+        val stm = UpdateStatementExecutor(connection, table, ct.data.toList())
         return stm.where(whereClause ).also { connection.statementLog.logResult(it) }
     }
 

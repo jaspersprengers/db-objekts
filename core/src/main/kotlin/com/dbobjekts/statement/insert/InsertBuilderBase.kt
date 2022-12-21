@@ -3,13 +3,23 @@ package com.dbobjekts.statement.insert
 import com.dbobjekts.api.AnyColumnAndValue
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.Column
+import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl
+import com.dbobjekts.statement.update.UpdateBuilderBase
 import com.dbobjekts.util.Errors
 
 abstract class InsertBuilderBase() {
     internal lateinit var connection: ConnectionAdapter
     abstract fun data(): Set<AnyColumnAndValue>
+    private val ct = ColumnForWriteMapContainerImpl(this)
+    protected fun <B : InsertBuilderBase, C> put(col: Column<C>, value: C?): B{
+        ct.put(col, value)
+        return this as B
+    }
+    protected fun <C> mandatory(col: Column<C>, value: C?){
+        ct.put(col, value)
+    }
+    internal fun validate() = Errors.require(ct.data.isNotEmpty(), "You must supply at least one column to insert")
 
-    internal fun validate() = Errors.require(data().isNotEmpty(), "You must supply at least one column to insert")
-
-    fun execute(): Long = InsertStatementExecutor(connection, data().toList(), connection.vendor.properties).execute().also { connection.statementLog.logResult(it) }
+    fun execute(): Long = InsertStatementExecutor(connection, ct.data.toList(), connection.vendor.properties).execute().also { connection.statementLog.logResult(it) }
 }
