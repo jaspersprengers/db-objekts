@@ -24,10 +24,7 @@ object Employee:Table("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, Emplo
 }
 
 class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
-    //private val ct = ColumnForWriteMapContainerImpl(this)
-    override fun data(): Set<AnyColumnAndValue> = setOf()
-
-    fun name(value: String): EmployeeUpdateBuilder =  put(Employee.name, value) //put(Employee.name, value)
+    fun name(value: String): EmployeeUpdateBuilder = put(Employee.name, value)
     fun salary(value: Double): EmployeeUpdateBuilder = put(Employee.salary, value)
     fun married(value: Boolean?): EmployeeUpdateBuilder = put(Employee.married, value)
     fun dateOfBirth(value: java.time.LocalDate): EmployeeUpdateBuilder = put(Employee.dateOfBirth, value)
@@ -36,10 +33,7 @@ class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
 }
 
 class EmployeeInsertBuilder():InsertBuilderBase(){
-    private val ct = ColumnForWriteMapContainerImpl(this)
-    override fun data(): Set<AnyColumnAndValue> = ct.data
-    
-    fun name(value: String): EmployeeInsertBuilder = put(Employee.name, value)
+       fun name(value: String): EmployeeInsertBuilder = put(Employee.name, value)
     fun salary(value: Double): EmployeeInsertBuilder = put(Employee.salary, value)
     fun married(value: Boolean?): EmployeeInsertBuilder = put(Employee.married, value)
     fun dateOfBirth(value: java.time.LocalDate): EmployeeInsertBuilder = put(Employee.dateOfBirth, value)
@@ -47,9 +41,9 @@ class EmployeeInsertBuilder():InsertBuilderBase(){
     fun hobbyId(value: String?): EmployeeInsertBuilder = put(Employee.hobbyId, value)
 
     fun mandatoryColumns(name: String, salary: Double, dateOfBirth: java.time.LocalDate) : EmployeeInsertBuilder {
-        mandatory(Employee.name, name)
-        mandatory(Employee.salary, salary)
-        mandatory(Employee.dateOfBirth, dateOfBirth)
+      mandatory(Employee.name, name)
+      mandatory(Employee.salary, salary)
+      mandatory(Employee.dateOfBirth, dateOfBirth)
       return this
     }
 

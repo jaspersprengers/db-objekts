@@ -13,7 +13,6 @@ import java.nio.file.Paths
 class H2CodeGeneratorTest {
 
     @Test
-    @Disabled
     fun `create schemas`() {
 
         H2DB.setupDatabaseObjects()

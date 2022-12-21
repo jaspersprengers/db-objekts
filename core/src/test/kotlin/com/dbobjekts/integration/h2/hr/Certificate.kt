@@ -20,24 +20,17 @@ object Certificate:Table("CERTIFICATE"), HasUpdateBuilder<CertificateUpdateBuild
 }
 
 class CertificateUpdateBuilder() : UpdateBuilderBase(Certificate) {
-    private val ct = ColumnForWriteMapContainerImpl(this)
-    override fun data(): Set<AnyColumnAndValue> = ct.data
-
     fun name(value: String): CertificateUpdateBuilder = put(Certificate.name, value)
     fun employeeId(value: Long): CertificateUpdateBuilder = put(Certificate.employeeId, value)
 }
 
 class CertificateInsertBuilder():InsertBuilderBase(){
-    private val ct = ColumnForWriteMapContainerImpl(this)
-    override fun data(): Set<AnyColumnAndValue> = ct.data
-    
-
-    fun name(value: String): CertificateInsertBuilder = put(Certificate.name, value)
+       fun name(value: String): CertificateInsertBuilder = put(Certificate.name, value)
     fun employeeId(value: Long): CertificateInsertBuilder = put(Certificate.employeeId, value)
 
     fun mandatoryColumns(name: String, employeeId: Long) : CertificateInsertBuilder {
       mandatory(Certificate.name, name)
-        mandatory(Certificate.employeeId, employeeId)
+      mandatory(Certificate.employeeId, employeeId)
       return this
     }
 

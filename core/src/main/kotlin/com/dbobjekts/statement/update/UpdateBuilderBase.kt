@@ -41,7 +41,6 @@ class ColumnForWriteMapContainerImpl<T>(val builder: T) : ColumnForWriteMapConta
 abstract class UpdateBuilderBase(
     internal val table: Table) {
     private val ct = ColumnForWriteMapContainerImpl(this)
-    abstract protected fun data(): Set<AnyColumnAndValue>
     internal  lateinit var connection: ConnectionAdapter
 
     protected fun <B : UpdateBuilderBase, C> put(col: Column<C>, value: C?): B{

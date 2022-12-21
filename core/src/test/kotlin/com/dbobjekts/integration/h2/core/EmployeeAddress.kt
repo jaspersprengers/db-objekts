@@ -18,27 +18,20 @@ object EmployeeAddress:Table("EMPLOYEE_ADDRESS"), HasUpdateBuilder<EmployeeAddre
 }
 
 class EmployeeAddressUpdateBuilder() : UpdateBuilderBase(EmployeeAddress) {
-    private val ct = ColumnForWriteMapContainerImpl(this)
-    override fun data(): Set<AnyColumnAndValue> = ct.data
-
     fun employeeId(value: Long): EmployeeAddressUpdateBuilder = put(EmployeeAddress.employeeId, value)
     fun addressId(value: Long): EmployeeAddressUpdateBuilder = put(EmployeeAddress.addressId, value)
     fun kind(value: com.dbobjekts.integration.h2.custom.AddressType): EmployeeAddressUpdateBuilder = put(EmployeeAddress.kind, value)
 }
 
 class EmployeeAddressInsertBuilder():InsertBuilderBase(){
-    private val ct = ColumnForWriteMapContainerImpl(this)
-    override fun data(): Set<AnyColumnAndValue> = ct.data
-    
-
-    fun employeeId(value: Long): EmployeeAddressInsertBuilder = put(EmployeeAddress.employeeId, value)
+       fun employeeId(value: Long): EmployeeAddressInsertBuilder = put(EmployeeAddress.employeeId, value)
     fun addressId(value: Long): EmployeeAddressInsertBuilder = put(EmployeeAddress.addressId, value)
     fun kind(value: com.dbobjekts.integration.h2.custom.AddressType): EmployeeAddressInsertBuilder = put(EmployeeAddress.kind, value)
 
     fun mandatoryColumns(employeeId: Long, addressId: Long, kind: com.dbobjekts.integration.h2.custom.AddressType) : EmployeeAddressInsertBuilder {
-        mandatory(EmployeeAddress.employeeId, employeeId)
-        mandatory(EmployeeAddress.addressId, addressId)
-        mandatory(EmployeeAddress.kind, kind)
+      mandatory(EmployeeAddress.employeeId, employeeId)
+      mandatory(EmployeeAddress.addressId, addressId)
+      mandatory(EmployeeAddress.kind, kind)
       return this
     }
 

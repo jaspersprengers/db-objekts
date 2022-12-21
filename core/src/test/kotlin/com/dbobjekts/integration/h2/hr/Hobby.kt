@@ -17,19 +17,12 @@ object Hobby:Table("HOBBY"), HasUpdateBuilder<HobbyUpdateBuilder, HobbyInsertBui
 }
 
 class HobbyUpdateBuilder() : UpdateBuilderBase(Hobby) {
-    private val ct = ColumnForWriteMapContainerImpl(this)
-    override fun data(): Set<AnyColumnAndValue> = ct.data
-
     fun id(value: String): HobbyUpdateBuilder = put(Hobby.id, value)
     fun name(value: String): HobbyUpdateBuilder = put(Hobby.name, value)
 }
 
 class HobbyInsertBuilder():InsertBuilderBase(){
-    private val ct = ColumnForWriteMapContainerImpl(this)
-    override fun data(): Set<AnyColumnAndValue> = ct.data
-    
-
-    fun id(value: String): HobbyInsertBuilder = put(Hobby.id, value)
+       fun id(value: String): HobbyInsertBuilder = put(Hobby.id, value)
     fun name(value: String): HobbyInsertBuilder = put(Hobby.name, value)
 
     fun mandatoryColumns(id: String, name: String) : HobbyInsertBuilder {

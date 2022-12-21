@@ -55,14 +55,11 @@ ${nonNullFields.map { f -> "      mandatory($tableName.${f.field}, ${f.field})" 
 
 return """
 class $updateBuilder() : UpdateBuilderBase($tableName) {
-
 ${allMethodsExceptPK.map { d -> writeMethod(d, "Update", updateBuilder) }.joinToString("\n")}
 }
 
 class $insertBuilder():InsertBuilderBase(){
-    
-
-${allMethodsExceptPK.map { d -> writeMethod(d, "Insert", insertBuilder) }.joinToString("\n")}
+   ${allMethodsExceptPK.map { d -> writeMethod(d, "Insert", insertBuilder) }.joinToString("\n")}
 $mandatoryColumnsMethod
 }
 """

@@ -18,18 +18,11 @@ object Country : Table("COUNTRY"), HasUpdateBuilder<CountryUpdateBuilder, Countr
 }
 
 class CountryUpdateBuilder() : UpdateBuilderBase(Country) {
-    private val ct = ColumnForWriteMapContainerImpl(this)
-    override fun data(): Set<AnyColumnAndValue> = ct.data
-
     fun id(value: String): CountryUpdateBuilder = put(Country.id, value)
     fun name(value: String): CountryUpdateBuilder = put(Country.name, value)
 }
 
 class CountryInsertBuilder() : InsertBuilderBase() {
-    private val ct = ColumnForWriteMapContainerImpl(this)
-    override fun data(): Set<AnyColumnAndValue> = ct.data
-
-
     fun id(value: String): CountryInsertBuilder = put(Country.id, value)
     fun name(value: String): CountryInsertBuilder = put(Country.name, value)
 
