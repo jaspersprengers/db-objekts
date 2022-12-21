@@ -1,5 +1,10 @@
 package com.dbobjekts.metadata
-import com.dbobjekts.*
+import com.dbobjekts.integration.h2.TestCatalog
+import com.dbobjekts.integration.h2.core.Address
+import com.dbobjekts.integration.h2.core.Country
+import com.dbobjekts.integration.h2.core.Employee
+import com.dbobjekts.integration.h2.core.EmployeeAddress
+import com.dbobjekts.integration.h2.hr.Hobby
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -12,7 +17,7 @@ class TableJoinChainBuilderTest {
         assertEquals(sql, chain.toSQL().trim())
     }
 
-    val defaultBuilder = TableJoinChainBuilder(Catalogdefinition, Employee, listOf(Address, Country, Employee))
+    val defaultBuilder = TableJoinChainBuilder(TestCatalog, Employee, listOf(Address, Country, Employee))
 
 
     @Test
@@ -48,13 +53,13 @@ class TableJoinChainBuilderTest {
 
     @Test
     fun `one table in schema`() {
-        assertChain(TableJoinChainBuilder(Catalogdefinition, Employee, listOf(Employee)).build(), "CORE.EMPLOYEE e")
+        assertChain(TableJoinChainBuilder(TestCatalog, Employee, listOf(Employee)).build(), "CORE.EMPLOYEE e")
     }
 
     @Test
     fun `two joined tables in schema`() {
         assertChain(
-            TableJoinChainBuilder(Catalogdefinition, Employee, listOf(Employee, Hobby)).build(),
+            TableJoinChainBuilder(TestCatalog, Employee, listOf(Employee, Hobby)).build(),
             "CORE.EMPLOYEE e left join HR.HOBBY h on e.HOBBY_ID = h.ID"
         )
     }
@@ -62,14 +67,14 @@ class TableJoinChainBuilderTest {
     @Test
     fun `two tables joined through n-m table`() {
         assertChain(
-            TableJoinChainBuilder(Catalogdefinition, Employee, listOf(Employee, Address, Hobby)).build(),
+            TableJoinChainBuilder(TestCatalog, Employee, listOf(Employee, Address, Hobby)).build(),
             "CORE.EMPLOYEE e left join CORE.EMPLOYEE_ADDRESS ea on e.ID = ea.EMPLOYEE_ID left join HR.HOBBY h on e.HOBBY_ID = h.ID left join CORE.ADDRESS a on ea.ADDRESS_ID = a.ID"
         )
     }
 
     @Test
     fun `two unrelated tables will throw`() {
-        Assertions.assertThatThrownBy { TableJoinChainBuilder(Catalogdefinition, Employee, listOf(Employee, Country)).build() }
+        Assertions.assertThatThrownBy { TableJoinChainBuilder(TestCatalog, Employee, listOf(Employee, Country)).build() }
             .hasMessage("The following table(s) could not be joined: COUNTRY")
     }
 

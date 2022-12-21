@@ -1,4 +1,4 @@
-package com.dbobjekts.integration.h2
+package com.dbobjekts.component
 
 import com.dbobjekts.integration.h2.core.AllTypes
 import com.dbobjekts.integration.h2.custom.AddressType

@@ -1,4 +1,4 @@
-package com.dbobjekts.integration.h2
+package com.dbobjekts.component
 
 import com.dbobjekts.api.Tuple2
 import com.dbobjekts.integration.h2.core.Address
@@ -41,6 +41,7 @@ class SelectIntegrationTest {
                 it.insert(Country).id("NL").name("Netherlands").execute()
                 val zuidhoek = it.insert(Address).mandatoryColumns(street = "Zuidhoek", countryId = "NL").execute()
                 it.insert(EmployeeAddress).mandatoryColumns(employeeId = jane, addressId = zuidhoek, kind = AddressType.WORK).execute()
+                it.transactionExecutionLog().forEach { println(it) }
             }
         }
     }
@@ -124,7 +125,7 @@ class SelectIntegrationTest {
                 )
                     .where(Country.name.eq("Netherlands")).first()
             ).isEqualTo("Jane")
-            println(s.statementLog().lastSQLStatement())
+
         })
     }
 

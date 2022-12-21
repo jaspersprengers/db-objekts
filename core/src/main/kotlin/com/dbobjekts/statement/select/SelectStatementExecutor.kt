@@ -60,11 +60,11 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
 
     fun where(): SelectStatementExecutor<T, RSB> = where(EmptyWhereClause)
 
-    fun first(): T = execute().first()
+    fun first(): T = execute().first().also { statementLog.logResult(it) }
 
-    fun firstOrNull(): T? = execute().firstOrNull()
+    fun firstOrNull(): T? = execute().firstOrNull().also { statementLog.logResult(it) }
 
-    fun asList(): List<T> = execute().asList()
+    fun asList(): List<T> = execute().asList().also { statementLog.logResult(it) }
 
     private fun columnsToFetch(): List<ColumnInResultRow> =
         columns.mapIndexed { index, column -> ColumnInResultRow(1 + index, column) }
@@ -72,7 +72,6 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
     fun forEachRow(currentRow: (T) -> Boolean) {
         val sql = toSQL()
         val params = getWhereClause().getParameters()
-        logger.logStatement(sql, params)
         connection.prepareAndExecuteForSelectWithRowIterator<T, RSB>(
             sql,
             params,
@@ -85,7 +84,6 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
     private fun execute(): RSB {
         val sql = toSQL()
         val params = getWhereClause().getParameters()
-        logger.logStatement(sql, params)
         return connection.prepareAndExecuteForSelect<RSB>(
             sql,
             params,

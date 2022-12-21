@@ -10,6 +10,7 @@ import com.dbobjekts.statement.StatementBase
 import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.util.Errors
 import com.dbobjekts.util.StringUtil
+import org.slf4j.LoggerFactory
 
 
 class UpdateStatementExecutor(
@@ -28,19 +29,15 @@ class UpdateStatementExecutor(
 
     }
 
+    private val log = LoggerFactory.getLogger(UpdateStatementExecutor::class.java)
     private val columnsForUpdate = ColumnsForUpdate.fromValues(values)
 
     fun where(subclause: SubClause): Long {
         withWhereClause(subclause)
-      /*  return execute()
-    }
-
-    fun execute(): Long {*/
         val sql = toSQL()
         val allParams: List<AnySqlParameter> = getAllParameters()
-        connection.statementLogger.logStatement(sql, allParams)
         return if (allParams.isEmpty()) {
-            connection.statementLogger.info("No parameters defined. Skipping execute.")
+            log.warn("No parameters defined for statement $sql. Skipping execute.")
             0
         } else {
             connection.prepareAndExecuteUpdate(sql, allParams)

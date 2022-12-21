@@ -11,5 +11,5 @@ abstract class InsertBuilderBase() {
 
     internal fun validate() = Errors.require(data().isNotEmpty(), "You must supply at least one column to insert")
 
-    fun execute(): Long = InsertStatementExecutor(connection, data().toList(), connection.vendor.properties).execute()
+    fun execute(): Long = InsertStatementExecutor(connection, data().toList(), connection.vendor.properties).execute().also { connection.statementLog.logResult(it) }
 }

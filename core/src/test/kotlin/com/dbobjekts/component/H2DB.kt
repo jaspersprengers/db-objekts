@@ -1,7 +1,11 @@
-package com.dbobjekts.codegen
+package com.dbobjekts.component
 
 import com.dbobjekts.api.Transaction
 import com.dbobjekts.api.TransactionManager
+import com.dbobjekts.integration.h2.TestCatalog
+import com.dbobjekts.integration.h2.core.*
+import com.dbobjekts.integration.h2.hr.Certificate
+import com.dbobjekts.integration.h2.hr.Hobby
 import com.dbobjekts.util.HikariDataSourceFactory
 import org.slf4j.LoggerFactory
 import javax.sql.DataSource
@@ -9,46 +13,62 @@ import javax.sql.DataSource
 object H2DB {
     private val logger = LoggerFactory.getLogger(H2DB::class.java)
 
-    val transactionManager = TransactionManager.builder()
-        .withDataSource(createDataSource()).build()
-
-    fun setupDatabaseObjects() {
-        transactionManager.newTransaction { createExampleCatalog(it) }
-    }
-
-    fun createDataSource(): DataSource =
+    val catalog = TestCatalog
+    private val dataSource =
         HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
 
+    val transactionManager = TransactionManager.builder().withDataSource(dataSource).withCatalog(catalog).build()
+    fun <T> newTransaction(fct: (Transaction) -> T) = transactionManager.newTransaction(fct)
 
-    private fun createExampleCatalog(transaction: Transaction) {
+    fun setupDatabaseObjects() {
+        createExampleCatalog()
+        //tables are not created when they exist and may contain data
+        deleteAllTables()
+    }
 
-        transaction.execute("CREATE SCHEMA if not exists core")
+    fun deleteAllTables() {
+        transactionManager.newTransaction { tr ->
+            tr.deleteFrom(EmployeeAddress).where()
+            tr.deleteFrom(EmployeeDepartment).where()
+            tr.deleteFrom(Department).where()
+            tr.deleteFrom(Address).where()
+            tr.deleteFrom(Certificate).where()
+            tr.deleteFrom(Employee).where()
+            tr.deleteFrom(Country).where()
+            tr.deleteFrom(Hobby).where()
+            //tr.deleteFrom(Shape).where()
+        }
+    }
 
-        transaction.execute("CREATE SCHEMA if not exists hr")
+    private fun createExampleCatalog() {
+        transactionManager.newTransaction { transaction ->
+            transaction.execute("CREATE SCHEMA if not exists core")
 
-        transaction.execute("CREATE SEQUENCE IF NOT EXISTS core.EMPLOYEE_SEQ START WITH 10")
-        transaction.execute("CREATE SEQUENCE IF NOT EXISTS core.ADDRESS_SEQ START WITH 10")
-        transaction.execute("CREATE SEQUENCE IF NOT EXISTS hr.CERTIFICATE_SEQ START WITH 10")
-        transaction.execute("CREATE SEQUENCE IF NOT EXISTS core.DEPARTMENT_SEQ START WITH 10")
+            transaction.execute("CREATE SCHEMA if not exists hr")
 
-        transaction.execute("create table IF NOT EXISTS hr.HOBBY(id varchar(10) primary key, name varchar(50) not null)")
-        transaction.execute(
-            "create table IF NOT EXISTS core.EMPLOYEE(id BIGINT primary key, name varchar(50) not null, salary double not null, " +
-                    "married boolean null, date_of_birth DATE not null, children SMALLINT null, hobby_id varchar(10) null, foreign key(hobby_id) references hr.HOBBY(id))"
-        )
-        transaction.execute("create table IF NOT EXISTS hr.CERTIFICATE(id BIGINT primary key, name varchar(50) not null, employee_id BIGINT not null, foreign key(employee_id) references core.employee(id))")
-        transaction.execute("create table IF NOT EXISTS core.COUNTRY(id varchar(10) primary key, name varchar(50) not null)")
+            transaction.execute("CREATE SEQUENCE IF NOT EXISTS core.EMPLOYEE_SEQ START WITH 10")
+            transaction.execute("CREATE SEQUENCE IF NOT EXISTS core.ADDRESS_SEQ START WITH 10")
+            transaction.execute("CREATE SEQUENCE IF NOT EXISTS hr.CERTIFICATE_SEQ START WITH 10")
+            transaction.execute("CREATE SEQUENCE IF NOT EXISTS core.DEPARTMENT_SEQ START WITH 10")
 
-        transaction.execute("create table IF NOT EXISTS core.ADDRESS(id BIGINT primary key, street varchar(50) not null, country_id varchar(10) not null, foreign key(country_id) references core.country(id))")
-        transaction.execute("create table if not exists core.EMPLOYEE_ADDRESS(employee_id BIGINT not null, address_id BIGINT not null,kind varchar(10) not null, foreign key(employee_id) references core.employee(id), foreign key(address_id) references core.ADDRESS(id))")
-        transaction.execute("create table if not exists core.SHAPE (height DOUBLE, width DOUBLE)")
-        transaction.execute("create table IF NOT EXISTS core.DEPARTMENT(id BIGINT primary key, name varchar(50) not null)")
-        transaction.execute(
-            "create table if not exists core.EMPLOYEE_DEPARTMENT(employee_id BIGINT not null, department_id BIGINT not null, foreign key(employee_id) references core.employee(id), " +
-                    "foreign key(department_id) references core.DEPARTMENT(id))"
-        )
+            transaction.execute("create table IF NOT EXISTS hr.HOBBY(id varchar(10) primary key, name varchar(50) not null)")
+            transaction.execute(
+                "create table IF NOT EXISTS core.EMPLOYEE(id BIGINT primary key, name varchar(50) not null, salary double not null, " +
+                        "married boolean null, date_of_birth DATE not null, children SMALLINT null, hobby_id varchar(10) null, foreign key(hobby_id) references hr.HOBBY(id))"
+            )
+            transaction.execute("create table IF NOT EXISTS hr.CERTIFICATE(id BIGINT primary key, name varchar(50) not null, employee_id BIGINT not null, foreign key(employee_id) references core.employee(id))")
+            transaction.execute("create table IF NOT EXISTS core.COUNTRY(id varchar(10) primary key, name varchar(50) not null)")
 
-        val allTypesSql = """
+            transaction.execute("create table IF NOT EXISTS core.ADDRESS(id BIGINT primary key, street varchar(50) not null, country_id varchar(10) not null, foreign key(country_id) references core.country(id))")
+            transaction.execute("create table if not exists core.EMPLOYEE_ADDRESS(employee_id BIGINT not null, address_id BIGINT not null,kind varchar(10) not null, foreign key(employee_id) references core.employee(id), foreign key(address_id) references core.ADDRESS(id))")
+
+            transaction.execute("create table IF NOT EXISTS core.DEPARTMENT(id BIGINT primary key, name varchar(50) not null)")
+            transaction.execute(
+                "create table if not exists core.EMPLOYEE_DEPARTMENT(employee_id BIGINT not null, department_id BIGINT not null, foreign key(employee_id) references core.employee(id), " +
+                        "foreign key(department_id) references core.DEPARTMENT(id))"
+            )
+
+            val allTypesSql = """
             create table IF NOT EXISTS core.ALL_TYPES
             (
                 id                            BIGINT not null primary key auto_increment,
@@ -112,7 +132,8 @@ object H2DB {
             );
         """.trimIndent()
 
-        transaction.execute(allTypesSql)
-        transaction.execute("create table IF NOT EXISTS core.TUPLES(c1 INTEGER,c2 INTEGER,c3 INTEGER,c4 INTEGER,c5 INTEGER,c6 INTEGER,c7 INTEGER,c8 INTEGER,c9 INTEGER,c10 INTEGER,c11 INTEGER,c12 INTEGER,c13 INTEGER,c14 INTEGER,c15 INTEGER,c16 INTEGER,c17 INTEGER,c18 INTEGER,c19 INTEGER,c20 INTEGER,c21 INTEGER,c22 INTEGER)")
+            transaction.execute(allTypesSql)
+            //transaction.transactionExecutionLog().forEach { println(it) }
+        }
     }
 }

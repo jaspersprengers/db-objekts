@@ -44,20 +44,18 @@ class Transaction(internal val connection: ConnectionAdapter) {
 
     internal fun connection() = connection.jdbcConnection
 
-    internal fun isValid(): Boolean = connection.isValid()
-
-    fun statementLog() = connection.statementLogger
+    fun transactionExecutionLog() = connection.statementLog.transactionExecutionLog()
 
     fun commit() = connection.commit()
 
     fun rollback() = connection.rollback()
 
     fun execute(sql: String, vararg args: Any): Long {
-        return SQLStatementExecutor<Long?, ResultRow1<Long>>(connection, sql, args.toList()).execute()
+        return SQLStatementExecutor<Long?, ResultRow1<Long>>(connection, sql, args.toList()).execute().also { connection.statementLog.logResult(it) }
     }
 
     fun sql(sql: String, vararg args: Any): CustomSQLStatementBuilder =
-        CustomSQLStatementBuilder(connection, sql, args.toList())
+        CustomSQLStatementBuilder(connection, sql, args.toList(), statementLog = connection.statementLog)
 
     fun <I1> select(column1: Column<I1>): SelectStatementExecutor<I1, ResultRow1<I1>> =
         SelectStatementExecutor(connection, listOf(column1), ResultRow1<I1>())

@@ -34,7 +34,7 @@ class DeleteStatementExecutor(connection: ConnectionAdapter) : StatementBase<Lon
         val alias = if (connection.vendorSpecificProperties.supportsJoinsInUpdateAndDelete()) "${joinChain().table.alias()}.*" else ""
         val sql = StringUtil.concat(listOf("delete", alias, "from", joinChain().toSQL(), wc.build(SQLOptions(includeAlias = true))))
         val params = wc.getParameters()
-        return connection.prepareAndExecuteDeleteStatement(sql, params)
+        return connection.prepareAndExecuteDeleteStatement(sql, params).also { connection.statementLog.logResult(it) }
     }
 
 }

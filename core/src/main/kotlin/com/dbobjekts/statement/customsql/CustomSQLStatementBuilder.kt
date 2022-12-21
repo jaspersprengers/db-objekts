@@ -5,6 +5,7 @@ import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.result.*
+import com.dbobjekts.util.StatementLogger
 import java.math.BigDecimal
 import java.sql.Blob
 import java.sql.Clob
@@ -13,7 +14,8 @@ import java.time.*
 class CustomSQLStatementBuilder(
     private val conn: ConnectionAdapter,
     private val sql: String,
-    private val args: List<Any>
+    private val args: List<Any>,
+    private val statementLog: StatementLogger
 ) {
 
     fun execute(): Long = SQLStatementExecutor<Long?, ResultRow1<Long>>(conn, sql, args.toList()).execute()

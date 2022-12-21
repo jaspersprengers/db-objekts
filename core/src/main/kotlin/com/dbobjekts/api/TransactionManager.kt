@@ -12,6 +12,7 @@ import com.dbobjekts.util.StatementLogger
 import com.dbobjekts.vendors.Vendor
 import com.dbobjekts.vendors.Vendors
 import com.zaxxer.hikari.HikariDataSource
+import org.slf4j.LoggerFactory
 import java.sql.Connection
 import javax.sql.DataSource
 
@@ -20,14 +21,12 @@ class TransactionManager(
     val catalog: Catalog,
     private val customConnectionProvider: ((DataSource) -> Connection)? = null
 ) {
-
+    private val log = LoggerFactory.getLogger(TransactionManager::class.java)
     private val dataSourceAdapter: DataSourceAdapter
-    private val statementLogger: StatementLogger
     val vendor: Vendor
 
     init {
         vendor = Vendors.byName(catalog.vendor)
-        statementLogger = StatementLogger()
         dataSourceAdapter = when (dataSource) {
             is HikariDataSource -> HikariDataSourceAdapterImpl(dataSource)
             else -> DataSourceAdapterImpl(dataSource)
@@ -49,7 +48,7 @@ class TransactionManager(
         val transaction = Transaction(
             ConnectionAdapter(
                 connection,
-                statementLogger,
+                StatementLogger(),
                 catalog,
                 vendor
             )
@@ -59,7 +58,7 @@ class TransactionManager(
             transaction.commit()
             return TransactionResultValidator.validate(result)
         } catch (e: Exception) {
-            statementLogger.error("Caught exception while executing query for select. Rolling back", e)
+            log.error("Caught exception while executing query for select. Rolling back", e)
             transaction.rollback()
             throw e
         } finally {

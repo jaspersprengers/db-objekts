@@ -1,4 +1,4 @@
-package com.dbobjekts.integration.h2
+package com.dbobjekts.component
 
 import com.dbobjekts.integration.h2.core.Employee
 import com.dbobjekts.integration.h2.hr.Hobby

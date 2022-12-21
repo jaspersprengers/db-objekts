@@ -47,7 +47,7 @@ abstract class UpdateBuilderBase(
         if (data().isEmpty())
             throw IllegalStateException("Need at least one column to update")
         val stm = UpdateStatementExecutor(connection, table, data().toList())
-        return stm.where(whereClause )
+        return stm.where(whereClause ).also { connection.statementLog.logResult(it) }
     }
 
 }

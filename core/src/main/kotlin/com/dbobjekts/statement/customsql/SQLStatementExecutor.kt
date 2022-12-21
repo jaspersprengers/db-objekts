@@ -10,7 +10,6 @@ import com.dbobjekts.result.ResultRow1
 import com.dbobjekts.statement.SqlParameter
 import com.dbobjekts.statement.StatementExecutor
 
-
 open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
     override val connection: ConnectionAdapter,
     internal val sql: String,
@@ -19,10 +18,16 @@ open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
     internal val selectResultSet: RSB
 ) : StatementExecutor {
 
-    constructor(connection: ConnectionAdapter, sql: String, args: List<Any>) : this(connection, sql, args, listOf(ColumnFactory.LONG), ResultRow1<Long>() as RSB)
+    constructor(connection: ConnectionAdapter, sql: String, args: List<Any>) : this(
+        connection,
+        sql,
+        args,
+        listOf(ColumnFactory.LONG),
+        ResultRow1<Long>() as RSB
+    )
 
     internal val columnsToFetch: List<ColumnInResultRow> =
-        columnClasses.mapIndexed { index, column -> ColumnInResultRow(1 + index, column)}
+        columnClasses.mapIndexed { index, column -> ColumnInResultRow(1 + index, column) }
 
     fun first(): T = executeForSelect().first()
 
@@ -55,9 +60,16 @@ open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
         SqlParameter<T>(position, ColumnFactory.getColumnForValue(value), value)
 
 
-    fun executeForSelect(): RSB =
-        connection.prepareAndExecuteForSelect(sql, params, columnsToFetch, selectResultSet)
+    fun executeForSelect(): RSB {
+        connection.statementLog.logStatement(sql, params)
+        return connection.prepareAndExecuteForSelect(sql, params, columnsToFetch, selectResultSet)
+    }
 
-    fun execute(): Long = connection.prepareAndExecuteUpdate(sql, params)
+
+    fun execute(): Long {
+        connection.statementLog.logStatement(sql, params)
+        return connection.prepareAndExecuteUpdate(sql, params)
+    }
 
 }
+

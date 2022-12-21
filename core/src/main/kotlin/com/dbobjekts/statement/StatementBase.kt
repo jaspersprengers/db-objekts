@@ -14,7 +14,7 @@ import com.dbobjekts.util.StatementLogger
 abstract class StatementBase<W>(internal val connection: ConnectionAdapter) {
 
     internal open val catalog: Catalog = connection.catalog()
-    internal val logger: StatementLogger = connection.statementLogger
+    internal val statementLog: StatementLogger = connection.statementLog
 
     internal var tables: MutableList<Table> = mutableListOf<Table>()
     private var _drivingTable: Table? = null

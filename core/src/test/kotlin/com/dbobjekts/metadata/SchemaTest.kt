@@ -1,9 +1,9 @@
 package com.dbobjekts.metadata
 
-import com.dbobjekts.Catalogdefinition
-import com.dbobjekts.Core
-import com.dbobjekts.Employee
-import com.dbobjekts.Hr
+import com.dbobjekts.integration.h2.TestCatalog
+import com.dbobjekts.integration.h2.core.Core
+import com.dbobjekts.integration.h2.core.Employee
+import com.dbobjekts.integration.h2.hr.Hr
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -13,23 +13,23 @@ class SchemaTest {
 
     @Test
     fun `Catalog has one schema`() {
-        assertEquals(Catalogdefinition.schemas.size, 2)
+        assertEquals(TestCatalog.schemas.size, 2)
     }
 
     @Test
     fun `Catalog has schema default`() {
-        assertNotNull(Catalogdefinition.schemaByName("HR"))
-        assertEquals("H2", Catalogdefinition.vendor)
+        assertNotNull(TestCatalog.schemaByName("HR"))
+        assertEquals("H2", TestCatalog.vendor)
     }
 
     @Test
-    fun `Schema has one table`() {
-        assertEquals(6, Core.tables.size)
+    fun `Schema has 7 tables`() {
+        assertEquals(7, Core.tables.size)
     }
 
     @Test
     fun `Schema has reference to catalog`() {
-        assertEquals(Catalogdefinition, Hr.catalog)
+        assertEquals(TestCatalog, Hr.catalog)
     }
 
 

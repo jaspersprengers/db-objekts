@@ -79,9 +79,9 @@ class ClassGenerator {
         fun offsetDateTimeNil(): Returns$next<$ts, OffsetDateTime?> = Returns$next($columns, ColumnFactory.OFFSET_DATETIME_NIL, conn, sql, args)
        
         private fun execute() = SQLStatementExecutor(conn, sql, args.toList(), listOf($columns), ResultRow$i<$ts>())
-        fun asList() = execute().asList()
-        fun first() = execute().first()
-        fun firstOrNull() = execute().firstOrNull()
+        fun asList() = execute().asList().also { statementLog.logResult(it) }
+        fun first() = execute().first().also { statementLog.logResult(it) }
+        fun firstOrNull() = execute().firstOrNull().also { statementLog.logResult(it) }
         fun forEachRow(mapper: (Tuple$i<$ts>) -> Boolean){ return execute().forEachRow(mapper)}
             }
             
