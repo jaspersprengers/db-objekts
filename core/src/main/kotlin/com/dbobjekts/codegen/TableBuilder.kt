@@ -7,6 +7,7 @@ import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.codegen.datatypemapper.ColumnTypeResolver
 import com.dbobjekts.codegen.metadata.*
+import com.dbobjekts.codegen.parsers.ParserConfig
 import org.slf4j.LoggerFactory
 
 /**
@@ -16,7 +17,7 @@ internal class TableBuilder(
     val packageName: PackageName,
     val schema: SchemaName,
     val tableName: TableName,
-    val generatorConfig: CodeGeneratorConfig,
+    val generatorConfig: ParserConfig,
     val foreignKeyManager: ForeignKeyManager,
     val sqlMapper: ColumnTypeResolver
 ) {

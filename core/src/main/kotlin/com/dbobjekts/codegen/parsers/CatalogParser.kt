@@ -1,11 +1,11 @@
 package com.dbobjekts.codegen.parsers
 
 import com.dbobjekts.api.ColumnName
+import com.dbobjekts.api.PackageName
 import com.dbobjekts.api.SchemaName
 import com.dbobjekts.api.TableName
 import com.dbobjekts.codegen.TableBuilder
 import com.dbobjekts.codegen.ValidateForeignKeyConstraints
-import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
 import com.dbobjekts.codegen.datatypemapper.ColumnTypeResolver
 import com.dbobjekts.codegen.metadata.*
 import com.dbobjekts.metadata.TableAliases
@@ -13,23 +13,25 @@ import com.dbobjekts.metadata.TableAliasesBuilder
 import org.slf4j.LoggerFactory
 
 
-abstract class CatalogParser(private val codeGeneratorConfig: CodeGeneratorConfig) {
+abstract class CatalogParser(private val parserConfig: ParserConfig) {
 
     private val log = LoggerFactory.getLogger(CatalogParser::class.java)
 
     val tableMetaData: List<TableMetaData> by lazy {
-        createTableMetaData(codeGeneratorConfig)
+        createTableMetaData(parserConfig)
     }
-    private val basePackage = codeGeneratorConfig.basePackage
+    private val basePackageOpt: PackageName? = parserConfig.basePackage
     private val columnTypeResolver: ColumnTypeResolver
 
     init {
-        columnTypeResolver = ColumnTypeResolver(codeGeneratorConfig.vendor.defaultMapper,
-            codeGeneratorConfig.customColumnMappers,
-            codeGeneratorConfig.sequenceMappers)
+        columnTypeResolver = ColumnTypeResolver(
+            parserConfig.vendor.defaultMapper,
+            parserConfig.customColumnMappers,
+            parserConfig.sequenceMappers
+        )
     }
-    
-    fun createTableMetaData(conf: CodeGeneratorConfig): List<TableMetaData> {
+
+    fun createTableMetaData(conf: ParserConfig): List<TableMetaData> {
 
         val foreignKeyProperties = parseForeignKeyMetaData(extractForeignKeyMetaDataFromDB())
         val metaData = extractColumnAndTableMetaDataFromDB()
@@ -87,18 +89,18 @@ abstract class CatalogParser(private val codeGeneratorConfig: CodeGeneratorConfi
     fun parseCatalog(): DBCatalogDefinition {
         log.info("Changelog files contain metadata on ${tableMetaData.size} tables.")
         val catalogs = extractCatalogs()
-        val catalog = catalogs.firstOrNull() ?: "default"
-
-        val tableDefinitions = createTableDefinitions(tableMetaData)
+        val catalog = catalogs.firstOrNull() ?: "public"
+        val basePackage = basePackageOpt ?: PackageName(listOf("dbobjekts", catalog.lowercase()))
+        val tableDefinitions = createTableDefinitions(basePackage, tableMetaData)
         val schemas: List<DBSchemaDefinition> = tableDefinitions
             .groupBy { it.schema.value }
             .map { entry ->
                 val schemaName = SchemaName(entry.key)
                 val packageForSchema = basePackage.createSubPackageForSchema(schemaName)
-                val (excluded, included) = codeGeneratorConfig.exclusionConfigurer.partition(entry.value)
+                val (excluded, included) = parserConfig.exclusionConfigurer.partition(entry.value)
                 DBSchemaDefinition(packageForSchema, schemaName, included, excluded)
             }
-        return DBCatalogDefinition(basePackage, codeGeneratorConfig.vendor, schemas, "${catalog.lowercase()}_catalog")
+        return DBCatalogDefinition(basePackage, parserConfig.vendor, schemas, "${catalog.lowercase()}_catalog")
             .also {
                 validateCatalogForMissingTables(it)
             }
@@ -118,15 +120,15 @@ abstract class CatalogParser(private val codeGeneratorConfig: CodeGeneratorConfi
         } else catalog
     }
 
-    fun createTableDefinitions(tableMetaData: List<TableMetaData>): List<DBTableDefinition> {
+    fun createTableDefinitions(basePackage: PackageName, tableMetaData: List<TableMetaData>): List<DBTableDefinition> {
         val keyManager = ForeignKeyManager(tableMetaData)
         val tableBuilders: List<TableBuilder> = tableMetaData.map({ tableMd ->
             val packageForSchema = basePackage.createSubPackageForSchema(tableMd.schema)
-            val tb = TableBuilder(packageForSchema, tableMd.schema, tableMd.tableName, codeGeneratorConfig, keyManager, columnTypeResolver)
+            val tb = TableBuilder(packageForSchema, tableMd.schema, tableMd.tableName, parserConfig, keyManager, columnTypeResolver)
 
             //exclude the columns explicitly marked
             val allowedColumns = tableMd.columns.filterNot {
-                codeGeneratorConfig.exclusionConfigurer.columnIsExcluded(tableMd, it)
+                parserConfig.exclusionConfigurer.columnIsExcluded(tableMd, it)
             }
 
             tb.withColumns(tableMd.schema, tableMd.tableName, allowedColumns)
@@ -145,8 +147,6 @@ abstract class CatalogParser(private val codeGeneratorConfig: CodeGeneratorConfi
                 tb.withAlias(aliases.aliasForSchemaAndTable(tb.schema, tb.tableName)).build()
             }
     }
-
-
 
 
 }

@@ -14,7 +14,8 @@ object H2DB {
     private val logger = LoggerFactory.getLogger(H2DB::class.java)
 
     val catalog = TestCatalog
-    private val dataSource =
+
+    val dataSource =
         HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
 
     val transactionManager = TransactionManager.builder().withDataSource(dataSource).withCatalog(catalog).build()

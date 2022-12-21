@@ -18,6 +18,6 @@ object PathUtil {
     @JvmStatic
     fun getTestSourceDir(): String = Paths.get("src", "test", "kotlin").toAbsolutePath().toString()
 
-    fun getGeneratedSourceDir(): String = Paths.get( "../core/src/generated-sources/kotlin").toAbsolutePath().toString()
+    fun getGeneratedSourceDir(): String = Paths.get( "src/generated-sources/kotlin").toAbsolutePath().toString()
 
 }

@@ -1,22 +1,25 @@
 package com.dbobjekts.statement
 
 import com.dbobjekts.api.AnyColumnAndValue
+import com.dbobjekts.api.Semaphore
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.metadata.TableJoinChain
-import com.dbobjekts.metadata.TableJoinChainBuilder
+import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.metadata.joins.TableJoinChainBuilder
 import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.statement.whereclause.WhereClause
 import com.dbobjekts.util.StatementLogger
 
-abstract class StatementBase<W>(internal val connection: ConnectionAdapter) {
+abstract class StatementBase<W>(protected val semaphore: Semaphore,
+                                internal val connection: ConnectionAdapter) {
 
     internal open val catalog: Catalog = connection.catalog()
     internal val statementLog: StatementLogger = connection.statementLog
-
     internal var tables: MutableList<Table> = mutableListOf<Table>()
+    internal abstract val statementType: String
+
     private var _drivingTable: Table? = null
     private var _joinChain: TableJoinChain? = null
     protected lateinit var _whereClause: WhereClause

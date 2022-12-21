@@ -3,22 +3,27 @@ package com.dbobjekts.statement.select
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.metadata.TableJoinChain
+import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.metadata.TableOrJoin
 import com.dbobjekts.metadata.column.Column
-import com.dbobjekts.result.ColumnInResultRow
-import com.dbobjekts.result.ResultRow
+import com.dbobjekts.statement.ColumnInResultRow
+import com.dbobjekts.api.ResultRow
+import com.dbobjekts.api.Semaphore
 import com.dbobjekts.statement.StatementBase
 import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
 
 class SelectStatementExecutor<T, RSB : ResultRow<T>>(
+    semaphore: Semaphore,
     connection: ConnectionAdapter,
     internal val columns: List<AnyColumn>,
     internal val selectResultSet: RSB
-) : StatementBase<SelectStatementExecutor<T, RSB>>(connection) {
+) : StatementBase<SelectStatementExecutor<T, RSB>>(semaphore, connection) {
+
+    override val statementType = "select"
 
     init {
+        semaphore.claim("select")
         columns.forEach { registerTable(it.table) }
     }
 
@@ -60,11 +65,11 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
 
     fun where(): SelectStatementExecutor<T, RSB> = where(EmptyWhereClause)
 
-    fun first(): T = execute().first().also { statementLog.logResult(it) }
+    fun first(): T = execute().first().also { semaphore.clear(); statementLog.logResult(it) }
 
-    fun firstOrNull(): T? = execute().firstOrNull().also { statementLog.logResult(it) }
+    fun firstOrNull(): T? = execute().firstOrNull().also { semaphore.clear(); statementLog.logResult(it) }
 
-    fun asList(): List<T> = execute().asList().also { statementLog.logResult(it) }
+    fun asList(): List<T> = execute().asList().also { semaphore.clear(); statementLog.logResult(it) }
 
     private fun columnsToFetch(): List<ColumnInResultRow> =
         columns.mapIndexed { index, column -> ColumnInResultRow(1 + index, column) }
@@ -72,6 +77,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
     fun forEachRow(currentRow: (T) -> Boolean) {
         val sql = toSQL()
         val params = getWhereClause().getParameters()
+        semaphore.clear();
         connection.prepareAndExecuteForSelectWithRowIterator<T, RSB>(
             sql,
             params,
@@ -93,18 +99,22 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
     }
 
     private fun toSQL(): String {
-        getWhereClause().getFlattenedConditions().forEach { registerTable(it.column.table) }
-        val builder = SelectStatementSqlBuilder()
-        builder.withWhereClause(getWhereClause())
-        builder.withJoinChain(joinChain())
-            .withOrderByClause(orderByClauses.toList())
-            .withColumnsToSelect(columnsToFetch())
-            .build()
-        limitRows?.let { builder.withLimitClause(limitRows!!, { r: Int -> connection.vendorSpecificProperties.getLimitClause(r) }) }
-        return builder.build()
+        try {
+            getWhereClause().getFlattenedConditions().forEach { registerTable(it.column.table) }
+            val builder = SelectStatementSqlBuilder()
+            builder.withWhereClause(getWhereClause())
+            builder.withJoinChain(joinChain())
+                .withOrderByClause(orderByClauses.toList())
+                .withColumnsToSelect(columnsToFetch())
+                .build()
+            limitRows?.let { builder.withLimitClause(limitRows!!, { r: Int -> connection.vendorSpecificProperties.getLimitClause(r) }) }
+            return builder.build()
+        } catch (e: Exception) {
+            return "CANNOT SERIALIZE"
+        }
     }
 
-    override fun toString() = toSQL().toString()
+    override fun toString() = toSQL()
 
 }
 

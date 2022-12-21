@@ -4,7 +4,10 @@ import com.dbobjekts.codegen.metadata.DBColumnDefinition
 import com.dbobjekts.codegen.metadata.DBGeneratedPrimaryKey
 import com.dbobjekts.codegen.metadata.DBTableDefinition
 import com.dbobjekts.codegen.metadata.ReservedKeywords
+import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.metadata.column.NullableColumn
+import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.UpdateBuilderBase
 import com.dbobjekts.util.StringUtil
 
  data class FieldData(
@@ -30,13 +33,17 @@ class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
     }
 
     fun sourceForMetaDataVal(): String {
+
+        val accessorClass = WriteQueryAccessors::class.java.simpleName
         val updateBuilder = "${tableName}UpdateBuilder"
         val insertBuilder = "${tableName}InsertBuilder"
 
-        return "    override fun metadata(): WriteQueryAccessors<$updateBuilder, $insertBuilder> = WriteQueryAccessors($updateBuilder(), $insertBuilder())"
+        return "    override fun metadata(): $accessorClass<$updateBuilder, $insertBuilder> = $accessorClass($updateBuilder(), $insertBuilder())"
     }
 
     fun sourceForBuilderClasses(): String {
+        val updateBuilderBase = UpdateBuilderBase::class.java.simpleName
+        val insertBuilderBase = InsertBuilderBase::class.java.simpleName
 
         fun writeMethod(data: FieldData, updateOrInsert: String = "Update", returnType: String) =  "    fun ${data.field}(value: ${data.fieldType}): $returnType = put($tableName.${data.field}, value)"
 
@@ -54,11 +61,11 @@ ${nonNullFields.map { f -> "      mandatory($tableName.${f.field}, ${f.field})" 
         val insertBuilder = "${tableName}InsertBuilder"
 
 return """
-class $updateBuilder() : UpdateBuilderBase($tableName) {
+class $updateBuilder() : $updateBuilderBase($tableName) {
 ${allMethodsExceptPK.map { d -> writeMethod(d, "Update", updateBuilder) }.joinToString("\n")}
 }
 
-class $insertBuilder():InsertBuilderBase(){
+class $insertBuilder():$insertBuilderBase(){
    ${allMethodsExceptPK.map { d -> writeMethod(d, "Insert", insertBuilder) }.joinToString("\n")}
 $mandatoryColumnsMethod
 }

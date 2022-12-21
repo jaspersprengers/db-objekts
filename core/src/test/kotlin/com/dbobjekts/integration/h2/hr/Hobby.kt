@@ -1,10 +1,8 @@
 package com.dbobjekts.integration.h2.hr
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyColumnAndValue
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.metadata.WriteQueryAccessors
-import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl
+import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase

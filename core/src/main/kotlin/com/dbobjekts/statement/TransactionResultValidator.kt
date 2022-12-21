@@ -1,6 +1,6 @@
 package com.dbobjekts.statement
 
-import com.dbobjekts.result.ResultRow
+import com.dbobjekts.api.ResultRow
 import com.dbobjekts.statement.customsql.SQLStatementExecutor
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase

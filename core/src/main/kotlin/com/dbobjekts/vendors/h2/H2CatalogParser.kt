@@ -2,24 +2,21 @@ package com.dbobjekts.vendors.h2
 
 import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.api.Tuple8
-import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
 import com.dbobjekts.codegen.parsers.CatalogParser
 import com.dbobjekts.codegen.parsers.ForeignKeyMetaDataRow
+import com.dbobjekts.codegen.parsers.ParserConfig
 import com.dbobjekts.codegen.parsers.TableMetaDataRow
-import com.dbobjekts.jdbc.DetermineVendor
 import org.slf4j.LoggerFactory
 
 /**
  * Accesses a live database to extract information from all the schemas
  */
-class H2CatalogParser(codeGeneratorConfig: CodeGeneratorConfig,
-                      internal val transactionManager: TransactionManager) : CatalogParser(codeGeneratorConfig) {
+class H2CatalogParser(parserConfig: ParserConfig,
+                      internal val transactionManager: TransactionManager) : CatalogParser(parserConfig) {
 
     private val log = LoggerFactory.getLogger(H2CatalogParser::class.java)
 
-    override fun extractCatalogs(): List<String> =
-        DetermineVendor(transactionManager).catalogs
-
+    override fun extractCatalogs(): List<String> = transactionManager.extractDBMetaData().catalogs
 
     override fun extractColumnAndTableMetaDataFromDB(): List<TableMetaDataRow> {
         return transactionManager.newTransaction {

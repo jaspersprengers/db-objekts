@@ -65,16 +65,16 @@ object ColumnFactory {
     val OFFSET_DATETIME = OffsetDateTimeColumn(table, DUMMY)
     val OFFSET_DATETIME_NIL = NullableOffsetDateTimeColumn(table, DUMMY)
 
-    val AUTOKEY_LONG = AutoKeyLongColumn(table, DUMMY)
-    val AUTOKEY_INTEGER = AutoKeyIntegerColumn(table, DUMMY)
-    val SEQUENCE_LONG = SequenceKeyLongColumn(table, DUMMY, "")
-    val SEQUENCE_INTEGER = SequenceKeyIntegerColumn(table, DUMMY, "")
-    val FOREIGN_KEY_LONG = ForeignKeyLongColumn(table, DUMMY, LONG)
-    val FOREIGN_KEY_LONG_NIL = OptionalForeignKeyLongColumn(table, DUMMY, LONG)
-    val FOREIGN_KEY_INT = ForeignKeyIntColumn(table, DUMMY, INTEGER)
-    val FOREIGN_KEY_INT_NIL = OptionalForeignKeyIntColumn(table, DUMMY, INTEGER)
-    val FOREIGN_KEY_VARCHAR = ForeignKeyVarcharColumn(table, DUMMY, VARCHAR)
-    val FOREIGN_KEY_VARCHAR_NIL = OptionalForeignKeyVarcharColumn(table, DUMMY, VARCHAR)
+    internal val AUTOKEY_LONG = AutoKeyLongColumn(table, DUMMY)
+    internal val AUTOKEY_INTEGER = AutoKeyIntegerColumn(table, DUMMY)
+    internal val SEQUENCE_LONG = SequenceKeyLongColumn(table, DUMMY, "")
+    internal val SEQUENCE_INTEGER = SequenceKeyIntegerColumn(table, DUMMY, "")
+    internal val FOREIGN_KEY_LONG = ForeignKeyLongColumn(table, DUMMY, LONG)
+    internal val FOREIGN_KEY_LONG_NIL = OptionalForeignKeyLongColumn(table, DUMMY, LONG)
+    internal val FOREIGN_KEY_INT = ForeignKeyIntColumn(table, DUMMY, INTEGER)
+    internal val FOREIGN_KEY_INT_NIL = OptionalForeignKeyIntColumn(table, DUMMY, INTEGER)
+    internal val FOREIGN_KEY_VARCHAR = ForeignKeyVarcharColumn(table, DUMMY, VARCHAR)
+    internal val FOREIGN_KEY_VARCHAR_NIL = OptionalForeignKeyVarcharColumn(table, DUMMY, VARCHAR)
 
     internal fun varcharColumn(nullable: Boolean = false) = if (nullable) VARCHAR_NIL else VARCHAR
     internal fun longColumn(nullable: Boolean = false) = if (nullable) LONG_NIL else LONG

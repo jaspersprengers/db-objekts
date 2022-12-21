@@ -3,12 +3,11 @@ package com.dbobjekts.api
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.jdbc.DataSourceAdapter
 import com.dbobjekts.jdbc.DataSourceAdapterImpl
-import com.dbobjekts.jdbc.DetermineVendor
 import com.dbobjekts.metadata.Catalog
-import com.dbobjekts.metadata.PlaceHolderCatalog
 import com.dbobjekts.statement.TransactionResultValidator
 import com.dbobjekts.util.HikariDataSourceAdapterImpl
 import com.dbobjekts.util.StatementLogger
+import com.dbobjekts.util.StringUtil
 import com.dbobjekts.vendors.Vendor
 import com.dbobjekts.vendors.Vendors
 import com.zaxxer.hikari.HikariDataSource
@@ -17,22 +16,24 @@ import java.sql.Connection
 import javax.sql.DataSource
 
 class TransactionManager(
-    dataSource: DataSource,
-    val catalog: Catalog,
+    ds: DataSource,
+    catalogOpt: Catalog? = null,
     private val customConnectionProvider: ((DataSource) -> Connection)? = null
 ) {
     private val log = LoggerFactory.getLogger(TransactionManager::class.java)
-    private val dataSourceAdapter: DataSourceAdapter
+    internal val dataSource: DataSourceAdapter
+    private var catalog: Catalog
     val vendor: Vendor
 
     init {
-        vendor = Vendors.byName(catalog.vendor)
-        dataSourceAdapter = when (dataSource) {
-            is HikariDataSource -> HikariDataSourceAdapterImpl(dataSource)
-            else -> DataSourceAdapterImpl(dataSource)
+        this.dataSource = when (ds) {
+            is HikariDataSource -> HikariDataSourceAdapterImpl(ds)
+            else -> DataSourceAdapterImpl(ds)
         }
-        val metaData = DetermineVendor(this)
-        if (!catalog.vendor.contentEquals(metaData.vendor.name))
+        val metaData = extractDBMetaData()
+        catalog = catalogOpt ?: Vendors.byName(metaData.vendor.name).defaultCatalog
+        vendor = Vendors.byName(catalog.vendor)
+        if (vendor != metaData.vendor)
             throw java.lang.IllegalStateException("You provided a Catalog implementation that is associated with vendor ${catalog.vendor}, but you connected to a ${metaData.vendor.name} DataSource.")
     }
 
@@ -41,8 +42,8 @@ class TransactionManager(
 
     fun <T> newTransaction(fct: (Transaction) -> T): T {
 
-        val connection: Connection = customConnectionProvider?.invoke(dataSourceAdapter.dataSource)
-            ?: dataSourceAdapter.createConnection()
+        val connection: Connection = customConnectionProvider?.invoke(dataSource.dataSource)
+            ?: dataSource.createConnection()
 
         require(!connection.isClosed, { "Connection is closed" })
         val transaction = Transaction(
@@ -55,6 +56,7 @@ class TransactionManager(
         )
         try {
             val result: T = fct(transaction)
+            transaction.semaphore.assertEmpty()
             transaction.commit()
             return TransactionResultValidator.validate(result)
         } catch (e: Exception) {
@@ -67,10 +69,34 @@ class TransactionManager(
     }
 
     fun close() {
-        dataSourceAdapter.close()
+        dataSource.close()
     }
 
-    override fun toString(): String = "${dataSourceAdapter} ${catalog}"
+    internal fun extractDBMetaData(): DBConnectionMetaData {
+        val connection = dataSource.createConnection()
+        try {
+            val metaData = connection.metaData
+            val vendor =
+                Vendors.byProductAndVersion(
+                    metaData.getDatabaseProductName(),
+                    metaData.getDatabaseProductVersion()
+                )
+            val rs = metaData.catalogs
+            val catalogs = mutableListOf<String>()
+            while (rs.next()) {
+                val name = rs.getString(1)
+                catalogs += StringUtil.initUpperCase(name)
+
+            }
+            return DBConnectionMetaData(vendor, catalogs)
+
+        } finally {
+            connection.close()
+        }
+    }
+
+
+    override fun toString(): String = "${dataSource} ${catalog}"
 
     companion object {
         fun builder() = TransactionManagerBuilder()
@@ -97,7 +123,7 @@ class TransactionManager(
         }
 
         fun build(): TransactionManager {
-            return TransactionManager(dataSource, catalog ?: PlaceHolderCatalog)
+            return TransactionManager(dataSource, catalog)
         }
     }
 

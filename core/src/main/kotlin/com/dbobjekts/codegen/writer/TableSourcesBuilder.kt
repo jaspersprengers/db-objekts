@@ -4,6 +4,11 @@ import com.dbobjekts.api.PackageName
 import com.dbobjekts.codegen.metadata.DBColumnDefinition
 import com.dbobjekts.codegen.metadata.DBForeignKeyDefinition
 import com.dbobjekts.codegen.metadata.DBTableDefinition
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.WriteQueryAccessors
+import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.statement.update.UpdateBuilderBase
 
 class TableSourcesBuilder(
     val basePackage: PackageName,
@@ -27,12 +32,6 @@ class TableSourcesBuilder(
      *
      */
     private fun generateFieldComment(column: DBColumnDefinition): TableSourcesBuilder {
-        /* strBuilder.append("    /**\n")
-         if (column.comment.isDefined) {
-             strBuilder.append("     * ${column.comment.get}\n")
-         }
-         strBuilder.append("     * Corresponds to ${tableDefinition.name}.${column.name} of type ${column.typeName}\n")
-         strBuilder.append("     */\n")*/
         return this
     }
 
@@ -46,22 +45,26 @@ class TableSourcesBuilder(
         }
 
         val importLineBuilder = ImportLineBuilder()
-        val imports = listOf(
-            "api.AnyColumn",
-            "api.AnyColumnAndValue",
-            "metadata.Table",
-            "metadata.WriteQueryAccessors",
-            "statement.update.ColumnForWriteMapContainerImpl",
-            "statement.update.HasUpdateBuilder",
-            "statement.insert.InsertBuilderBase",
-            "statement.update.UpdateBuilderBase"
+        val typeAliases = listOf(
+            "api.AnyColumn"
         )
-        imports.forEach { importLineBuilder.add("com.dbobjekts.$it") }
+        val classesToImport = listOf(
+            Table::class.java,
+            WriteQueryAccessors::class.java,
+            HasUpdateBuilder::class.java,
+            InsertBuilderBase::class.java,
+            UpdateBuilderBase::class.java
+        )
+        val updateBuilderInterface = HasUpdateBuilder::class.java.simpleName
+
+        typeAliases.forEach { importLineBuilder.add("com.dbobjekts.$it") }
+        classesToImport.forEach { importLineBuilder.add(it.canonicalName) }
+
         generateImportsForForeignKeys().forEach { importLineBuilder.add(it) }
         strBuilder.append(importLineBuilder.build())
         strBuilder.appendLine()
         val tbl = model.asClassName()
-        strBuilder.appendLine("""object $tbl:Table("${model.tableName}"), HasUpdateBuilder<${tbl}UpdateBuilder, ${tbl}InsertBuilder> {""".trimMargin())
+        strBuilder.appendLine("""object $tbl:Table("${model.tableName}"), $updateBuilderInterface<${tbl}UpdateBuilder, ${tbl}InsertBuilder> {""".trimMargin())
         model.columns.forEach {
             generateFieldComment(it)
             generateField(it)

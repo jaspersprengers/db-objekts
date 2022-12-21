@@ -50,10 +50,10 @@ class SelectionComponentTest {
     @Test
     fun `test select two columns from two tables`() {
         H2DB.newTransaction({
-            val result: Tuple2<Double?, String?> =
+            val (salary, street) =
                 it.select(e.salary, a.street).where(e.name.eq("Jane").and(a.street).eq("Zuidhoek")).first()
-            assert(result.v1 == 300.50)
-            assert(result.v2 == "Zuidhoek")
+            assert(salary == 300.50)
+            assert(street == "Zuidhoek")
         })
     }
 

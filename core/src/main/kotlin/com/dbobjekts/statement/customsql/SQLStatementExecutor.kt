@@ -1,16 +1,14 @@
 package com.dbobjekts.statement.customsql
 
-import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnySqlParameter
+import com.dbobjekts.api.*
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.ColumnFactory
-import com.dbobjekts.result.ColumnInResultRow
-import com.dbobjekts.result.ResultRow
-import com.dbobjekts.result.ResultRow1
+import com.dbobjekts.statement.ColumnInResultRow
 import com.dbobjekts.statement.SqlParameter
 import com.dbobjekts.statement.StatementExecutor
 
 open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
+    private val semaphore: Semaphore,
     override val connection: ConnectionAdapter,
     internal val sql: String,
     internal val args: List<Any>,
@@ -18,7 +16,9 @@ open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
     internal val selectResultSet: RSB
 ) : StatementExecutor {
 
-    constructor(connection: ConnectionAdapter, sql: String, args: List<Any>) : this(
+    @Suppress("UNCHECKED_CAST")
+    constructor(semaphore: Semaphore, connection: ConnectionAdapter, sql: String, args: List<Any>) : this(
+        semaphore,
         connection,
         sql,
         args,
@@ -29,13 +29,14 @@ open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
     internal val columnsToFetch: List<ColumnInResultRow> =
         columnClasses.mapIndexed { index, column -> ColumnInResultRow(1 + index, column) }
 
-    fun first(): T = executeForSelect().first()
+    fun first(): T = executeForSelect().first().also { semaphore.clear() }
 
-    fun firstOrNull(): T? = executeForSelect().firstOrNull()
+    fun firstOrNull(): T? = executeForSelect().firstOrNull().also { semaphore.clear() }
 
-    fun asList(): List<T> = executeForSelect().asList()
+    fun asList(): List<T> = executeForSelect().asList().also { semaphore.clear() }
 
     fun forEachRow(mapper: (T) -> Boolean) {
+        semaphore.clear()
         connection.prepareAndExecuteForSelectWithRowIterator<T, RSB>(
             sql,
             params,

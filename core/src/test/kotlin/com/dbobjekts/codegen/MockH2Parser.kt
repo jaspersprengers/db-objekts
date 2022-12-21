@@ -3,13 +3,14 @@ package com.dbobjekts.codegen
 import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
 import com.dbobjekts.codegen.parsers.ForeignKeyMetaDataRow
 import com.dbobjekts.codegen.parsers.CatalogParser
+import com.dbobjekts.codegen.parsers.ParserConfig
 import com.dbobjekts.codegen.parsers.TableMetaDataRow
 
 class MockH2Parser(
     private val tableRows: List<TableMetaDataRow>,
-    private val fkRows : List<ForeignKeyMetaDataRow>,
-    codeGeneratorConfig: CodeGeneratorConfig
-) : CatalogParser(codeGeneratorConfig) {
+    private val fkRows: List<ForeignKeyMetaDataRow>,
+    parserConfig: ParserConfig
+) : CatalogParser(parserConfig) {
 
     override fun extractCatalogs(): List<String> = listOf("TEST")
 

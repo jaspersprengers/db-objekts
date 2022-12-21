@@ -1,10 +1,8 @@
 package com.dbobjekts.codegen
 
 import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
-import com.dbobjekts.codegen.parsers.DBParserFactory
-import com.dbobjekts.codegen.parsers.ForeignKeyMetaDataRow
-import com.dbobjekts.codegen.parsers.CatalogParser
-import com.dbobjekts.codegen.parsers.TableMetaDataRow
+import com.dbobjekts.codegen.parsers.*
+import com.dbobjekts.vendors.Vendors
 
 
 class MockDBParserFactory : DBParserFactory {
@@ -25,6 +23,6 @@ class MockDBParserFactory : DBParserFactory {
 
 
     override fun create(codeGeneratorConfig: CodeGeneratorConfig): CatalogParser {
-        return MockH2Parser(tableRows, fkRows, codeGeneratorConfig)
+        return MockH2Parser(tableRows, fkRows, ParserConfig.fromCodeGeneratorConfig(Vendors.H2, codeGeneratorConfig))
     }
 }

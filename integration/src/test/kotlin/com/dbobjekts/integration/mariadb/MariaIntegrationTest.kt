@@ -1,27 +1,16 @@
 package com.dbobjekts.integration.mariadb
 
 import com.dbobjekts.api.TransactionManager
-import com.dbobjekts.api.Tuple2
-import com.dbobjekts.api.Tuple3
-import com.dbobjekts.api.Tuple4
 import com.dbobjekts.codegen.CodeGenerator
-import com.dbobjekts.integration.h2.core.Address
-import com.dbobjekts.integration.h2.core.Country
-import com.dbobjekts.integration.h2.core.Employee
-import com.dbobjekts.integration.h2.core.EmployeeAddress
-import com.dbobjekts.integration.h2.custom.AddressType
 import com.dbobjekts.metadata.column.BooleanColumn
 import com.dbobjekts.util.HikariDataSourceFactory
 import com.dbobjekts.vendors.Vendors
-import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import java.nio.file.Paths
-import java.time.LocalDate
 import javax.sql.DataSource
 
 @Testcontainers
@@ -62,15 +51,13 @@ class MariaDBComponentTest {
     @Test
     fun `generate MySQL sources`() {
         val generator = CodeGenerator()
-        generator.dataSourceConfigurer()
-            .vendor(Vendors.MARIADB)
-            .withDataSource(ds)
+        generator.withDataSource(ds)
         generator.mappingConfigurer().overrideTypeForColumnByJDBCType(jdbcType = "TINYINT", columnType = BooleanColumn::class.java)
         generator.outputConfigurer()
             .basePackageForSources("com.dbobjekts.integration.mariadb")
             //.sourceWriter(writer)
             .outputDirectoryForGeneratedSources(Paths.get("./src/generated-sources/kotlin").toAbsolutePath().toString())
-        generator.generate()
+        generator.generateSourceFiles()
 
     }
 /*

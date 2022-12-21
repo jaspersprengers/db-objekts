@@ -5,6 +5,8 @@ import com.dbobjekts.integration.h2.core.Country
 import com.dbobjekts.integration.h2.core.Employee
 import com.dbobjekts.integration.h2.core.EmployeeAddress
 import com.dbobjekts.integration.h2.hr.Hobby
+import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.metadata.joins.TableJoinChainBuilder
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull

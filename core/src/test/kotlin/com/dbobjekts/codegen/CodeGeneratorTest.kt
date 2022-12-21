@@ -2,6 +2,7 @@ package com.dbobjekts.codegen
 
 import com.dbobjekts.api.Columns
 import com.dbobjekts.codegen.parsers.TableMetaDataRow
+import com.dbobjekts.component.H2DB
 import com.dbobjekts.metadata.column.*
 import com.dbobjekts.metadata.column.AutoKeyLongColumn
 import com.dbobjekts.util.PathUtil
@@ -14,9 +15,7 @@ class CodeGeneratorTest {
 
     fun setup(): CodeGenerator {
         val generator = CodeGenerator()
-        generator.dataSourceConfigurer()
-            .vendor("H2")
-            .configureDataSource().url("jdbc:h2:mem:test").user("sa")
+        generator.withDataSource(H2DB.dataSource)
         generator.outputConfigurer()
             .basePackageForSources("com.dbobjekts.integration.h2")
         return generator

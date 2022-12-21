@@ -12,14 +12,16 @@ class DBParserFactoryImpl : DBParserFactory {
     override fun create(
         codeGeneratorConfig: CodeGeneratorConfig
     ): CatalogParser {
+        ParserConfig
         val transactionManager = TransactionManager.builder().withDataSource(codeGeneratorConfig.dataSource).build()
-        return when (val vendor = codeGeneratorConfig.vendor) {
+        val vendor = transactionManager.vendor
+        val config = ParserConfig.fromCodeGeneratorConfig(vendor, codeGeneratorConfig)
+        return when (vendor) {
             Vendors.MARIADB -> {
-                MariaDBCatalogParser(codeGeneratorConfig, transactionManager)
+                MariaDBCatalogParser(config, transactionManager)
             }
-
             Vendors.H2 -> {
-                H2CatalogParser(codeGeneratorConfig, transactionManager)
+                H2CatalogParser(config, transactionManager)
             }
 
             else -> throw IllegalStateException("Vendor ${vendor} not allowed")

@@ -26,7 +26,8 @@ open class Catalog (
         if (!table.isInitialized()) {
             throw IllegalStateException(
                 "Table ${table.tableName} is not associated with a Schema yet. " +
-                        "This typically happens when it does not belong to the Catalog associated with the current TransactionManager"
+                        "This typically happens when it does not belong to the Catalog associated with the current TransactionManager or when you have not provided a Catalog when building the TransactionManager. You must provide a Catalog in order to use the metadata objects in q ueries."
+
             )
         }
         if (tables.none { it.schemaAndName() == table.schemaAndName() }){

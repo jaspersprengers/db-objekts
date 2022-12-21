@@ -1,24 +1,21 @@
 package com.dbobjekts.vendors.mariadb
 
 import com.dbobjekts.api.TransactionManager
-import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
 import com.dbobjekts.codegen.parsers.CatalogParser
 import com.dbobjekts.codegen.parsers.ForeignKeyMetaDataRow
+import com.dbobjekts.codegen.parsers.ParserConfig
 import com.dbobjekts.codegen.parsers.TableMetaDataRow
-import com.dbobjekts.jdbc.DetermineVendor
 
 /**
  * Accesses a live database to extract information from all the schemas
  */
 class MariaDBCatalogParser(
-    codeGeneratorConfig: CodeGeneratorConfig,
+    parserConfig: ParserConfig,
     internal val transactionManager: TransactionManager
 ) :
-    CatalogParser(codeGeneratorConfig) {
+    CatalogParser(parserConfig) {
 
-    override fun extractCatalogs(): List<String> =
-        DetermineVendor(transactionManager).catalogs
-
+    override fun extractCatalogs(): List<String> = transactionManager.extractDBMetaData().catalogs
 
     override fun extractColumnAndTableMetaDataFromDB(): List<TableMetaDataRow> {
         return transactionManager.newTransaction {

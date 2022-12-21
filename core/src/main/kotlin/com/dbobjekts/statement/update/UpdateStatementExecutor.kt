@@ -2,6 +2,7 @@ package com.dbobjekts.statement.update
 
 import com.dbobjekts.api.AnyColumnAndValue
 import com.dbobjekts.api.AnySqlParameter
+import com.dbobjekts.api.Semaphore
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.statement.ColumnsForUpdate
@@ -14,13 +15,16 @@ import org.slf4j.LoggerFactory
 
 
 class UpdateStatementExecutor(
+    semaphore: Semaphore,
     connection: ConnectionAdapter,
     table: Table,
     values: List<AnyColumnAndValue>
-) : StatementBase<Long>(connection) {
+) : StatementBase<Long>(semaphore, connection) {
 
+    override val statementType = "update"
 
     init {
+        semaphore.claim("update")
         registerTable(table)
         if (values.isEmpty())
             Errors("List of columns to update is empty. Provide at least one.")
@@ -33,14 +37,18 @@ class UpdateStatementExecutor(
     private val columnsForUpdate = ColumnsForUpdate.fromValues(values)
 
     fun where(subclause: SubClause): Long {
-        withWhereClause(subclause)
-        val sql = toSQL()
-        val allParams: List<AnySqlParameter> = getAllParameters()
-        return if (allParams.isEmpty()) {
-            log.warn("No parameters defined for statement $sql. Skipping execute.")
-            0
-        } else {
-            connection.prepareAndExecuteUpdate(sql, allParams)
+        try {
+            withWhereClause(subclause)
+            val sql = toSQL()
+            val allParams: List<AnySqlParameter> = getAllParameters()
+            return if (allParams.isEmpty()) {
+                log.warn("No parameters defined for statement $sql. Skipping execute.")
+                0
+            } else {
+                connection.prepareAndExecuteUpdate(sql, allParams)
+            }
+        } finally {
+            semaphore.clear()
         }
     }
 

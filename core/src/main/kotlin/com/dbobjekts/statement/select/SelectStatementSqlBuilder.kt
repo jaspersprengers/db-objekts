@@ -1,7 +1,7 @@
 package com.dbobjekts.statement.select
 
-import com.dbobjekts.metadata.TableJoinChain
-import com.dbobjekts.result.ColumnInResultRow
+import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.ColumnInResultRow
 import com.dbobjekts.statement.SQLOptions
 import com.dbobjekts.statement.whereclause.WhereClause
 import com.dbobjekts.util.StringUtil
