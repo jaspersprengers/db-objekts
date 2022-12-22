@@ -22,6 +22,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
 
     override val statementType = "select"
     private var useOuterJoins = false
+    private var useDefaultValues = false
 
     init {
         semaphore.claim("select")
@@ -66,7 +67,27 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
 
     fun where(): SelectStatementExecutor<T, RSB> = where(EmptyWhereClause)
 
+    /**
+     * Signal that all tables involved in the select statement are joined using outer joins.
+     * This has the consequence that non-nullable columns may yield null if there is no corresponding row in the outer join.
+     * You must use the nullable counterparts of the non-null columns, like so:
+     * transaction.select(Employee.name, Hobby.name.nullable)
+     * Alternative, use useOuterJoinsWithDefaultValues() to get default values for the nulls
+     */
     fun useOuterJoins(): SelectStatementExecutor<T, RSB>{
+        useDefaultValues = false
+        useOuterJoins = true
+        return this
+    }
+
+    /**
+     * Signal that all tables involved in the select statement are joined using outer joins.
+     * When a non-nullable column is involved in an outer join and no row can be matched, this will
+     * return default values, e.g. zero for numerics and an empty string for character columns.
+     * The value is determined by NonNullableColumn#defaultValue
+     */
+    fun useOuterJoinsWithDefaultValues(): SelectStatementExecutor<T, RSB>{
+        useDefaultValues = true
         useOuterJoins = true
         return this
     }
@@ -100,7 +121,8 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
             sql,
             params,
             columnsToFetch(),
-            selectResultSet
+            selectResultSet,
+            useDefaultValues
         )
     }
 

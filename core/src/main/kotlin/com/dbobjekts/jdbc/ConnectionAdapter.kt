@@ -25,8 +25,6 @@ data class ConnectionAdapter(
 
     val vendorSpecificProperties: VendorSpecificProperties = vendor.properties
 
-    internal var enforceNullabilityInResults: Boolean = false
-
     fun close() {
         try {
             jdbcConnection.close()
@@ -56,9 +54,10 @@ data class ConnectionAdapter(
         sql: String,
         parameters: List<AnySqlParameter>,
         columnsToFetch: List<ColumnInResultRow>,
-        selectResultSet: T
+        selectResultSet: T,
+        useDefaultValuesInOuterJoins: Boolean = false
     ): T {
-        val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters), enforceNullabilityInResults)
+        val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters), useDefaultValuesInOuterJoins)
         selectResultSet.initialize(resultSetAdapter)
         selectResultSet.retrieveAll()
         return selectResultSet
@@ -69,9 +68,10 @@ data class ConnectionAdapter(
         parameters: List<AnySqlParameter>,
         columnsToFetch: List<ColumnInResultRow>,
         selectResultSet: RS,
-        iteratorFunction: (T) -> Boolean
+        iteratorFunction: (T) -> Boolean,
+        useDefaultValuesInOuterJoins: Boolean = false
     ) {
-        val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters), enforceNullabilityInResults)
+        val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters), useDefaultValuesInOuterJoins)
         selectResultSet.initialize(resultSetAdapter)
         resultSetAdapter.retrieveWithIterator(selectResultSet, iteratorFunction)
     }

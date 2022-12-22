@@ -5,7 +5,7 @@ import com.dbobjekts.metadata.Table
 interface IsForeignKey<T, P> {
     val column: Column<T>
     val table: Table
-    val dbName: String
+    val nameInTable: String
     val parentColumn: Column<P>
 }
 

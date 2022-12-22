@@ -26,7 +26,7 @@ abstract class Table(
 
     internal fun getForeignKeyToParent(parent: Table): AnyForeignKey? = foreignKeys.find { it.parentColumn.table == parent }
 
-    internal fun columnByName(column: String): AnyColumn? = columns.find { it.dbName == column }
+    internal fun columnByName(column: String): AnyColumn? = columns.find { it.nameInTable == column }
 
     internal fun alias(): String = schema.aliasForTable(this)
 

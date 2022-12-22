@@ -16,9 +16,9 @@ abstract class NullableColumn<I>(
     internal fun setNull(): ColumnAndValue<I> = NullableColumnAndValue(this, null)
 
     /**
-     * @param enforceNullability is ignored for NullableColumn
+     * @param useDefaultValuesInOuterJoins is ignored for NullableColumn
      */
-    override fun retrieveValue(position: Int, rs: ResultSet, enforceNullability: Boolean): I? {
+    override fun retrieveValue(position: Int, rs: ResultSet, useDefaultValuesInOuterJoins: Boolean): I? {
         val value = getValue(position, rs)
         return if (rs.wasNull())
             null else value

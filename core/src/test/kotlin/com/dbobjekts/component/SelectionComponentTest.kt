@@ -50,31 +50,27 @@ class SelectionComponentTest {
     }
 
     @Test
-    fun `use default values for null results configured on the Transaction`() {
+    fun `use default values for null`() {
         H2DB.newTransaction({
-            it.enforceNullabilityInResults(false)
             val (name,hobby) =
-                it.select(e.name, h.name).where(e.name.eq("Arthur")).useOuterJoins().first()
+                it.select(e.name, h.name).where(e.name.eq("Arthur")).useOuterJoinsWithDefaultValues().first()
             assert(hobby == "")
         })
     }
 
     @Test
-    fun `use default values for null results configured on the TransactionManager`() {
-        val tm = TransactionManager.builder().withDataSource(H2DB.dataSource)
-            .withCatalog(TestCatalog)
-            .enforceStrictNullabilityInResults(false).build()
-        tm({
+    fun `use nullable counterpart`() {
+        H2DB.newTransaction({
             val (name,hobby) =
-                it.select(e.name, h.name).where(e.name.eq("Arthur")).useOuterJoins().first()
-            assert(hobby == "")
+                it.select(e.name, h.name.nullable).where(e.name.eq("Arthur")).useOuterJoins().first()
+            assertThat(hobby).isNull()
         })
     }
 
     @Test
     fun `do not use default value for null result in non-nullable column throws`() {
         H2DB.newTransaction({
-            Assertions.assertThatThrownBy { it.select(e.name, h.name).where(e.name.eq("Arthur")).first() }
+            Assertions.assertThatThrownBy { it.select(e.name, h.name).where(e.name.eq("Arthur")).useOuterJoins().firstOrNull() }
         })
     }
 

@@ -35,9 +35,9 @@ object JoinFactory {
         if ( fkToParent == null ){
             val fk = right.getForeignKeyToParent (left)
             if ( fk == null ) throw IllegalStateException("Could not establish foreign key relation between tables ${left.tableName} and ${right.tableName}")
-            else return Pair(left.columnByName(fk.parentColumn.dbName)!!, fk.column)
+            else return Pair(left.columnByName(fk.parentColumn.nameInTable)!!, fk.column)
         } else
-            return Pair(fkToParent.column, right.columnByName(fkToParent.parentColumn.dbName)!!)
+            return Pair(fkToParent.column, right.columnByName(fkToParent.parentColumn.nameInTable)!!)
 
     }
 

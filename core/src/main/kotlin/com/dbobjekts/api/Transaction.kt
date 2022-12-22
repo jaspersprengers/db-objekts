@@ -51,10 +51,6 @@ class Transaction(internal val connection: ConnectionAdapter) {
 
     fun transactionExecutionLog() = connection.statementLog.transactionExecutionLog()
 
-    fun enforceNullabilityInResults(setting: Boolean) {
-        connection.enforceNullabilityInResults = setting
-    }
-
     fun commit() = connection.commit()
 
     fun rollback() = connection.rollback()

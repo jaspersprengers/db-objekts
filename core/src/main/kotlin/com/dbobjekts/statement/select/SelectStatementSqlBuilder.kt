@@ -46,7 +46,7 @@ class SelectStatementSqlBuilder {
 
     protected fun orderBySql(): String = if (orderByClauses.isNotEmpty()) ("ORDER BY " + StringUtil.joinBy(orderByClauses, ",")) else ""
 
-    protected fun columnsToSelect(): String = StringUtil.joinBy(columnsToFetch, { "${it.column.table.alias()}.${it.column.dbName}" }, ",")
+    protected fun columnsToSelect(): String = StringUtil.joinBy(columnsToFetch, { "${it.column.table.alias()}.${it.column.nameInTable}" }, ",")
 
     protected fun limitClause(): String = limitFunction?.invoke(limitBy) ?: ""
 

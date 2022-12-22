@@ -19,13 +19,13 @@ abstract class NonNullableColumn<I>(
     override fun retrieveValue(
         position: Int,
         rs: ResultSet,
-        enforceNullability: Boolean
+        useDefaultValuesInOuterJoins: Boolean
     ): I? {
         val value = getValue(position, rs)
         return if (rs.wasNull()) {
-            if (!enforceNullability) defaultValue() else throw IllegalStateException("Cannot return null value for non-nullable column $tableDotName. " +
-                    "This happens when the column is selected in an outer join. Either call useInnerJoinStrategy() on the Transaction or set allowNullValuesInResults(true) on the TransactionManager or Transaction." +
-                    "Another strategy is to use the nullable counterpart of the non-nullable column like so: transaction.select(Employee.name, Department.name.nullable)")
+            if (useDefaultValuesInOuterJoins) defaultValue() else throw IllegalStateException("Cannot return null value for non-nullable column $tableDotName. " +
+                    "This happens when the column is selected in an outer join. Either use the nullable counterpart of the non-nullable column like so: transaction.select(Employee.name, Department.name.nullable)." +
+                    "Another strategy is to invoke useOuterJoins(true) on the select statement")
         } else value
     }
 

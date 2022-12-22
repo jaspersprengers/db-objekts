@@ -7,7 +7,7 @@ import java.sql.ResultSet
 class JDBCResultSetAdapter(
     val resultSetColumns: List<ColumnInResultRow>,
     val resultSet: ResultSet,
-    val enforceNullabilityInResults: Boolean = true
+    val useDefaultValuesInOUterJoins: Boolean = true
 ) {
 
     fun <T, RS : ResultRow<T>> retrieveWithIterator(selectResultSet: RS, mapper: (T) -> Boolean) {

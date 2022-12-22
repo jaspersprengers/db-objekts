@@ -1,57 +1,91 @@
-# Introduction #
+[[_TOC_]]
+
+# Introduction 
 
 ## DbObjekts In 100 words
 DbObjekts is a Kotlin library to perform queries on a relational databases in application code.
-It generates source code that acts as metadata  for all tables, columns and referential constraints (foreign keys). You then use these stateless Kotlin objects to build type-safe and fluent queries, comfortably using 
+It generates source code that acts as metadata  for all tables, columns and foreign keys. You then use these stateless Kotlin objects to build type-safe and fluent queries, comfortably using 
 your IDE's autocomplete, while DbObjekts takes care of the SQL boilerplate and type conversions.
 
-## Allow me a demonstration
+## The executive demo
 Before we jump to installation, let's showcase a very concise demonstration to get a feel of what you can achieve with DbObjekts.
 
+We have a simple database of a lending library with five tables
+* `author` represents a person, with name, bio, and data of birth.
+* `book` has the official isbn as its primary key, a title, year of publication and a reference to its author.
+* `item` represents a physical copy of a book. It refers to the `book` table and stores the date of acquisition. There can be zero or more copies of a book title.
+* `member` only stores the name of an invdividual member
+* `loan` keeps a record of all the books (items) taken out by a member. It refers to `item` and `member` and keeps the date taken out and returned.
 
-The library uses regular JDBC functionality and can be configured with either an existing `javax.sql.DataSource`, or with the built-in Hikari connection pool.
- ```kotlin
-val datasource =
-    HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
-val transactionManager = TransactionManager.newBuilder()
-    .dataSource(datasource)
-    .catalog(Catalogdefinition) 
-    .autoCommit(true)
-    .build()
-```
-DbObjekts lets you run native SQL queries where you can parameterize the types to be returned and provide query parameters as a vararg of values.
-The framework takes care of transaction management: opening, closing and committing the underlying connection.
-
+* First we need metadata objects for our database:
 ```kotlin
-  val results: List<Pair<Long, String>> = manager.newTransaction { it.select2<Long, String>("select count(1), name from employee where age > ? and married = ?", 21, true).asList() }
+
 ```
 
-The second major feature is working with generated database metadata. The code generator utility creates Kotlin source code from a liquibase changelog file.
-and these objects represent the tables, columns and integrity constraints of your database schemas.
+There is much more to fine-tune during the code generator phase, which you will learn in the relevant section. For now you will notice that it has written a bunch of files.  
+The next step is to configure the `TransactionManager`. This wraps a `javax.sql.DataSource` and acts as a factory for transactions. You typically only need one instance per database. 
 
+We provide the metadata object for the database (a.k.a. catalog in good JDBC jargon) which was just produced by the code generator. dbo needs this to produce SQL boilerplate specific to our schemas. 
+
+
+Now we're ready to start working with the full power of auto-complete. Let's add some authors, titles and members. The `mandatoryColumns(..)` call is a convenience method to make sure you don't miss any of the non-null columns in your insert. When the table in question has an auto-generated id, it is returned as a `Long`. We need to store it for later.
 ```kotlin
-      CodeGenerator()
-        .vendor("h2")
-        .outputDirForGeneratedSources(PathUtil.getGeneratedSourceDir())
-        .basePackageForSources("com.dbobjekts.example")
-        .sequenceForTableResolver(H2SequenceNameResolver)
-        .addLiquibaseChangelogFile("core", PathUtil.getFileInResourcesDir("core-changelog.xml"))
-        .addLiquibaseChangelogFile("hr", PathUtil.getFileInResourcesDir("hr-changelog.xml"))
-        .addLiquibaseChangelogFile("custom", PathUtil.getFileInResourcesDir("all_types.xml"))
-        .addCustomSqlMapper(AddressTypeMapper)
-        .addCustomSqlMapper(IntToBooleanMapper)
-        .addCustomSqlMapper(AddressTypeMapper)
-        .generate()
-``` 
+val orwell: Long = tr.insert(Author).mandatoryColumns("George Orwell").execute()
+val rowling: Long = tr.insert(Author).mandatoryColumns("Joanne (J.K.) Rowling").execute()
 
-Table objects are a little like ORM (object relational mapping) entities, but they are singleton (Kotlin) objects and do not contain data. Instead you use them to construct type-safe CRUD queries.  
-Added benefits:
-- secure: queries are constructed with placeholder syntax and any arguments are sanity-checked.
-- type-safe: all values for update and selection are tied to column metadata, which are parameterized for type.
-- null-safe: Databases allow null values for numeric data, but Kotlin AnyVal (Int, Long, Boolean, etc) cannot. They are wrapped in Options.
+// the primary key of the book table is not auto-generated. In this case execute() returns 1.
+tr.insert(Book).mandatoryColumns("ISBN-1984", "Nineteen-eighty Four", orwell, LocalDate.of(1948,1,1)).execute()
+tr.insert(Book).mandatoryColumns("ISBN-WIGAN", "The Road to Wigan Pier", orwell, LocalDate.of(1940,1,1)).execute()
+tr.insert(Book).mandatoryColumns("ISBN-PHILOSOPHER", "Harry Potter and the Philosopher's Stone", rowling, LocalDate.of(1999,1,1)).execute()
 
-DbObjekts is certainly not the first library built on top of JDBC that tries to take the pain in working with databases.
-It does however take an opinionated view on the topic of object-relational mapping, which is that a one-to-one mapping
+val john = tr.insert(Member).mandatoryColumns("John").execute()
+val sally = tr.insert(Member).mandatoryColumns("Sally").execute()
+```
+We forgot to put a bio for George Orwell. Let's do that now. Notice the use of the where clause. Common sql operator symbols (=,<,>,!=) have textual counterparts.
+And yes, you can do embedded and/or conditions. More on that later.
+```kotlin
+  tr.update(Author)
+      .bio("(1903-1950) Pseudonym of Eric Blair. Influential writer of novels, essays and journalism.")
+      .where(Author.id.eq(orwell))
+```
+
+Add some physical copies and loan data
+```kotlin
+//we have two copies of Harry Potter, one of 1984 and we misplaced the one of the Road to Wigan Pier.
+val copy1_1984 = tr.insert(Item).mandatoryColumns("ISBN-1984", LocalDate.of(1980,5,5)).execute()
+val copy1_phil = tr.insert(Item).mandatoryColumns("ISBN-PHILOSOPHER", LocalDate.of(2005,5,5)).execute()
+val copy2_phil = tr.insert(Item).mandatoryColumns("ISBN-PHILOSOPHER", LocalDate.of(2005,5,5)).execute()
+//Sally takes out 1984 and Harry Potter. John takes the other Harry Potter copy
+tr.insert(Loan).mandatoryColumns(memberId = sally, itemId = copy1_1984, dateLoaned = LocalDate.now()).execute()
+tr.insert(Loan).mandatoryColumns(memberId = sally, itemId = copy1_phil, dateLoaned = LocalDate.now()).execute()
+tr.insert(Loan).mandatoryColumns(memberId = john, itemId = copy2_phil, dateLoaned = LocalDate.now()).execute()
+```
+
+Now we can start querying. Let's get a list of all titles and their author data. This is what a select query in dbo looks like. You will notice that there is no `from` clause. All the information is present in the column references that you provide in the call to `select(..`) and dbo is can figure out the necessary table joins. The terminating `asList()` call returns a list of type-safe tuples that correspond exactly to the number and types of the columns in the `select(..)` call. Notice that `Author.bio` is a nullable column. Hence, the corresponding value in the tuple is `String?`, not `String`. 
+```kotlin
+val bookAuthors: List<Tuple3<String, String, String?>> = tr.select(Book.title, Author.name, Author.bio).asList()
+```
+Let's take it up a notch! We're joining all five tables now. Since the tuple results are data classes, you can deconstruct them into the constituent values:
+```kotlin
+tr.select(Loan.dateLoaned, Item.id, Book.title, Author.name, Member.name).asList()
+  .forEach { (dateLoaned, item, book, author, member) ->
+    println("Item $item of $book by $author loaned to $member on $dateLoaned") 
+  }
+ // the type returned is List<Tuple5<LocalDate, Long, String, String, String>>
+```
+Let's peek under the hood and see what sql was just created. The transaction provides access to a log of queries made during its lifespan. 
+```kotlin
+println(transaction.transactionExecutionLog().last().sql)
+```
+Which looks like
+```sql
+select l.DATE_LOANED,i.ID,b.TITLE,a.NAME,m.NAME 
+    from LIBRARY.LOAN l 
+        join LIBRARY.ITEM i on l.ITEM_ID = i.ID 
+        join LIBRARY.MEMBER m on l.MEMBER_ID = m.ID 
+        join LIBRARY.BOOK b on i.ISBN = b.ISBN 
+        join LIBRARY.AUTHOR a on b.AUTHOR_ID = a.ID
+```
 
 # In-depth
 
@@ -60,78 +94,11 @@ DBObjekts has superficial similarities to ORM frameworks like Hibernate, but the
 ORM works fine when the focus is retrieval and manipulation of single data entities. It is far less efficient at batch updates.
 
 
+# Detailed discussion 
+
 ## Installation ##
 
 Since the library is still in beta, you need to build it from source.
-
-## Setting up the TransactionManager ##
-
-Your application code deals with DbObjekts through an instance of `TransactionManager`. This corresponds to (and wraps) a single DataSource, comparable to a `SessionFactory` in Hibernate.  
-The `javax.sql.DataSource` contains all relevant configuration: connection string, username, password and other settings. Usually it also manages a pool of connections.
-
-### Configuration using an existing DataSource ###
-If you have no existing DataSource, you can use `HikariDataSourceFactory`, which creates a new HikariDataSource. If offers the bare minimum of necessary configuration,
-so feel free to create your own `HikariDataSource` directly for maximum expressiveness.
-
-```kotlin
-val dataSource: DataSource = DataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa")// bare-bones H2 memory database as used for integration tests.
-val transactionManager = DbObjekts.newTransactionManagerBuilder(dataSource).create()
-```
-
-### Global configuration ###
-
-You only need one instance of the `TransactionManager` per `DataSource` in a single JVM. So if you only have one type of connection in your application - a common case -,
-you might as well access the TransactionManager in a singleton fashion, i.e. without passing around a reference. The following flavour does just that:
-
-```kotlin
-  // Nothing is returned, but you can now acces the methods on the TransactionManager object directly 
-TransactionManager.configurer()
-    .dataSource(someDataSource)
-    .configure()
-```  
-
-`TransactionManager.isConfigured()` tells you if the system has been set up. Note that you cannot call `configure()` twice. You must call `SingletonTransactionManager.invalidate()`. This closes the current datasource.
-
-### My first query ###
-
-Now the system is set up to run queries, and you run them against a `Transaction` instance. This is a short-lived instance that wraps a single `java.sql.Connection`
-obtained from the pool and returned once you are done.
-
-```kotlin
-  import TransactionManager.*
-  newTransaction {
-    transaction -> val rows = transaction.select3<String, Double, Boolean>("select name, salary, married from employee where date_of_birth > ?", LocalDate.of(1980,1,1)).asList()
-  }             
-``` 
-
-This snippet packs quite a lot of information, so let's take it apart.
-- `TransactionManager.newTransaction` takes a function body and supplies it with a `Transaction` argument after creating a new Connection. Once the body has been executed it commits the transaction.
-- The `select3(String, Double, Boolean)` method is intended for native SQL queries that return results. It has to be parameterized with the types you intend to retrieve, in this case String, Double, Boolean.
-- You can provide optional query parameters as a vararg array. The size must match the number of question marks in the query.
-- Results are returned as a list of `Triple<String?, Double?, Boolean?>`. All values are nullable, because the corresponding rows may return null values.
-
-SQL that does not expect a result is a lot simpler. Use the `execute(..)` method for this.
-
-```kotlin
-   transaction.execute("DELETE FROM admissions WHERE id = ?", 1234)
-```
-
-### New or re-used transactions ###
-
-The `newTransaction` method runs all queries in a single transaction, but this is not what you want if a set of disparate write operations in different classes has to be treated atomically.
-
-In that case you should use `joinTransaction(..)`. The `TransactionManager` saves the last non-committed `Transaction` instance for each JVM thread and uses that when you call `joinTransaction` instead of creating a new one.
-If there is no previous `Transaction` it will create one for you.
-Some words of warning though:
-
-- DbObjekts will not perform the commit for you. You have to do it manually when you're ready: `transaction.commit()`.
-- JDBC runs with autocommit=true by default. You have to set it to false during setup if you want to use `joinTransaction()` effectively: `DbObjekts.configureforSingleDataSource(dataSource).autoCommit(false)`
-- Transactions are only re-used within the same JVM thread, for obvious reasons.
-
-## Working with generated Table metadata ##
-
-### Generating the code ###
-TBD
 
 ### Insert statements ###
 Let's start with getting some data into the tables. The `insert(..)` method takes a (generated) `Table` implementation and returns a corresponding `*InsertBuilder` instance.
@@ -255,125 +222,3 @@ Note that these constraints are executed server-side, as they are part of the SQ
 ```
 
 ### Contact ###
-
-* Jasper Sprengers at jaspersprengers@outlook.com
-
-
-import com.dbobjekts.api.Tuple4
-import com.dbobjekts.example.Aliases.c
-import com.dbobjekts.example.Aliases.ea
-import com.dbobjekts.example.Catalogdefinition
-import com.dbobjekts.example.core.Address
-import com.dbobjekts.example.core.Country
-import com.dbobjekts.example.core.Employee
-import com.dbobjekts.example.core.EmployeeAddress
-import com.dbobjekts.example.custom.AddressType
-import com.dbobjekts.example.hr.Hobby
-import com.dbobjekts.jdbc.TransactionManager
-import com.dbobjekts.metadata.Columns.BOOLEAN_NIL
-import com.dbobjekts.metadata.Columns.DOUBLE_NIL
-import com.dbobjekts.metadata.Columns.VARCHAR_NIL
-import com.dbobjekts.util.HikariDataSourceFactory
-import java.time.LocalDate
-
-val datasource =
-HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
-val tm: TransactionManager = TransactionManager.newBuilder()
-.dataSource(datasource)
-.catalog(Catalogdefinition)
-.autoCommit(true)
-.build()
-
-tm.newTransaction { tr ->
-// CreateExampleCatalog(tr)
-
-
-    val rows = tr.select(
-        "select name, salary, married from employee where date_of_birth > ?",
-        VARCHAR_NIL, DOUBLE_NIL, BOOLEAN_NIL,
-        LocalDate.of(1980, 1, 1)
-    ).asList()
-
-
-    val id = tr.insert(Employee).mandatoryColumns("Jane Doe", 3050.3, LocalDate.of(1980, 5, 7)).execute()
-    val e = Employee
-    val a = Address
-    val h = Hobby
-
-    tr.update(Employee).salary(4000.0).where(e.id.eq(id))
-
-    val withHobby: List<Pair<String, String>> = tr.select(e.name, h.name).where(e.salary.gt(3000.0)).asList()
-
-    val optionalHobby: List<Pair<String, String?>> = tr.select(e.name, h.name)
-        .from(e.leftJoin(h))
-        .where(e.salary.gt(3000.0)).asList()
-
-    // The mandatoryColumns method helps you to provide all non-nullable fields for the insert.
-    tr.insert(Country).mandatoryColumns("nl", "Netherlands").execute()
-    tr.insert(Country).mandatoryColumns("be", "Belgium").execute()
-    tr.insert(Country).mandatoryColumns("de", "Germany").execute()
-
-    // We have Pete, Jane and Bob. If an insert resulted in a generated primary key value, it is returned as a Long from the execute() method.
-    val petesId: Long = tr.insert(Employee).mandatoryColumns("Pete", 5020.34, LocalDate.of(1980, 5, 7)).married(true).execute()
-    val janesId: Long = tr.insert(Employee).mandatoryColumns("Jane", 6020.0, LocalDate.of(1978, 5, 7)).married(true).execute()
-    tr.insert(Employee).mandatoryColumns("Bob", 3020.34, LocalDate.of(1980, 5, 7)).execute()
-
-    // Jane works in Belgium, Pete works in Germany, and they both live in the Netherlands.
-    val janesWorkAddress: Long = tr.insert(Address).mandatoryColumns("Rue d'Eglise", "be").execute()
-    val petesWorkAddress: Long = tr.insert(Address).street("Kirchstrasse").countryId("de").execute()
-    val janeAndPetesHomeAddress: Long = tr.insert(Address).mandatoryColumns("Kerkstraat", "nl").execute()
-
-    tr.insert(EmployeeAddress).mandatoryColumns(janesId, janesWorkAddress).kind(AddressType.WORK).execute()
-    tr.insert(EmployeeAddress).mandatoryColumns(petesId, petesWorkAddress).kind(AddressType.WORK).execute()
-    tr.insert(EmployeeAddress).mandatoryColumns(petesId, janeAndPetesHomeAddress).kind(AddressType.HOME).execute()
-    tr.insert(EmployeeAddress).mandatoryColumns(janesId, janeAndPetesHomeAddress).kind(AddressType.HOME).execute()
-
-    // This query selects name and salary for all rows in the employee table. Notice we have imported the 'e' alias from the Aliases object. This is a handy shortcut that refers to the exact same Employee object.
-    // Consider the different methods to retrieve results
-    val asList: List<Pair<String, Double>> = tr.select(e.name, e.salary).noWhereClause().asList() // empty when no match
-    val asNullable: Pair<String, Double>? = tr.select(e.name, e.salary).noWhereClause().firstOrNull()// Null when no match
-    val singleResult: Pair<String, Double> = tr.select(e.name, e.salary).noWhereClause().first() // throws when no match
-
-    //Nested conditions in the where-clause are possible:
-    val listOfIds = tr.select(e.id).where(e.salary.gt(400.0).or(e.married.eq(true).and(e.salary).isNotNull())).asList()
-
-    //This select from the employee table, with a condition on the address table, using the employee_address many-to-many join table
-    // DBObjekts takes care of joining the necessary tables.
-    val results: List<Tuple4<String, LocalDate, Int?, Boolean?>> =
-        tr.select(e.name, e.dateOfBirth, e.children, e.married).where(Address.street.eq("Pete Street")).asList()
-
-    //The automatic join-chain resolution is handy, but comes with limitations:
-    // 1) There must be a direct foreign-key relationship between the tables used in your statement, and
-    // 2) all joins are left outer joins.
-    // If your join chain contains tables that are not in the table, and for which there is no direct many-to-many relationship, you have to build it yourself.
-    // Call the from() method with the driving table of your selection, and add the tables to joined as follows:
-    // it resolves to the following SQL: ... FROM EMPLOYEE e JOIN EMPLOYEE_ADDRESS ae on e.id = ae.employee_id JOIN ADDRESS a on a.id = ae.address_id join COUNTRY c on c.id = a.country_id
-    // Since the FK relationships between employee/employee-address and employee-address/address are known, DbObjekts can resolve the columns involved.
-    tr.select(e.name, c.name)
-        .from(Employee.innerJoin(ea).innerJoin(Address).innerJoin(Country))
-        .where(ea.kind.eq(AddressType.WORK)).asList()
-
-    //Another way to retrieve results is as a map, rather than tuples. Every table has a .* method, which returns all its column values in a ResultMap
-
-/*
-
-            //Select with range
-            tr.select(Employee.*).where(e.salary gt 1500 and e.salary lt 6000).asResultMaps()
-
-            //IN and NOT IN are supported as well
-            tr.select(Employee.*).where(e.id in(petesId, janesId) and e.name notIn("Pete", "Bob")).asList()
-
-            //String matching methods startsWith, endsWith and contains produce SQL with LIKE '%xxx' syntax
-            tr.select(e.name).where(e.name startsWith "Arthur" or e.name endsWith "Dent" or e.name contains "Philip").asList()
-
-            //tr.select(Employee.*).noWhereClause.orderDesc(e.salary).orderAsc(e.name).limit(10).as
-
-            //Update a single row:
-            tr.update(Employee).salary(peteFields(e.salary).get + 300.0).where(e.id eq petesId)
-
-            //Delete a row:
-            tr.deleteFrom(EmployeeAddress).where(ea.employeeId eq petesId)
-     */
-
-
-}

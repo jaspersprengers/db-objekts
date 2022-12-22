@@ -17,6 +17,3 @@ data class CodeGeneratorConfig(
 ){
 
 }
-
-data class DataSourceInfo(val user: String, val password: String?, val url: String, val driver: String?)
-

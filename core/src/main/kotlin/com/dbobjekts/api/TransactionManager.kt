@@ -18,8 +18,7 @@ import javax.sql.DataSource
 class TransactionManager(
     ds: DataSource,
     catalogOpt: Catalog? = null,
-    private val customConnectionProvider: ((DataSource) -> Connection)? = null,
-    private val enforeNullabilityInResults: Boolean = false
+    private val customConnectionProvider: ((DataSource) -> Connection)? = null
 ) {
     private val log = LoggerFactory.getLogger(TransactionManager::class.java)
     internal val dataSource: DataSourceAdapter
@@ -49,7 +48,6 @@ class TransactionManager(
         require(!connection.isClosed, { "Connection is closed" })
 
         val adapter = ConnectionAdapter(connection, StatementLogger(), catalog, vendor)
-        adapter.enforceNullabilityInResults = enforeNullabilityInResults
         val transaction = Transaction(adapter)
         try {
             val result: T = fct(transaction)
@@ -63,10 +61,6 @@ class TransactionManager(
             transaction.semaphore.clear()
             transaction.close()
         }
-    }
-
-    fun close() {
-        dataSource.close()
     }
 
     internal fun extractDBMetaData(): DBConnectionMetaData {
@@ -103,7 +97,6 @@ class TransactionManager(
         private lateinit var dataSource: DataSource
         private var catalog: Catalog? = null
         private var connectionFactory: ((DataSource) -> Connection)? = null
-        private var enforceNullabilityInResults: Boolean = false
 
         fun withDataSource(dataSource: DataSource): TransactionManagerBuilder {
             this.dataSource = dataSource
@@ -115,24 +108,13 @@ class TransactionManager(
             return this
         }
 
-        /**
-         * This sets the strategy when non-nullable columns return null results, which happens when they are involved in an outer join.
-         * The default is false. This means a default value is returned (e.g. zero for numerics, empty string for char columns).
-         * Alternatively, you can opt to use the nullable counterpart in your query: transaction.select(Employee.name, Hobby.name.nullable).
-         * If you set this value to true and don't use the nullable counterpart strategy in your query, it will throw a RuntimeException when the outer join finds no match.
-         */
-        fun enforceStrictNullabilityInResults(setting: Boolean): TransactionManagerBuilder {
-            this.enforceNullabilityInResults = setting
-            return this
-        }
-
         fun withCustomConnectionProvider(factory: (DataSource) -> Connection): TransactionManagerBuilder {
             this.connectionFactory = factory
             return this
         }
 
         fun build(): TransactionManager {
-            return TransactionManager(dataSource, catalog, connectionFactory, enforceNullabilityInResults)
+            return TransactionManager(dataSource, catalog, connectionFactory)
         }
     }
 

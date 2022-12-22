@@ -24,8 +24,8 @@ class TableAliasesBuilderTest {
     @Test
     fun `foreign key`() {
         assertEquals(2, EmployeeAddress.foreignKeys.size)
-        assertEquals("EMPLOYEE_ID", EmployeeAddress.foreignKeys[0].dbName)
-        assertEquals("ADDRESS_ID", EmployeeAddress.foreignKeys[1].dbName)
+        assertEquals("EMPLOYEE_ID", EmployeeAddress.foreignKeys[0].nameInTable)
+        assertEquals("ADDRESS_ID", EmployeeAddress.foreignKeys[1].nameInTable)
 
         assertEquals("EMPLOYEE.ID", EmployeeAddress.foreignKeys[0].parentColumn.tableDotName)
         assertEquals("ADDRESS.ID", EmployeeAddress.foreignKeys[1].parentColumn.tableDotName)

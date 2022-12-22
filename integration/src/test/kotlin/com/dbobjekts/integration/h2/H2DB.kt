@@ -28,19 +28,18 @@ object H2DB {
 
     private fun createExampleCatalog() {
         transactionManager.newTransaction { transaction ->
-            transaction.execute("CREATE SCHEMA if not exists inventory");
-            transaction.execute("CREATE SCHEMA if not exists operations");
+            transaction.execute("CREATE SCHEMA if not exists library");
 
-            transaction.execute("create table inventory.author(id BIGINT NOT NULL primary key auto_increment,name varchar(200) NOT NULl,bio varchar(1000) NULL)")
+            transaction.execute("create table library.author(id BIGINT NOT NULL primary key auto_increment,name varchar(200) NOT NULl,bio varchar(1000) NULL)")
 
-            transaction.execute("create table inventory.book(isbn varchar(20) primary key NOT NULL,title varchar(200) NOT NULL,author_id BIGINT NOT NULL,published DATE NOT NULL,foreign key (author_id) references inventory.author(id))")
+            transaction.execute("create table library.book(isbn varchar(20) primary key NOT NULL,title varchar(200) NOT NULL,author_id BIGINT NOT NULL,published DATE NOT NULL,foreign key (author_id) references library.author(id))")
 
-            transaction.execute("create table inventory.item(id BIGINT NOT NULL primary key auto_increment,isbn varchar(20) NOT NULL,date_acquired DATE NOT NULL,foreign key (isbn) references inventory.book(isbn))")
+            transaction.execute("create table library.item(id BIGINT NOT NULL primary key auto_increment,isbn varchar(20) NOT NULL,date_acquired DATE NOT NULL,foreign key (isbn) references library.book(isbn))")
 
-            transaction.execute("create table operations.member(id BIGINT NOT NULL primary key auto_increment,name varchar(200) NOT NULl)")
+            transaction.execute("create table library.member(id BIGINT NOT NULL primary key auto_increment,name varchar(200) NOT NULl)")
 
-            transaction.execute("create table operations.loan(item_id BIGINT NOT NULL,member_id BIGINT NOT NULL,date_loaned DATE NOT NULL,date_returned DATE NULL," +
-                    "foreign key (item_id) references inventory.item(id),foreign key (member_id) references operations.member(id))");
+            transaction.execute("create table library.loan(item_id BIGINT NOT NULL,member_id BIGINT NOT NULL,date_loaned DATE NOT NULL,date_returned DATE NULL," +
+                    "foreign key (item_id) references library.item(id),foreign key (member_id) references library.member(id))");
 
         }
     }

@@ -19,7 +19,7 @@ data class Condition<I, W : WhereClauseComponent>(
         if (values == null) "" else (if (values!!.size == 1) "?" else "(${values!!.map { "?" }.joinToString(",")})")
 
 
-    override fun toString(): String = column.dbName + symbol + (values ?: "null")
+    override fun toString(): String = column.nameInTable + symbol + (values ?: "null")
 
     override fun createSubClause(
         symbol: String,
@@ -37,9 +37,9 @@ data class Condition<I, W : WhereClauseComponent>(
 
     override fun toSQL(options: SQLOptions): String {
 
-        fun columnComponent(col: AnyColumn): String = if (options.includeAlias) column.aliasDotName() else column.dbName
+        fun columnComponent(col: AnyColumn): String = if (options.includeAlias) column.aliasDotName() else column.nameInTable
 
-        fun getOptionalAlias(col: AnyColumn) = "${col.table.alias()}.${col.dbName}"
+        fun getOptionalAlias(col: AnyColumn) = "${col.table.alias()}.${col.nameInTable}"
 
         val rightOperand: String =
             if (columnCondition != null) getOptionalAlias(columnCondition!!) else getParameterCharactersForValues()

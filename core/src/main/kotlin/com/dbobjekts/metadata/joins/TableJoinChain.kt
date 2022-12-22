@@ -52,19 +52,19 @@ class TableJoinChain(val table: Table) : TableOrJoin, Cloneable, SerializableToS
     private fun getJoinPair(left: Table, right: Table, tableToAdd: Table): Pair<AnyColumn, AnyColumn>? {
 
         left.getForeignKeyToParent(tableToAdd)?.let {
-            return Pair(it.column, tableToAdd.columnByName(it.parentColumn.dbName) ?: throw java.lang.IllegalStateException(""))
+            return Pair(it.column, tableToAdd.columnByName(it.parentColumn.nameInTable) ?: throw java.lang.IllegalStateException(""))
         }
 
         right.getForeignKeyToParent(tableToAdd)?.let {
-            return Pair(it.column, tableToAdd.columnByName(it.parentColumn.dbName) ?: throw java.lang.IllegalStateException(""))
+            return Pair(it.column, tableToAdd.columnByName(it.parentColumn.nameInTable) ?: throw java.lang.IllegalStateException(""))
         }
 
         tableToAdd.getForeignKeyToParent(left)?.let {
-            return Pair(left.columnByName(it.parentColumn.dbName) ?: throw java.lang.IllegalStateException(""), it.column)
+            return Pair(left.columnByName(it.parentColumn.nameInTable) ?: throw java.lang.IllegalStateException(""), it.column)
         }
 
         tableToAdd.getForeignKeyToParent(right)?.let {
-            return Pair(right.columnByName(it.parentColumn.dbName) ?: throw java.lang.IllegalStateException(""), it.column)
+            return Pair(right.columnByName(it.parentColumn.nameInTable) ?: throw java.lang.IllegalStateException(""), it.column)
         }
 
         /*   *//* val lrFK = left.getForeignKeyToParent(tableToAdd)

@@ -48,8 +48,6 @@ class PackageName(val parts: List<String>) {
         parts.forEach { part -> require(regex.matcher(part).matches(), { "$part is not a valid package element." }) }
     }
 
-    fun isBlank(): Boolean = parts.isEmpty()
-
     fun createSubPackageForSchema(sub: SchemaName): PackageName = concat(sub.value.lowercase())
 
     fun concat(part: String): PackageName = PackageName(StringUtil.concatToList(parts, part))
