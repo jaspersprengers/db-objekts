@@ -8,12 +8,11 @@ import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
 object Book:Table("BOOK"), HasUpdateBuilder<BookUpdateBuilder, BookInsertBuilder> {
-    val id = com.dbobjekts.metadata.column.AutoKeyLongColumn(this, "ID")
     val isbn = com.dbobjekts.metadata.column.VarcharColumn(this, "ISBN")
     val title = com.dbobjekts.metadata.column.VarcharColumn(this, "TITLE")
     val authorId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "AUTHOR_ID", Author.id)
     val published = com.dbobjekts.metadata.column.DateColumn(this, "PUBLISHED")
-    override val columns: List<AnyColumn> = listOf(id,isbn,title,authorId,published)
+    override val columns: List<AnyColumn> = listOf(isbn,title,authorId,published)
     override fun metadata(): WriteQueryAccessors<BookUpdateBuilder, BookInsertBuilder> = WriteQueryAccessors(BookUpdateBuilder(), BookInsertBuilder())
 }
 

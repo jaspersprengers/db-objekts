@@ -8,7 +8,8 @@ import com.dbobjekts.util.StringUtil
 class TableJoinChainBuilder(
     val catalog: Catalog,
     val drivingTable: Table,
-    val tables: List<Table>
+    val tables: List<Table>,
+    private val useOuterJoins: Boolean = false
 ) {
 
     init{
@@ -92,7 +93,7 @@ class TableJoinChainBuilder(
         if (unUsed.isNotEmpty())
             throw IllegalStateException("The following table(s) could not be joined: ${StringUtil.joinBy(unUsed, {it.dbName})}")
         val chain = TableJoinChain(sortedTables.first())
-        sortedTables.drop(1).forEach {chain.leftJoin(it)}
+        sortedTables.drop(1).forEach { if (useOuterJoins) chain.leftJoin(it) else chain.innerJoin(it)}
         return chain
     }
 

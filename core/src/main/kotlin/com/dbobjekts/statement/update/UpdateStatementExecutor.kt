@@ -24,7 +24,6 @@ class UpdateStatementExecutor(
     override val statementType = "update"
 
     init {
-        semaphore.claim("update")
         registerTable(table)
         if (values.isEmpty())
             Errors("List of columns to update is empty. Provide at least one.")
@@ -56,7 +55,7 @@ class UpdateStatementExecutor(
         getWhereClause().getFlattenedConditions().forEach { registerTable(it.column.table) }
         val columns = columnsForUpdate.params.map { it.column.aliasDotName() + " = ?" }.joinToString(",")
         val clause = getWhereClause().build(SQLOptions(includeAlias = true))
-        return StringUtil.concat(listOf("update", joinChain().toSQL(), "set", columns, clause))
+        return StringUtil.concat(listOf("update", buildJoinChain().toSQL(), "set", columns, clause))
     }
 
     fun getAllParameters(): List<AnySqlParameter> {

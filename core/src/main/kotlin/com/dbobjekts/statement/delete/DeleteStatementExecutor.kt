@@ -41,8 +41,8 @@ class DeleteStatementExecutor(
     private fun execute(): Long {
         val wc = getWhereClause()
         wc.getFlattenedConditions().forEach { registerTable(it.column.table) }
-        val alias = if (connection.vendorSpecificProperties.supportsJoinsInUpdateAndDelete()) "${joinChain().table.alias()}.*" else ""
-        val sql = StringUtil.concat(listOf("delete", alias, "from", joinChain().toSQL(), wc.build(SQLOptions(includeAlias = true))))
+        val alias = if (connection.vendorSpecificProperties.supportsJoinsInUpdateAndDelete()) "${buildJoinChain().table.alias()}.*" else ""
+        val sql = StringUtil.concat(listOf("delete", alias, "from", buildJoinChain().toSQL(), wc.build(SQLOptions(includeAlias = true))))
         val params = wc.getParameters()
         return connection.prepareAndExecuteDeleteStatement(sql, params).also {
             connection.statementLog.logResult(it)

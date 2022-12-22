@@ -1,12 +1,15 @@
 package com.dbobjekts.component
 
+import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.api.Tuple2
+import com.dbobjekts.integration.h2.TestCatalog
 import com.dbobjekts.integration.h2.core.Address
 import com.dbobjekts.integration.h2.core.Country
 import com.dbobjekts.integration.h2.core.Employee
 import com.dbobjekts.integration.h2.core.EmployeeAddress
 import com.dbobjekts.integration.h2.custom.AddressType
 import com.dbobjekts.integration.h2.hr.Hobby
+import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
@@ -46,6 +49,34 @@ class SelectionComponentTest {
         }
     }
 
+    @Test
+    fun `use default values for null results configured on the Transaction`() {
+        H2DB.newTransaction({
+            it.enforceNullabilityInResults(false)
+            val (name,hobby) =
+                it.select(e.name, h.name).where(e.name.eq("Arthur")).useOuterJoins().first()
+            assert(hobby == "")
+        })
+    }
+
+    @Test
+    fun `use default values for null results configured on the TransactionManager`() {
+        val tm = TransactionManager.builder().withDataSource(H2DB.dataSource)
+            .withCatalog(TestCatalog)
+            .enforceStrictNullabilityInResults(false).build()
+        tm({
+            val (name,hobby) =
+                it.select(e.name, h.name).where(e.name.eq("Arthur")).useOuterJoins().first()
+            assert(hobby == "")
+        })
+    }
+
+    @Test
+    fun `do not use default value for null result in non-nullable column throws`() {
+        H2DB.newTransaction({
+            Assertions.assertThatThrownBy { it.select(e.name, h.name).where(e.name.eq("Arthur")).first() }
+        })
+    }
 
     @Test
     fun `test select two columns from two tables`() {

@@ -5,7 +5,6 @@ plugins {
 dependencies {
     implementation(project(":core"))
 
-
     implementation("com.zaxxer:HikariCP:5.0.1")
     implementation("com.h2database:h2:2.1.214")
     implementation("org.apache.commons:commons-text:1.10.0")

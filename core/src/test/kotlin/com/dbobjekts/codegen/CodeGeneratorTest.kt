@@ -1,11 +1,8 @@
 package com.dbobjekts.codegen
 
-import com.dbobjekts.api.Columns
 import com.dbobjekts.codegen.parsers.TableMetaDataRow
 import com.dbobjekts.component.H2DB
 import com.dbobjekts.metadata.column.*
-import com.dbobjekts.metadata.column.AutoKeyLongColumn
-import com.dbobjekts.util.PathUtil
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -38,7 +35,7 @@ class CodeGeneratorTest {
             )
             parserFactory.addRow(id)
             generator.parserFactory = parserFactory
-            sequence?.let { generator.mappingConfigurer().sequenceForPrimaryKey("core", "employee", "id", it) }
+            sequence?.let { generator.mappingConfigurer().setSequenceNameForTable("core", "employee", "id", it) }
             val helper = CatalogDefinitionHelper(generator.createCatalogDefinition())
             val t = helper.getTable(table = "EMPLOYEE")!!
             val idCol = helper.getColumn(t, "ID")!!

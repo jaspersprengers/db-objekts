@@ -16,6 +16,7 @@ class FloatColumn(table: Table, name: String) : NonNullableColumn<Float>(name, t
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Float) =
         statement.setFloat(position, value as Float)
+    override fun defaultValue() = 0f
 }
 
 class NullableFloatColumn(table: Table, name: String) : NullableColumn<Float?>(name, table, Types.FLOAT, Float::class.java){

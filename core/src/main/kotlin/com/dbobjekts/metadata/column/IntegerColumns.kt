@@ -9,6 +9,7 @@ open class IntegerColumn(table: Table, name: String) : NonNullableColumn<Int>(na
     override val nullable: NullableColumn<Int?> = NullableIntegerColumn(table, name)
     override fun setValue(position: Int, statement: PreparedStatement, value: Int) = statement.setInt(position, value)
     override fun getValue(position: Int, resultSet: ResultSet): Int = resultSet.getInt(position)
+    override fun defaultValue() = 0
 }
 
 open class NullableIntegerColumn(table: Table, name: String) :  NullableColumn<Int?>(name, table, Types.INTEGER, Int::class.java){

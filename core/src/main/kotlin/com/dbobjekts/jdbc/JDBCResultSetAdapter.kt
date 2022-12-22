@@ -6,10 +6,9 @@ import java.sql.ResultSet
 
 class JDBCResultSetAdapter(
     val resultSetColumns: List<ColumnInResultRow>,
-    val resultSet: ResultSet
+    val resultSet: ResultSet,
+    val enforceNullabilityInResults: Boolean = true
 ) {
-
-    fun isClosed(): Boolean = resultSet.isClosed
 
     fun <T, RS : ResultRow<T>> retrieveWithIterator(selectResultSet: RS, mapper: (T) -> Boolean) {
         while (advanceResultSet()) {

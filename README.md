@@ -1,10 +1,13 @@
 # Introduction #
 
-DbObjekts is a Kotlin library to perform type-safe CRUD-queries on a relational databases in Kotlin application code.
-It works by generating metadata (Kotlin objects) for the database objects and their relations, i.e. the tables, columns and referential constraints (foreign keys). 
-DBObjekts has superficial similarities to ORM frameworks like Hibernate. It generates queries based on database metadata, but there are no stateful entity objects that mimic database rows where changes are carried through transparently. ORM works fine when the focus is retrieval and manipulation of single data entities. It is far less efficient at batch updates. 
+## DbObjekts In 100 words
+DbObjekts is a Kotlin library to perform queries on a relational databases in application code.
+It generates source code that acts as metadata  for all tables, columns and referential constraints (foreign keys). You then use these stateless Kotlin objects to build type-safe and fluent queries, comfortably using 
+your IDE's autocomplete, while DbObjekts takes care of the SQL boilerplate and type conversions.
 
-Opinionated
+## Allow me a demonstration
+Before we jump to installation, let's showcase a very concise demonstration to get a feel of what you can achieve with DbObjekts.
+
 
 The library uses regular JDBC functionality and can be configured with either an existing `javax.sql.DataSource`, or with the built-in Hikari connection pool.
  ```kotlin
@@ -50,7 +53,12 @@ Added benefits:
 DbObjekts is certainly not the first library built on top of JDBC that tries to take the pain in working with databases.
 It does however take an opinionated view on the topic of object-relational mapping, which is that a one-to-one mapping
 
-# Tutorial #
+# In-depth
+
+## Rationale
+DBObjekts has superficial similarities to ORM frameworks like Hibernate, but there are no stateful entity objects that mimic database rows where changes are carried through transparently.
+ORM works fine when the focus is retrieval and manipulation of single data entities. It is far less efficient at batch updates.
+
 
 ## Installation ##
 

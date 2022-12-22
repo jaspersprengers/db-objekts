@@ -9,7 +9,7 @@ object HikariDataSourceFactory {
         url: String,
         username: String,
         password: String?,
-        driver: String?,
+        driver: String? = null,
         maxPoolSize: Int = 50,
         connectionTimeoutMillis: Long = 10000
     ): HikariDataSource {
@@ -24,4 +24,3 @@ object HikariDataSourceFactory {
     }
 
 }
-

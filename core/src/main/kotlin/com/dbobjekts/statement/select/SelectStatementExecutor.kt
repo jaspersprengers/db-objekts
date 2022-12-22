@@ -21,6 +21,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
 ) : StatementBase<SelectStatementExecutor<T, RSB>>(semaphore, connection) {
 
     override val statementType = "select"
+    private var useOuterJoins = false
 
     init {
         semaphore.claim("select")
@@ -65,6 +66,11 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
 
     fun where(): SelectStatementExecutor<T, RSB> = where(EmptyWhereClause)
 
+    fun useOuterJoins(): SelectStatementExecutor<T, RSB>{
+        useOuterJoins = true
+        return this
+    }
+
     fun first(): T = execute().first().also { semaphore.clear(); statementLog.logResult(it) }
 
     fun firstOrNull(): T? = execute().firstOrNull().also { semaphore.clear(); statementLog.logResult(it) }
@@ -99,19 +105,15 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
     }
 
     private fun toSQL(): String {
-        try {
-            getWhereClause().getFlattenedConditions().forEach { registerTable(it.column.table) }
-            val builder = SelectStatementSqlBuilder()
-            builder.withWhereClause(getWhereClause())
-            builder.withJoinChain(joinChain())
-                .withOrderByClause(orderByClauses.toList())
-                .withColumnsToSelect(columnsToFetch())
-                .build()
-            limitRows?.let { builder.withLimitClause(limitRows!!, { r: Int -> connection.vendorSpecificProperties.getLimitClause(r) }) }
-            return builder.build()
-        } catch (e: Exception) {
-            return "CANNOT SERIALIZE"
-        }
+        getWhereClause().getFlattenedConditions().forEach { registerTable(it.column.table) }
+        val builder = SelectStatementSqlBuilder()
+        builder.withWhereClause(getWhereClause())
+        builder.withJoinChain(buildJoinChain(useOuterJoins))
+            .withOrderByClause(orderByClauses.toList())
+            .withColumnsToSelect(columnsToFetch())
+            .build()
+        limitRows?.let { builder.withLimitClause(limitRows!!, { r: Int -> connection.vendorSpecificProperties.getLimitClause(r) }) }
+        return builder.build()
     }
 
     override fun toString() = toSQL()

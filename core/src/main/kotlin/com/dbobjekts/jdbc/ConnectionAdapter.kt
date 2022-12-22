@@ -1,9 +1,9 @@
 package com.dbobjekts.jdbc
 
 import com.dbobjekts.api.AnySqlParameter
+import com.dbobjekts.api.ResultRow
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.statement.ColumnInResultRow
-import com.dbobjekts.api.ResultRow
 import com.dbobjekts.util.StatementLogger
 import com.dbobjekts.vendors.Vendor
 import com.dbobjekts.vendors.VendorSpecificProperties
@@ -24,6 +24,8 @@ data class ConnectionAdapter(
     fun isValid(): Boolean = !this.jdbcConnection.isClosed && this.jdbcConnection.isValid(2000)
 
     val vendorSpecificProperties: VendorSpecificProperties = vendor.properties
+
+    internal var enforceNullabilityInResults: Boolean = false
 
     fun close() {
         try {
@@ -56,7 +58,7 @@ data class ConnectionAdapter(
         columnsToFetch: List<ColumnInResultRow>,
         selectResultSet: T
     ): T {
-        val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters))
+        val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters), enforceNullabilityInResults)
         selectResultSet.initialize(resultSetAdapter)
         selectResultSet.retrieveAll()
         return selectResultSet
@@ -69,7 +71,7 @@ data class ConnectionAdapter(
         selectResultSet: RS,
         iteratorFunction: (T) -> Boolean
     ) {
-        val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters))
+        val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters), enforceNullabilityInResults)
         selectResultSet.initialize(resultSetAdapter)
         resultSetAdapter.retrieveWithIterator(selectResultSet, iteratorFunction)
     }
@@ -80,6 +82,7 @@ data class ConnectionAdapter(
     ): ResultSet {
         val statement = jdbcConnection.prepareStatement(sql)
         params.forEach { it.setValueOnStatement(statement) }
+        log.info(sql)
         statementLog.logStatement(sql, params)
         return statement.executeQuery()
     }

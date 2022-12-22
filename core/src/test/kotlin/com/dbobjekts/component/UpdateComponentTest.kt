@@ -111,7 +111,6 @@ class UpdateComponentTest {
     @Order(5)
     fun `update marital status for existing e`() {
         H2DB.newTransaction { tr ->
-            tr.update(e)
             tr.update(e).married(false).where(e.name.eq("Janet"))
             assertFalse(tr.select(e.married).where(e.name.eq("Janet")).first() ?: false)
         }

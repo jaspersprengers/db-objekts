@@ -10,6 +10,7 @@ class ByteArrayColumn(table: Table, name: String) : NonNullableColumn<ByteArray>
     override fun getValue(position: Int, resultSet: ResultSet): ByteArray? = resultSet.getBytes(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: ByteArray) =
         statement.setBytes(position, value)
+    override fun defaultValue() = ByteArray(0)
 }
 
 class NullableByteArrayColumn(table: Table, name: String) : NullableColumn<ByteArray?>(name, table, Types.BINARY, ByteArray::class.java){

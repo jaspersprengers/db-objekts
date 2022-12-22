@@ -21,7 +21,7 @@ abstract class ResultRow<out O> {
     }
 
      fun extractValue(column: ColumnInResultRow, resultSet: ResultSet): Any? {
-        return column.column.retrieveValue(column.position, resultSet)
+        return column.column.retrieveValue(column.position, resultSet, jdbcResultSetAdapter.enforceNullabilityInResults)
     }
 
     fun first(): O =

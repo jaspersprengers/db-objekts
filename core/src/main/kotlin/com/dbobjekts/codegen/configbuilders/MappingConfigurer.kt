@@ -22,19 +22,34 @@ class MappingConfigurer {
      * @param schema if non-null, only look in provided schema. Otherwise, apply across the board
      * @param table if non-null, only look in provided schema. Otherwise, apply across the board
      */
-    fun <C : NonNullableColumn<*>> overrideTypeForColumnByName(
+    fun <C : NonNullableColumn<*>> setColumnTypeForName(
         column: String,
         columnType: Class<C>,
         schema: String? = null,
-        table: String? = null,
-        exactMatch: Boolean = false
+        table: String? = null
     ): MappingConfigurer {
         mappers += ColumnTypeMapperByNameMatch(
             columnNamePattern = column,
             columnType = columnType,
             schema = schema,
             table = table,
-            exactMatch = exactMatch
+            exactMatch = false
+        )
+        return this
+    }
+
+    fun <C : NonNullableColumn<*>> setColumnTypeForNamePattern(
+        column: String,
+        columnType: Class<C>,
+        schema: String? = null,
+        table: String? = null
+    ): MappingConfigurer {
+        mappers += ColumnTypeMapperByNameMatch(
+            columnNamePattern = column,
+            columnType = columnType,
+            schema = schema,
+            table = table,
+            exactMatch = true
         )
         return this
     }
@@ -43,11 +58,11 @@ class MappingConfigurer {
      * Overrides the vendor-specific default and sets a custom ColumnType for a specific jdbcType
      * For example, in certain cases the MySQL TINYINT type can be treated as a Boolean
      * @param jdbcType the JDBC type to search for
-     * @param columnType the appropriate type
-     * @param schema if non-null, only look in provided schema. Otherwise, apply across the board
-     * @param table if non-null, only look in provided schema. Otherwise, apply across the board
+     * @param columnType the vendor-specific JDBC type. See the appropriate ColumnTypeMapper implementation for each vendor
+     * @param schema if non-null, limit to this schema.
+     * @param table if non-null, limit to this table.
      */
-    fun <C : NonNullableColumn<*>> overrideTypeForColumnByJDBCType(
+    fun <C : NonNullableColumn<*>> setColumnTypeForJDBCType(
         jdbcType: String,
         columnType: Class<C>,
         schema: String? = null,
@@ -62,7 +77,7 @@ class MappingConfigurer {
         return this
     }
 
-    fun sequenceForPrimaryKey(
+    fun setSequenceNameForTable(
         schema: String,
         table: String,
         column: String,

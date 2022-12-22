@@ -16,6 +16,7 @@ class DoubleColumn(table: Table, name: String) : NonNullableColumn<Double>(name,
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Double) =
         statement.setDouble(position, value as Double)
+    override fun defaultValue() = 0.0
 
 }
 

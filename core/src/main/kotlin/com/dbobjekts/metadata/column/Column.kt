@@ -35,7 +35,7 @@ abstract class Column<I>(
         return clause
     }
 
-    internal abstract fun retrieveValue(position: Int, rs: ResultSet): I?
+    internal abstract fun retrieveValue(position: Int, rs: ResultSet, enforceNullability: Boolean): I?
 
     internal abstract fun putValue(position: Int, statement: PreparedStatement, value: I?)
 

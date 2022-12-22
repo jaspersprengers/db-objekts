@@ -32,11 +32,12 @@ abstract class StatementBase<W>(protected val semaphore: Semaphore,
         _drivingTable = table
     }
 
-    internal fun joinChain(): TableJoinChain =
+    internal fun buildJoinChain(useOuterJoins: Boolean = false): TableJoinChain =
         _joinChain ?: TableJoinChainBuilder(
             catalog = catalog,
             drivingTable = _drivingTable ?: tables.firstOrNull() ?: throw IllegalStateException("Cannot build query: no tables to select"),
-            tables = tables.toList()
+            tables = tables.toList(),
+            useOuterJoins = useOuterJoins
         ).build()
 
 

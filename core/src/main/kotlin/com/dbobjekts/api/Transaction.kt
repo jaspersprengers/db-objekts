@@ -21,14 +21,16 @@ class Transaction(internal val connection: ConnectionAdapter) {
     fun <U : UpdateBuilderBase> update(provider: HasUpdateBuilder<U, *>): U {
         val updater = provider.metadata().updater
         updater.connection = connection
-        updater.semaphore = semaphore.also { it.claim("updater") }
+        semaphore.claim("update")
+        updater.semaphore = semaphore
         return updater
     }
 
     fun <I : InsertBuilderBase> insert(provider: HasUpdateBuilder<*, I>): I {
         val inserter: I = provider.metadata().inserter
         inserter.connection = connection
-        inserter.semaphore = semaphore.also { it.claim("inserter") }
+        semaphore.claim("update")
+        inserter.semaphore = semaphore
         return inserter
     }
 
@@ -49,12 +51,17 @@ class Transaction(internal val connection: ConnectionAdapter) {
 
     fun transactionExecutionLog() = connection.statementLog.transactionExecutionLog()
 
+    fun enforceNullabilityInResults(setting: Boolean) {
+        connection.enforceNullabilityInResults = setting
+    }
+
     fun commit() = connection.commit()
 
     fun rollback() = connection.rollback()
 
     fun execute(sql: String, vararg args: Any): Long {
-        return SQLStatementExecutor<Long?, ResultRow1<Long>>(semaphore, connection, sql, args.toList()).execute().also { connection.statementLog.logResult(it) }
+        return SQLStatementExecutor<Long?, ResultRow1<Long>>(semaphore, connection, sql, args.toList()).execute()
+            .also { connection.statementLog.logResult(it) }
     }
 
     fun sql(sql: String, vararg args: Any): CustomSQLStatementBuilder =
