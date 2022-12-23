@@ -12,6 +12,22 @@ import com.dbobjekts.codegen.writer.SourcesGenerator
 import org.slf4j.LoggerFactory
 import javax.sql.DataSource
 
+/**
+ * Central manager for creating metadata source code. Configuration consists of
+ * * setting the [DataSource]
+ * * custom settings for mapping [com.dbobjekts.metadata.column.Column] instances to JDBC types, among other setting
+ * * configuration of the output, e.g. the package and directory to be used
+ *
+ * A minimal example would be
+ * ```kotlin
+ *    val generator = CodeGenerator()
+ *        generator.withDataSource(H2DB.dataSource)
+ *        generator.outputConfigurer()
+ *             .basePackageForSources("com.dbobjekts.integration.h2")
+ *             .outputDirectoryForGeneratedSources("<PATH>")
+ *    generator.generateSourceFiles()
+ * ```
+ */
 open class CodeGenerator {
 
     private val logger = LoggerFactory.getLogger(CodeGenerator::class.java)
@@ -27,12 +43,24 @@ open class CodeGenerator {
         return this
     }
 
+    /**
+     * Provides further settings to configure the output of the code generator
+     */
     fun outputConfigurer(): OutputConfigurer = outputConfigurer
 
+    /**
+     * Provides optional settings to fine-tune the mapping of [com.dbobjekts.metadata.column.Column] types to SQL types
+     */
     fun mappingConfigurer(): MappingConfigurer = mappingConfigurer
 
+    /**
+     * Provides optional settings to exclude certain database schemas, tables, or columns from the generated sources.
+     */
     fun exclusionConfigurer(): ExclusionConfigurer = exclusionConfigurer
 
+    /**
+     * When all is properly set up, this outputs the code
+     */
     fun generateSourceFiles() {
         val catalogDefinition: DBCatalogDefinition = createCatalogDefinition()
         logger.info("Catalog definition was parsed OK. Generating code.")
@@ -47,7 +75,7 @@ open class CodeGenerator {
         logger.info("Source files were generated OK.")
     }
 
-    fun createCatalogDefinition(): DBCatalogDefinition {
+    internal fun createCatalogDefinition(): DBCatalogDefinition {
         logger.info("Running code generation tool. Validating configuration settings.")
         val generatorConfig: CodeGeneratorConfig = build()
         return parserFactory.create(generatorConfig).parseCatalog()

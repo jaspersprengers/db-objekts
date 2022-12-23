@@ -31,11 +31,25 @@ class DeleteStatementExecutor(
         return this
     }
 
+    /**
+     * Sets the whereclause on this delete statement and executes the statement. Note that when you want to delete all records in a table, you still explicitly provide an empty whereclause. Example:
+     * ```kotlin
+     * val rowsRemoved = transaction.deleteFrom(Employee).where(Employee.id.eq(42))
+     * ```
+     * @return the value returned by [java.sql.PreparedStatement.executeUpdate]
+     */
     fun where(condition: SubClause): Long {
         withWhereClause(condition)
         return execute()
     }
 
+    /**
+     * Executes the delete statement with an empty whereclause, effectively deleting the entire table. Use with care!
+     * ```kotlin
+     * val rowsRemoved = transaction.deleteFrom(Employee).where()
+     * ```
+     * @return the value returned by [java.sql.PreparedStatement.executeUpdate]
+     */
     fun where(): Long = where(EmptyWhereClause)
 
     private fun execute(): Long {

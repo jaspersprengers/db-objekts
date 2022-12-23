@@ -15,6 +15,7 @@ class CodeGeneratorTest {
         generator.withDataSource(H2DB.dataSource)
         generator.outputConfigurer()
             .basePackageForSources("com.dbobjekts.integration.h2")
+
         return generator
     }
 

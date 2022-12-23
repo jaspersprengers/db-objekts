@@ -12,29 +12,29 @@ abstract class ResultRow<out O> {
     protected lateinit var jdbcResultSetAdapter: JDBCResultSetAdapter
     private lateinit var rows: List<O>
 
-    fun initialize(jdbcResultSetAdapter: JDBCResultSetAdapter) {
+    internal fun initialize(jdbcResultSetAdapter: JDBCResultSetAdapter) {
         this.jdbcResultSetAdapter = jdbcResultSetAdapter
     }
 
-    fun retrieveAll() {
+    internal fun retrieveAll() {
         rows = jdbcResultSetAdapter.retrieveAll(this)
     }
 
-     fun extractValue(column: ColumnInResultRow, resultSet: ResultSet): Any? {
+    internal fun extractValue(column: ColumnInResultRow, resultSet: ResultSet): Any? {
         return column.column.retrieveValue(column.position, resultSet, jdbcResultSetAdapter.useDefaultValuesInOUterJoins)
     }
 
-    fun first(): O =
+    internal fun first(): O =
         if (rows.isEmpty())
             throw IllegalStateException("Expected exactly one row, but result set was empty.")
         else rows.get(0)
 
-    fun firstOrNull(): O? = if (rows.isEmpty()) null else rows.get(0)
+    internal fun firstOrNull(): O? = if (rows.isEmpty()) null else rows.get(0)
 
-    fun asList(): List<O> = rows
+    internal fun asList(): List<O> = rows
 
     abstract fun extractRow(cols: List<ColumnInResultRow>, resultSet: ResultSet): O
 
-     fun columns(): List<AnyColumn> = jdbcResultSetAdapter.resultSetColumns().map { it.column }
+    internal fun columns(): List<AnyColumn> = jdbcResultSetAdapter.resultSetColumns().map { it.column }
 
 }

@@ -2,6 +2,9 @@ package com.dbobjekts.api
 
 import java.io.Serializable
 
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple2<out T1, out T2>(
     val v1: T1,
     val v2: T2
@@ -10,6 +13,9 @@ data class Tuple2<out T1, out T2>(
     override fun toString(): String = "($v1, $v2)"
 }
 
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple3<out T1, out T2, out T3>(
     val v1: T1,
     val v2: T2,
@@ -19,6 +25,9 @@ data class Tuple3<out T1, out T2, out T3>(
     override fun toString(): String = "($v1, $v2, $v3)"
 }
 
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple4<out T1, out T2, out T3, out T4>(
     val v1: T1,
     val v2: T2,
@@ -29,6 +38,9 @@ data class Tuple4<out T1, out T2, out T3, out T4>(
     override fun toString(): String = "($v1, $v2, $v3, $v4)"
 }
 
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple5<out T1, out T2, out T3, out T4, out T5>(
     val v1: T1, val v2: T2, val v3: T3, val v4: T4, val v5: T5
 ) : Serializable {
@@ -36,7 +48,9 @@ data class Tuple5<out T1, out T2, out T3, out T4, out T5>(
     override fun toString(): String = "($v1, $v2, $v3, $v4, $v5)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple6<out T1, out T2, out T3, out T4, out T5, out T6>(
     val v1: T1, val v2: T2, val v3: T3, val v4: T4, val v5: T5, val v6: T6
 ) : Serializable {
@@ -44,7 +58,9 @@ data class Tuple6<out T1, out T2, out T3, out T4, out T5, out T6>(
     override fun toString(): String = "($v1, $v2, $v3, $v4, $v5, $v6)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple7<out T1, out T2, out T3, out T4, out T5, out T6, out T7>(
     val v1: T1, val v2: T2, val v3: T3, val v4: T4, val v5: T5, val v6: T6, val v7: T7
 ) : Serializable {
@@ -52,7 +68,9 @@ data class Tuple7<out T1, out T2, out T3, out T4, out T5, out T6, out T7>(
     override fun toString(): String = "($v1, $v2, $v3, $v4, $v5, $v6, $v7)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple8<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8>(
     val v1: T1, val v2: T2, val v3: T3, val v4: T4, val v5: T5, val v6: T6, val v7: T7, val v8: T8
 ) : Serializable {
@@ -60,7 +78,9 @@ data class Tuple8<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8
     override fun toString(): String = "($v1, $v2, $v3, $v4, $v5, $v6, $v7, $v8)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple9<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8, out T9>(
     val v1: T1, val v2: T2, val v3: T3, val v4: T4, val v5: T5, val v6: T6, val v7: T7, val v8: T8, val v9: T9
 ) : Serializable {
@@ -68,7 +88,9 @@ data class Tuple9<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8
     override fun toString(): String = "($v1, $v2, $v3, $v4, $v5, $v6, $v7, $v8, $v9)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple10<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8, out T9, out T10>(
     val v1: T1,
     val v2: T2,
@@ -85,7 +107,9 @@ data class Tuple10<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T
     override fun toString(): String = "($v1, $v2, $v3, $v4, $v5, $v6, $v7, $v8, $v9, $v10)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple11<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8, out T9, out T10, out T11>(
     val v1: T1,
     val v2: T2,
@@ -103,7 +127,9 @@ data class Tuple11<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T
     override fun toString(): String = "($v1, $v2, $v3, $v4, $v5, $v6, $v7, $v8, $v9, $v10, $v11)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple12<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8, out T9, out T10, out T11, out T12>(
     val v1: T1,
     val v2: T2,
@@ -122,7 +148,9 @@ data class Tuple12<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T
     override fun toString(): String = "($v1, $v2, $v3, $v4, $v5, $v6, $v7, $v8, $v9, $v10, $v11, $v12)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple13<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8, out T9, out T10, out T11, out T12, out T13>(
     val v1: T1,
     val v2: T2,
@@ -142,7 +170,9 @@ data class Tuple13<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T
     override fun toString(): String = "($v1, $v2, $v3, $v4, $v5, $v6, $v7, $v8, $v9, $v10, $v11, $v12, $v13)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple14<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8, out T9, out T10, out T11, out T12, out T13, out T14>(
     val v1: T1,
     val v2: T2,
@@ -163,7 +193,9 @@ data class Tuple14<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T
     override fun toString(): String = "($v1, $v2, $v3, $v4, $v5, $v6, $v7, $v8, $v9, $v10, $v11, $v12, $v13, $v14)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple15<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8, out T9, out T10, out T11, out T12, out T13, out T14, out T15>(
     val v1: T1,
     val v2: T2,
@@ -186,7 +218,9 @@ data class Tuple15<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T
         "($v1, $v2, $v3, $v4, $v5, $v6, $v7, $v8, $v9, $v10, $v11, $v12, $v13, $v14, $v15)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple16<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8, out T9, out T10, out T11, out T12, out T13, out T14, out T15, out T16>(
     val v1: T1,
     val v2: T2,
@@ -210,7 +244,9 @@ data class Tuple16<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T
         "($v1, $v2, $v3, $v4, $v5, $v6, $v7, $v8, $v9, $v10, $v11, $v12, $v13, $v14, $v15, $v16)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple17<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8, out T9, out T10, out T11, out T12, out T13, out T14, out T15, out T16, out T17>(
     val v1: T1,
     val v2: T2,
@@ -235,7 +271,9 @@ data class Tuple17<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T
         "($v1, $v2, $v3, $v4, $v5, $v6, $v7, $v8, $v9, $v10, $v11, $v12, $v13, $v14, $v15, $v16, $v17)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple18<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8, out T9, out T10, out T11, out T12, out T13, out T14, out T15, out T16, out T17, out T18>(
     val v1: T1,
     val v2: T2,
@@ -261,7 +299,9 @@ data class Tuple18<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T
         "($v1, $v2, $v3, $v4, $v5, $v6, $v7, $v8, $v9, $v10, $v11, $v12, $v13, $v14, $v15, $v16, $v17, $v18)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple19<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8, out T9, out T10, out T11, out T12, out T13, out T14, out T15, out T16, out T17, out T18, out T19>(
     val v1: T1,
     val v2: T2,
@@ -288,7 +328,9 @@ data class Tuple19<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T
         "($v1, $v2, $v3, $v4, $v5, $v6, $v7, $v8, $v9, $v10, $v11, $v12, $v13, $v14, $v15, $v16, $v17, $v18, $v19)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple20<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8, out T9, out T10, out T11, out T12, out T13, out T14, out T15, out T16, out T17, out T18, out T19, out T20>(
     val v1: T1,
     val v2: T2,
@@ -316,7 +358,9 @@ data class Tuple20<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T
         "($v1, $v2, $v3, $v4, $v5, $v6, $v7, $v8, $v9, $v10, $v11, $v12, $v13, $v14, $v15, $v16, $v17, $v18, $v19, $v20)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple21<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8, out T9, out T10, out T11, out T12, out T13, out T14, out T15, out T16, out T17, out T18, out T19, out T20, out T21>(
     val v1: T1,
     val v2: T2,
@@ -345,7 +389,9 @@ data class Tuple21<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T
         "($v1, $v2, $v3, $v4, $v5, $v6, $v7, $v8, $v9, $v10, $v11, $v12, $v13, $v14, $v15, $v16, $v17, $v18, $v19, $v20, $v21)"
 }
 
-
+/**
+ * Container for a parameterized result row.
+ */
 data class Tuple22<out T1, out T2, out T3, out T4, out T5, out T6, out T7, out T8, out T9, out T10, out T11, out T12, out T13, out T14, out T15, out T16, out T17, out T18, out T19, out T20, out T21, out T22>(
     val v1: T1,
     val v2: T2,

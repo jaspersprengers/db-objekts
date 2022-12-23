@@ -7,6 +7,10 @@ import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.util.Errors
 import com.dbobjekts.util.ValidateDBObjectName
 
+/**
+ * Parent of all the generated [Table] objects that represent the tables in the database and act as metadata for the query engine.
+ *
+ */
 abstract class Table(
     internal val dbName: String
 ) : TableOrJoin, SerializableToSQL {
@@ -51,15 +55,48 @@ abstract class Table(
         return if (idCols.isNotEmpty()) idCols[0] as IsPrimaryKey else null
     }
 
+    /**
+     * Creates a left outer join with the table provided. Example:
+     * ```kotlin
+     *  Employee.leftJoin(Hobby)
+     * ```
+     * Will produce sql like the following:
+     * ```sql
+     *  employee e left join hobby h on e.hobby_id = h.id
+     * ```
+     */
     fun leftJoin(table: Table): TableJoinChain =
         TableJoinChain(this).addJoin(JoinFactory.createLeftJoin(this, table))
 
+    /**
+     * Creates a right outer join with the table provided. Example:
+     * ```kotlin
+     *  Employee.rightJoin(Hobby)
+     * ```
+     * Will produce sql like the following:
+     * ```sql
+     *  employee e right join hobby h on e.hobby_id = h.id
+     * ```
+     */
     fun rightJoin(table: Table): TableJoinChain =
         TableJoinChain(this).addJoin(JoinFactory.createRightJoin(this, table))
 
+    /**
+     * Creates an inner join with the table provided. Example:
+     * ```kotlin
+     *  Employee.rightJoin(Hobby)
+     * ```
+     * Will produce sql like the following:
+     * ```sql
+     *  employee e join hobby h on e.hobby_id = h.id
+     * ```
+     */
     fun innerJoin(table: Table): TableJoinChain =
         TableJoinChain(this).addJoin(JoinFactory.createInnerJoin(this, table))
 
+    /**
+     * @return the schema and table, e.g. hr.certificate
+     */
     override fun toSQL(): String = "${schema.dottedName}$tableName ${alias()}"
 
     override fun toString(): String = toSQL()

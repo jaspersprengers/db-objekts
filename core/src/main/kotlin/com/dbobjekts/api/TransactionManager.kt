@@ -119,7 +119,13 @@ class TransactionManager private constructor (
     }
 
     /**
-     * Creates a new [TransactionManagerBuilder] instances for configuring a [TransactionManager]
+     * Creates a new [TransactionManagerBuilder] instances for configuring a [TransactionManager]. Use it as follows:
+     * ```kotlin
+     *  TransactionManager.builder()
+     *      .withDataSource(dataSource)
+     *      .withCatalog(AcmeCatalog)
+     *      .build()
+     * ```
      */
     class TransactionManagerBuilder {
         private lateinit var dataSource: DataSource

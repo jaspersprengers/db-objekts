@@ -1,5 +1,6 @@
 package com.dbobjekts.component
 
+import com.dbobjekts.api.Tuple2
 import com.dbobjekts.api.Tuple6
 import com.dbobjekts.integration.h2.core.Employee
 import com.dbobjekts.integration.h2.hr.Hobby
@@ -29,6 +30,8 @@ class CustomSQLComponentTest {
             assertThat(married).isNull()
             assertThat(children).isNull()
             assertThat(hobby).isEqualTo("The game of champions")
+
+
         })
     }
 

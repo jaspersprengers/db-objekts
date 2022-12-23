@@ -69,50 +69,173 @@ class Returns1<T1>(
     private val sql: String,
     private val args: List<Any>
 ) {
+    /**
+     * Adds a String type as the next column in the result row
+     */
     fun string(): Returns2<T1, String> = Returns2(column1, ColumnFactory.VARCHAR, semaphore, conn, sql, args)
+    /**
+     * Adds a String? type as the next column in the result row
+     */
     fun stringNil(): Returns2<T1, String?> = Returns2(column1, ColumnFactory.VARCHAR_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a Long type as the next column in the result row
+     */
     fun long(): Returns2<T1, Long> = Returns2(column1, ColumnFactory.LONG, semaphore, conn, sql, args)
+    /**
+     * Adds a Long? type as the next column in the result row
+     */
     fun longNil(): Returns2<T1, Long?> = Returns2(column1, ColumnFactory.LONG_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a Int type as the next column in the result row
+     */
     fun int(): Returns2<T1, Int> = Returns2(column1, ColumnFactory.INTEGER, semaphore, conn, sql, args)
+    /**
+     * Adds a Int? type as the next column in the result row
+     */
     fun intNil(): Returns2<T1, Int?> = Returns2(column1, ColumnFactory.INTEGER_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a ByteArray type as the next column in the result row
+     */
     fun byteArray(): Returns2<T1, ByteArray> = Returns2(column1, ColumnFactory.BYTE_ARRAY, semaphore, conn, sql, args)
+    /**
+     * Adds a ByteArray? type as the next column in the result row
+     */
     fun byteArrayNil(): Returns2<T1, ByteArray?> = Returns2(column1, ColumnFactory.BYTE_ARRAY_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a [java.sql.Blob] type as the next column in the result row
+     */
     fun blob(): Returns2<T1, Blob> = Returns2(column1, ColumnFactory.BLOB, semaphore, conn, sql, args)
+    /**
+     * Adds a [java.sql.Blob]? type as the next column in the result row
+     */
     fun blobNil(): Returns2<T1, Blob?> = Returns2(column1, ColumnFactory.BLOB_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a [java.sql.Clob] type as the next column in the result row
+     */
     fun clob(): Returns2<T1, Clob> = Returns2(column1, ColumnFactory.CLOB, semaphore, conn, sql, args)
+    /**
+     * Adds a [java.sql.Clob]? type as the next column in the result row
+     */
     fun clobNil(): Returns2<T1, Clob?> = Returns2(column1, ColumnFactory.CLOB_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a Byte type as the next column in the result row
+     */
     fun byte(): Returns2<T1, Byte> = Returns2(column1, ColumnFactory.BYTE, semaphore, conn, sql, args)
+    /**
+     * Adds a Byte? type as the next column in the result row
+     */
     fun byteNil(): Returns2<T1, Byte?> = Returns2(column1, ColumnFactory.BYTE_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a Boolean type as the next column in the result row
+     */
     fun boolean(): Returns2<T1, Boolean> = Returns2(column1, ColumnFactory.BOOLEAN, semaphore, conn, sql, args)
+    /**
+     * Adds a Boolean? type as the next column in the result row
+     */
     fun booleanNil(): Returns2<T1, Boolean?> = Returns2(column1, ColumnFactory.BOOLEAN_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a Double type as the next column in the result row
+     */
     fun double(): Returns2<T1, Double> = Returns2(column1, ColumnFactory.DOUBLE, semaphore, conn, sql, args)
+    /**
+     * Adds a Double? type as the next column in the result row
+     */
     fun doubleNil(): Returns2<T1, Double?> = Returns2(column1, ColumnFactory.DOUBLE_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a Float type as the next column in the result row
+     */
     fun float(): Returns2<T1, Float> = Returns2(column1, ColumnFactory.FLOAT, semaphore, conn, sql, args)
+    /**
+     * Adds a Float? type as the next column in the result row
+     */
     fun floatNil(): Returns2<T1, Float?> = Returns2(column1, ColumnFactory.FLOAT_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a BigDecimal type as the next column in the result row
+     */
     fun bigDecimal(): Returns2<T1, BigDecimal> = Returns2(column1, ColumnFactory.BIGDECIMAL, semaphore, conn, sql, args)
+    /**
+     * Adds a BigDecimal? type as the next column in the result row
+     */
     fun bigDecimalNil(): Returns2<T1, BigDecimal?> = Returns2(column1, ColumnFactory.BIGDECIMAL_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a [LocalDate] type as the next column in the result row
+     */
     fun date(): Returns2<T1, LocalDate> = Returns2(column1, ColumnFactory.DATE, semaphore, conn, sql, args)
+    /**
+     * Adds a [LocalDate]? type as the next column in the result row
+     */
     fun dateNil(): Returns2<T1, LocalDate?> = Returns2(column1, ColumnFactory.DATE_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a [LocalDateTime] type as the next column in the result row
+     */
     fun dateTime(): Returns2<T1, LocalDateTime> = Returns2(column1, ColumnFactory.DATETIME, semaphore, conn, sql, args)
+    /**
+     * Adds a [LocalDateTime]? type as the next column in the result row
+     */
     fun dateTimeNil(): Returns2<T1, LocalDateTime?> = Returns2(column1, ColumnFactory.DATETIME_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a [LocalTime] type as the next column in the result row
+     */
     fun time(): Returns2<T1, LocalTime> = Returns2(column1, ColumnFactory.TIME, semaphore, conn, sql, args)
+    /**
+     * Adds a [LocalTime]? type as the next column in the result row
+     */
     fun timeNil(): Returns2<T1, LocalTime?> = Returns2(column1, ColumnFactory.TIME_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a [Instant] type as the next column in the result row
+     */
     fun timeStamp(): Returns2<T1, Instant> = Returns2(column1, ColumnFactory.TIMESTAMP, semaphore, conn, sql, args)
+    /**
+     * Adds a Instant? type as the next column in the result row
+     */
     fun timeStampNil(): Returns2<T1, Instant?> = Returns2(column1, ColumnFactory.TIMESTAMP_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a [OffsetDateTime] type as the next column in the result row
+     */
     fun offsetDateTime(): Returns2<T1, OffsetDateTime> = Returns2(column1, ColumnFactory.OFFSET_DATETIME, semaphore, conn, sql, args)
+    /**
+     * Adds a [OffsetDateTime]? type as the next column in the result row
+     */
     fun offsetDateTimeNil(): Returns2<T1, OffsetDateTime?> =
         Returns2(column1, ColumnFactory.OFFSET_DATETIME_NIL, semaphore, conn, sql, args)
 
     private fun execute() = SQLStatementExecutor(semaphore, conn, sql, args.toList(), listOf(column1), ResultRow1<T1>())
+
+    /**
+     * Executes the select statement, fetches all rows and returns them as a list of tuples
+     */
     fun asList() = execute().asList()
+
+    /**
+     * Executes the statement, fetches all rows and returns the first result.
+     * @throws IllegalStateException if there are no results. To prevent this, use [firstOrNull]
+     */
     fun first() = execute().first()
+
+    /**
+     * Executes the select statement, fetches all rows and returns the first result, or null if there is no match.
+     * For better performance, use this only when you expect a single result, or use the [limit] clause in addition.
+     */
     fun firstOrNull() = execute().firstOrNull()
+
+    /**
+     * Executes the query and lets you step through the results with a custom function that receives the current row data
+     * and returns a Boolean to indicate whether to proceed or not. Example:
+     * ```kotlin
+     *     transaction.select("query").forEachRow({ row ->
+     *        buffer.add(row)
+     *        !buffer.memoryFull()
+     *     })
+     *  ```
+     *
+     * This can be useful for huge result sets that would run into memory problems when fetched at once into a list.
+     */
     fun forEachRow(mapper: (T1) -> Boolean) {
         semaphore.clear()
         return execute().forEachRow(mapper)
     }
 }
-
+/*
 class Returns2<T1, T2>(
     internal val column1: Column<T1>, internal val column2: Column<T2>,
     private val semaphore: Semaphore, private val conn: ConnectionAdapter,
@@ -167,82 +290,174 @@ class Returns2<T1, T2>(
     }
 }
 
-
 class Returns3<T1, T2, T3>(
     internal val column1: Column<T1>, internal val column2: Column<T2>, internal val column3: Column<T3>,
     private val semaphore: Semaphore, private val conn: ConnectionAdapter,
     private val sql: String,
     private val args: List<Any>
 ) {
+    /**
+     * Adds a String type as the next column in the result row
+     */
     fun string(): Returns4<T1, T2, T3, String> = Returns4(column1, column2, column3, ColumnFactory.VARCHAR, semaphore, conn, sql, args)
-    fun stringNil(): Returns4<T1, T2, T3, String?> =
-        Returns4(column1, column2, column3, ColumnFactory.VARCHAR_NIL, semaphore, conn, sql, args)
-
+    /**
+     * Adds a String? type as the next column in the result row
+     */
+    fun stringNil(): Returns4<T1, T2, T3, String?> = Returns4(column1, column2, column3, ColumnFactory.VARCHAR_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a Long type as the next column in the result row
+     */
     fun long(): Returns4<T1, T2, T3, Long> = Returns4(column1, column2, column3, ColumnFactory.LONG, semaphore, conn, sql, args)
+    /**
+     * Adds a Long? type as the next column in the result row
+     */
     fun longNil(): Returns4<T1, T2, T3, Long?> = Returns4(column1, column2, column3, ColumnFactory.LONG_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a Int type as the next column in the result row
+     */
     fun int(): Returns4<T1, T2, T3, Int> = Returns4(column1, column2, column3, ColumnFactory.INTEGER, semaphore, conn, sql, args)
+    /**
+     * Adds a Int? type as the next column in the result row
+     */
     fun intNil(): Returns4<T1, T2, T3, Int?> = Returns4(column1, column2, column3, ColumnFactory.INTEGER_NIL, semaphore, conn, sql, args)
-    fun byteArray(): Returns4<T1, T2, T3, ByteArray> =
-        Returns4(column1, column2, column3, ColumnFactory.BYTE_ARRAY, semaphore, conn, sql, args)
-
-    fun byteArrayNil(): Returns4<T1, T2, T3, ByteArray?> =
-        Returns4(column1, column2, column3, ColumnFactory.BYTE_ARRAY_NIL, semaphore, conn, sql, args)
-
+    /**
+     * Adds a ByteArray type as the next column in the result row
+     */
+    fun byteArray(): Returns4<T1, T2, T3, ByteArray> = Returns4(column1, column2, column3, ColumnFactory.BYTE_ARRAY, semaphore, conn, sql, args)
+    /**
+     * Adds a ByteArray? type as the next column in the result row
+     */
+    fun byteArrayNil(): Returns4<T1, T2, T3, ByteArray?> = Returns4(column1, column2, column3, ColumnFactory.BYTE_ARRAY_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a [java.sql.Blob] type as the next column in the result row
+     */
     fun blob(): Returns4<T1, T2, T3, Blob> = Returns4(column1, column2, column3, ColumnFactory.BLOB, semaphore, conn, sql, args)
+    /**
+     * Adds a [java.sql.Blob]? type as the next column in the result row
+     */
     fun blobNil(): Returns4<T1, T2, T3, Blob?> = Returns4(column1, column2, column3, ColumnFactory.BLOB_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a [java.sql.Clob] type as the next column in the result row
+     */
     fun clob(): Returns4<T1, T2, T3, Clob> = Returns4(column1, column2, column3, ColumnFactory.CLOB, semaphore, conn, sql, args)
+    /**
+     * Adds a [java.sql.Clob]? type as the next column in the result row
+     */
     fun clobNil(): Returns4<T1, T2, T3, Clob?> = Returns4(column1, column2, column3, ColumnFactory.CLOB_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a Byte type as the next column in the result row
+     */
     fun byte(): Returns4<T1, T2, T3, Byte> = Returns4(column1, column2, column3, ColumnFactory.BYTE, semaphore, conn, sql, args)
+    /**
+     * Adds a Byte? type as the next column in the result row
+     */
     fun byteNil(): Returns4<T1, T2, T3, Byte?> = Returns4(column1, column2, column3, ColumnFactory.BYTE_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a Boolean type as the next column in the result row
+     */
     fun boolean(): Returns4<T1, T2, T3, Boolean> = Returns4(column1, column2, column3, ColumnFactory.BOOLEAN, semaphore, conn, sql, args)
-    fun booleanNil(): Returns4<T1, T2, T3, Boolean?> =
-        Returns4(column1, column2, column3, ColumnFactory.BOOLEAN_NIL, semaphore, conn, sql, args)
-
+    /**
+     * Adds a Boolean? type as the next column in the result row
+     */
+    fun booleanNil(): Returns4<T1, T2, T3, Boolean?> = Returns4(column1, column2, column3, ColumnFactory.BOOLEAN_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a Double type as the next column in the result row
+     */
     fun double(): Returns4<T1, T2, T3, Double> = Returns4(column1, column2, column3, ColumnFactory.DOUBLE, semaphore, conn, sql, args)
-    fun doubleNil(): Returns4<T1, T2, T3, Double?> =
-        Returns4(column1, column2, column3, ColumnFactory.DOUBLE_NIL, semaphore, conn, sql, args)
-
+    /**
+     * Adds a Double? type as the next column in the result row
+     */
+    fun doubleNil(): Returns4<T1, T2, T3, Double?> = Returns4(column1, column2, column3, ColumnFactory.DOUBLE_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a Float type as the next column in the result row
+     */
     fun float(): Returns4<T1, T2, T3, Float> = Returns4(column1, column2, column3, ColumnFactory.FLOAT, semaphore, conn, sql, args)
+    /**
+     * Adds a Float? type as the next column in the result row
+     */
     fun floatNil(): Returns4<T1, T2, T3, Float?> = Returns4(column1, column2, column3, ColumnFactory.FLOAT_NIL, semaphore, conn, sql, args)
-    fun bigDecimal(): Returns4<T1, T2, T3, BigDecimal> =
-        Returns4(column1, column2, column3, ColumnFactory.BIGDECIMAL, semaphore, conn, sql, args)
-
-    fun bigDecimalNil(): Returns4<T1, T2, T3, BigDecimal?> =
-        Returns4(column1, column2, column3, ColumnFactory.BIGDECIMAL_NIL, semaphore, conn, sql, args)
-
+    /**
+     * Adds a BigDecimal type as the next column in the result row
+     */
+    fun bigDecimal(): Returns4<T1, T2, T3, BigDecimal> = Returns4(column1, column2, column3, ColumnFactory.BIGDECIMAL, semaphore, conn, sql, args)
+    /**
+     * Adds a BigDecimal? type as the next column in the result row
+     */
+    fun bigDecimalNil(): Returns4<T1, T2, T3, BigDecimal?> = Returns4(column1, column2, column3, ColumnFactory.BIGDECIMAL_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a [LocalDate] type as the next column in the result row
+     */
     fun date(): Returns4<T1, T2, T3, LocalDate> = Returns4(column1, column2, column3, ColumnFactory.DATE, semaphore, conn, sql, args)
-    fun dateNil(): Returns4<T1, T2, T3, LocalDate?> =
-        Returns4(column1, column2, column3, ColumnFactory.DATE_NIL, semaphore, conn, sql, args)
-
-    fun dateTime(): Returns4<T1, T2, T3, LocalDateTime> =
-        Returns4(column1, column2, column3, ColumnFactory.DATETIME, semaphore, conn, sql, args)
-
-    fun dateTimeNil(): Returns4<T1, T2, T3, LocalDateTime?> =
-        Returns4(column1, column2, column3, ColumnFactory.DATETIME_NIL, semaphore, conn, sql, args)
-
+    /**
+     * Adds a [LocalDate]? type as the next column in the result row
+     */
+    fun dateNil(): Returns4<T1, T2, T3, LocalDate?> = Returns4(column1, column2, column3, ColumnFactory.DATE_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a [LocalDateTime] type as the next column in the result row
+     */
+    fun dateTime(): Returns4<T1, T2, T3, LocalDateTime> = Returns4(column1, column2, column3, ColumnFactory.DATETIME, semaphore, conn, sql, args)
+    /**
+     * Adds a [LocalDateTime]? type as the next column in the result row
+     */
+    fun dateTimeNil(): Returns4<T1, T2, T3, LocalDateTime?> = Returns4(column1, column2, column3, ColumnFactory.DATETIME_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a [LocalTime] type as the next column in the result row
+     */
     fun time(): Returns4<T1, T2, T3, LocalTime> = Returns4(column1, column2, column3, ColumnFactory.TIME, semaphore, conn, sql, args)
-    fun timeNil(): Returns4<T1, T2, T3, LocalTime?> =
-        Returns4(column1, column2, column3, ColumnFactory.TIME_NIL, semaphore, conn, sql, args)
-
-    fun timeStamp(): Returns4<T1, T2, T3, Instant> =
-        Returns4(column1, column2, column3, ColumnFactory.TIMESTAMP, semaphore, conn, sql, args)
-
-    fun timeStampNil(): Returns4<T1, T2, T3, Instant?> =
-        Returns4(column1, column2, column3, ColumnFactory.TIMESTAMP_NIL, semaphore, conn, sql, args)
-
-    fun offsetDateTime(): Returns4<T1, T2, T3, OffsetDateTime> =
-        Returns4(column1, column2, column3, ColumnFactory.OFFSET_DATETIME, semaphore, conn, sql, args)
-
+    /**
+     * Adds a [LocalTime]? type as the next column in the result row
+     */
+    fun timeNil(): Returns4<T1, T2, T3, LocalTime?> = Returns4(column1, column2, column3, ColumnFactory.TIME_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a [Instant] type as the next column in the result row
+     */
+    fun timeStamp(): Returns4<T1, T2, T3, Instant> = Returns4(column1, column2, column3, ColumnFactory.TIMESTAMP, semaphore, conn, sql, args)
+    /**
+     * Adds a Instant? type as the next column in the result row
+     */
+    fun timeStampNil(): Returns4<T1, T2, T3, Instant?> = Returns4(column1, column2, column3, ColumnFactory.TIMESTAMP_NIL, semaphore, conn, sql, args)
+    /**
+     * Adds a [OffsetDateTime] type as the next column in the result row
+     */
+    fun offsetDateTime(): Returns4<T1, T2, T3, OffsetDateTime> = Returns4(column1, column2, column3, ColumnFactory.OFFSET_DATETIME, semaphore, conn, sql, args)
+    /**
+     * Adds a [OffsetDateTime]? type as the next column in the result row
+     */
     fun offsetDateTimeNil(): Returns4<T1, T2, T3, OffsetDateTime?> =
         Returns4(column1, column2, column3, ColumnFactory.OFFSET_DATETIME_NIL, semaphore, conn, sql, args)
 
-    private fun execute() =
-        SQLStatementExecutor(semaphore, conn, sql, args.toList(), listOf(column1, column2, column3), ResultRow3<T1, T2, T3>())
+    private fun execute() = SQLStatementExecutor(semaphore, conn, sql, args.toList(), listOf(column1, column2, column3), ResultRow1<T3>())
 
+    /**
+     * Executes the select statement, fetches all rows and returns them as a list of tuples
+     */
     fun asList() = execute().asList()
+
+    /**
+     * Executes the statement, fetches all rows and returns the first result.
+     * @throws IllegalStateException if there are no results. To prevent this, use [firstOrNull]
+     */
     fun first() = execute().first()
+
+    /**
+     * Executes the select statement, fetches all rows and returns the first result, or null if there is no match.
+     * For better performance, use this only when you expect a single result, or use the [limit] clause in addition.
+     */
     fun firstOrNull() = execute().firstOrNull()
-    fun forEachRow(mapper: (Tuple3<T1, T2, T3>) -> Boolean) {
+
+    /**
+     * Executes the query and lets you step through the results with a custom function that receives the current row data
+     * and returns a Boolean to indicate whether to proceed or not. Example:
+     * ```kotlin
+     *     transaction.select("query").forEachRow({ row ->
+     *        buffer.add(row)
+     *        !buffer.memoryFull()
+     *     })
+     *  ```
+     *
+     * This can be useful for huge result sets that would run into memory problems when fetched at once into a list.
+     */
+    fun forEachRow(mapper: (T3) -> Boolean) {
         semaphore.clear()
         return execute().forEachRow(mapper)
     }
@@ -1094,3 +1309,4 @@ class Returns9<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
         return execute().forEachRow(mapper)
     }
 }
+*/

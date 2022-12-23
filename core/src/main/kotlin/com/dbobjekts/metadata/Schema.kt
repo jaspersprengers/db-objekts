@@ -2,7 +2,10 @@ package com.dbobjekts.metadata
 
 import com.dbobjekts.api.SchemaName
 
-
+/**
+ * Parent of all the generated [Schema] objects that represent the schemas in the database and act as metadata for the query engine.
+ * As an end user you have no dealings directly with [Schema] implementations.
+ */
 open class Schema(
     var catalog: Catalog,
     val schemaName: SchemaName,
@@ -15,13 +18,13 @@ open class Schema(
         tables.forEach { it.withSchema(this) }
     }
 
-     fun withCatalog(catalog: Catalog) {
+    internal fun withCatalog(catalog: Catalog) {
         this.catalog = catalog
     }
 
-    val dottedName: String = if (schemaName.value.isEmpty()) "" else "$schemaName."
+    internal val dottedName: String = if (schemaName.value.isEmpty()) "" else "$schemaName."
 
-    fun aliasForTable(table: Table): String = catalog.aliasForTable(table)
+    internal fun aliasForTable(table: Table): String = catalog.aliasForTable(table)
 
     override fun toString(): String = schemaName.value
 
