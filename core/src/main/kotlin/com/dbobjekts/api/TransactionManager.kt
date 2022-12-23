@@ -38,9 +38,9 @@ class TransactionManager(
     }
 
 
-    operator fun <T> invoke(fct: (Transaction) -> T): T = newTransaction(fct)
+    operator fun <T> invoke(function: (Transaction) -> T): T = newTransaction(function)
 
-    fun <T> newTransaction(fct: (Transaction) -> T): T {
+    fun <T> newTransaction(function: (Transaction) -> T): T {
 
         val connection: Connection = customConnectionProvider?.invoke(dataSource.dataSource)
             ?: dataSource.createConnection()
@@ -50,7 +50,7 @@ class TransactionManager(
         val adapter = ConnectionAdapter(connection, StatementLogger(), catalog, vendor)
         val transaction = Transaction(adapter)
         try {
-            val result: T = fct(transaction)
+            val result: T = function(transaction)
             transaction.commit()
             return TransactionResultValidator.validate(result)
         } catch (e: Exception) {

@@ -12,8 +12,8 @@ plugins {
 
 allprojects {
 
-    group = "com.dbobjekts"
-    version = "1.0-SNAPSHOT"
+    group = "com.db-objekts"
+    version = "0.1-alpha-1-SNAPSHOT"
 
     repositories {
         mavenCentral()
@@ -28,3 +28,4 @@ allprojects {
 subprojects {
 
 }
+

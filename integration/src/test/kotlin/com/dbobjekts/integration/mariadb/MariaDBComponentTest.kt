@@ -1,9 +1,6 @@
 package com.dbobjekts.integration.mariadb
 
-import com.dbobjekts.api.TransactionManager
-import com.dbobjekts.integration.mariadb.nation.*
 import com.dbobjekts.util.HikariDataSourceFactory
-import org.junit.jupiter.api.Test
 
 class MariaDBComponentTest {
 
@@ -14,9 +11,9 @@ class MariaDBComponentTest {
                 username = "root",
                 password = "test", driver = "org.mariadb.jdbc.Driver"
             )
-        val tm = TransactionManager.builder().withDataSource(dataSource).withCatalog(InformationSchemaCatalog).build()
+      //  val tm = TransactionManager.builder().withDataSource(dataSource).withCatalog(InformationSchemaCatalog).build()
     }
-
+/*
     @Test
     fun `list nations`() {
         tm {tr ->
@@ -26,7 +23,7 @@ class MariaDBComponentTest {
             }
             println(tr.transactionExecutionLog().last().sql)
         }
-    }
+    }*/
 
 
     /*

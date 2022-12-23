@@ -6,4 +6,4 @@
  ```
 
 Now you can connect to the server using the url `jdbc:h2:tcp://localhost:9092/~/test`
-No authorization required.
+Authorize with test:test

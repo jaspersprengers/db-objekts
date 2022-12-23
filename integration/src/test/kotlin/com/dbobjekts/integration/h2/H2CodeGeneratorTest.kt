@@ -4,6 +4,7 @@ import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.util.PathUtil
 import com.dbobjekts.util.TestSourceWriter
 import org.junit.jupiter.api.Test
+import java.nio.file.Paths
 
 class H2CodeGeneratorTest {
 
@@ -13,11 +14,10 @@ class H2CodeGeneratorTest {
         H2DB.setupDatabaseObjects()
         val writer = TestSourceWriter()
         val generator = CodeGenerator()
-        generator.withDataSource(datasource = H2DB.dataSource)
+            .withDataSource(datasource = H2DB.dataSource)
         generator.outputConfigurer()
             .basePackageForSources("com.dbobjekts.integration.h2")
-            //.sourceWriter(writer)
-            .outputDirectoryForGeneratedSources(PathUtil.getGeneratedSourceDir())
+            .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         generator.generateSourceFiles()
 
     }

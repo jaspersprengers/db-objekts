@@ -31,3 +31,4 @@ tasks.test {
 kotlin.sourceSets["test"].kotlin {
     srcDir("src/generated-sources/kotlin")
 }
+

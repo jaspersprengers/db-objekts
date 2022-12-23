@@ -5,12 +5,13 @@ import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.util.HikariDataSourceFactory
 import com.dbobjekts.util.PathUtil
 import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import javax.sql.DataSource
 
-@Testcontainers
+//@Testcontainers
 class MariaCodeGenTest {
 
     companion object {
@@ -23,7 +24,7 @@ class MariaCodeGenTest {
         @JvmStatic
         @BeforeAll
         fun setup() {
-            val port = CONTAINER.firstMappedPort
+            val port = 3306//CONTAINER.firstMappedPort
             ds = HikariDataSourceFactory
                 .create(
                     url = "jdbc:mariadb://localhost:$port/test",
@@ -44,6 +45,7 @@ class MariaCodeGenTest {
         }
     }
 
+    @Disabled
     @Test
     fun `generate MySQL sources`() {
 
