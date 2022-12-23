@@ -3,7 +3,6 @@ plugins {
     id("org.jetbrains.dokka") version "1.7.20"
 }
 
-
 dependencies {
 
     implementation("com.zaxxer:HikariCP:5.0.1")

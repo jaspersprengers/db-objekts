@@ -1,5 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
+
 buildscript {
     repositories {
         mavenCentral()
@@ -8,6 +9,8 @@ buildscript {
 
 plugins {
     kotlin("jvm") version "1.7.22"
+    id("convention.publication")
+
 }
 
 allprojects {

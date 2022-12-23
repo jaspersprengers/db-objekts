@@ -22,8 +22,6 @@ abstract class InsertBuilderBase() {
         ct.put(col, value)
     }
 
-    internal fun validate() = Errors.require(ct.data.isNotEmpty(), "You must supply at least one column to insert")
-
     /**
      * Executes the insert statement and persists a new row to the table.
      * @return the primary key of the new row if they are auto-generated. Otherwise, returns the result of the underlying PreparedStatement#executeUpdate call

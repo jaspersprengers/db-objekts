@@ -34,6 +34,10 @@ class InsertStatementExecutor(
 
     fun parameters(): List<AnySqlParameter> = columnsForUpdate.params.toList()
 
+    /**
+     * Executes the insert statement.
+     * @param if the table uses an auto-generated numeric primary key, this value is returned. Otherwise, it returns the value returned by [java.sql.PreparedStatement.executeUpdate]
+     */
     fun execute(): Long {
         val pk = getTable().primaryKey()
         try {
@@ -69,12 +73,12 @@ class InsertStatementExecutor(
         }
     }
 
-    fun createKeyFromSequence(
+    private fun createKeyFromSequence(
         connection: ConnectionAdapter,
         sql: String
     ): Long = connection.fetchKey(sql) ?: 0
 
-    fun toSQL(): String {
+    private fun toSQL(): String {
         val columns = columnsForUpdate.getCommaSeparatedColumnList()
         val values = columnsForUpdate.getCommaSeparatedQuestionMarks()
         return StringUtil.concat(

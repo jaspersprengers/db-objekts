@@ -4,7 +4,7 @@ import com.dbobjekts.api.PackageName
 import com.dbobjekts.api.SchemaName
 import com.dbobjekts.api.TableName
 import com.dbobjekts.codegen.exclusionfilters.ExclusionConfigurer
-import com.dbobjekts.codegen.exclusionfilters.TableExclusionFilter
+import com.dbobjekts.api.TableExclusionFilter
 import com.dbobjekts.codegen.metadata.DBTableDefinition
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test

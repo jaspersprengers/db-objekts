@@ -32,6 +32,14 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
     private var limitRows: Int? = null
     private var orderByClauses = mutableListOf<OrderByClause<*>>()
 
+    /**
+     * Used when you need fine-grained control over the table join syntax (outer joins), or when you are referring columns that do not
+     * have a direct foreign key relationship, nor have an n-n join relationship. Example:
+     * ```kotlin
+     *  transaction.select(Employee.name).from(Employee.leftJoin(Hobby))
+     * ```
+     * In this example, not every `employee` has a record in the `hobby` table
+     */
     fun from(joinChain: TableOrJoin): SelectStatementExecutor<T, RSB> {
         when (val obj = joinChain) {
             is TableJoinChain -> registerJoinChain(obj)
@@ -41,6 +49,10 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         return this
     }
 
+    /**
+     * Limits the number of rows fetched by adding a LIMIT clause to the sql statement.
+     * @param the maximum number of rows to be returned
+     */
     fun limit(maxRows: Int): SelectStatementExecutor<T, RSB> {
         limitRows = if (maxRows < 1) 1 else maxRows
         return this
@@ -50,31 +62,61 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         orderByClauses.add(OrderByClause<C>(column, ascending))
     }
 
+    /**
+     * Sorts results in ascending order based on the columns provided. Sorting is done in the where clause through an ORDER BY clause
+     * Can be combined with [orderDesc]
+     * Example:
+     * ```kotlin
+     *  transaction.select(Employee.name).orderAsc(Employee.married, Employee.name).orderDesc(Employee.salary)
+     * ```
+     *
+     */
     fun orderAsc(vararg columns: AnyColumn): SelectStatementExecutor<T, RSB> {
         columns.forEach { addOrderByClause(it, ascending = true) }
         return this
     }
 
+    /**
+     * Sorts results in descending order based on the columns provided. Sorting is done in the where clause through an ORDER BY clause.
+     * Can be combined with [orderAsc]
+     * Example:
+     * ```kotlin
+     *  transaction.select(Employee.name).orderDesc(e.salary, e.name).orderAsc(Employee.married)
+     * ```
+     *
+     */
     fun orderDesc(vararg columns: AnyColumn): SelectStatementExecutor<T, RSB> {
         columns.forEach { addOrderByClause(it, ascending = false) }
         return this
     }
 
+    /**
+     * Opens the whereclause for this select statement. Example:
+     * ```kotlin
+     * transaction.select(Book.isbn).where(Book.published.lt(LocalDate.of(1980,1,1))).asList()
+     * ```
+     *  If you want to select all rows without a where clause, simply omit it.
+     *  ```kotlin
+     *  transaction.select(Book.isbn).asList()
+     *  ```
+     */
     fun where(condition: SubClause): SelectStatementExecutor<T, RSB> {
         withWhereClause(condition)
         return this
     }
 
-    fun where(): SelectStatementExecutor<T, RSB> = where(EmptyWhereClause)
-
     /**
      * Signal that all tables involved in the select statement are joined using outer joins.
      * This has the consequence that non-nullable columns may yield null if there is no corresponding row in the outer join.
+     * In the following example we list all books in the library and the loans, but it a book has not been loaned, `dateLoaned` will be null.
      * You must use the nullable counterparts of the non-null columns, like so:
-     * transaction.select(Employee.name, Hobby.name.nullable)
-     * Alternative, use useOuterJoinsWithDefaultValues() to get default values for the nulls
+     * ```kotlin
+     *   transaction.select(Item.isbn, Loan.dateLoaned.nullable).useOuterJoins().asList()
+     * ```
+     *
+     * Alternative, use [useOuterJoinsWithDefaultValues] to get default values for the nulls
      */
-    fun useOuterJoins(): SelectStatementExecutor<T, RSB>{
+    fun useOuterJoins(): SelectStatementExecutor<T, RSB> {
         useDefaultValues = false
         useOuterJoins = true
         return this
@@ -84,23 +126,50 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
      * Signal that all tables involved in the select statement are joined using outer joins.
      * When a non-nullable column is involved in an outer join and no row can be matched, this will
      * return default values, e.g. zero for numerics and an empty string for character columns.
-     * The value is determined by NonNullableColumn#defaultValue
+     *  ```kotlin
+     *     transaction.select(Item.isbn, Loan.dateLoaned).useOuterJoinsWithDefaultValues().asList()
+     *   ```
+     * dateLoaned will now return the default [java.time.LocalDate], determined by [com.dbobjekts.metadata.column.NonNullableColumn.defaultValue]
      */
-    fun useOuterJoinsWithDefaultValues(): SelectStatementExecutor<T, RSB>{
+    fun useOuterJoinsWithDefaultValues(): SelectStatementExecutor<T, RSB> {
         useDefaultValues = true
         useOuterJoins = true
         return this
     }
 
+    /**
+     * Executes the select statement, fetches all rows and returns the first result.
+     * For better performance, use this only when you expect a single result, or use the [limit] clause in addition.
+     * @throws IllegalStateException if there are no results. To prevent this, use [firstOrNull]
+     */
     fun first(): T = execute().first().also { semaphore.clear(); statementLog.logResult(it) }
 
+    /**
+     * Executes the select statement, fetches all rows and returns the first result, or null if there is no match.
+     * For better performance, use this only when you expect a single result, or use the [limit] clause in addition.
+     */
     fun firstOrNull(): T? = execute().firstOrNull().also { semaphore.clear(); statementLog.logResult(it) }
 
+    /**
+     * Executes the select statement, fetches all rows and returns them as a list of tuples
+     */
     fun asList(): List<T> = execute().asList().also { semaphore.clear(); statementLog.logResult(it) }
 
     private fun columnsToFetch(): List<ColumnInResultRow> =
         columns.mapIndexed { index, column -> ColumnInResultRow(1 + index, column) }
 
+    /**
+     * Executes the select query and lets you step through the results with a custom function that receives the current row data
+     * and returns a Boolean to indicate whether to proceed or not. Example:
+     * ```kotlin
+     *     transaction.select(e.name).forEachRow({ row ->
+     *        buffer.add(row)
+     *        !buffer.memoryFull()
+     *     })
+     *  ```
+     *
+     * This can be useful for huge result sets that would run into memory problems when fetched at once into a list.
+     */
     fun forEachRow(currentRow: (T) -> Boolean) {
         val sql = toSQL()
         val params = getWhereClause().getParameters()

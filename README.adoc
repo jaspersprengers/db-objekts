@@ -4,14 +4,20 @@
 :imagesdir: ./docs
 
 NOTE: db-Objekts is currently in an alpha release. While it is usable, the API may change slighlty. 
-The plan is to release a beta early 2023 followed by a first release later that year.
+The plan is to release a beta early 2023 followed by a first release later that year. See <<_status_and_roadmap>>
 
-== db-Objekts in 60 words
+== Fluent, type-safe, lightweight and opinionated
 db-Objekts is a Kotlin library to perform queries on a relational databases in application code.
 It generates source code that acts as metadata for all tables, columns and foreign keys. You then use these stateless Kotlin objects to build type-safe and fluent queries, comfortably using
 your IDE's autocomplete, while db-Objekts takes care of the SQL boilerplate and type conversions.
 
-== db-Objekts in a 5 minutes
+The project was conceived and built by me, Jasper Sprengers, a software developer living in the Netherlands.
+
+db-Objekts has some conceptual similarities to object relational mapping frameworks like Hibernate, but is also quite different. ORMs work with stateful entities that abstract away the database layer, even the individual tables. They are certainly not lightweight of easy to master well. db-Objekts is firmly focused on executing queries on tables, but these tables have become part of your application's source code. This gives you all the benefits of your IDE's auto-complete features, in addition to Kotlin's type and null-safety.
+
+Let's start with an overview of features.
+
+== A bird's eye feature view
 Let's showcase the features in a concise demonstration to get a feel of what you can achieve with db-Objekts.
 
 We have a simple database of a lending library with five tables
@@ -116,8 +122,8 @@ This concludes our bird's eye view of dbo. There is much, much more to explore i
 == Getting started
 
 === Installation and configuration
-:WARNING
-TBD.
+
+NOTE: the alpha release is still pending
 
 === Generating metadata objects
 
@@ -268,3 +274,11 @@ Note that these constraints are executed server-side, as they are part of the SQ
 
 === Creating custom column types
 
+== Status and roadmap
+db-Objekts has been a long time in the making. I started it in Scala, but switched to Kotlin because its null-safety is perfectly suited to the world of (relational) data. For several years it remained a hobby project and was not mature enough to become the Open Source tool I had in mind. But that time has now come.
+
+This is the very first alpha release. The API may change slightly, so it is not yet ready for a beta release and you should not use it in production yet. While I'm confident and proud of my work, more rigorous testing is needed.
+
+=== Roadmap
+
+* January 2023 first beta release

@@ -3,6 +3,9 @@ package com.dbobjekts.util
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
 
+/**
+ * Utility to create instances of a [HikariDataSource]
+ */
 object HikariDataSourceFactory {
 
     fun create(

@@ -11,6 +11,10 @@ import com.dbobjekts.vendors.mysql.MySQLProperties
 import com.dbobjekts.vendors.postgresql.PostgreSQLDataTypeMapper
 import com.dbobjekts.vendors.postgresql.PostgreSQLProperties
 
+/**
+ * Enumeration of all supported database vendors. Instances of Vendors implement the [Vendor] interface
+ * Specifies vendor-specific classes for sql-specific properties and the default [ColumnTypeMapper]
+ */
 enum class Vendors(
     override val defaultMapper: ColumnTypeMapper,
     override val properties: VendorSpecificProperties,
@@ -22,6 +26,9 @@ enum class Vendors(
     POSTGRESQL(PostgreSQLDataTypeMapper(), PostgreSQLProperties(), Catalog("POSTGRESQL"));
 
     companion object {
+        /**
+         * Finds a [Vendors] instance by matching on its name, case insensitive
+         */
         fun byName(name: String): Vendors = values().filter { name.equals(it.name, true) }
             .firstOrNull()
             ?: throw java.lang.IllegalArgumentException("Unsupported vendor $name")
@@ -31,8 +38,18 @@ enum class Vendors(
 
 }
 
+/**
+ * Refers to a database vendor, e.g. H2 or MariaDb.
+ */
 interface Vendor {
+    /**
+     * Conforms to one of the enum literals in [Vendors]
+     */
     val name: String
+
+    /**
+     * The vendor-specific implementation to map JDBC types to db-objekts [Column] implemetations
+     */
     val defaultMapper: ColumnTypeMapper
     val properties: VendorSpecificProperties
 }

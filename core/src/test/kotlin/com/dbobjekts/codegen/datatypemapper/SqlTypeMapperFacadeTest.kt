@@ -1,5 +1,6 @@
 package com.dbobjekts.codegen.datatypemapper
 
+import com.dbobjekts.api.CustomColumnTypeMapper
 import com.dbobjekts.metadata.column.LongColumn
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
 import com.dbobjekts.vendors.Vendors

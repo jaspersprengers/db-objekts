@@ -1,5 +1,6 @@
 package com.dbobjekts.codegen.configbuilders
 
+import com.dbobjekts.api.CustomColumnTypeMapper
 import com.dbobjekts.codegen.datatypemapper.*
 import com.dbobjekts.metadata.column.NonNullableColumn
 

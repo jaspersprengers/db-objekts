@@ -1,5 +1,6 @@
 package com.dbobjekts.component
 
+import com.dbobjekts.api.Tuple6
 import com.dbobjekts.integration.h2.core.Employee
 import com.dbobjekts.integration.h2.hr.Hobby
 import org.assertj.core.api.Assertions.assertThat

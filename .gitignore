@@ -6,3 +6,4 @@ build
 /integration/integration.iml
 /core/build
 integration/build
+/local.properties

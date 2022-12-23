@@ -35,6 +35,14 @@ class UpdateStatementExecutor(
     private val log = LoggerFactory.getLogger(UpdateStatementExecutor::class.java)
     private val columnsForUpdate = ColumnsForUpdate.fromValues(values)
 
+    /**
+     * Starts the whereclause for this update statement. Example:
+     * ```kotlin
+     *    transaction.update(Author)
+     *           .name("Eric Blair")
+     *           .where(Author.id.eq(orwell))
+     * ```
+     */
     fun where(subclause: SubClause): Long {
         try {
             withWhereClause(subclause)
@@ -51,14 +59,17 @@ class UpdateStatementExecutor(
         }
     }
 
-    fun toSQL(): String {
+    /**
+     * Serializes the update statement to SQL. Intended for internal use only.
+     */
+    internal fun toSQL(): String {
         getWhereClause().getFlattenedConditions().forEach { registerTable(it.column.table) }
         val columns = columnsForUpdate.params.map { it.column.aliasDotName() + " = ?" }.joinToString(",")
         val clause = getWhereClause().build(SQLOptions(includeAlias = true))
         return StringUtil.concat(listOf("update", buildJoinChain().toSQL(), "set", columns, clause))
     }
 
-    fun getAllParameters(): List<AnySqlParameter> {
+    internal fun getAllParameters(): List<AnySqlParameter> {
         //parameters in the SET portion of the statement (a=3, b=5) are appended with those in the whereclause
         val nmbUpdateParameters = columnsForUpdate.numberOfParameters()
         val whereClauseParameters = getWhereClause().getParameters()

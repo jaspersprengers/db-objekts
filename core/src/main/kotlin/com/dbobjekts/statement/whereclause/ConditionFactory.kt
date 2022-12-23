@@ -71,11 +71,16 @@ import com.dbobjekts.metadata.column.Column
     /**
      * IN operator. Results in SQL: my_column1 IN (1,3,5)
      */
-
     fun `in`(vararg values: I): W = createInCondition("IN", values.toList())
 
+    /**
+     * IN operator. Identical to in and isIn. Results in SQL: my_column1 IN (1,3,5)
+     */
     fun within(vararg values: I): W = createInCondition("IN", values.toList())
 
+    /**
+     * IN operator. Identical to in and within. Results in SQL: my_column1 IN (1,3,5)
+     */
     fun isIn(vararg values: I): W = createInCondition("IN", values.toList())
 
     /**

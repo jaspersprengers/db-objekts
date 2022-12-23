@@ -1,4 +1,4 @@
-package com.dbobjekts.codegen.exclusionfilters
+package com.dbobjekts.api
 
 class TableExclusionFilter(
     private val pattern: String,

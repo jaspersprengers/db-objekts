@@ -21,15 +21,13 @@ class LibraryComponentTest {
         H2DB.setupDatabaseObjects()
         H2DB.newTransaction { transaction ->
 
-            val orwell: Long = transaction.insert(Author).mandatoryColumns("George Orwell").execute()
+            val orwell: Long = transaction.insert(Author).mandatoryColumns("George Orwell").bio("Pseudonym of Eric Blair (1903-1950)").execute()
             transaction.update(Author)
                 .bio("(1903-1950) Pseudonym of Eric Blair. One of the most influential English authors and journalist of the early 20th century.")
                 .where(Author.id.eq(orwell))
             val rowling: Long = transaction.insert(Author).mandatoryColumns("Joanne Rowling").execute()
 
-            transaction.update(Author)
-                .bio("(1903-1950) Pseudonym of Eric Blair. One of the most influential English authors and journalist of the early 20th century.")
-                .where(Author.id.eq(orwell))
+            transaction.select(Book.isbn).where(Book.published.lt(LocalDate.of(1980,1,1)))
 
             transaction.insert(Book).mandatoryColumns("ISBN-1984", "Nineteen-eighty Four", orwell, LocalDate.of(1948, 1, 1)).execute()
             transaction.insert(Book).mandatoryColumns("ISBN-WIGAN", "The Road to Wigan Pier", orwell, LocalDate.of(1940, 1, 1)).execute()
@@ -37,9 +35,18 @@ class LibraryComponentTest {
             val item19 = transaction.insert(Item).mandatoryColumns("ISBN-1984", LocalDate.of(1980, 5, 5)).execute()
             transaction.insert(Item).mandatoryColumns("ISBN-1984", LocalDate.of(1990, 5, 5)).execute()
 
+            transaction.deleteFrom(Book).where(Book.isbn.eq("ISBN"))
+
+            transaction.select(Item.isbn, Loan.dateLoaned.nullable).useOuterJoins().asList()
+
             val ret = transaction.insert(Book)
                 .mandatoryColumns("ISBN-PHILOSOPHER", "Harry Potter and the Philsopher's Stone", rowling, LocalDate.of(1999, 1, 1))
                 .execute()
+
+            transaction.select(Book.isbn).where(Book.authorId.eq(5)
+                .or(Book.title.startsWith("Harry Potter").and(Book.published.gt(LocalDate.of(1998,1,1)))))
+                .firstOrNull()
+            println(transaction.transactionExecutionLog().last().sql)
 
             transaction.insert(Item).mandatoryColumns("ISBN-PHILOSOPHER", LocalDate.of(2005, 5, 5)).execute()
             val phil1 = transaction.insert(Item).mandatoryColumns("ISBN-PHILOSOPHER", LocalDate.of(2005, 5, 5)).execute()

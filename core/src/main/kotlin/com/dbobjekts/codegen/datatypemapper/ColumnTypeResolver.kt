@@ -1,6 +1,7 @@
 package com.dbobjekts.codegen.datatypemapper
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.CustomColumnTypeMapper
 import com.dbobjekts.api.SchemaName
 import com.dbobjekts.api.TableName
 import com.dbobjekts.codegen.metadata.ColumnMetaData

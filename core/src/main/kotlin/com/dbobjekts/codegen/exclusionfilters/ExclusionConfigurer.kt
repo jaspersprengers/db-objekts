@@ -1,5 +1,8 @@
 package com.dbobjekts.codegen.exclusionfilters
 
+import com.dbobjekts.api.ColumnExclusionFilter
+import com.dbobjekts.api.SchemaExclusionFilter
+import com.dbobjekts.api.TableExclusionFilter
 import com.dbobjekts.codegen.metadata.ColumnMetaData
 import com.dbobjekts.codegen.metadata.DBTableDefinition
 import com.dbobjekts.codegen.metadata.TableMetaData
