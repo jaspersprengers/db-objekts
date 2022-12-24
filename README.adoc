@@ -42,7 +42,7 @@ generator.generateSourceFiles()
 This is a bare-bones setup. There is much more to fine-tune. This writes metadata objects under the package `com.acme.db-Objekts` in a special `gen` source folder, which indicates you should not manually alter these files.
 
 The next step is to configure the `TransactionManager`. This wraps a `javax.sql.DataSource` and acts as a factory for transactions.
-You typically only need one instance per database. This example is for an embedded H2 database, taken from the project `com.db-Objekts.integration.h2.H2DB`
+You typically only need one instance per database. This example is for an embedded H2 database, taken from the project `com.db-Objekts.sampledbs.h2.H2DB`
 The code generation stage produced a `TestCatalog` Kotlin `object`. dbo needs this to produce SQL boilerplate specific to our schemas.
 ```kotlin
 val dataSource = HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")

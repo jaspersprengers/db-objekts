@@ -1,9 +1,7 @@
-.gradle
 **/.iml
-build
+target
 /.idea
-/core/core.iml
-/integration/integration.iml
-/core/build
+/core.iml
 integration/build
 /local.properties
+/local_install.sh
