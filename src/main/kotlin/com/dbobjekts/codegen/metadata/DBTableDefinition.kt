@@ -3,12 +3,17 @@ package com.dbobjekts.codegen.metadata
 import com.dbobjekts.api.PackageName
 import com.dbobjekts.api.SchemaName
 import com.dbobjekts.api.TableName
+import com.dbobjekts.metadata.Table
+import java.lang.IllegalStateException
 
-data class DBTableDefinition(override val packageName: PackageName,
-                             val schema: SchemaName,
-                             val tableName: TableName,
-                             val alias: String,
-                             val columns: List<DBColumnDefinition>): DBObjectDefinition {
+
+data class DBTableDefinition(
+    override val packageName: PackageName,
+    val schema: SchemaName,
+    val tableName: TableName,
+    val alias: String,
+    val columns: List<DBColumnDefinition>
+) : DBObjectDefinition {
     override fun toString(): String = tableName.value
 
     fun foreignKeys(): List<DBForeignKeyDefinition> = columns.map { it as? DBForeignKeyDefinition }.filterNotNull()
@@ -16,5 +21,20 @@ data class DBTableDefinition(override val packageName: PackageName,
     fun prettyPrint(): String =
         """
            |   Table ${packageName.toString()}.${schema.value}.$tableName $alias has ${columns.size} columns.
-           |${columns.map{it.prettyPrint()}.joinToString(", ")}"""
+           |${columns.map { it.prettyPrint() }.joinToString(", ")}"""
+
+
+    fun diff(codeObject: Table): List<String> {
+        val diffs = mutableListOf<String>()
+        if (columns.size != codeObject.columns.size){
+            val inDb = columns.map { it.columnName.value }.joinToString(",")
+            val inCatalog = codeObject.columns.map { it.nameInTable }.joinToString(",")
+            diffs += ("DB schema $codeObject has ${columns.size} tables ($inDb), but catalog has ${codeObject.columns.size} ($inCatalog)}")
+        }
+        diffs += columns.flatMap { sc: DBColumnDefinition ->
+            val match = codeObject.columns.find { it.nameInTable.equals(sc.columnName.value, true) }
+            if (match == null) listOf("DB table ${codeObject.tableName}.${sc.columnName} not found in catalog") else sc.diff(match)
+        }
+        return diffs
+    }
 }

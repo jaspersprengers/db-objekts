@@ -30,7 +30,7 @@ abstract class Table(
 
     internal fun getForeignKeyToParent(parent: Table): AnyForeignKey? = foreignKeys.find { it.parentColumn.table == parent }
 
-    internal fun columnByName(column: String): AnyColumn? = columns.find { it.nameInTable == column }
+    internal fun columnByName(column: String): AnyColumn? = columns.find { it.nameInTable.equals(column,true) }
 
     internal fun alias(): String = schema.aliasForTable(this)
 
@@ -101,5 +101,6 @@ abstract class Table(
 
     override fun toString(): String = toSQL()
 
+    internal fun serialize(): String = "$dbName columns:[${columns.map { it.toString() }.joinToString(",")}]"
 }
 

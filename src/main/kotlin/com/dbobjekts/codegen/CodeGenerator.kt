@@ -9,7 +9,9 @@ import com.dbobjekts.codegen.parsers.DBParserFactory
 import com.dbobjekts.codegen.parsers.DBParserFactoryImpl
 import com.dbobjekts.codegen.writer.SourceFileWriter
 import com.dbobjekts.codegen.writer.SourcesGenerator
+import com.dbobjekts.metadata.Catalog
 import org.slf4j.LoggerFactory
+import java.lang.IllegalArgumentException
 import javax.sql.DataSource
 
 /**
@@ -39,6 +41,8 @@ open class CodeGenerator {
     internal var parserFactory: DBParserFactory = DBParserFactoryImpl()
 
     fun withDataSource(datasource: DataSource): CodeGenerator {
+        if (this::dataSource.isInitialized)
+            throw IllegalArgumentException("DataSource is already set!")
         this.dataSource = datasource
         return this
     }
@@ -75,11 +79,23 @@ open class CodeGenerator {
         logger.info("Source files were generated OK.")
     }
 
+    /**
+     * Only writes source files if the state of the new Catalog is different from the one provided.
+     *
+     * This avoids unnecessarily overwriting files that have not changed.
+     * @return true if the catalogs differed and sources were written, false otherwise
+     */
+    fun generateSourceFilesIfChanged(referenceCatalog: Catalog): Boolean {
+        return true;
+    }
+
     internal fun createCatalogDefinition(): DBCatalogDefinition {
         logger.info("Running code generation tool. Validating configuration settings.")
         val generatorConfig: CodeGeneratorConfig = build()
         return parserFactory.create(generatorConfig).parseCatalog()
     }
+
+    internal fun differencesWithCatalog(catalog: Catalog): List<String> = createCatalogDefinition().diff(catalog)
 
     private fun build(): CodeGeneratorConfig {
         return CodeGeneratorConfig(

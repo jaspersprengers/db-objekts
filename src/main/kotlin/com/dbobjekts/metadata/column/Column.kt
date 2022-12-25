@@ -58,5 +58,7 @@ abstract class Column<I>(
         return result
     }
 
+    internal fun serialize(): String = "$nameInTable ${javaClass.simpleName}"
+
 }
 

@@ -15,10 +15,10 @@ import java.lang.IllegalStateException
  *      .build()
  * ```
  */
-open class Catalog (
+open class Catalog(
     val vendor: String,
     val schemas: List<Schema> = listOf()
-)  {
+) {
 
     constructor(vendor: Vendor, schemas: List<Schema> = listOf()) : this(vendor.name, schemas)
 
@@ -41,7 +41,7 @@ open class Catalog (
 
             )
         }
-        if (tables.none { it.schemaAndName() == table.schemaAndName() }){
+        if (tables.none { it.schemaAndName() == table.schemaAndName() }) {
             throw IllegalStateException("Table ${table.schemaAndName()} does not belong to the Catalog associated with the current TransactionManager")
         }
         return table
@@ -52,6 +52,8 @@ open class Catalog (
     internal fun aliasForTable(table: Table): String = aliases.aliasForSchemaAndTable(table.schemaName(), table.tableName)
 
     override fun toString(): String = this::class.java.canonicalName
+
+    internal fun serialize(): String = "$vendor " + tables.map { it.serialize() }.joinToString(",")
 
 }
 

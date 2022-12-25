@@ -17,7 +17,7 @@ class MariaCodeGenTest {
     companion object {
         @Container
         @JvmStatic
-        val CONTAINER = MariaDBWrapper()
+        val CONTAINER = MariaDBWrapper("")
         lateinit var ds: DataSource
         lateinit var tm: TransactionManager
 
@@ -27,9 +27,7 @@ class MariaCodeGenTest {
             val port = 3306//CONTAINER.firstMappedPort
             ds = HikariDataSourceFactory
                 .create(
-                    url = "jdbc:mariadb://localhost:$port/test",
-                    username = "root",
-                    password = "test", driver = "org.mariadb.jdbc.Driver"
+                    url = "jdbc:mariadb://localhost:$port/test", username = "root", password = "test", driver = "org.mariadb.jdbc.Driver"
                 )
             tm = TransactionManager.builder().withDataSource(ds).build()
             /*tm { tr ->
