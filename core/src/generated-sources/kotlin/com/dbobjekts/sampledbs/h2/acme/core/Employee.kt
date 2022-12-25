@@ -1,4 +1,4 @@
-package com.dbobjekts.sampledbs.h2.core
+package com.dbobjekts.sampledbs.h2.acme.core
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
@@ -6,7 +6,7 @@ import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
-import com.dbobjekts.sampledbs.h2.hr.Hobby
+import com.dbobjekts.sampledbs.h2.acme.hr.Hobby
 
 
 object Employee:Table("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, EmployeeInsertBuilder> {

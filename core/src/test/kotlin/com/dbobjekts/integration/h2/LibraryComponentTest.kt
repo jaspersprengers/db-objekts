@@ -1,11 +1,6 @@
 package com.dbobjekts.integration.h2
 
-import com.dbobjekts.api.Tuple3
-import com.dbobjekts.api.Tuple5
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
-import java.time.ZonedDateTime
 
 
 class LibraryComponentTest {
@@ -13,8 +8,8 @@ class LibraryComponentTest {
     @Test
     fun `integration test`() {
 
-        H2DB.setupDatabaseObjects()
-        H2DB.newTransaction { transaction ->
+        LibraryDB.setupDatabaseObjects()
+        LibraryDB.newTransaction { transaction ->
 /*
             val orwell: Long = transaction.insert(Author).mandatoryColumns("George Orwell").bio("Pseudonym of Eric Blair (1903-1950)").execute()
             transaction.update(Author)

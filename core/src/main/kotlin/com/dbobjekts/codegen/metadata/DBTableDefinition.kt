@@ -29,11 +29,11 @@ data class DBTableDefinition(
         if (columns.size != codeObject.columns.size){
             val inDb = columns.map { it.columnName.value }.joinToString(",")
             val inCatalog = codeObject.columns.map { it.nameInTable }.joinToString(",")
-            diffs += ("DB schema $codeObject has ${columns.size} tables ($inDb), but catalog has ${codeObject.columns.size} ($inCatalog)}")
+            diffs += ("DB table $codeObject has ${columns.size} columns ($inDb), but catalog has ${codeObject.columns.size} ($inCatalog)}")
         }
         diffs += columns.flatMap { sc: DBColumnDefinition ->
             val match = codeObject.columns.find { it.nameInTable.equals(sc.columnName.value, true) }
-            if (match == null) listOf("DB table ${codeObject.tableName}.${sc.columnName} not found in catalog") else sc.diff(match)
+            if (match == null) listOf("DB column ${codeObject.tableName}.${sc.columnName} not found in catalog") else sc.diff(match)
         }
         return diffs
     }

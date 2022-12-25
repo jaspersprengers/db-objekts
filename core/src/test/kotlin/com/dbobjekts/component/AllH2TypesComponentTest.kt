@@ -1,7 +1,7 @@
 package com.dbobjekts.component
 
-import com.dbobjekts.sampledbs.h2.core.AllTypes
-import com.dbobjekts.sampledbs.h2.custom.AddressType
+import com.dbobjekts.sampledbs.h2.acme.core.AllTypes
+import com.dbobjekts.sampledbs.h2.acme.custom.AddressType
 import com.dbobjekts.metadata.column.BlobColumn
 import org.assertj.core.api.Assertions.assertThat
 import org.h2.api.Interval
@@ -20,7 +20,7 @@ class AllH2TypesComponentTest {
         @BeforeAll
         @JvmStatic
         fun beforeGroup() {
-            H2DB.setupDatabaseObjects()
+            AcmeDB.setupDatabaseObjects()
         }
     }
 
@@ -39,7 +39,7 @@ class AllH2TypesComponentTest {
         val fox = "The quick brown fox"
         val t = AllTypes
         val uuid = UUID.randomUUID()
-        H2DB.newTransaction { tr ->
+        AcmeDB.newTransaction { tr ->
 
             val row = tr.insert(AllTypes)
                 .characterCol("C")

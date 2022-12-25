@@ -1,10 +1,10 @@
 package com.dbobjekts.metadata
-import com.dbobjekts.sampledbs.h2.TestCatalog
-import com.dbobjekts.sampledbs.h2.core.Address
-import com.dbobjekts.sampledbs.h2.core.Country
-import com.dbobjekts.sampledbs.h2.core.Employee
-import com.dbobjekts.sampledbs.h2.core.EmployeeAddress
-import com.dbobjekts.sampledbs.h2.hr.Hobby
+import com.dbobjekts.sampledbs.h2.acme.TestCatalog
+import com.dbobjekts.sampledbs.h2.acme.core.Address
+import com.dbobjekts.sampledbs.h2.acme.core.Country
+import com.dbobjekts.sampledbs.h2.acme.core.Employee
+import com.dbobjekts.sampledbs.h2.acme.core.EmployeeAddress
+import com.dbobjekts.sampledbs.h2.acme.hr.Hobby
 import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.metadata.joins.TableJoinChainBuilder
 import org.assertj.core.api.Assertions

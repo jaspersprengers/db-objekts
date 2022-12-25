@@ -281,4 +281,13 @@ This is the very first alpha release. The API may change slightly, so it is not 
 
 === Roadmap
 
-* January 2023 first beta release
+* From Januari 2023 a number of alpha releases will cover the following
+**  Close to 100% unit test coverage
+** Full coverage for all column types in the H2 database, used for testing
+** Improving and cleaning up source code documentation and user docs
+** Minor alterations the API with regard to method names and possible refactoring of packages
+
+* The beta release planned for spring 2023 will cover:
+** Addition of PostgreSQL and MySQL as vendor types
+** Rigorous integration tests on dockerized images of all database vendors as part of the build
+** No more API changes are to be expected.

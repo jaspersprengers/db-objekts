@@ -1,10 +1,12 @@
 package com.dbobjekts.component
 
 import com.dbobjekts.api.Tuple3
-import com.dbobjekts.sampledbs.h2.core.*
-import com.dbobjekts.sampledbs.h2.custom.AddressType
-import com.dbobjekts.sampledbs.h2.hr.Certificate
-import com.dbobjekts.sampledbs.h2.hr.Hobby
+import com.dbobjekts.sampledbs.h2.acme.core.Department
+import com.dbobjekts.sampledbs.h2.acme.core.EmployeeDepartment
+import com.dbobjekts.sampledbs.h2.acme.core.*
+import com.dbobjekts.sampledbs.h2.acme.custom.AddressType
+import com.dbobjekts.sampledbs.h2.acme.hr.Certificate
+import com.dbobjekts.sampledbs.h2.acme.hr.Hobby
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
@@ -28,8 +30,8 @@ class ForeignKeyComponentTest {
         @BeforeAll
         @JvmStatic
          fun setup() {
-            H2DB.setupDatabaseObjects()
-            H2DB.newTransaction { tr ->
+            AcmeDB.setupDatabaseObjects()
+            AcmeDB.newTransaction { tr ->
                 tr.insert(c).id("us").name("USA").execute()
                 tr.insert(c).id("nl").name("Netherlands").execute()
                 tr.insert(c).id("fr").name("France").execute()
@@ -39,20 +41,20 @@ class ForeignKeyComponentTest {
             }
 
             val dob = LocalDate.of(1980, 3, 3)
-            val johnsId = H2DB.newTransaction { tr ->
+            val johnsId = AcmeDB.newTransaction { tr ->
                 tr.insert(Employee).name("John").salary(2000.0).married(true).dateOfBirth(dob).execute()
             }
-            val janesId = H2DB.newTransaction { tr ->
+            val janesId = AcmeDB.newTransaction { tr ->
                 tr.insert(Employee).name("Jane").salary(3000.0).married(true).dateOfBirth(dob).execute()
             }
-            val itDept = H2DB.newTransaction { tr -> tr.insert(Department).name("IT").execute() }
-            val hrDept = H2DB.newTransaction { tr -> tr.insert(Department).name("IT").execute() }
+            val itDept = AcmeDB.newTransaction { tr -> tr.insert(Department).name("IT").execute() }
+            val hrDept = AcmeDB.newTransaction { tr -> tr.insert(Department).name("IT").execute() }
             val johnAndJanesAddress =
-                H2DB.newTransaction { tr -> tr.insert(a).street("Home sweet home").countryId("nl").execute() }
-            H2DB.newTransaction { tr -> tr.insert(ed).departmentId(itDept).employeeId(johnsId).execute() }
-            H2DB.newTransaction { tr -> tr.insert(ed).departmentId(hrDept).employeeId(janesId).execute() }
-            H2DB.newTransaction { tr -> tr.insert(ed).departmentId(itDept).employeeId(janesId).execute() }
-            H2DB.newTransaction { tr ->
+                AcmeDB.newTransaction { tr -> tr.insert(a).street("Home sweet home").countryId("nl").execute() }
+            AcmeDB.newTransaction { tr -> tr.insert(ed).departmentId(itDept).employeeId(johnsId).execute() }
+            AcmeDB.newTransaction { tr -> tr.insert(ed).departmentId(hrDept).employeeId(janesId).execute() }
+            AcmeDB.newTransaction { tr -> tr.insert(ed).departmentId(itDept).employeeId(janesId).execute() }
+            AcmeDB.newTransaction { tr ->
                 
                 tr.insert(Certificate).name("BSC").employeeId(johnsId).execute()
                 tr.insert(Certificate).name("MA").employeeId(janesId).execute()
@@ -63,10 +65,10 @@ class ForeignKeyComponentTest {
             }
 
             val johnsWorkAddress =
-                H2DB.newTransaction { tr -> tr.insert(a).street("John's office").countryId("us").execute() }
+                AcmeDB.newTransaction { tr -> tr.insert(a).street("John's office").countryId("us").execute() }
             val janesWorkAddress =
-                H2DB.newTransaction { tr -> tr.insert(a).street("Jane's office").countryId("fr").execute() }
-            H2DB.newTransaction { tr ->
+                AcmeDB.newTransaction { tr -> tr.insert(a).street("Jane's office").countryId("fr").execute() }
+            AcmeDB.newTransaction { tr ->
                 tr.insert(ea).addressId(johnsWorkAddress).employeeId(johnsId).kind(AddressType.WORK).execute()
                 tr.insert(ea).addressId(janesWorkAddress).employeeId(janesId).kind(AddressType.WORK).execute()
             }
@@ -76,7 +78,7 @@ class ForeignKeyComponentTest {
 
     @Test
     fun `get all work addresses`() {
-        H2DB.newTransaction { tr ->
+        AcmeDB.newTransaction { tr ->
             val results: List<Tuple3<String?, String?, String?>> =
                 tr.select(e.name, a.street, c.name).where(ea.kind.eq(AddressType.WORK)).orderAsc(e.name).asList()
             assertEquals("Jane", results[0].v1)
@@ -92,7 +94,7 @@ class ForeignKeyComponentTest {
 
     @Test
     fun `get all private addresses`() {
-        val results: List<Tuple3<String, String, String>> = H2DB.newTransaction {
+        val results: List<Tuple3<String, String, String>> = AcmeDB.newTransaction {
             it.select(e.name, a.street, c.name).where(ea.kind.eq(AddressType.HOME)).orderAsc(e.name).asList()
         }
         assertEquals("Jane", results[0].v1)
@@ -107,7 +109,7 @@ class ForeignKeyComponentTest {
 
     @Test
     fun `get employees with hobbies`() {
-        H2DB.newTransaction { tr ->
+        AcmeDB.newTransaction { tr ->
             tr.update(e).hobbyId("c").where(e.name.eq("John"))
             val rows = tr.select(e.name, h.name).from(e.innerJoin(h)).asList()
             assertThat(rows).hasSize(1)
@@ -117,7 +119,7 @@ class ForeignKeyComponentTest {
 
     @Test
     fun `get employees address and departments`() {
-        H2DB.newTransaction { tr ->
+        AcmeDB.newTransaction { tr ->
             val rows = tr.select(a.street, d.name).where(e.name.eq("John")).asList()
             assertEquals("Home sweet home", rows[0].v1)
             assertEquals("IT", rows[0].v2)
@@ -126,7 +128,7 @@ class ForeignKeyComponentTest {
 
     @Test
     fun `test outer join on matching row`() {
-        H2DB.newTransaction { tr ->
+        AcmeDB.newTransaction { tr ->
             val row = tr.select(e.name, ce.name.nullable).where(e.name.eq("John").and(ce.name).eq("BSC")).first()
             assertEquals("John", row.v1)
             assertEquals("BSC", row.v2)

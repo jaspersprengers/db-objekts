@@ -1,13 +1,8 @@
-package com.dbobjekts.sampledbs.h2.custom
+package com.dbobjekts.sampledbs.h2.acme.custom
 
-import com.dbobjekts.api.CustomColumnTypeMapper
-import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.*
 import java.io.Serializable
-import java.sql.PreparedStatement
-import java.sql.ResultSet
-import java.sql.Types
 
 enum class AddressType : Serializable {
     HOME, WORK

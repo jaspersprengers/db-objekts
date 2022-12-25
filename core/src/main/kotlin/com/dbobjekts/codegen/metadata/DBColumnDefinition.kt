@@ -32,12 +32,12 @@ open class DBColumnDefinition(
             else -> column.javaClass.toString()
         }
         val codeToStr = when (val c = codeObject) {
-            is IsForeignKey<*, *> -> "${column.javaClass} to ${c.parentColumn.table.tableName.value}.${c.parentColumn.nameInTable}"
-            is SequenceKeyColumn<*> -> "${column.javaClass} with ${c.qualifiedSequence()}"
-            else -> column.javaClass.toString()
+            is IsForeignKey<*, *> -> "${c.javaClass} to ${c.parentColumn.table.tableName.value}.${c.parentColumn.nameInTable}"
+            is SequenceKeyColumn<*> -> "${c.javaClass} with ${c.qualifiedSequence()}"
+            else -> c.javaClass.toString()
         }
         return if (dbToStr != codeToStr)
-            return listOf("Type mismatch in $tableName.$columnName: DB is $dbToStr, catalog is $codeToStr")
+            return listOf("Type mismatch in $tableName.$columnName: DB specifies $dbToStr, catalog is $codeToStr")
         else listOf()
     }
 

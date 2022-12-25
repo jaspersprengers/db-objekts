@@ -1,9 +1,7 @@
 package com.dbobjekts.component
 
-import com.dbobjekts.api.Tuple2
-import com.dbobjekts.api.Tuple6
-import com.dbobjekts.sampledbs.h2.core.Employee
-import com.dbobjekts.sampledbs.h2.hr.Hobby
+import com.dbobjekts.sampledbs.h2.acme.core.Employee
+import com.dbobjekts.sampledbs.h2.acme.hr.Hobby
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -12,8 +10,8 @@ class CustomSQLComponentTest {
 
     @Test
     fun `test select two columns from two tables`() {
-        H2DB.setupDatabaseObjects()
-        H2DB.newTransaction({
+        AcmeDB.setupDatabaseObjects()
+        AcmeDB.newTransaction({
             //it.insert(AllTypes)
             LocalDate.of(1990, 12, 5)
             it.insert(Hobby).mandatoryColumns("chess", "The game of champions").execute()

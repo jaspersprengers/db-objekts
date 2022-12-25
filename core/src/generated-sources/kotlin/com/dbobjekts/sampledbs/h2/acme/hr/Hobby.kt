@@ -1,4 +1,4 @@
-package com.dbobjekts.sampledbs.h2.hr
+package com.dbobjekts.sampledbs.h2.acme.hr
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table

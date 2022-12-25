@@ -1,7 +1,7 @@
 package com.dbobjekts.codegen
 
 import com.dbobjekts.codegen.parsers.TableMetaDataRow
-import com.dbobjekts.component.H2DB
+import com.dbobjekts.component.AcmeDB
 import com.dbobjekts.metadata.column.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -12,7 +12,7 @@ class CodeGeneratorTest {
 
     fun setup(): CodeGenerator {
         val generator = CodeGenerator()
-        generator.withDataSource(H2DB.dataSource)
+        generator.withDataSource(AcmeDB.dataSource)
         generator.outputConfigurer()
             .basePackageForSources("com.dbobjekts.sampledbs.h2")
 

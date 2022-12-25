@@ -2,17 +2,17 @@ package com.dbobjekts.component
 
 import com.dbobjekts.api.Transaction
 import com.dbobjekts.api.TransactionManager
-import com.dbobjekts.sampledbs.h2.TestCatalog
-import com.dbobjekts.sampledbs.h2.core.*
-import com.dbobjekts.sampledbs.h2.hr.Certificate
-import com.dbobjekts.sampledbs.h2.hr.Hobby
-import com.dbobjekts.sampledbs.h2.core.*
+import com.dbobjekts.sampledbs.h2.acme.TestCatalog
+import com.dbobjekts.sampledbs.h2.acme.core.Department
+import com.dbobjekts.sampledbs.h2.acme.core.EmployeeDepartment
+import com.dbobjekts.sampledbs.h2.acme.core.*
+import com.dbobjekts.sampledbs.h2.acme.hr.Certificate
+import com.dbobjekts.sampledbs.h2.acme.hr.Hobby
 import com.dbobjekts.util.HikariDataSourceFactory
 import org.slf4j.LoggerFactory
-import javax.sql.DataSource
 
-object H2DB {
-    private val logger = LoggerFactory.getLogger(H2DB::class.java)
+object AcmeDB {
+    private val logger = LoggerFactory.getLogger(AcmeDB::class.java)
 
     val catalog = TestCatalog
 

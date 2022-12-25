@@ -1,9 +1,9 @@
 package com.dbobjekts.metadata
 
-import com.dbobjekts.sampledbs.h2.TestCatalog
-import com.dbobjekts.sampledbs.h2.core.Core
-import com.dbobjekts.sampledbs.h2.core.Employee
-import com.dbobjekts.sampledbs.h2.hr.Hr
+import com.dbobjekts.sampledbs.h2.acme.TestCatalog
+import com.dbobjekts.sampledbs.h2.acme.core.Core
+import com.dbobjekts.sampledbs.h2.acme.core.Employee
+import com.dbobjekts.sampledbs.h2.acme.hr.Hr
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
