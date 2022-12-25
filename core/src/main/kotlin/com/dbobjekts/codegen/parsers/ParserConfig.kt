@@ -11,7 +11,7 @@ import com.dbobjekts.vendors.Vendor
 data class ParserConfig(
     val vendor: Vendor,
     val exclusionConfigurer: ExclusionConfigurer,
-    val basePackage: PackageName?,
+    val basePackage: PackageName,
     val customColumnMappers: List<CustomColumnTypeMapper<*>> = listOf(),
     val sequenceMappers: List<SequenceForPrimaryKeyMapper> = listOf()
 ) {

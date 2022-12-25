@@ -20,7 +20,7 @@ abstract class CatalogParser(private val parserConfig: ParserConfig) {
     val tableMetaData: List<TableMetaData> by lazy {
         createTableMetaData(parserConfig)
     }
-    private val basePackageOpt: PackageName? = parserConfig.basePackage
+    private val basePackage: PackageName = parserConfig.basePackage
     private val columnTypeResolver: ColumnTypeResolver
 
     init {
@@ -90,7 +90,6 @@ abstract class CatalogParser(private val parserConfig: ParserConfig) {
         log.info("Changelog files contain metadata on ${tableMetaData.size} tables.")
         val catalogs = extractCatalogs()
         val catalog = catalogs.firstOrNull() ?: "public"
-        val basePackage = basePackageOpt ?: PackageName(listOf("dbobjekts", catalog.lowercase()))
         val tableDefinitions = createTableDefinitions(basePackage, tableMetaData)
         val schemas: List<DBSchemaDefinition> = tableDefinitions
             .groupBy { it.schema.value }

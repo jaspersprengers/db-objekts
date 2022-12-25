@@ -6,6 +6,6 @@ import com.dbobjekts.api.PackageName
 interface SourceWriter {
   fun write(source: String,
             packageName: PackageName,
-            baseDir: String?,
+            baseDir: String,
             fileName: String)
 }

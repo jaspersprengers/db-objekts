@@ -70,11 +70,11 @@ open class CodeGenerator {
         logger.info("Catalog definition was parsed OK. Generating code.")
 
         //can be null for writers that do not write to the file system
-        logger.info("Output dir for generated source code: ${outputConfigurer.basedirOpt}")
         SourcesGenerator(
-            outputConfigurer.basedirOpt,
+            outputConfigurer.basedirOpt
+                ?: throw java.lang.IllegalStateException("Missing mandatory setting basePackageForSources on outputConfigurer"),
             catalogDefinition.packageName,
-            outputConfigurer.customSourceWriter ?: SourceFileWriter(), catalogDefinition
+            catalogDefinition
         ).generate()
         logger.info("Source files were generated OK.")
     }
@@ -101,7 +101,8 @@ open class CodeGenerator {
         return CodeGeneratorConfig(
             dataSource = dataSource,
             exclusionConfigurer = exclusionConfigurer,
-            basePackage = outputConfigurer.basePackage,
+            basePackage = outputConfigurer.basePackage
+                ?: throw IllegalStateException("Missing mandatory setting basePackageForSources on outputConfigurer"),
             customColumnMappers = mappingConfigurer.mappers.toList(),
             sequenceMappers = mappingConfigurer.sequenceMappers
         )

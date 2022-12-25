@@ -7,11 +7,11 @@ import com.dbobjekts.util.StringUtil
 import org.slf4j.LoggerFactory
 
 class SourcesGenerator(
-    val basedir: String?,
-    val basePackage : PackageName,
-    val writer: SourceWriter,
+    val basedir: String,
+    val basePackage: PackageName,
     val catalog: DBCatalogDefinition
 ) {
+    private val writer = SourceFileWriter()
     private val logger = LoggerFactory.getLogger(SourcesGenerator::class.java)
 
     fun generate() {
