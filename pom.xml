@@ -255,7 +255,7 @@
                     <version>3.0.0-M7</version>
                     <configuration>
                         <releaseProfiles>release</releaseProfiles>
-                        <autoVersionModules>true</autoVersionModules>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
                     </configuration>
                 </plugin>
 
