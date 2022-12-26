@@ -3,7 +3,7 @@
 = Introduction
 :imagesdir: ./docs
 
-NOTE: db-Objekts is currently in an alpha release. While it is usable, the API may change slighlty. 
+NOTE: db-Objekts is currently in alpha. The API is still subject to change and is not production ready.
 The plan is to release a beta early 2023 followed by a first release later that year. See <<_status_and_roadmap>>
 
 == Fluent, type-safe, lightweight and opinionated
@@ -27,7 +27,7 @@ We have a simple database of a lending library with five tables
 * `member` only stores the name of an invdividual member
 * `loan` keeps a record of all the books (items) taken out by a member. It refers to `item` and `member` and keeps the date taken out and returned.
 
-image::datamodel.png[]
+image::datamodel.png[datamodel,600]
 
 First we need metadata objects for our database. For this we need the `CodeGenerator`
 ```kotlin
@@ -86,12 +86,12 @@ And yes, you can do embedded and/or conditions. More on that later.
 ```
 Notice the power of autocomplete here. You instantly know which columns are available, which types they take, and whether null values are allowed.
 
-image::autocomplete_update.png[]
+image::autocomplete_update.png[autocomplete_update, 600]
 
-image::autocomplete_insert.png[]
+image::autocomplete_insert.png[autocomplete_insert, 600]
 
 Add some physical copies and loan data
-```
+```kotlin
 //we have two copies of Harry Potter, one of 1984 and we misplaced the one of the Road to Wigan Pier.
 val copy1_1984 = tr.insert(Item).mandatoryColumns("ISBN-1984", LocalDate.of(1980,5,5)).execute()
 val copy1_phil = tr.insert(Item).mandatoryColumns("ISBN-PHILOSOPHER", LocalDate.of(2005,5,5)).execute()
@@ -120,32 +120,43 @@ tr.select(Loan.dateLoaned, Item.id, Book.title, Author.name, Member.name).asList
 This concludes our bird's eye view of dbo. There is much, much more to explore in the following sections, so let's dig in!
 
 == Getting started
+TBD
 
 === Installation and configuration
-
-NOTE: the alpha release is still pending
+TBD
 
 === Generating metadata objects
+TBD
 
 ==== Supported vendors
+TBD
 
 ==== Mandatory settings
+TBD
 
 ==== Excluding objects from generation
+TBD
 
 ==== Overriding the default Column implementation
+TBD
 
 ==== Using sequence-generated primary keys
+TBD
 
 == db-Objekts metadata
+TBD
 
 === Catalog, Schema and Table
+TBD
 
 === Columns
+TBD
 
 == Querying
+TBD
 
 === The TransactionManager and Transaction
+TBD
 
 === Inserting data
 Let's start with getting some data into the tables. The `insert(..)` method takes a (generated) `Table` implementation and returns a corresponding `*InsertBuilder` instance.
@@ -265,14 +276,19 @@ Note that these constraints are executed server-side, as they are part of the SQ
 ```
 
 === Outer joins and more customization
+TBD
 
 === Custom sql queries
+TBD
 
 == Advanced topics
+TBD
 
 === Customizing the code generation
+TBD
 
 === Creating custom column types
+TBD
 
 == Status and roadmap
 db-Objekts has been a long time in the making. I started it in Scala, but switched to Kotlin because its null-safety is perfectly suited to the world of (relational) data. For several years it remained a hobby project and was not mature enough to become the Open Source tool I had in mind. But that time has now come.

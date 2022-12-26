@@ -4,8 +4,12 @@ import com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper
 import com.dbobjekts.codegen.parsers.VendorSpecificMetaDataExtractor
 
 /**
- * Enumeration of all supported database vendors. Instances of Vendors implement the [Vendor] interface
- * Specifies vendor-specific classes for sql-specific properties and the default [ColumnTypeMapper]
+ * Enumeration of all supported database vendors/version combinations.
+ *
+ * If there are breaking incompatibilities between major versions, the convention is to indicate this in the name
+ * E.g. ACME_5, ACME_10.
+ *
+ * For most vendors, such a distinction is not relevant at present.
  */
 enum class Vendors(val vendorClass: String) {
     H2("com.dbobjekts.vendors.h2.H2Vendor"),
@@ -14,17 +18,29 @@ enum class Vendors(val vendorClass: String) {
     companion object {
 
         /**
-         * Finds a [Vendors] instance by matching on its name, case-insensitive
+         * Finds a [Vendor] instance by matching on its name, case-insensitive
          */
         fun byName(name: String): Vendor {
             val vendor = Vendors.values().find {
                 it.name.equals(name, true)
-            } ?: throw IllegalArgumentException("Vendor $name is not supported, Choose from ${Vendors.values().map { it.name }.joinToString(",")}")
+            } ?: throw IllegalArgumentException(
+                "Vendor $name is not supported, Choose from ${
+                    Vendors.values().map { it.name }.joinToString(",")
+                }"
+            )
             val kClass = Class.forName(vendor.vendorClass).kotlin
             return (kClass.objectInstance ?: kClass.java.newInstance()) as Vendor
         }
 
-        fun byProductAndVersion(name: String, version: String?) = byName(name)
+        /**
+         * Retrieves the appropriate vendor, if available.
+         *
+         * WARNING: the version attribute is ignored for now
+         *
+         * @param name the name as returned by [java.sql.DatabaseMetaData.getDatabaseProductVersion]
+         * @version the major version as returned by [java.sql.DatabaseMetaData.getDatabaseMajorVersion]
+         */
+        fun byProductAndVersion(name: String, version: Int) = byName(name)
     }
 }
 

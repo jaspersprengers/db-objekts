@@ -19,7 +19,7 @@ class MariaDBIntegrationTest {
     val container: MariaDBWrapper = MariaDBWrapper()
 
     @Test
-    fun `generate MySQL sources`() {
+    fun `validate metadata and fetch countries list`() {
         val port = container.firstMappedPort
         val ds = HikariDataSourceFactory
             .create(

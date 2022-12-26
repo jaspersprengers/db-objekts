@@ -45,11 +45,16 @@ class TransactionManager private constructor(
             is HikariDataSource -> HikariDataSourceAdapterImpl(ds)
             else -> DataSourceAdapterImpl(ds)
         }
-        val metaData = extractDBMetaData()
-        catalog = catalogOpt ?: Catalog(metaData.vendor.name)
-        vendor = Vendors.byName(catalog.vendor)
-        if (vendor != metaData.vendor)
-            throw java.lang.IllegalStateException("You provided a Catalog implementation that is associated with vendor ${catalog.vendor}, but you connected to a ${metaData.vendor.name} DataSource.")
+        val vendorByDBMetaData = extractDBMetaData().vendor
+        catalog = catalogOpt ?: Catalog(vendorByDBMetaData)
+        vendor = if (catalogOpt == null) vendorByDBMetaData else {
+            if (catalog.vendor != vendorByDBMetaData.name)
+                throw java.lang.IllegalStateException(
+                    "You provided a Catalog implementation that is associated with vendor ${catalog.vendor}, " +
+                            "but you connected to a ${vendorByDBMetaData} DataSource."
+                )
+            Vendors.byName(catalog.vendor)
+        }
     }
 
     /**
@@ -92,7 +97,7 @@ class TransactionManager private constructor(
             val vendor =
                 Vendors.byProductAndVersion(
                     metaData.getDatabaseProductName(),
-                    metaData.getDatabaseProductVersion()
+                    metaData.databaseMajorVersion
                 )
             val rs = metaData.catalogs
             val schemas = mutableListOf<String>()
