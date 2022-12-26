@@ -1,9 +1,9 @@
-CREATE SCHEMA if not exists core;
-CREATE SCHEMA if not exists hr;
+CREATE DATABASE if not exists core;
+CREATE DATABASE if not exists hr;
 
 create table IF NOT EXISTS hr.HOBBY
 (
-    id   varchar(10) primary key auto_increment,
+    id   varchar(10) primary key,
     name varchar(50) not null
 );
 create table IF NOT EXISTS core.EMPLOYEE
@@ -27,7 +27,7 @@ create table IF NOT EXISTS hr.CERTIFICATE
 );
 create table IF NOT EXISTS core.COUNTRY
 (
-    id   varchar(10) primary key auto_increment,
+    id   varchar(10) primary key,
     name varchar(50) not null
 );
 

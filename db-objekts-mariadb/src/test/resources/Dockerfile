@@ -16,7 +16,8 @@ ENV MYSQL_PASSWORD=test
 
 USER mysql
 
-COPY schema.sql /docker-entrypoint-initdb.d/
+COPY acme.sql /docker-entrypoint-initdb.d/
+COPY nations.sql /docker-entrypoint-initdb.d/
 
 # Need to change the datadir to something else that /var/lib/mysql because the parent docker file defines it as a volume.
 # https://docs.docker.com/engine/reference/builder/#volume :

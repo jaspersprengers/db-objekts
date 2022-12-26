@@ -199,7 +199,7 @@ class UpdateComponentTest {
     @Test
     @Order(12)
     fun `delete clause correct sql`() {
-        val result = AcmeDB.newTransaction { s ->
+        AcmeDB.newTransaction { s ->
             s.deleteFrom(Employee).where(Employee.id.eq(5L).and(Employee.name).notIn("bob", "alice", "eve"))
         }
     }
@@ -207,7 +207,7 @@ class UpdateComponentTest {
     @Test
     @Order(13)
     fun `setting whereclause parameters`() {
-        val ok = AcmeDB.newTransaction {
+        AcmeDB.newTransaction {
             it.deleteFrom(Employee)
                 .where(Employee.name.notIn("bob", "alice", "eve").and(Employee.married).ne(true).or(Employee.salary.gt(300.50)))
         }
@@ -216,7 +216,9 @@ class UpdateComponentTest {
     @Test
     @Order(14)
     fun `delete row`() {
-        AcmeDB.newTransaction { it.deleteFrom(Employee).where(Employee.id.eq(42)) }
+        AcmeDB.newTransaction {
+            Assertions.assertThat(it.deleteFrom(Employee).where(Employee.id.eq(42))).isEqualTo(1)
+        }
     }
 
     @Test
