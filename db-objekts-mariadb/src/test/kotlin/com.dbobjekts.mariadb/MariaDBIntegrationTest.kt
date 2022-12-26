@@ -5,7 +5,6 @@ import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.mariadb.countries.CatalogDefinition
 import com.dbobjekts.mariadb.countries.nation.*
 import com.dbobjekts.util.HikariDataSourceFactory
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.testcontainers.junit.jupiter.Container
@@ -14,7 +13,7 @@ import java.nio.file.Paths
 import javax.sql.DataSource
 
 @Testcontainers
-class MariaCodeGenTest {
+class MariaDBIntegrationTest {
 
     @Container
     val container: MariaDBWrapper = MariaDBWrapper()
@@ -44,7 +43,7 @@ class MariaCodeGenTest {
         gen.withDataSource(ds)
         gen.outputConfigurer()
             .basePackageForSources("com.dbobjekts.mariadb.countries")
-            .outputDirectoryForGeneratedSources(Paths.get("db-objekts-mariadb/src/generated-sources/kotlin").toAbsolutePath().toString())
+            .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff = gen.differencesWithCatalog(CatalogDefinition)
         assertThat(diff).isEmpty()
     }

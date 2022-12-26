@@ -26,7 +26,7 @@ class H2CodeGeneratorTest {
 */
         generator.outputConfigurer()
             .basePackageForSources("com.dbobjekts.sampledbs.h2.library")
-            .outputDirectoryForGeneratedSources(Paths.get("db-objekts-core/src/generated-sources/kotlin").toAbsolutePath().toString())
+            .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff = generator.differencesWithCatalog(TestCatalog)
         if (!diff.isEmpty()) {
             println("Creating new source files")

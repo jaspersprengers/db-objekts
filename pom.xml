@@ -174,7 +174,7 @@
                             </goals>
                             <configuration>
                                 <sourceDirs>
-                                    <source>src/main/kotlin</source>
+                                    <source>${project.basedir}/src/main/kotlin</source>
                                 </sourceDirs>
                             </configuration>
                         </execution>
@@ -187,14 +187,24 @@
                             </goals>
                             <configuration>
                                 <sourceDirs>
-                                    <source>src/generated-sources/kotlin</source>
-                                    <source>src/test/kotlin</source>
+                                    <source>${project.basedir}/src/generated-sources/kotlin</source>
+                                    <source>${project.basedir}/src/test/kotlin</source>
                                 </sourceDirs>
                             </configuration>
                         </execution>
                     </executions>
                     <configuration>
                         <jvmTarget>17</jvmTarget>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.0.0-M7</version>
+                    <configuration>
+                        <includes>
+                            <include>*Test</include>
+                        </includes>
                     </configuration>
                 </plugin>
 

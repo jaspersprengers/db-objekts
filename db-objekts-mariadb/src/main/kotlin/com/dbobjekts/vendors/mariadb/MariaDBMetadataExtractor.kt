@@ -30,7 +30,7 @@ object MariaDBMetadataExtractor : VendorSpecificMetaDataExtractor {
                 TableMetaDataRow(
                     schema = tuple.v1,
                     table = tuple.v2,
-                    autoIncrement = (tuple.v3 ?: "") == "auto_increment",
+                    autoIncrement = (tuple.v3 ) == "auto_increment",
                     column = tuple.v4,
                     isPrimaryKey = tuple.v5 == "PRI",
                     nullable = tuple.v6 == "YES",
