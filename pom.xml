@@ -30,8 +30,8 @@
     </properties>
 
     <scm>
-        <developerConnection>scm:git:ssh://jaspersprengers@github.com/jaspersprengers/db-objekts.git</developerConnection>
-        <connection>scm:git:ssh://jaspersprengers@github.com/jaspersprengers/db-objekts.git</connection>
+        <developerConnection>scm:git:ssh://github.com/jaspersprengers/db-objekts.git</developerConnection>
+        <connection>scm:git:ssh://github.com/jaspersprengers/db-objekts.git</connection>
     </scm>
 
     <dependencyManagement>
