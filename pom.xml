@@ -29,7 +29,7 @@
     </properties>
 
     <scm>
-        <developerConnection>scm:git:ssh://github.com/jaspersprengers/db-objekts.git</developerConnection>
+        <developerConnection>scm:git:ssh://jaspersprengers@github.com/jaspersprengers/db-objekts.git</developerConnection>
       <tag>db-objekts-0.1-alpha-1</tag>
   </scm>
 
