@@ -9,6 +9,7 @@
         <version>0.1-alpha-1-SNAPSHOT</version>
     </parent>
 
+    <packaging>jar</packaging>
     <artifactId>db-objekts-core</artifactId>
 
     <properties>

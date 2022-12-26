@@ -9,6 +9,7 @@
         <version>0.1-alpha-1-SNAPSHOT</version>
     </parent>
 
+    <packaging>pom</packaging>
     <artifactId>db-objekts-mariadb</artifactId>
 
     <properties>
@@ -22,7 +23,7 @@
         <dependency>
             <groupId>com.db-objekts</groupId>
             <artifactId>db-objekts-core</artifactId>
-            <version>${parent.version}</version>
+            <version>0.1-alpha-1-SNAPSHOT</version>
         </dependency>
 
         <!--Kotlin-->
