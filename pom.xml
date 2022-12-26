@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.db-objekts</groupId>
     <artifactId>db-objekts</artifactId>
-    <version>0.1-alpha-1</version>
+    <version>0.1-alpha-1-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <name>db-objekts</name>
@@ -30,8 +31,7 @@
 
     <scm>
         <developerConnection>scm:git:https://github.com/jaspersprengers/db-objekts.git</developerConnection>
-      <tag>db-objekts-0.1-alpha-1</tag>
-  </scm>
+    </scm>
 
     <dependencyManagement>
 
