@@ -3,6 +3,7 @@ package com.dbobjekts.component
 import com.dbobjekts.sampledbs.h2.acme.core.Employee
 import com.dbobjekts.sampledbs.h2.acme.hr.Hobby
 import com.dbobjekts.statement.select.SelectStatementExecutor
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import java.time.LocalDate
@@ -225,4 +226,23 @@ class UpdateComponentTest {
             s.deleteFrom(Employee).where()
         }
     }
+
+    @Test
+    @Order(16)
+    fun `update with join fails`() {
+        AcmeDB.newTransaction { tr ->
+            Assertions.assertThatThrownBy { tr.update(e).children(2).where(h.name.eq("curling")) }
+                .hasMessage("Your database does not support UPDATE statements with JOIN syntax.")
+        }
+    }
+
+    @Test
+    @Order(17)
+    fun `delete with join fails`() {
+        AcmeDB.newTransaction { tr ->
+            Assertions.assertThatThrownBy { tr.deleteFrom(e.innerJoin(Hobby)).where(h.name.eq("curling")) }
+                .hasMessage("Your database does not support DELETE statements with JOIN syntax.")
+        }
+    }
+
 }

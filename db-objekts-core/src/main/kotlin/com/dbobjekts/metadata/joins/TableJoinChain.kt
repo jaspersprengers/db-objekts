@@ -35,6 +35,8 @@ class TableJoinChain(val table: Table) : TableOrJoin, Cloneable, SerializableToS
 
     internal fun lastJoinTable(): Table = if (joins.isEmpty()) table else joins.last().rightPart.table
 
+    internal fun hasJoins(): Boolean = !joins.isEmpty()
+
     private fun extractJoinedColumnPair(table: Table): Pair<AnyColumn, AnyColumn> {
         val head =
             if (joins.isEmpty()) getJoinPair(lastJoinTable(), lastJoinTable(), table)

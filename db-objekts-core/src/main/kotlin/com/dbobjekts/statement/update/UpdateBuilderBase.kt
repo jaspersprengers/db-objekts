@@ -51,7 +51,9 @@ abstract class UpdateBuilderBase(
         return this as B
     }
 
-    //it's important that the order of insertion is observed, and the same column can't be added twice.
+    /**
+     * Opens the whereclause for this update statement.
+     */
     fun where(whereClause: SubClause): Long {
         if (ct.data.isEmpty())
             throw IllegalStateException("Need at least one column to update")

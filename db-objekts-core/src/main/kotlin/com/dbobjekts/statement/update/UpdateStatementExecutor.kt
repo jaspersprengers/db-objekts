@@ -12,6 +12,7 @@ import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.util.Errors
 import com.dbobjekts.util.StringUtil
 import org.slf4j.LoggerFactory
+import java.lang.IllegalStateException
 
 
 class UpdateStatementExecutor(
@@ -66,7 +67,13 @@ class UpdateStatementExecutor(
         getWhereClause().getFlattenedConditions().forEach { registerTable(it.column.table) }
         val columns = columnsForUpdate.params.map { it.column.aliasDotName() + " = ?" }.joinToString(",")
         val clause = getWhereClause().build(SQLOptions(includeAlias = true))
-        return StringUtil.concat(listOf("update", buildJoinChain().toSQL(), "set", columns, clause))
+
+        val joinChain = buildJoinChain()
+        val supportsJoins = connection.vendorSpecificProperties.supportsJoinsInUpdateAndDelete()
+        if (joinChain.hasJoins() && !supportsJoins) {
+            throw IllegalStateException("Your database does not support UPDATE statements with JOIN syntax.")
+        }
+        return StringUtil.concat(listOf("update", joinChain.toSQL(), "set", columns, clause))
     }
 
     internal fun getAllParameters(): List<AnySqlParameter> {

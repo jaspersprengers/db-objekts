@@ -35,7 +35,16 @@ class MariaDBIntegrationTest {
             val sql = tr.transactionExecutionLog().last().sql
             assertThat(sql).isEqualTo("select c1.name,r.name,c.name,cl.language_id,l.language from nation.countries c1 left join nation.country_languages cl on c1.country_id = cl.country_id left join nation.regions r on c1.region_id = r.region_id left join nation.languages l on cl.language_id = l.language_id left join nation.continents c on r.continent_id = c.continent_id")
         }
-
+        /*
+                    tm { tr ->
+                        Assertions.assertThatThrownBy { tr.update(e).children(2).where(h.name.eq("curling")) }
+                            .hasMessage("Your database does not support UPDATE statements with JOIN syntax.")
+                    }
+                    tm { tr ->
+                        Assertions.assertThatThrownBy { tr.deleteFrom(e.innerJoin(Hobby)).where(h.name.eq("curling")) }
+                            .hasMessage("Your database does not support DELETE statements with JOIN syntax.")
+                    }
+                */
     }
 
     fun validateCodeGeneration(ds: DataSource) {
