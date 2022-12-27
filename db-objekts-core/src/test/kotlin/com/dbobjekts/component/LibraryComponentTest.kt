@@ -8,8 +8,8 @@ class LibraryComponentTest {
     @Test
     fun `integration test`() {
 
-        LibraryDB.setupDatabaseObjects()
-        LibraryDB.newTransaction { transaction ->
+        AcmeDB.setupDatabaseObjects()
+        AcmeDB.newTransaction { transaction ->
 /*
             val orwell: Long = transaction.insert(Author).mandatoryColumns("George Orwell").bio("Pseudonym of Eric Blair (1903-1950)").execute()
             transaction.update(Author)

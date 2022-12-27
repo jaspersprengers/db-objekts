@@ -8,3 +8,4 @@ integration/build
 **/pom.xml.next
 **/pom.xml.releaseBackup
 **/pom.xml.tag
+/release.properties

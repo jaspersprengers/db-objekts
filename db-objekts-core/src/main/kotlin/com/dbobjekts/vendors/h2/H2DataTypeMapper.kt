@@ -3,13 +3,14 @@ package com.dbobjekts.vendors.h2
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper
+import com.dbobjekts.codegen.datatypemapper.VendorDefaultColumnTypeMapper
 import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.metadata.DefaultTable
 import org.slf4j.LoggerFactory
 
 //see http://h2database.com/html/datatypes.html
 
-class H2DataTypeMapper : ColumnTypeMapper {
+class H2DataTypeMapper : VendorDefaultColumnTypeMapper {
     private val logger = LoggerFactory.getLogger(H2DataTypeMapper::class.java)
 
     override fun map(properties: ColumnMappingProperties): AnyColumn? {

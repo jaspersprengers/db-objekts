@@ -7,16 +7,16 @@ import com.dbobjekts.metadata.column.NonNullableColumn
 /**
  * Handles custom mapping to [com.dbobjekts.metadata.column.Column] types
  */
-class MappingConfigurer {
+class ColumnTypeMappingConfigurer {
 
     internal val mappers: MutableList<CustomColumnTypeMapper<*>> = mutableListOf()
-    internal val sequenceMappers: MutableList<SequenceForPrimaryKeyMapper> = mutableListOf()
+    internal val sequenceMappers: MutableList<SequenceForPrimaryKeyResolver> = mutableListOf()
 
     /**
      * Adds a custom [CustomColumnTypeMapper] implementation, which are applied in order before the default mappings
      * for the vendor are applied.
      */
-    fun addColumnTypeMapper(mapper: CustomColumnTypeMapper<*>): MappingConfigurer {
+    fun addCustomColumnTypeMapper(mapper: CustomColumnTypeMapper<*>): ColumnTypeMappingConfigurer {
         mappers += mapper
         return this
     }
@@ -34,7 +34,7 @@ class MappingConfigurer {
         columnType: Class<C>,
         schema: String? = null,
         table: String? = null
-    ): MappingConfigurer {
+    ): ColumnTypeMappingConfigurer {
         mappers += ColumnTypeMapperByNameMatch(
             columnNamePattern = column,
             columnType = columnType,
@@ -58,7 +58,7 @@ class MappingConfigurer {
         columnType: Class<C>,
         schema: String? = null,
         table: String? = null
-    ): MappingConfigurer {
+    ): ColumnTypeMappingConfigurer {
         mappers += ColumnTypeMapperByNameMatch(
             columnNamePattern = columnPattern,
             columnType = columnType,
@@ -82,7 +82,7 @@ class MappingConfigurer {
         columnType: Class<C>,
         schema: String? = null,
         table: String? = null
-    ): MappingConfigurer {
+    ): ColumnTypeMappingConfigurer {
         mappers += JDBCTypeOverrideMapper(
             jdbcType = jdbcType,
             columnType = columnType,
@@ -103,18 +103,39 @@ class MappingConfigurer {
      * @column the applicable column (the primary key)
      * @sequence the sequence name
      */
-    fun setSequenceNameForTable(
+    fun setSequenceNameForPrimaryKey(
         schema: String,
         table: String,
         column: String,
         sequence: String
-    ): MappingConfigurer {
-        sequenceMappers += SequenceForPrimaryKeyMapper(
+    ): ColumnTypeMappingConfigurer {
+        sequenceMappers += SequenceForPrimaryMapperByName(
             schema = schema,
             table = table,
             column = column,
             sequence = sequence
         )
+        return this
+    }
+
+    /**
+     * If you have many tables that use PKs with sequences, (and a consistent naming scheme!), you may choose to provide your own custom
+     * implementation of a [SequenceForPrimaryKeyResolver] rather than [setSequenceNameForPrimaryKey] for each individual table.
+     * Example:
+     * ```kotlin
+     *   generator.mappingConfigurer()
+     *       .sequenceForPrimaryKeyResolver(AcmeSequenceMapper)
+     *
+     *   object AcmeSequenceMapper : SequenceForPrimaryKeyResolver {
+     *      override fun invoke(properties: ColumnMappingProperties): String? =
+     *          if (properties.isPrimaryKey) properties.table.value + "_SEQ" else null
+     *  }
+     *
+     * ```
+     * @mapper a function from [ColumnMappingProperties] to [String]
+     */
+    fun sequenceForPrimaryKeyResolver(mapper: SequenceForPrimaryKeyResolver): ColumnTypeMappingConfigurer {
+        sequenceMappers += mapper
         return this
     }
 

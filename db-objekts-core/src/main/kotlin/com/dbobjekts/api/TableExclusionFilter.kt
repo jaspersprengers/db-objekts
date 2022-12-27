@@ -7,7 +7,7 @@ class TableExclusionFilter(
 ) {
 
     operator fun invoke(schema: String, table: String): Boolean {
-        val matchSchema = this.schema?.equals(schema) ?: true
+        val matchSchema = this.schema?.equals(schema,true) ?: true
         return matchSchema && if (exactMatch) table.equals(pattern, true) else table.contains(pattern, true)
     }
 

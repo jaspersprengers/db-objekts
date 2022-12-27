@@ -126,10 +126,62 @@ This concludes our bird's eye view of dbo. There is much, much more to explore i
 dbo is a single jar, depending on your vendor. Get the latest release from Maven central
 
 === Generating metadata objects
-The code generation utility is at the heart of dbo.
+Before we dive into the details of code generation, some clarification is in order.
+
+Auto-generating code is an established practice for service specifications and DTO (data transfer objects) and has been with us since WSDL. You can create richly annotated interfaces from an `openapi.yaml` file that specify the available REST endpoints and expected messages. By implementing these interfaces you create a compile-time dependency on the generated code.
+
+dbo is similar in that regard: the generated metadata objects that stand for the tables and columns become tightly coupled to your source code. That is a good thing, because the database itself _is_ an integral part of the application logic, whatever tool you use to interact with it. If you connect through native SQL, structural changes to the schemas will go unnoticed unless you have strong integration tests (unit tests won't catch it). The more likely alternative is for things to break in production.
+
+When a component (and team) implements a service, it often also owns the specification, and the file(s) will be part of the source repository. There are no unexpected surprises, and it's fine to re-generate the code whenever you do a fresh build, during the generate-sources phase, which takes place before compilation. The big difference with basing yourself on a SQL specification is one of ownership: your project may not own the database structure. In the worst case, unannounced changes may completely mess up the status quo.
 
 ==== Code generation and validation during the SDLC
-Generating code from your database is fairly harmless when you're starting out with dbo, but it gets more involved when you have already written production code against the generated metadata objects and the database evolves. You will need to rerun the process, which _could_ lead to compile errors.
+Generating code is harmless when you're starting out with dbo, since there's no source code that uses the new objects. When changes to the structure are carried out, it makes sense to inspect the changes before overwriting anything. The following is strongly advised:
+
+* Always write generated code in a separate source folder, called `gen` or `generated-sources`. This is a reminder that you should never manually change this code.
+* Add the kotlin source files to source control, even when they are generated. Remember, the state of the database may not be part of the same versioned repository.
+* Include an automated test as part of the build to validate the database against the generated sources. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-mariadb/src/test/kotlin/com.dbobjekts.mariadb/MariaDBIntegrationTest.kt[MariaDBIntegrationTest] for an example
+
+=== Code generation in detail
+With these warnings in mind, let's have a detailed look at the process. https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/codegen/CodeGenerator.kt[CodeGenerator] is our port of call for the entire process.
+Configuration is grouped into the following sections:
+
+* The mandatory javax.sql.DataSource.
+* Configuration for exclusions.
+* Configuration for mapping column types to SQL types, using custom type for certain columns, and setting the sequence names for auto-generated keys.
+* Configuration of the output: the folder to write to and the base package structure to use, e.g. `com.acme.dbmetadata`.
+
+==== Setting the dataSource
+Make sure the user has sufficient privileges to read the relevant metadata tables (INFORMATION_SCHEMA in MySQL/MariaDB)
+```kotlin
+   val generator = CodeGenerator().withDataSource(myDataSource)
+```
+==== Exclusions
+Certain schemas, tables or columns may have to be ignored, for various reasons.
+```kotlin
+
+```
+==== Overriding a column type by SQL type
+dbo chooses a suitable implementation of https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/metadata/column/Column.kt[Column], depending on the vendor type. Sometimes you want to fine-tune this mapping. The MySQL type `TINYINT(1)` is mapped to a `Byte` by default, but as it is often used as a boolean value, you can choose to map it to a `BooleanColumn`.
+
+==== Overriding a column by name
+
+=== Setting sequence names
+Many vendors support sequences for generating primary keys, but the information schema does not store which sequence is used for which table. So, unfortunately, you have to manually configure this, as follows:
+```kotlin
+ generator.mappingConfigurer()
+            .setSequenceNameForPrimaryKey("core", "employee", "id", "EMPLOYEE_SEQ")
+```
+This is fine if you have a small schema, but cumbersome if you have > 100 tables to configure. If you have a consistent naming scheme, you can write your own implementation of `SequenceForPrimaryKeyResolver`
+```kotlin
+generator.mappingConfigurer()
+ .sequenceForPrimaryKeyResolver(AcmeSequenceMapper)
+
+  object AcmeSequenceMapper : SequenceForPrimaryKeyMapper {
+        override fun invoke(properties: ColumnMappingProperties): String? =
+            if (properties.isPrimaryKey) properties.table.value + "_SEQ" else null
+    }
+```
+==== Output configuration
 
 ==== Supported vendors
 

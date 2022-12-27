@@ -8,8 +8,8 @@ class ColumnExclusionFilter(
 ) {
 
     operator fun invoke(schema: String, table: String, column: String): Boolean {
-        val matchSchema = this.schema?.equals(schema) ?: true
-        val matchTable = this.table?.equals(table) ?: true
-        return matchSchema && matchTable && (if (exactMatch) this.column == column else column.contains(this.column))
+        val matchSchema = this.schema?.equals(schema, true) ?: true
+        val matchTable = this.table?.equals(table, true) ?: true
+        return matchSchema && matchTable && (if (exactMatch) this.column.equals(column, true) else column.contains(this.column, true))
     }
 }

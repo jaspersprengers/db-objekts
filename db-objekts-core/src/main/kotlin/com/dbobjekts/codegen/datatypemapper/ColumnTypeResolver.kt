@@ -10,9 +10,9 @@ import com.dbobjekts.metadata.column.*
 import org.slf4j.LoggerFactory
 
 class ColumnTypeResolver(
-    val defaultMapper: ColumnTypeMapper,
+    val defaultMapper: VendorDefaultColumnTypeMapper,
     val customMappers: List<CustomColumnTypeMapper<*>> = listOf(),
-    val sequenceMappers: List<SequenceForPrimaryKeyMapper> = listOf()
+    val sequenceMappers: List<SequenceForPrimaryKeyResolver> = listOf()
 ) {
     private val logger = LoggerFactory.getLogger(ColumnTypeResolver::class.java)
 
@@ -39,7 +39,7 @@ class ColumnTypeResolver(
         when (column) {
             is LongColumn -> ColumnFactory.SEQUENCE_LONG
             is IntegerColumn -> ColumnFactory.SEQUENCE_INTEGER
-            else -> throw IllegalArgumentException("Only LongColumn or IntegerColumn expected.")
+            else -> throw IllegalArgumentException("${column.javaClass} cannot be used as a sequence-generated primary key: only LongColumn or IntegerColumn are allowed.")
         }
 
     fun getDefaultMapping(props: ColumnMappingProperties): AnyColumn =

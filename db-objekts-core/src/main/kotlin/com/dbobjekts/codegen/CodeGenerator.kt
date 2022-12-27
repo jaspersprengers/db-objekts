@@ -2,8 +2,9 @@ package com.dbobjekts.codegen
 
 import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
-import com.dbobjekts.codegen.configbuilders.MappingConfigurer
+import com.dbobjekts.codegen.configbuilders.ColumnTypeMappingConfigurer
 import com.dbobjekts.codegen.configbuilders.OutputConfigurer
+import com.dbobjekts.codegen.configbuilders.PrimaryKeySequenceConfigurer
 import com.dbobjekts.codegen.exclusionfilters.ExclusionConfigurer
 import com.dbobjekts.codegen.metadata.DBCatalogDefinition
 import com.dbobjekts.codegen.parsers.CatalogParser
@@ -11,7 +12,6 @@ import com.dbobjekts.codegen.parsers.ParserConfig
 import com.dbobjekts.codegen.writer.SourcesGenerator
 import com.dbobjekts.metadata.Catalog
 import org.slf4j.LoggerFactory
-import java.lang.IllegalArgumentException
 import javax.sql.DataSource
 
 /**
@@ -36,7 +36,8 @@ open class CodeGenerator {
     private var exclusionConfigurer: ExclusionConfigurer = ExclusionConfigurer()
     private lateinit var dataSource: DataSource
     private val outputConfigurer = OutputConfigurer()
-    private val mappingConfigurer = MappingConfigurer()
+    private val columnTypeMappingConfigurer = ColumnTypeMappingConfigurer()
+    private val primaryKeySequenceConfigurer = PrimaryKeySequenceConfigurer()
 
     fun withDataSource(datasource: DataSource): CodeGenerator {
         if (this::dataSource.isInitialized)
@@ -48,17 +49,23 @@ open class CodeGenerator {
     /**
      * Provides further settings to configure the output of the code generator
      */
-    fun outputConfigurer(): OutputConfigurer = outputConfigurer
+    fun configureOutput(): OutputConfigurer = outputConfigurer
 
     /**
      * Provides optional settings to fine-tune the mapping of [com.dbobjekts.metadata.column.Column] types to SQL types
      */
-    fun mappingConfigurer(): MappingConfigurer = mappingConfigurer
+    fun configureColumnTypeMapping(): ColumnTypeMappingConfigurer = columnTypeMappingConfigurer
+
+    /**
+     * Provides optional settings to fine-tune the mapping of [com.dbobjekts.metadata.column.Column] types to SQL types
+     */
+    fun configurePrimaryKeySequences(): PrimaryKeySequenceConfigurer = primaryKeySequenceConfigurer
+
 
     /**
      * Provides optional settings to exclude certain database schemas, tables, or columns from the generated sources.
      */
-    fun exclusionConfigurer(): ExclusionConfigurer = exclusionConfigurer
+    fun configureExclusions(): ExclusionConfigurer = exclusionConfigurer
 
     /**
      * When all is properly set up, this outputs the code
@@ -108,8 +115,8 @@ open class CodeGenerator {
             exclusionConfigurer = exclusionConfigurer,
             basePackage = outputConfigurer.basePackage
                 ?: throw IllegalStateException("Missing mandatory setting basePackageForSources on outputConfigurer"),
-            customColumnMappers = mappingConfigurer.mappers.toList(),
-            sequenceMappers = mappingConfigurer.sequenceMappers
+            customColumnMappers = columnTypeMappingConfigurer.mappers.toList(),
+            sequenceResolvers = primaryKeySequenceConfigurer.resolvers
         )
     }
 

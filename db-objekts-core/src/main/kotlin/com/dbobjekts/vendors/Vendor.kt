@@ -1,6 +1,7 @@
 package com.dbobjekts.vendors
 
 import com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper
+import com.dbobjekts.codegen.datatypemapper.VendorDefaultColumnTypeMapper
 import com.dbobjekts.codegen.parsers.VendorSpecificMetaDataExtractor
 
 /**
@@ -56,7 +57,7 @@ interface Vendor {
     /**
      * The vendor-specific implementation to map JDBC types to db-objekts [Column] implemetations
      */
-    val defaultMapper: ColumnTypeMapper
+    val defaultMapper: VendorDefaultColumnTypeMapper
     val properties: VendorSpecificProperties
     val metadataExtractor: VendorSpecificMetaDataExtractor
 }

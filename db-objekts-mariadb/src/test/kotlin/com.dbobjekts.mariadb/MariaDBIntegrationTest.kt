@@ -14,7 +14,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import java.nio.file.Paths
 import java.time.LocalDate
 import javax.sql.DataSource
 
@@ -44,8 +43,8 @@ class MariaDBIntegrationTest {
     fun validateCodeGeneration() {
         val gen = CodeGenerator()
         gen.withDataSource(dataSource)
-        gen.mappingConfigurer().setColumnTypeForJDBCType("TINYINT", NumberAsBooleanColumn::class.java)
-        gen.outputConfigurer()
+        gen.configureColumnTypeMapping().setColumnTypeForJDBCType("TINYINT", NumberAsBooleanColumn::class.java)
+        gen.configureOutput()
             .basePackageForSources("com.dbobjekts.mariadb.testdb")
             //.outputDirectoryForGeneratedSources(Paths.get("db-objekts-mariadb/src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff = gen.differencesWithCatalog(CatalogDefinition)
