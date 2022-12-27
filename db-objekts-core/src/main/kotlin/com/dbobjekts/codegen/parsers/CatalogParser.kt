@@ -114,7 +114,7 @@ class CatalogParser(private val parserConfig: ParserConfig,
         val keyManager = ForeignKeyManager(tableMetaData)
         val tableBuilders: List<TableBuilder> = tableMetaData.map({ tableMd ->
             val packageForSchema = basePackage.createSubPackageForSchema(tableMd.schema)
-            val tb = TableBuilder(packageForSchema, tableMd.schema, tableMd.tableName, parserConfig, keyManager, columnTypeResolver)
+            val tb = TableBuilder(packageForSchema, tableMd.schema, tableMd.tableName, keyManager, columnTypeResolver)
 
             //exclude the columns explicitly marked
             val allowedColumns = tableMd.columns.filterNot {

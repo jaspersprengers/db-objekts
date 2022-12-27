@@ -60,3 +60,39 @@ create table if not exists core.EMPLOYEE_DEPARTMENT
     foreign key (employee_id) references core.EMPLOYEE (id),
     foreign key (department_id) references core.DEPARTMENT (id)
 );
+
+create table IF NOT EXISTS core.ALL_TYPES_NIL
+(
+    DECIMAL_COL          DECIMAL,
+    DEC_COL              DEC,
+    NUMERIC_COL          NUMERIC,
+    FIXED_COL            FIXED,
+    INT1_COL             INT1,
+    TINYINT_COL          TINYINT(1),
+    SMALLINT_COL         SMALLINT,
+    INT2_COL             INT2,
+    MEDIUMINT_COL        MEDIUMINT,
+    INT3_COL             INT3,
+    INT_COL              INT,
+    INT4_COL             INT4,
+    BIGINT_COL           BIGINT,
+    INT8_COL             INT8,
+    FLOAT_COL            FLOAT,
+    DOUBLE_COL           DOUBLE,
+    DOUBLE_PRECISION_COL DOUBLE PRECISION,
+    BIT_COL              BIT,
+    BINARY_COL           BINARY,
+    BLOB_COL             BLOB,
+    CHAR_COL             CHAR,
+    CHAR_BYTE_COL        CHAR BYTE,
+    ENUM_COL             ENUM ('YES','NO','MAYBE'),
+    JSON_COL             JSON,
+    TEXT_COL             TEXT,
+    VARCHAR_COL          VARCHAR(50),
+    SET_COL              SET ('chess','checkers','go'),
+    DATE_COL             DATE,
+    TIME_COL             TIME,
+    DATETIME_COL         DATETIME,
+    TIMESTAMP_COL        TIMESTAMP,
+    YEAR_COL             YEAR
+);

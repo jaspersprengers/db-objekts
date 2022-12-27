@@ -1,7 +1,7 @@
 package com.dbobjekts.component
 
-import com.dbobjekts.sampledbs.h2.acme.core.Employee
-import com.dbobjekts.sampledbs.h2.acme.hr.Hobby
+import com.dbobjekts.testdb.acme.core.Employee
+import com.dbobjekts.testdb.acme.hr.Hobby
 import com.dbobjekts.statement.select.SelectStatementExecutor
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.*
@@ -217,7 +217,8 @@ class UpdateComponentTest {
     @Order(14)
     fun `delete row`() {
         AcmeDB.newTransaction {
-            Assertions.assertThat(it.deleteFrom(Employee).where(Employee.id.eq(42))).isEqualTo(1)
+            val id = it.select(Employee.id).first()
+            Assertions.assertThat(it.deleteFrom(Employee).where(Employee.id.eq(id))).isEqualTo(1)
         }
     }
 

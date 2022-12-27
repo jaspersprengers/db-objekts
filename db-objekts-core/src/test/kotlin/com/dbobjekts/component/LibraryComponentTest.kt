@@ -1,4 +1,4 @@
-package com.dbobjekts.integration.h2
+package com.dbobjekts.component
 
 import org.junit.jupiter.api.Test
 

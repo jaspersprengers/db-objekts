@@ -1,4 +1,4 @@
-package com.dbobjekts.sampledbs.h2.acme.custom
+package com.dbobjekts.testdb
 
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.*

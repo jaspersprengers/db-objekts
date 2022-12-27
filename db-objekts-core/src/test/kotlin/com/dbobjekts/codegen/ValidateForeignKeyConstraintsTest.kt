@@ -25,9 +25,9 @@ class ValidateForeignKeyConstraintsTest {
     val wagesName = TableName("wages")
 
     val hobbiesToPeople =
-        DBForeignKeyDefinition(hobbyName, ColumnName("people_id"), ColumnFactory.FOREIGN_KEY_LONG, hr, peopleName, ColumnName("id"))
+        DBForeignKeyDefinition(hr, hobbyName, ColumnName("people_id"), ColumnFactory.FOREIGN_KEY_LONG, hr, peopleName, ColumnName("id"))
     val wagesToPeople =
-        DBForeignKeyDefinition(wagesName, ColumnName("people_id"), ColumnFactory.FOREIGN_KEY_LONG, hr, peopleName, ColumnName("id"))
+        DBForeignKeyDefinition(hr, wagesName, ColumnName("people_id"), ColumnFactory.FOREIGN_KEY_LONG, hr, peopleName, ColumnName("id"))
 
     val peopleTable: DBTableDefinition = DBTableDefinition(pkg, hr, peopleName, "p", listOf())
     val hobbiesTable: DBTableDefinition = DBTableDefinition(pkg, hr, hobbyName, "h", listOf(hobbiesToPeople))

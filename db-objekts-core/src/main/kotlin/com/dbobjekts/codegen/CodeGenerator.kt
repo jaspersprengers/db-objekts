@@ -70,7 +70,7 @@ open class CodeGenerator {
         //can be null for writers that do not write to the file system
         SourcesGenerator(
             outputConfigurer.basedirOpt
-                ?: throw java.lang.IllegalStateException("Missing mandatory setting basePackageForSources on outputConfigurer"),
+                ?: throw java.lang.IllegalStateException("Missing mandatory setting outputDirectoryForGeneratedSources on outputConfigurer"),
             catalogDefinition.packageName,
             catalogDefinition
         ).generate()

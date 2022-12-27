@@ -1,12 +1,12 @@
 package com.dbobjekts.metadata
-import com.dbobjekts.sampledbs.h2.acme.TestCatalog
-import com.dbobjekts.sampledbs.h2.acme.core.Address
-import com.dbobjekts.sampledbs.h2.acme.core.Country
-import com.dbobjekts.sampledbs.h2.acme.core.Employee
-import com.dbobjekts.sampledbs.h2.acme.core.EmployeeAddress
-import com.dbobjekts.sampledbs.h2.acme.hr.Hobby
+import com.dbobjekts.testdb.acme.core.Address
+import com.dbobjekts.testdb.acme.core.Country
+import com.dbobjekts.testdb.acme.core.Employee
+import com.dbobjekts.testdb.acme.core.EmployeeAddress
+import com.dbobjekts.testdb.acme.hr.Hobby
 import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.metadata.joins.TableJoinChainBuilder
+import com.dbobjekts.testdb.acme.CatalogDefinition
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
@@ -19,7 +19,7 @@ class TableJoinChainBuilderTest {
         assertEquals(sql, chain.toSQL().trim())
     }
 
-    val defaultBuilder = TableJoinChainBuilder(TestCatalog, Employee, listOf(Address, Country, Employee))
+    val defaultBuilder = TableJoinChainBuilder(CatalogDefinition, Employee, listOf(Address, Country, Employee))
 
 
     @Test
@@ -55,13 +55,13 @@ class TableJoinChainBuilderTest {
 
     @Test
     fun `one table in schema`() {
-        assertChain(TableJoinChainBuilder(TestCatalog, Employee, listOf(Employee)).build(), "CORE.EMPLOYEE e")
+        assertChain(TableJoinChainBuilder(CatalogDefinition, Employee, listOf(Employee)).build(), "CORE.EMPLOYEE e")
     }
 
     @Test
     fun `two joined tables in schema`() {
         assertChain(
-            TableJoinChainBuilder(TestCatalog, Employee, listOf(Employee, Hobby)).build(),
+            TableJoinChainBuilder(CatalogDefinition, Employee, listOf(Employee, Hobby)).build(),
             "CORE.EMPLOYEE e join HR.HOBBY h on e.HOBBY_ID = h.ID"
         )
     }
@@ -69,7 +69,7 @@ class TableJoinChainBuilderTest {
     @Test
     fun `two joined tables in schema with left join`() {
         assertChain(
-            TableJoinChainBuilder(TestCatalog, Employee, listOf(Employee, Hobby), useOuterJoins = true).build(),
+            TableJoinChainBuilder(CatalogDefinition, Employee, listOf(Employee, Hobby), useOuterJoins = true).build(),
             "CORE.EMPLOYEE e left join HR.HOBBY h on e.HOBBY_ID = h.ID"
         )
     }
@@ -77,14 +77,14 @@ class TableJoinChainBuilderTest {
     @Test
     fun `two tables joined through n-m table`() {
         assertChain(
-            TableJoinChainBuilder(TestCatalog, Employee, listOf(Employee, Address, Hobby), useOuterJoins = true).build(),
+            TableJoinChainBuilder(CatalogDefinition, Employee, listOf(Employee, Address, Hobby), useOuterJoins = true).build(),
             "CORE.EMPLOYEE e left join CORE.EMPLOYEE_ADDRESS ea on e.ID = ea.EMPLOYEE_ID left join HR.HOBBY h on e.HOBBY_ID = h.ID left join CORE.ADDRESS a on ea.ADDRESS_ID = a.ID"
         )
     }
 
     @Test
     fun `two unrelated tables will throw`() {
-        Assertions.assertThatThrownBy { TableJoinChainBuilder(TestCatalog, Employee, listOf(Employee, Country)).build() }
+        Assertions.assertThatThrownBy { TableJoinChainBuilder(CatalogDefinition, Employee, listOf(Employee, Country)).build() }
             .hasMessage("The following table(s) could not be joined: COUNTRY")
     }
 

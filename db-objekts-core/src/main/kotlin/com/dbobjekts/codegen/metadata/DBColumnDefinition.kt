@@ -1,14 +1,11 @@
 package com.dbobjekts.codegen.metadata
 
-import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.ColumnName
-import com.dbobjekts.api.PackageName
-import com.dbobjekts.api.TableName
+import com.dbobjekts.api.*
 import com.dbobjekts.metadata.column.IsForeignKey
 import com.dbobjekts.metadata.column.SequenceKeyColumn
-import java.lang.IllegalStateException
 
 open class DBColumnDefinition(
+    val schemaName: SchemaName,
     val tableName: TableName,
     val columnName: ColumnName,
     val column: AnyColumn,
@@ -26,18 +23,18 @@ open class DBColumnDefinition(
     open fun prettyPrint(): String = "     Column $tableName.$columnName maps to ${fullyQualifiedClassName()}."
 
     fun diff(codeObject: AnyColumn): List<String> {
-        val dbToStr = when (val c = this) {
-            is DBForeignKeyDefinition -> "${column.javaClass} to ${c.parentTable}.${c.parentColumn}"
-            is DBSequenceKeyDefinition -> "${column.javaClass} with ${c.sequence}"
+        val dbToStr = when (val dbColumn = this) {
+            is DBForeignKeyDefinition -> "${column.javaClass} to ${dbColumn.parentTable}.${dbColumn.parentColumn}"
+            is DBSequenceKeyDefinition -> "${column.javaClass} with ${schemaName}.${dbColumn.sequence}"
             else -> column.javaClass.toString()
         }
-        val codeToStr = when (val c = codeObject) {
-            is IsForeignKey<*, *> -> "${c.javaClass} to ${c.parentColumn.table.tableName.value}.${c.parentColumn.nameInTable}"
-            is SequenceKeyColumn<*> -> "${c.javaClass} with ${c.qualifiedSequence()}"
-            else -> c.javaClass.toString()
+        val codeToStr = when (val metadataCol = codeObject) {
+            is IsForeignKey<*, *> -> "${metadataCol.javaClass} to ${metadataCol.parentColumn.table.tableName}.${metadataCol.parentColumn.nameInTable}"
+            is SequenceKeyColumn<*> -> "${metadataCol.javaClass} with ${metadataCol.qualifiedSequence()}"
+            else -> metadataCol.javaClass.toString()
         }
         return if (dbToStr != codeToStr)
-            return listOf("Type mismatch in $tableName.$columnName: DB specifies $dbToStr, catalog is $codeToStr")
+            return listOf("Type mismatch in $tableName.$columnName: DB class is $dbToStr, but metadata class is $codeToStr")
         else listOf()
     }
 

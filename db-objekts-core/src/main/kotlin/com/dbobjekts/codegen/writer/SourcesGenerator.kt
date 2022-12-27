@@ -13,13 +13,31 @@ class SourcesGenerator(
     val basePackage: PackageName,
     val catalog: DBCatalogDefinition
 ) {
-    private val writer = SourceFileWriter()
     private val logger = LoggerFactory.getLogger(SourcesGenerator::class.java)
 
     fun generate() {
         val dir = File(basedir)
-        logger.warn("Deleting directory recursively: $basedir")
-        FileUtils.deleteDirectory(dir)
+        val writer = SourceFileWriter(basedir)
+
+        fun writeSourceFile(
+            schema: DBSchemaDefinition?,
+            fileName: String,
+            source: String
+        ) {
+            val forMattedFileName = StringUtil.snakeToCamel(fileName, true)
+
+            val pkg = schema?.let { basePackage.concat(schema.asPackage) } ?: basePackage
+
+            writer.write(
+                source,
+                pkg,
+                fileName = "$forMattedFileName.kt"
+            )
+        }
+
+        val rootpackageDir = File(writer.packagePath(basePackage))
+        logger.warn("Deleting directory recursively: $rootpackageDir")
+        FileUtils.deleteDirectory(rootpackageDir)
 
         catalog.schemas.forEach { schemaDefinition ->
             val schemaFileBuilder = SchemaCodeBuilder(schemaDefinition)
@@ -37,23 +55,9 @@ class SourcesGenerator(
 
         writeSourceFile(null, catalog.name, CatalogCodeBuilder(catalog).createFileSource())
         writeSourceFile(null, "Aliases", AliasCodeBuilder(catalog).createFileSource())
+
+
     }
 
-    private fun writeSourceFile(
-        schema: DBSchemaDefinition?,
-        fileName: String,
-        source: String
-    ) {
-        val forMattedFileName = StringUtil.snakeToCamel(fileName, true)
-
-        val pkg = schema?.let { basePackage.concat(schema.asPackage) } ?: basePackage
-
-        writer.write(
-            source,
-            pkg,
-            basedir,
-            fileName = "$forMattedFileName.kt"
-        )
-    }
 
 }

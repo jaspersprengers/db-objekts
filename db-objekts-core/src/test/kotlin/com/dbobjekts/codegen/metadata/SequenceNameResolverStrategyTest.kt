@@ -19,11 +19,11 @@ class SequenceNameResolverStrategyTest {
 
     @Test
     fun `get sequence`() {
-        assertEquals("address", TestResolverStrategy().getSequence(props))
+        assertEquals("address_seq", TestResolverStrategy().getSequence(props))
     }
 
     class TestResolverStrategy : SequenceNameResolverStrategy() {
-        override fun getSequence(columnProperties: ColumnMappingProperties): String = columnProperties.column.value
+        override fun getSequence(columnProperties: ColumnMappingProperties): String = columnProperties.column.value + "_seq"
     }
 
 

@@ -16,23 +16,22 @@ class MariaDBDataTypeMapper : ColumnTypeMapper {
         val col = properties.jdbcType.uppercase().trim()
         return when {
 
-            col == "TINYINT" || col == "INT1" -> ColumnFactory.byteColumn(nullable)
+            col.startsWith("TINYINT") || col.startsWith("INT1") -> ColumnFactory.byteColumn(nullable)
 
             col == "BOOLEAN" -> ColumnFactory.booleanColumn(nullable)
-            col == "SMALLINT" || col == "INT2" -> ColumnFactory.integerColumn(nullable)
-            col == "MEDIUMINT" || col == "INT3" -> ColumnFactory.integerColumn(nullable)
-            col == "INT" || col == "INT4" || col == "INTEGER" -> ColumnFactory.longColumn(nullable)
+            col.startsWith("SMALLINT") || col.startsWith("INT2") -> ColumnFactory.integerColumn(nullable)
+            col.startsWith("MEDIUMINT") || col.startsWith("INT3") -> ColumnFactory.integerColumn(nullable)
+            col.startsWith("INT") || col.startsWith("INT4") || col.startsWith("INTEGER") -> ColumnFactory.longColumn(nullable)
 
-            col == "BIGINT" || col == "INT8" -> ColumnFactory.longColumn(nullable)
+            col.startsWith("BIGINT") || col.startsWith("INT8") -> ColumnFactory.longColumn(nullable)
             col.matches(decTypes) -> ColumnFactory.bigDecimalColumn(nullable)
-            col == "FLOAT" -> ColumnFactory.floatColumn(nullable)
-            col == "DOUBLE" -> ColumnFactory.doubleColumn(nullable)
-            col == "DOUBLE PRECISION" -> ColumnFactory.doubleColumn(nullable)
-            col == "BIT" -> ColumnFactory.booleanColumn(nullable)
+            col.startsWith("FLOAT") -> ColumnFactory.floatColumn(nullable)
+            col.startsWith("DOUBLE") -> ColumnFactory.doubleColumn(nullable)
+            col.startsWith("BIT") -> ColumnFactory.booleanColumn(nullable)
 
             col.contains("BINARY") -> ColumnFactory.byteArrayColumn(nullable)
             col.contains("BLOB") -> ColumnFactory.byteArrayColumn(nullable)
-            col == "CHAR" -> ColumnFactory.varcharColumn(nullable)
+            col.startsWith("CHAR") -> ColumnFactory.varcharColumn(nullable)
             col == "CHAR BYTE" -> ColumnFactory.byteArrayColumn(nullable)
             col == "ENUM" -> ColumnFactory.varcharColumn(nullable)
             //col == "INET4" -> .integerColumn(nullable)
@@ -41,15 +40,15 @@ class MariaDBDataTypeMapper : ColumnTypeMapper {
             col.contains("TEXT") -> ColumnFactory.varcharColumn(nullable)
 
             //col == "ROW" -> .varcharColumn(nullable)
-            col == "VARCHAR" -> ColumnFactory.varcharColumn(nullable)
+            col.startsWith("VARCHAR") -> ColumnFactory.varcharColumn(nullable)
             col == "SET" -> ColumnFactory.varcharColumn(nullable)
             //col == "UUID" -> .varcharColumn(nullable)
 
             col == "DATE" -> ColumnFactory.dateColumn(nullable)
-            col == "TIME" -> ColumnFactory.timeColumn(nullable)
-            col == "DATETIME" -> ColumnFactory.dateColumn(nullable)
-            col == "TIMESTAMP" -> ColumnFactory.timeStampColumn(nullable)
-            col == "YEAR" -> ColumnFactory.timeStampColumn(nullable)
+            col.startsWith("TIME") -> ColumnFactory.timeColumn(nullable)
+            col.startsWith("DATETIME") -> ColumnFactory.dateColumn(nullable)
+            col.startsWith("TIMESTAMP") -> ColumnFactory.timeStampColumn(nullable)
+            col.startsWith("YEAR") -> ColumnFactory.timeStampColumn(nullable)
 
             else -> null
         }

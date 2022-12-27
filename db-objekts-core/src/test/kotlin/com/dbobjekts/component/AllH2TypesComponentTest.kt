@@ -1,8 +1,8 @@
 package com.dbobjekts.component
 
-import com.dbobjekts.sampledbs.h2.acme.core.AllTypes
-import com.dbobjekts.sampledbs.h2.acme.custom.AddressType
+import com.dbobjekts.testdb.acme.core.AllTypes
 import com.dbobjekts.metadata.column.BlobColumn
+import com.dbobjekts.testdb.AddressType
 import org.assertj.core.api.Assertions.assertThat
 import org.h2.api.Interval
 import org.junit.jupiter.api.Assertions.assertEquals

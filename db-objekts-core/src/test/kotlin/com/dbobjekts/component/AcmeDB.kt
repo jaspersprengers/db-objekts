@@ -2,24 +2,20 @@ package com.dbobjekts.component
 
 import com.dbobjekts.api.Transaction
 import com.dbobjekts.api.TransactionManager
-import com.dbobjekts.sampledbs.h2.acme.TestCatalog
-import com.dbobjekts.sampledbs.h2.acme.core.Department
-import com.dbobjekts.sampledbs.h2.acme.core.EmployeeDepartment
-import com.dbobjekts.sampledbs.h2.acme.core.*
-import com.dbobjekts.sampledbs.h2.acme.hr.Certificate
-import com.dbobjekts.sampledbs.h2.acme.hr.Hobby
+import com.dbobjekts.testdb.acme.core.*
+import com.dbobjekts.testdb.acme.hr.Certificate
+import com.dbobjekts.testdb.acme.hr.Hobby
+import com.dbobjekts.testdb.acme.CatalogDefinition
 import com.dbobjekts.util.HikariDataSourceFactory
 import org.slf4j.LoggerFactory
 
 object AcmeDB {
     private val logger = LoggerFactory.getLogger(AcmeDB::class.java)
 
-    val catalog = TestCatalog
-
     val dataSource =
         HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
 
-    val transactionManager = TransactionManager.builder().withDataSource(dataSource).withCatalog(catalog).build()
+    val transactionManager = TransactionManager.builder().withDataSource(dataSource).withCatalog(CatalogDefinition).build()
     fun <T> newTransaction(fct: (Transaction) -> T) = transactionManager.newTransaction(fct)
 
     fun setupDatabaseObjects() {
@@ -135,7 +131,21 @@ object AcmeDB {
         """.trimIndent()
 
             transaction.execute(allTypesSql)
-            //transaction.transactionExecutionLog().forEach { println(it) }
+
+            transaction.execute("CREATE SCHEMA if not exists library");
+
+            transaction.execute("create table if not exists library.author(id BIGINT NOT NULL primary key auto_increment,name varchar(200) NOT NULl,bio varchar(1000) NULL)")
+
+            transaction.execute("create table if not exists library.book(isbn varchar(20) primary key NOT NULL,title varchar(200) NOT NULL,author_id BIGINT NOT NULL,published DATE NOT NULL,foreign key (author_id) references library.author(id))")
+
+            transaction.execute("create table if not exists library.item(id BIGINT NOT NULL primary key auto_increment,isbn varchar(20) NOT NULL,date_acquired DATE NOT NULL,foreign key (isbn) references library.book(isbn))")
+
+            transaction.execute("create table if not exists library.member(id BIGINT NOT NULL primary key auto_increment,name varchar(200) NOT NULl)")
+
+            transaction.execute("create table if not exists library.loan(item_id BIGINT NOT NULL,member_id BIGINT NOT NULL,date_loaned DATE NOT NULL,date_returned DATE NULL," +
+                    "foreign key (item_id) references library.item(id),foreign key (member_id) references library.member(id))");
+
+
         }
     }
 }

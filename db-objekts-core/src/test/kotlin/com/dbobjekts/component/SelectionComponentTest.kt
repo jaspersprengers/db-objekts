@@ -1,12 +1,11 @@
 package com.dbobjekts.component
 
 import com.dbobjekts.api.Tuple2
-import com.dbobjekts.sampledbs.h2.acme.core.Address
-import com.dbobjekts.sampledbs.h2.acme.core.Country
-import com.dbobjekts.sampledbs.h2.acme.core.Employee
-import com.dbobjekts.sampledbs.h2.acme.core.EmployeeAddress
-import com.dbobjekts.sampledbs.h2.acme.custom.AddressType
-import com.dbobjekts.sampledbs.h2.acme.hr.Hobby
+import com.dbobjekts.testdb.acme.core.Address
+import com.dbobjekts.testdb.acme.core.Country
+import com.dbobjekts.testdb.acme.core.Employee
+import com.dbobjekts.testdb.acme.core.EmployeeAddress
+import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -14,6 +13,7 @@ import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import com.dbobjekts.testdb.AddressType
 
 class SelectionComponentTest {
 

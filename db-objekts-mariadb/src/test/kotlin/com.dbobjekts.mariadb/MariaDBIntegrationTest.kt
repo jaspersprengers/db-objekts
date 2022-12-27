@@ -6,10 +6,8 @@ import com.dbobjekts.mariadb.testdb.CatalogDefinition
 import com.dbobjekts.mariadb.testdb.core.*
 import com.dbobjekts.mariadb.testdb.hr.Certificate
 import com.dbobjekts.mariadb.testdb.hr.Hobby
-import com.dbobjekts.mariadb.testdb.nation.*
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
 import com.dbobjekts.statement.select.SelectStatementExecutor
-import com.dbobjekts.util.HikariDataSourceFactory
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
@@ -23,66 +21,47 @@ import javax.sql.DataSource
 @Testcontainers
 class MariaDBIntegrationTest {
 
-
     val e = Employee
     val h = Hobby
 
     companion object {
 
         @Container
-        val container: MariaDBWrapper = MariaDBWrapper("nations.sql", "acme.sql")
-        lateinit var ds: DataSource
+        val container: MariaDBWrapper = MariaDBWrapper("10.10", listOf("acme.sql"))
+        lateinit var dataSource: DataSource
         lateinit var tm: TransactionManager
 
         @JvmStatic
         @BeforeAll
         fun beforeAll() {
-            val port = container.firstMappedPort
-            ds = HikariDataSourceFactory
-                .create(
-                    url = "jdbc:mariadb://localhost:$port/test", username = "root", password = "test", driver = "org.mariadb.jdbc.Driver"
-                )
-            tm = TransactionManager.builder().withDataSource(ds).withCatalog(CatalogDefinition).build()
+            dataSource = container.createDataSource()
+            tm = TransactionManager.builder().withDataSource(dataSource).withCatalog(CatalogDefinition).build()
         }
-
-    }
-
-    @Test
-    fun `validate metadata and fetch countries list`() {
-        tm { tr ->
-            val results =
-                tr.select(
-                    Countries.name, Regions.name, Continents.name, CountryLanguages
-                        .languageId, Languages.language
-                ).useOuterJoinsWithDefaultValues()
-                    .asList()
-            assertEquals(990, results.size)
-
-            val sql = tr.transactionExecutionLog().last().sql
-            assertEquals(
-                "select c3.name,r.name,c2.name,cl.language_id,l.language from nation.countries c3 left join nation.country_languages cl on c3.country_id = cl.country_id left join nation.regions r on c3.region_id = r.region_id left join nation.languages l on cl.language_id = l.language_id left join nation.continents c2 on r.continent_id = c2.continent_id",
-                sql
-            )
-        }
-
 
     }
 
     @Test
     fun validateCodeGeneration() {
         val gen = CodeGenerator()
-        gen.withDataSource(ds)
+        gen.withDataSource(dataSource)
         gen.mappingConfigurer().setColumnTypeForJDBCType("TINYINT", NumberAsBooleanColumn::class.java)
         gen.outputConfigurer()
             .basePackageForSources("com.dbobjekts.mariadb.testdb")
-            .outputDirectoryForGeneratedSources(Paths.get("db-objekts-mariadb/src/generated-sources/kotlin").toAbsolutePath().toString())
+            //.outputDirectoryForGeneratedSources(Paths.get("db-objekts-mariadb/src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff = gen.differencesWithCatalog(CatalogDefinition)
         Assertions.assertTrue(diff.isEmpty())
+        //gen.generateSourceFiles()
     }
 
+    @Test
+    fun `date and time handling`() {
+        tm {
+            //  it.select(AllTypesNil.)
+        }
+    }
 
     @Test
-    fun run_test() {
+    fun `selection and updates`() {
         tm { tr ->
             tr.deleteFrom(EmployeeAddress).where()
             tr.deleteFrom(EmployeeDepartment).where()

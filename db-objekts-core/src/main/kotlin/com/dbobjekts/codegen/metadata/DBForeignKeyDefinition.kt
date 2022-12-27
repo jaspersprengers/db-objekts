@@ -2,14 +2,15 @@ package com.dbobjekts.codegen.metadata
 
 import com.dbobjekts.api.*
 
-class DBForeignKeyDefinition(table: TableName,
+class DBForeignKeyDefinition(schema: SchemaName,
+                             table: TableName,
                              columnName: ColumnName,
                              columnType: AnyColumn,
                              val parentSchema: SchemaName,
                              val parentTable: TableName,
                              val parentColumn: ColumnName,
                              comment: String? = null)
-   : DBColumnDefinition(table, columnName, columnType, comment) {
+   : DBColumnDefinition(schema, table, columnName, columnType, comment) {
 
     val tableAndColumn = "${parentTable.capitalCamelCase()}.${parentColumn.lowerCamelCase()}"
 

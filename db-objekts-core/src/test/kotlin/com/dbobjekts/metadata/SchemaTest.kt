@@ -1,9 +1,9 @@
 package com.dbobjekts.metadata
 
-import com.dbobjekts.sampledbs.h2.acme.TestCatalog
-import com.dbobjekts.sampledbs.h2.acme.core.Core
-import com.dbobjekts.sampledbs.h2.acme.core.Employee
-import com.dbobjekts.sampledbs.h2.acme.hr.Hr
+import com.dbobjekts.testdb.acme.CatalogDefinition
+import com.dbobjekts.testdb.acme.core.Core
+import com.dbobjekts.testdb.acme.core.Employee
+import com.dbobjekts.testdb.acme.hr.Hr
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
@@ -13,13 +13,13 @@ class SchemaTest {
 
     @Test
     fun `Catalog has one schema`() {
-        assertEquals(TestCatalog.schemas.size, 2)
+        assertEquals(3, CatalogDefinition.schemas.size)
     }
 
     @Test
     fun `Catalog has schema default`() {
-        assertNotNull(TestCatalog.schemaByName("HR"))
-        assertEquals("H2", TestCatalog.vendor)
+        assertNotNull(CatalogDefinition.schemaByName("HR"))
+        assertEquals("H2", CatalogDefinition.vendor)
     }
 
     @Test
@@ -29,7 +29,7 @@ class SchemaTest {
 
     @Test
     fun `Schema has reference to catalog`() {
-        assertEquals(TestCatalog, Hr.catalog)
+        assertEquals(CatalogDefinition, Hr.catalog)
     }
 
 

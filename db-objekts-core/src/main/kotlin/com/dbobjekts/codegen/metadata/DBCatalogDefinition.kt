@@ -28,7 +28,7 @@ data class DBCatalogDefinition(
         }
         diffs += schemas.flatMap { sc ->
             val match = codeObject.schemas.find { it.schemaName.value.equals(sc.schemaName.value, true) }
-            if (match == null) listOf("DB schema $name not found in catalog") else sc.diff(match)
+            if (match == null) listOf("DB schema ${sc.schemaName} not found in catalog") else sc.diff(match)
         }
         return diffs
     }

@@ -35,13 +35,7 @@ open class Catalog(
     }
 
     internal fun assertContainsTable(table: Table): Table {
-        if (!table.isInitialized()) {
-            throw IllegalStateException(
-                "Table ${table.tableName} is not associated with a Schema yet. " +
-                        "This typically happens when it does not belong to the Catalog associated with the current TransactionManager or when you have not provided a Catalog when building the TransactionManager. You must provide a Catalog in order to use the metadata objects in q ueries."
-
-            )
-        }
+        table.ensureSchema()
         if (tables.none { it.schemaAndName() == table.schemaAndName() }) {
             throw IllegalStateException("Table ${table.schemaAndName()} does not belong to the Catalog associated with the current TransactionManager")
         }

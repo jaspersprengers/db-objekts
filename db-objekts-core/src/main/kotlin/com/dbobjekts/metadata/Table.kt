@@ -6,6 +6,7 @@ import com.dbobjekts.metadata.joins.JoinFactory
 import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.util.Errors
 import com.dbobjekts.util.ValidateDBObjectName
+import java.lang.IllegalStateException
 
 /**
  * Parent of all the generated [Table] objects that represent the tables in the database and act as metadata for the query engine.
@@ -30,16 +31,25 @@ abstract class Table(
 
     internal fun getForeignKeyToParent(parent: Table): AnyForeignKey? = foreignKeys.find { it.parentColumn.table == parent }
 
-    internal fun columnByName(column: String): AnyColumn? = columns.find { it.nameInTable.equals(column,true) }
+    internal fun columnByName(column: String): AnyColumn? = columns.find { it.nameInTable.equals(column, true) }
 
-    internal fun alias(): String = schema.aliasForTable(this)
+    internal fun alias(): String = ensureSchema().aliasForTable(this)
 
-    internal fun schemaAndName(): String = "${schema.dottedName}$tableName"
+    internal fun schemaAndName(): String = "${ensureSchema().dottedName}$tableName"
 
-    internal  fun schemaName(): SchemaName = schema.schemaName
+    internal fun schemaName(): SchemaName = ensureSchema().schemaName
 
     internal fun withSchema(schema: Schema) {
         this.schema = schema
+    }
+
+    internal fun ensureSchema(): Schema {
+        if (!this::schema.isInitialized)
+            throw IllegalStateException(
+                "Table $dbName is not associated with a Schema yet. " +
+                        "This typically happens when it does not belong to the Catalog associated with the current TransactionManager or when you have not provided a Catalog when building the TransactionManager. You must provide a Catalog in order to use the metadata objects in q ueries."
+            )
+        return schema
     }
 
     internal fun isInitialized(): Boolean {

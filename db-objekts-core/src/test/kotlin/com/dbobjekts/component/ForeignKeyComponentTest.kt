@@ -1,17 +1,17 @@
 package com.dbobjekts.component
 
 import com.dbobjekts.api.Tuple3
-import com.dbobjekts.sampledbs.h2.acme.core.Department
-import com.dbobjekts.sampledbs.h2.acme.core.EmployeeDepartment
-import com.dbobjekts.sampledbs.h2.acme.core.*
-import com.dbobjekts.sampledbs.h2.acme.custom.AddressType
-import com.dbobjekts.sampledbs.h2.acme.hr.Certificate
-import com.dbobjekts.sampledbs.h2.acme.hr.Hobby
+import com.dbobjekts.testdb.acme.core.Department
+import com.dbobjekts.testdb.acme.core.EmployeeDepartment
+import com.dbobjekts.testdb.acme.core.*
+import com.dbobjekts.testdb.acme.hr.Certificate
+import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
+import com.dbobjekts.testdb.AddressType
 
 
 class ForeignKeyComponentTest {

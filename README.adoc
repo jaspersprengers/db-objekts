@@ -3,8 +3,8 @@
 = Introduction
 :imagesdir: ./docs
 
-NOTE: db-Objekts is currently in alpha. The API is still subject to change and is not production ready.
-The plan is to release a beta early 2023 followed by a first release later that year. See <<_status_and_roadmap>>
+NOTE: db-Objekts is currently in alpha. The API is still subject to change and is not production ready. During the alpha release it will only support MariaDB.
+The plan is to release a beta early 2023 followed by a first release later that year. This release will support MySQL, PostgreSQLS and Oracle. See <<_status_and_roadmap>> for the planning
 
 == Fluent, type-safe, lightweight and opinionated
 db-Objekts is a Kotlin library to perform queries on a relational databases in application code.
@@ -43,7 +43,7 @@ This is a bare-bones setup. There is much more to fine-tune. This writes metadat
 
 The next step is to configure the `TransactionManager`. This wraps a `javax.sql.DataSource` and acts as a factory for transactions.
 You typically only need one instance per database. This example is for an embedded H2 database, taken from the project `com.db-Objekts.sampledbs.h2.H2DB`
-The code generation stage produced a `TestCatalog` Kotlin `object`. dbo needs this to produce SQL boilerplate specific to our schemas.
+The code generation stage produced a `AcmeCatalog` Kotlin `object`. dbo needs this to produce SQL boilerplate specific to our schemas.
 ```kotlin
 val dataSource = HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
 val transactionManager = TransactionManager.builder()
@@ -120,16 +120,19 @@ tr.select(Loan.dateLoaned, Item.id, Book.title, Author.name, Member.name).asList
 This concludes our bird's eye view of dbo. There is much, much more to explore in the following sections, so let's dig in!
 
 == Getting started
-TBD
+
 
 === Installation and configuration
-TBD
+dbo is a single jar, depending on your vendor. Get the latest release from Maven central
 
 === Generating metadata objects
-TBD
+The code generation utility is at the heart of dbo.
+
+==== Code generation and validation during the SDLC
+Generating code from your database is fairly harmless when you're starting out with dbo, but it gets more involved when you have already written production code against the generated metadata objects and the database evolves. You will need to rerun the process, which _could_ lead to compile errors.
 
 ==== Supported vendors
-TBD
+
 
 ==== Mandatory settings
 TBD
