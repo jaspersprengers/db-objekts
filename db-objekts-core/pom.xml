@@ -124,7 +124,25 @@
             <plugin>
                 <groupId>org.jetbrains.dokka</groupId>
                 <artifactId>dokka-maven-plugin</artifactId>
+                <version>1.7.20</version>
+                <executions>
+                    <execution>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>dokka</goal>
+                            <goal>javadoc</goal>
+                            <goal>javadocJar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <sourceDirectories>
+                        <dir>${project.basedir}/src/main/kotlin</dir>
+                        <dir>${project.basedir}/src/test/kotlin</dir>
+                    </sourceDirectories>
+                </configuration>
             </plugin>
+
 
 
             <plugin>

@@ -228,21 +228,6 @@
                         </execution>
                     </executions>
                 </plugin>
-                <plugin>
-                    <groupId>org.jetbrains.dokka</groupId>
-                    <artifactId>dokka-maven-plugin</artifactId>
-                    <version>1.7.20</version>
-                    <executions>
-                        <execution>
-                            <phase>prepare-package</phase>
-                            <goals>
-                                <goal>dokka</goal>
-                                <goal>javadoc</goal>
-                                <goal>javadocJar</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
 
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
