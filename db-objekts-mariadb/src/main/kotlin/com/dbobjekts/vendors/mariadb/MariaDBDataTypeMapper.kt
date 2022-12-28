@@ -31,9 +31,10 @@ class MariaDBDataTypeMapper : VendorDefaultColumnTypeMapper {
             col.startsWith("BIT") -> ColumnFactory.booleanColumn(nullable)
 
             col.contains("BINARY") -> ColumnFactory.byteArrayColumn(nullable)
+            col == "CHAR BYTE" -> ColumnFactory.byteArrayColumn(nullable)//alias for binary
+
             col.contains("BLOB") -> ColumnFactory.byteArrayColumn(nullable)
             col.startsWith("CHAR") -> ColumnFactory.varcharColumn(nullable)
-            col == "CHAR BYTE" -> ColumnFactory.byteArrayColumn(nullable)
             col == "ENUM" -> ColumnFactory.varcharColumn(nullable)
             //col == "INET4" -> .integerColumn(nullable)
             //col == "INET6" -> .integerColumn(nullable)
@@ -46,10 +47,10 @@ class MariaDBDataTypeMapper : VendorDefaultColumnTypeMapper {
             //col == "UUID" -> .varcharColumn(nullable)
 
             col == "DATE" -> ColumnFactory.dateColumn(nullable)
+            col.startsWith("TIMESTAMP") -> ColumnFactory.dateTimeColumn(nullable)
             col.startsWith("TIME") -> ColumnFactory.timeColumn(nullable)
-            col.startsWith("DATETIME") -> ColumnFactory.dateColumn(nullable)
-            col.startsWith("TIMESTAMP") -> ColumnFactory.timeStampColumn(nullable)
-            col.startsWith("YEAR") -> ColumnFactory.timeStampColumn(nullable)
+            col.startsWith("DATETIME") -> ColumnFactory.dateTimeColumn(nullable)
+            col.startsWith("YEAR") -> ColumnFactory.integerColumn(nullable)
 
             else -> null
         }

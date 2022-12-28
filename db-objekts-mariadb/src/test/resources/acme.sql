@@ -63,6 +63,7 @@ create table if not exists core.EMPLOYEE_DEPARTMENT
 
 create table IF NOT EXISTS core.ALL_TYPES_NIL
 (
+    ID                   BIGINT primary key not null auto_increment,
     DECIMAL_COL          DECIMAL,
     DEC_COL              DEC,
     NUMERIC_COL          NUMERIC,
@@ -81,9 +82,9 @@ create table IF NOT EXISTS core.ALL_TYPES_NIL
     DOUBLE_COL           DOUBLE,
     DOUBLE_PRECISION_COL DOUBLE PRECISION,
     BIT_COL              BIT,
-    BINARY_COL           BINARY,
+    BINARY_COL           BINARY(100),
     BLOB_COL             BLOB,
-    CHAR_COL             CHAR,
+    CHAR_COL             CHAR(100),
     CHAR_BYTE_COL        CHAR BYTE,
     ENUM_COL             ENUM ('YES','NO','MAYBE'),
     JSON_COL             JSON,

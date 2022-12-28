@@ -10,6 +10,60 @@ class ClassGenerator {
 
 
     @Test
+    fun print_test_methods() {
+        val cols = listOf(
+            "decimalCol",
+            "decCol",
+            "numericCol",
+            "fixedCol",
+            "int1Col",
+            "tinyintCol",
+            "smallintCol",
+            "int2Col",
+            "mediumintCol",
+            "int3Col",
+            "intCol",
+            "int4Col",
+            "bigintCol",
+            "int8Col",
+            "floatCol",
+            "doubleCol",
+            "doublePrecisionCol",
+            "bitCol",
+            "binaryCol",
+            "blobCol",
+            "charCol",
+            "charByteCol",
+            "enumCol",
+            "jsonCol",
+            "textCol",
+            "varcharCol",
+            "setCol",
+            "dateCol",
+            "timeCol",
+            "datetimeCol",
+            "timestampCol",
+            "yearCol"
+        )
+        val template = """
+                @Test
+                fun test_%() {
+                    tm {
+                        val value= 
+                        it.insert(AllTypesNil).%(value)
+                        val retrieved = it.select(AllTypesNil.%).where(AllTypesNil.%.eq(value)).first()
+                        assertEquals(value,retrieved)
+                    }
+                }
+                
+        """.trimIndent()
+        cols.forEach { c ->
+            println(template.replace("%", c))
+        }
+    }
+
+
+    @Test
     fun printMethods() {
         val lines = IntRange(2, 9).map { i ->
             val ts = join("T$", i)
@@ -274,7 +328,7 @@ class ClassGenerator {
 
         }
 
-        IntRange(2,22).forEach { i ->
+        IntRange(2, 22).forEach { i ->
             val file =
                 Paths.get("/Users/jasper/dev/db-objekts/core/src/main/kotlin/com/dbobjekts/statement/customsql", "Returns${i}.kt").toFile()
             //FileUtils.writeStringToFile(file, outputCustomSqlBuilder(i), Charset.defaultCharset())
