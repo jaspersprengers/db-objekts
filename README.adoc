@@ -62,20 +62,16 @@ The `newTransaction()` method's signature is `fun <T> newTransaction(function: (
 val books: List<String> = tm { it.select(Book.isbn).asList() }
 ```
 
-That was our very first query: select the ISBN column from the `book` and return it as a `List<String`. Now let's add some authors, titles and members.
+That was our very first query: select the ISBN column from the `book` and return it as a `List<String`. Now let's add an author, title and member.
 The `mandatoryColumns(..)` call is a convenience method to make sure you don't miss any of the non-null columns in your insert.
 When the table in question has an auto-generated id, it is returned as a `Long`. We need to store it for later.
 ```kotlin
 val orwell: Long = tr.insert(Author).mandatoryColumns("George Orwell").execute()
-val rowling: Long = tr.insert(Author).mandatoryColumns("Joanne (J.K.) Rowling").execute()
 
 // the primary key of the book table is not auto-generated. In this case execute() returns 1.
 tr.insert(Book).mandatoryColumns("ISBN-1984", "Nineteen-eighty Four", orwell, LocalDate.of(1948,1,1)).execute()
-tr.insert(Book).mandatoryColumns("ISBN-WIGAN", "The Road to Wigan Pier", orwell, LocalDate.of(1940,1,1)).execute()
-tr.insert(Book).mandatoryColumns("ISBN-PHILOSOPHER", "Harry Potter and the Philosopher's Stone", rowling, LocalDate.of(1999,1,1)).execute()
 
 val john = tr.insert(Member).mandatoryColumns("John").execute()
-val sally = tr.insert(Member).mandatoryColumns("Sally").execute()
 ```
 We forgot to put a bio for George Orwell. Let's do that now. Notice the use of the where clause. Common sql operator symbols (=,<,>,!=) have textual counterparts.
 And yes, you can do embedded and/or conditions. More on that later.
@@ -90,16 +86,12 @@ image::autocomplete_update.png[autocomplete_update, 600]
 
 image::autocomplete_insert.png[autocomplete_insert, 600]
 
-Add some physical copies and loan data
+Add a physical copy and then we have all the data to loan out the book
 ```kotlin
 //we have two copies of Harry Potter, one of 1984 and we misplaced the one of the Road to Wigan Pier.
-val copy1_1984 = tr.insert(Item).mandatoryColumns("ISBN-1984", LocalDate.of(1980,5,5)).execute()
-val copy1_phil = tr.insert(Item).mandatoryColumns("ISBN-PHILOSOPHER", LocalDate.of(2005,5,5)).execute()
-val copy2_phil = tr.insert(Item).mandatoryColumns("ISBN-PHILOSOPHER", LocalDate.of(2005,5,5)).execute()
-//Sally takes out 1984 and Harry Potter. John takes the other Harry Potter copy
-tr.insert(Loan).mandatoryColumns(memberId = sally, itemId = copy1_1984, dateLoaned = LocalDate.now()).execute()
-tr.insert(Loan).mandatoryColumns(memberId = sally, itemId = copy1_phil, dateLoaned = LocalDate.now()).execute()
-tr.insert(Loan).mandatoryColumns(memberId = john, itemId = copy2_phil, dateLoaned = LocalDate.now()).execute()
+val copy1984 = tr.insert(Item).mandatoryColumns("ISBN-1984", LocalDate.of(1980,5,5)).execute()
+
+tr.insert(Loan).mandatoryColumns(memberId = john, itemId = copy1984copy1984, dateLoaned = LocalDate.now()).execute()
 ```
 
 Now we can start querying. Let's get a list of all titles and their author data. This is what a select query in dbo looks like. You will notice that there is no `from` clause. All the information is present in the column references that you provide in the call to `select(..`) and dbo is can figure out the necessary table joins. The terminating `asList()` call returns a list of type-safe tuples that correspond exactly to the number and types of the columns in the `select(..)` call. Notice that `Author.bio` is a nullable column. Hence, the corresponding value in the tuple is `String?`, not `String`.
@@ -113,62 +105,143 @@ tr.select(Loan.dateLoaned, Item.id, Book.title, Author.name, Member.name).asList
     println("Item $item of $book by $author loaned to $member on $dateLoaned")
   }
  // the type returned is List<Tuple5<LocalDate, Long, String, String, String>>
- //Item 1 of Nineteen-eighty Four by George Orwell loaned to Sally on 2022-12-23
- //Item 4 of Harry Potter and the Philsopher's Stone by Joanne Rowling loaned to Sally on 2022-12-23
- //Item 5 of Harry Potter and the Philsopher's Stone by Joanne Rowling loaned to John on 2022-12-23
+ //Item 1 of Nineteen-eighty Four by George Orwell loaned to John on 2022-12-23
 ```
-This concludes our bird's eye view of dbo. There is much, much more to explore in the following sections, so let's dig in!
+This concludes our bird's eye view of dbo. You can find the above code in `com.dbobjekts.component.LibraryComponentTest`. That should get you going.
+
+There is much, much more to explore in the following sections, so let's dig in!
 
 == Getting started
 
 
 === Installation and configuration
-dbo is a single jar, depending on your vendor. Get the latest release from Maven central
+You can get the latest release from https://mvnrepository.com/search?q=com.db-objekts[Maven central]
+
+The main jar is `com.db-objekts:db-objekts-core`, but you also need a vendor-specific implementation, which includes the core jar. Include it in you maven or gradle build:
+```xml
+<dependency>
+	<groupId>com.db-objekts</groupId>
+	<artifactId>db-objekts-mariadb</artifactId>
+	<version>...</version>
+</dependency>
+```
+
+`DataSource` and  an appropriate JDBC driver are not inherited from db-objekts, as these should be already on the classpath.
+
+All you need in a SpringBoot context is to create a Bean for your `TransactionManager` (provided the DataSource is already configured):
+```kotlin
+// Call the method something other than transactionManager(), or it will clash with the one in org.springframework.transaction
+@Bean()
+fun dbObjektsTransactionManager(@Autowired dataSource: DataSource): TransactionManager {
+    return TransactionManager.builder().withDataSource(dataSource).withCatalog(CatalogDefinition).build()
+}
+```
+
+Now you can inject the `TransactionManager` and you're ready to query. Note: this examples assumes you have already generated the metadata objects (`Employee` in this case), which we'll cover in the next section.
+```kotlin
+@Service
+class DataService(val transactionManager: TransactionManager) {
+
+    fun getEmployeeNames(): List<String> {
+        return transactionManager {
+            it.select(Employee.name).asList()
+        }
+    }
+}
+```
 
 === Generating metadata objects
 Before we dive into the details of code generation, some clarification is in order.
 
-Auto-generating code is an established practice for service specifications and DTO (data transfer objects) and has been with us since WSDL. You can create richly annotated interfaces from an `openapi.yaml` file that specify the available REST endpoints and expected messages. By implementing these interfaces you create a compile-time dependency on the generated code.
+Auto-generating code is an established practice since the days of WSDL. You can create richly annotated interfaces from an `openapi.yaml` file that specify the available REST endpoints and expected messages. By implementing these interfaces you create a compile-time dependency on the generated code.
 
-dbo is similar in that regard: the generated metadata objects that stand for the tables and columns become tightly coupled to your source code. That is a good thing, because the database itself _is_ an integral part of the application logic, whatever tool you use to interact with it. If you connect through native SQL, structural changes to the schemas will go unnoticed unless you have strong integration tests (unit tests won't catch it). The more likely alternative is for things to break in production.
+dbo is similar in that regard: the generated metadata objects that stand for the tables and columns become tightly coupled to your source code. That is a good thing, because the database _is_ already an integral part of the application logic, also if you interact through native SQL. The drawback is only that structural changes to the schemas will go unnoticed unless you have strong integration tests (unit tests won't catch it). If not, you notice the defects only in production.
 
-When a component (and team) implements a service, it often also owns the specification, and the file(s) will be part of the source repository. There are no unexpected surprises, and it's fine to re-generate the code whenever you do a fresh build, during the generate-sources phase, which takes place before compilation. The big difference with basing yourself on a SQL specification is one of ownership: your project may not own the database structure. In the worst case, unannounced changes may completely mess up the status quo.
+When a component implements a service, it often also owns the specification, or rather the team does. Such files will be part of the source repository. Since _you_ manage them, it's fine to re-generate the code whenever you do a fresh build, during the generate-sources phase, which takes place before compilation. The big difference with an external database is one of ownership: your project may not own the database structure. In the worst case, unannounced changes may mess up the status quo. We need more validation.
 
 ==== Code generation and validation during the SDLC
-Generating code is harmless when you're starting out with dbo, since there's no source code that uses the new objects. When changes to the structure are carried out, it makes sense to inspect the changes before overwriting anything. The following is strongly advised:
+Generating code is harmless when you're starting out with dbo, since there's no source code that uses the new objects. But later, when changes to the structure are carried out, it makes sense to inspect these changes before overwriting anything. So stick to the following:
 
 * Always write generated code in a separate source folder, called `gen` or `generated-sources`. This is a reminder that you should never manually change this code.
-* Add the kotlin source files to source control, even when they are generated. Remember, the state of the database may not be part of the same versioned repository.
+* Put the generated kotlin sources under source control, even when they are generated. Remember, the state of the database may not be part of the same versioned repository.
 * Include an automated test as part of the build to validate the database against the generated sources. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-mariadb/src/test/kotlin/com.dbobjekts.mariadb/MariaDBIntegrationTest.kt[MariaDBIntegrationTest] for an example
 
 === Code generation in detail
-With these warnings in mind, let's have a detailed look at the process. https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/codegen/CodeGenerator.kt[CodeGenerator] is our port of call for the entire process.
+With these warnings in mind, let's have a detailed look at the process. https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/codegen/CodeGenerator.kt[CodeGenerator] is our port of call for the entire process and you can check out https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/AcmeCatalogCodeGenComponentTest.kt[AcmeCatalogCodeGenComponentTest] for a comprehensive example.
 Configuration is grouped into the following sections:
 
 * The mandatory javax.sql.DataSource.
 * Configuration for exclusions.
-* Configuration for mapping column types to SQL types, using custom type for certain columns, and setting the sequence names for auto-generated keys.
+* Configuration for mapping column types to SQL types, using custom type for certain columns
+* Configuration for setting the sequence names for auto-generated keys.
 * Configuration of the output: the folder to write to and the base package structure to use, e.g. `com.acme.dbmetadata`.
 
-==== Setting the dataSource
-Make sure the user has sufficient privileges to read the relevant metadata tables (INFORMATION_SCHEMA in MySQL/MariaDB)
+==== First steps
+Taking the advice to heart, we're making the code generation part of the standard test phase and include a component test for it.
+```kotlin
+class CodeGenerationAndValidationTest {
+    fun validate(){
+       val generator = CodeGenerator()
+    }
+}
+```
+First you need to set up the `DataSource`. Make sure the user has sufficient privileges to read the relevant metadata tables (INFORMATION_SCHEMA in MySQL/MariaDB)
 ```kotlin
    val generator = CodeGenerator().withDataSource(myDataSource)
 ```
-==== Exclusions
-Certain schemas, tables or columns may have to be ignored, for various reasons.
+==== Configuring exlusions of tables and columns
+Sometimes the database has columns, tables, or even entire schemas that are not relevant to the application's business logic. A typical example are read-only audit columns that are populated by triggers.
+
+We don't want these in the generated code, and here's how you do that:
 ```kotlin
-
+generator.configureExclusions()
+      .ignoreColumnPattern("audit")//any column with the string 'audit' in it, in any table or schema
+      .ignoreColumn("date_created")//all 'date_created' columns in any table or schema
+      .ignoreSchemas("finance")//skip the entire finance schema
+      .ignoreTable("country", schema = "hr")//ignore the table country, but only in the hr schema
 ```
-==== Overriding a column type by SQL type
-dbo chooses a suitable implementation of https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/metadata/column/Column.kt[Column], depending on the vendor type. Sometimes you want to fine-tune this mapping. The MySQL type `TINYINT(1)` is mapped to a `Byte` by default, but as it is often used as a boolean value, you can choose to map it to a `BooleanColumn`.
+==== Configuring column mapping
+dbo chooses a suitable implementation of https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/metadata/column/Column.kt[Column], depending on the db type (e.g. `CHAR(10)` or `INT(6)`). Sometimes you want to fine-tune this mapping. The MySQL type `TINYINT(1)` is mapped to a `Byte` by default, but as it is often used as a boolean value, you can choose to map it to a `BooleanColumn`.
 
-==== Overriding a column by name
+The mechanism offered by dbo is to iterate through a list of `com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper` instances, which is a functional interface that receives all the metadata you need for a given column in a  `ColumnMappingProperties` object in order for the implementation to return an appropriate `Column`, or null if the mapper does noet apply. dbo tries you custom mappings in order of registration to find a match, and then defaults to the vendor specific mapping, which has a mapping for every SQL type in the database.
+
+Let's look at the options
+
+==== Overriding a column by sql type
+As mentioned above, here's how you override the default mapping of `TINYINT` to a numeric type and instead use Boolean.
+
+The convenience method `setColumnTypeForJDBCType` takes the SQL type and the class of the appropriate Column. `com.dbobjekts.metadata.columnNumberAsBoolean` takes care of converting an Int to Boolean and back.
+```kotlin
+generator.configureColumnTypeMapping()
+   .setColumnTypeForJDBCType("TINYINT(1)", NumberAsBooleanColumn::class.java)
+```
+
+==== Overriding a column by name or pattern
+dbo lets you write you own Column implementations, which can be used for:
+
+* Using a business enum instead of an integer or character value, e.g. the `AddressTypeAsStringColumn` which maps to the `AddressType` enum
+* Adding extra validation or formatting to a column, e.g. a `DutchPostCodeColumn`.
+
+```kotlin
+generator.configureColumnTypeMapping()
+   .setColumnTypeForName(
+        table = "EMPLOYEE_ADDRESS",
+        column = "KIND",
+        columnType = AddressTypeAsStringColumn::class.java)
+```
+The `AddressTypeAsStringColumn` is a custom specialization of `EnumAsStringColumn<AddressType>`, which only needs to override the `toEnum` and `nullable` method`:
+
+```kotlin
+class AddressTypeAsStringColumn(table: Table, name: String) : EnumAsStringColumn<AddressType>(table, name, AddressType::class.java) {
+    override val nullable = NullableAddressTypeAsStringColumn(table, name)
+    override fun toEnum(name: String): AddressType = AddressType.valueOf(name)
+}
+```
 
 === Setting sequence names
 Many vendors support sequences for generating primary keys, but the information schema does not store which sequence is used for which table. So, unfortunately, you have to manually configure this, as follows:
 ```kotlin
- generator.mappingConfigurer()
+ generator.configurePrimaryKeySequences()
             .setSequenceNameForPrimaryKey("core", "employee", "id", "EMPLOYEE_SEQ")
 ```
 This is fine if you have a small schema, but cumbersome if you have > 100 tables to configure. If you have a consistent naming scheme, you can write your own implementation of `SequenceForPrimaryKeyResolver`
@@ -182,30 +255,34 @@ generator.mappingConfigurer()
     }
 ```
 ==== Output configuration
+Whew, that was a lot of information. Don't worry, you're almost done. Now the `CodeGenerator` has everything it needs to produce the right metadata objects. You only need to tell it where to put it.
 
-==== Supported vendors
+This example points to `src/generated-sources/kotlin` in your project root and creates a package tree `com.dbobjekts.testdb.acme` under it.
+In this package will be a `CatalogDefinition.kt` kotlin object with subpackages for each schema, which contain one `Schema` object and a `Table` object for each table in the schema.
+```kotlin
+generator.configureOutput()
+            .basePackageForSources("com.dbobjekts.testdb.acme")
+            .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
+```
 
+==== Validate and produce your code
+Now you're set to produce your code, like so.
+```kotlin
+generator.generateSourceFiles()
+```
+If all is well, you now have a bunch of files and packages under the designated source folder, ready to be used for querying.
 
-==== Mandatory settings
-TBD
+However, after you have done your first code generation run, it's advisable to add some validation to ensure there are not unexpected changes in the database schema. So, we want to do a dry-run of the generated code and compare the output to the current state of the metadata. If there are no differences there is no point to overwrite the generated source files. And if there _are_ differences you probably want to inspect them first. Here's how you create the diff we need.
+```kotlin
+val diff: List<String> = generator.differencesWithCatalog(CatalogDefinition)
+assertThat(diff).describedAs("acme catalog differs from database definition").isEmpty()
+```
+`differencesWithCatalog` takes the target `CatalogDefinition` that would normally be overwritten, and for each detected difference with the current status quo of the db structure, a line is added to the output. So, if the employee table suddenly has a non-null column `shoe_size` added to it, the test will fail with `DB column EMPLOYEE.SHOE_SIZE not found in catalog`.
 
-==== Excluding objects from generation
-TBD
+Once aware of the changes, you can generate the catalog again and make appropriate changes to the application code, because now the `Employee` metadata object has an extra mandatory column and calls to `mandatoryColumns` will have compiler errors.
 
-==== Overriding the default Column implementation
-TBD
+Or would you rather fix it in production?
 
-==== Using sequence-generated primary keys
-TBD
-
-== db-Objekts metadata
-TBD
-
-=== Catalog, Schema and Table
-TBD
-
-=== Columns
-TBD
 
 == Querying
 TBD
