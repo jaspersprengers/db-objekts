@@ -3,8 +3,7 @@
 = Introduction
 :imagesdir: ./docs
 
-NOTE: db-Objekts is currently in alpha. The API is still subject to change and is not production ready. During the alpha release it will only support MariaDB.
-The plan is to release a beta early 2023 followed by a first release later that year. This release will support MySQL, PostgreSQLS and Oracle. See <<_status_and_roadmap>> for the planning
+NOTE: db-Objekts is currently in alpha. The API is still subject to change and is not production ready. During the alpha release it will only support MariaDB. A beta is planned for early 2023 followed by a first official release later that year. This release will support MySQL, PostgreSQL and Oracle. See xref:_status_and_roadmap[for the planning]
 
 == Fluent, type-safe, lightweight and opinionated
 db-Objekts is a Kotlin library to perform queries on a relational databases in application code.
@@ -13,14 +12,15 @@ your IDE's autocomplete, while db-Objekts takes care of the SQL boilerplate and 
 
 The project was conceived and built by me, Jasper Sprengers, a software developer living in the Netherlands.
 
-db-Objekts has some conceptual similarities to object relational mapping frameworks like Hibernate, but is also quite different. ORMs work with stateful entities that abstract away the database layer, even the individual tables. They are certainly not lightweight of easy to master well. db-Objekts is firmly focused on executing queries on tables, but these tables have become part of your application's source code. This gives you all the benefits of your IDE's auto-complete features, in addition to Kotlin's type and null-safety.
+db-Objekts has conceptual similarities to object relational mapping (ORM) frameworks like Hibernate, but is also quite different. ORMs work with stateful entities that abstract away the database layer, even the individual tables. They are not lightweight or easy to master well. db-Objekts is focused on executing queries on tables, but these tables have become part of your application's source code. This gives you all the benefits of your IDE's auto-complete features, in addition to Kotlin's type and null-safety.
 
 Let's start with an overview of features.
 
 == A bird's eye feature view
-Let's showcase the features in a concise demonstration to get a feel of what you can achieve with db-Objekts.
+The following demo showcases what you can achieve with db-Objekts (https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/AcmeCatalogCodeGenComponentTest.kt[full source code]).
 
 We have a simple database of a lending library with five tables
+
 * `author` represents a person, with name, bio, and data of birth.
 * `book` has the official isbn as its primary key, a title, year of publication and a reference to its author.
 * `item` represents a physical copy of a book. It refers to the `book` table and stores the date of acquisition. There can be zero or more copies of a book title.
@@ -29,29 +29,34 @@ We have a simple database of a lending library with five tables
 
 image::datamodel.png[datamodel,600]
 
-First we need metadata objects for our database. For this we need the `CodeGenerator`
+First, generate metadata objects for our database. `CodeGenerator` takes care of that.
 ```kotlin
 val generator = CodeGenerator()
        .withDataSource(datasource = H2DB.dataSource)
 generator.outputConfigurer()
-        .basePackageForSources("com.acme.db-Objekts")
-        .outputDirectoryForGeneratedSources(Paths.get("src/gen/kotlin").toAbsolutePath().toString())
+        .basePackageForSources("com.acme.dbobjekts")
+        .outputDirectoryForGeneratedSources(Paths.get("src/gen/kotlin")
+            .toAbsolutePath().toString())
 generator.generateSourceFiles()
 ```
 
-This is a bare-bones setup. There is much more to fine-tune. This writes metadata objects under the package `com.acme.db-Objekts` in a special `gen` source folder, which indicates you should not manually alter these files.
+This is a bare-bones setup. There is much more to fine-tune. This writes metadata objects under the package `com.acme.dbobjekts` in a `gen` source folder, to indicate you should not alter them manually.
 
-The next step is to configure the `TransactionManager`. This wraps a `javax.sql.DataSource` and acts as a factory for transactions.
-You typically only need one instance per database. This example is for an embedded H2 database, taken from the project `com.db-Objekts.sampledbs.h2.H2DB`
-The code generation stage produced a `AcmeCatalog` Kotlin `object`. dbo needs this to produce SQL boilerplate specific to our schemas.
+The next step is to configure the `TransactionManager`. This wraps a `javax.sql.DataSource` and acts as a factory for transactions. You typically only need one instance per database. This example is for an embedded H2 database, taken from the project `com.db-Objekts.sampledbs.h2.H2DB`.
+
+The code generation stage produced a `CatalogDefinition` Kotlin object. The TransactionManager needs this to produce SQL boilerplate specific to our schemas.
+
 ```kotlin
-val dataSource = HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
+val dataSource = HikariDataSourceFactory.create(url = "jdbc:h2:mem:test",
+    username = "sa",
+    password = null,
+    driver = "org.h2.Driver")
 val transactionManager = TransactionManager.builder()
-    .withCatalog(TestCatalog)
+    .withCatalog(CatalogDefinition)
     .withDataSource(dataSource).build()
 ```
 
-To get a connection from the `TransactionManager` and start performing queries, use the following syntax (we'll use `tm` for `TransactionManager` instances and `tr` for `Transaction` throughout this tutorial)
+To get a connection from the TransactionManager and start performing queries, use the following syntax (we'll use `tm` for TransactionManager instances and `tr` for Transaction throughout this tutorial)
 ```kotlin
 val resultOfQuery = tm.newTransaction { tr->
     //execute your query/queries here
@@ -62,52 +67,67 @@ The `newTransaction()` method's signature is `fun <T> newTransaction(function: (
 val books: List<String> = tm { it.select(Book.isbn).asList() }
 ```
 
-That was our very first query: select the ISBN column from the `book` and return it as a `List<String`. Now let's add an author, title and member.
+That was our very first query: select the ISBN column from the `book` table and return it as a `List<String`. Now let's add an author, title and member.
+
 The `mandatoryColumns(..)` call is a convenience method to make sure you don't miss any of the non-null columns in your insert.
-When the table in question has an auto-generated id, it is returned as a `Long`. We need to store it for later.
+When the table in question has an auto-generated id, it is returned as a `Long`. We need to store it to be used as a foreign key later.
+
 ```kotlin
-val orwell: Long = tr.insert(Author).mandatoryColumns("George Orwell").execute()
+val orwell: Long = tr.insert(Author)
+    .mandatoryColumns("George Orwell").execute()
 
 // the primary key of the book table is not auto-generated. In this case execute() returns 1.
-tr.insert(Book).mandatoryColumns("ISBN-1984", "Nineteen-eighty Four", orwell, LocalDate.of(1948,1,1)).execute()
+tr.insert(Book)
+    .mandatoryColumns("ISBN-1984", "Nineteen-eighty Four", orwell, LocalDate.of(1948,1,1))
+    .execute()
 
 val john = tr.insert(Member).mandatoryColumns("John").execute()
 ```
-We forgot to put a bio for George Orwell. Let's do that now. Notice the use of the where clause. Common sql operator symbols (=,<,>,!=) have textual counterparts.
-And yes, you can do embedded and/or conditions. More on that later.
+
+We forgot to put a bio for George Orwell. Let's do that now. Notice the use of the where clause. Common sql operator symbols (=,<,>,!=) have textual counterparts `eq`, `lt`, `ne` etc,
+
+And/Or conditions and even embedded conditions are possible. More on that later.
 ```kotlin
   tr.update(Author)
       .bio("(1903-1950) Pseudonym of Eric Blair. Influential writer of novels, essays and journalism.")
       .where(Author.id.eq(orwell))
 ```
-Notice the power of autocomplete here. You instantly know which columns are available, which types they take, and whether null values are allowed.
+Notice the power of autocomplete . You instantly know which columns are available, which types they take, and whether null values are allowed.
 
 image::autocomplete_update.png[autocomplete_update, 600]
 
 image::autocomplete_insert.png[autocomplete_insert, 600]
 
-Add a physical copy and then we have all the data to loan out the book
+Add a physical copy, and then we have enough data to create a loan record.
 ```kotlin
-//we have two copies of Harry Potter, one of 1984 and we misplaced the one of the Road to Wigan Pier.
-val copy1984 = tr.insert(Item).mandatoryColumns("ISBN-1984", LocalDate.of(1980,5,5)).execute()
-
-tr.insert(Loan).mandatoryColumns(memberId = john, itemId = copy1984copy1984, dateLoaned = LocalDate.now()).execute()
+val copy1984 = tr.insert(Item)
+    .mandatoryColumns("ISBN-1984", LocalDate.of(1990,5,5))
+    .execute()
+//John takes out the copy of 1984 which was acquired in 1990
+tr.insert(Loan).mandatoryColumns(memberId = john,
+    itemId = copy1984copy1984,
+    dateLoaned = LocalDate.now()).execute()
 ```
 
-Now we can start querying. Let's get a list of all titles and their author data. This is what a select query in dbo looks like. You will notice that there is no `from` clause. All the information is present in the column references that you provide in the call to `select(..`) and dbo is can figure out the necessary table joins. The terminating `asList()` call returns a list of type-safe tuples that correspond exactly to the number and types of the columns in the `select(..)` call. Notice that `Author.bio` is a nullable column. Hence, the corresponding value in the tuple is `String?`, not `String`.
+Now we can start selections. Let's get a list of all titles and their author data. This is what a select query in db-Objekts looks like.
 ```kotlin
-val bookAuthors: List<Tuple3<String, String, String?>> = tr.select(Book.title, Author.name, Author.bio).asList()
+val bookAuthors: List<Tuple3<String, String, String?>> =
+    tr.select(Book.title, Author.name, Author.bio).asList()
 ```
+Notice there is no `from` clause, because table references are present in the columns that you provide in the call to `select(..`) and db-Objekts can figure out the necessary joins. The terminating `asList()` call returns a list of type-safe tuples that correspond exactly to the number and types of the columns in the `select(..)` call. Notice that `Author.bio` is a nullable column. Hence, the corresponding value in the tuple is `String?`, not `String`.
+
 Let's take it up a notch! This query involves all five tables and returns `List<Tuple5<LocalDate, Long, String, String, String>>`. Since all `Tuple*` classes are data classes, you can deconstruct them into a more readable output
+
 ```kotlin
+// the type returned is List<Tuple5<LocalDate, Long, String, String, String>>
 tr.select(Loan.dateLoaned, Item.id, Book.title, Author.name, Member.name).asList()
   .forEach { (dateLoaned, item, book, author, member) ->
     println("Item $item of $book by $author loaned to $member on $dateLoaned")
+    //"Item 1 of Nineteen-eighty Four by George Orwell loaned to John on 2022-12-23"
   }
- // the type returned is List<Tuple5<LocalDate, Long, String, String, String>>
- //Item 1 of Nineteen-eighty Four by George Orwell loaned to John on 2022-12-23
+
 ```
-This concludes our bird's eye view of dbo. You can find the above code in `com.dbobjekts.component.LibraryComponentTest`. That should get you going.
+This concludes our bird's eye view of db-Objekts. Check out `LibraryComponentTest` to get you going.
 
 There is much, much more to explore in the following sections, so let's dig in!
 
@@ -132,8 +152,11 @@ All you need in a SpringBoot context is to create a Bean for your `TransactionMa
 ```kotlin
 // Call the method something other than transactionManager(), or it will clash with the one in org.springframework.transaction
 @Bean()
-fun dbObjektsTransactionManager(@Autowired dataSource: DataSource): TransactionManager {
-    return TransactionManager.builder().withDataSource(dataSource).withCatalog(CatalogDefinition).build()
+fun dbObjektsTransactionManager(dataSource: DataSource): TransactionManager {
+    return TransactionManager.builder()
+        .withDataSource(dataSource)
+        .withCatalog(CatalogDefinition)
+        .build()
 }
 ```
 
@@ -153,33 +176,36 @@ class DataService(val transactionManager: TransactionManager) {
 === Generating metadata objects
 Before we dive into the details of code generation, some clarification is in order.
 
-Auto-generating code is an established practice since the days of WSDL. You can create richly annotated interfaces from an `openapi.yaml` file that specify the available REST endpoints and expected messages. By implementing these interfaces you create a compile-time dependency on the generated code.
+Auto-generating code is an established practice, ever since WSDL. For example, you can create richly annotated interfaces from an `openapi.yaml` file that specify the available REST endpoints and expected messages. By implementing these interfaces you create a compile-time dependency on the generated code.
 
-dbo is similar in that regard: the generated metadata objects that stand for the tables and columns become tightly coupled to your source code. That is a good thing, because the database _is_ already an integral part of the application logic, also if you interact through native SQL. The drawback is only that structural changes to the schemas will go unnoticed unless you have strong integration tests (unit tests won't catch it). If not, you notice the defects only in production.
+db-Objekts is similar in that the generated metadata objects which represent the tables and columns become tightly coupled to your source code. That is a good thing, because the database _is_ already an integral part of the application logic, also if you interact through native SQL. The drawback of that approach is that structural changes to the schemas will go unnoticed unless you have extensive integration tests (unit tests won't catch it). Otherwise, defect pop up only in production. Not good!
 
-When a component implements a service, it often also owns the specification, or rather the team does. Such files will be part of the source repository. Since _you_ manage them, it's fine to re-generate the code whenever you do a fresh build, during the generate-sources phase, which takes place before compilation. The big difference with an external database is one of ownership: your project may not own the database structure. In the worst case, unannounced changes may mess up the status quo. We need more validation.
+When a component implements a service, it often owns the specification (or rather the team does). Such files belong to the source repository and since _you_ manage them, it's fine to re-generate the code whenever you do a fresh buil (during the generate-sources phase, which takes place before compilation).
+
+A database creation script is similar in purpose to an openapi.yaml file. However, the important difference is one of ownership: your project may not own the database structure. Even if you have a copy of the dump in source control and can create a containerized version of it, it matters a great deal whether that dump file is the source of truth. If not, unannounced changes may mess up the status quo. We need more validation.
 
 ==== Code generation and validation during the SDLC
-Generating code is harmless when you're starting out with dbo, since there's no source code that uses the new objects. But later, when changes to the structure are carried out, it makes sense to inspect these changes before overwriting anything. So stick to the following:
+Generating code is harmless when you're starting out with db-Objekts, since there's no source code yet that uses the new metadata. But later, it makes sense to compare the current db structure to the generated metadata, before overwriting anything. So please stick to the following best practices:
 
-* Always write generated code in a separate source folder, called `gen` or `generated-sources`. This is a reminder that you should never manually change this code.
-* Put the generated kotlin sources under source control, even when they are generated. Remember, the state of the database may not be part of the same versioned repository.
-* Include an automated test as part of the build to validate the database against the generated sources. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-mariadb/src/test/kotlin/com.dbobjekts.mariadb/MariaDBIntegrationTest.kt[MariaDBIntegrationTest] for an example
+* Always write generated code to a separate source folder, called `gen` or `generated-sources`. Never manually alter this code. All the tweaks you should need are explained in the next sections, and we gladly consider feature requests :-)
+* Put the generated kotlin sources under version control, yes, even though they are generated. Remember, the state of the database may not be in your hands.
+* Include a regular automated test to validate the database against the generated sources. Validation should take place in the test phase, not the generate-sources phase. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-mariadb/src/test/kotlin/com.dbobjekts.mariadb/MariaDBIntegrationTest.kt[MariaDBIntegrationTest] for an example.
 
 === Code generation in detail
-With these warnings in mind, let's have a detailed look at the process. https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/codegen/CodeGenerator.kt[CodeGenerator] is our port of call for the entire process and you can check out https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/AcmeCatalogCodeGenComponentTest.kt[AcmeCatalogCodeGenComponentTest] for a comprehensive example.
+With this in mind, let's have a detailed look at the process. https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/codegen/CodeGenerator.kt[CodeGenerator] is our port of call for the entire process and you can check out https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/AcmeCatalogCodeGenComponentTest.kt[AcmeCatalogCodeGenComponentTest] for a comprehensive example.
 Configuration is grouped into the following sections:
 
 * The mandatory javax.sql.DataSource.
 * Configuration for exclusions.
 * Configuration for mapping column types to SQL types, using custom type for certain columns
 * Configuration for setting the sequence names for auto-generated keys.
-* Configuration of the output: the folder to write to and the base package structure to use, e.g. `com.acme.dbmetadata`.
+* Configuration of the output
 
 ==== First steps
-Taking the advice to heart, we're making the code generation part of the standard test phase and include a component test for it.
+We're making the code generation part of the standard test phase and include a component test for it.
 ```kotlin
 class CodeGenerationAndValidationTest {
+    @Test
     fun validate(){
        val generator = CodeGenerator()
     }
@@ -195,17 +221,24 @@ Sometimes the database has columns, tables, or even entire schemas that are not 
 We don't want these in the generated code, and here's how you do that:
 ```kotlin
 generator.configureExclusions()
-      .ignoreColumnPattern("audit")//any column with the string 'audit' in it, in any table or schema
-      .ignoreColumn("date_created")//all 'date_created' columns in any table or schema
-      .ignoreSchemas("finance")//skip the entire finance schema
-      .ignoreTable("country", schema = "hr")//ignore the table country, but only in the hr schema
+      //any column with the string 'audit' in it, in any table or schema
+     .ignoreColumnPattern("audit")
+     //all 'date_created' columns in any table or schema
+     .ignoreColumn("date_created")
+     //skip the entire finance schema
+     .ignoreSchemas("finance")
+     //ignore the table country, but only in the hr schema
+     .ignoreTable("country", schema = "hr")
 ```
+
+NOTE: System schemas per vendor like `sys`, `mysql` or `information_schema` are already ignored. No need to exclude them explicitly.
+
 ==== Configuring column mapping
-dbo chooses a suitable implementation of https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/metadata/column/Column.kt[Column], depending on the db type (e.g. `CHAR(10)` or `INT(6)`). Sometimes you want to fine-tune this mapping. The MySQL type `TINYINT(1)` is mapped to a `Byte` by default, but as it is often used as a boolean value, you can choose to map it to a `BooleanColumn`.
+db-Objekts chooses a suitable implementation of https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/metadata/column/Column.kt[Column], depending on the db type (e.g. `CHAR(10)` or `INT(6)`). Sometimes you want to fine-tune this mapping. For example: in  MySQL the type `TINYINT(1)` is mapped to a `Byte` by default, but as it is often used as a boolean value (with 1 or 0), it's more convenient to map it to Boolean.
 
-The mechanism offered by dbo is to iterate through a list of `com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper` instances, which is a functional interface that receives all the metadata you need for a given column in a  `ColumnMappingProperties` object in order for the implementation to return an appropriate `Column`, or null if the mapper does noet apply. dbo tries you custom mappings in order of registration to find a match, and then defaults to the vendor specific mapping, which has a mapping for every SQL type in the database.
+db-Objekts iterates through a list of https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/codegen/datatypemapper/ColumnTypeMapper.kt[ColumnTypeMapper] instances, which is a functional interface that receives all the metadata you need for a given column in a  https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/codegen/datatypemapper/ColumnMappingProperties.kt[ColumnMappingProperties] object in order for the implementation to return an appropriate `Column`, or null if the mapper does not apply. db-Objekts tries you custom mappings in order of registration to find a match, and then defaults to the vendor specific mapping, which has a mapping for every SQL type in the database, like https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-mariadb/src/main/kotlin/com.dbobjekts.vendors.mariadb/MariaDBDataTypeMapper.kt[MariaDBDataTypeMapper]
 
-Let's look at the options
+Let's look at the options.
 
 ==== Overriding a column by sql type
 As mentioned above, here's how you override the default mapping of `TINYINT` to a numeric type and instead use Boolean.
@@ -217,10 +250,13 @@ generator.configureColumnTypeMapping()
 ```
 
 ==== Overriding a column by name or pattern
-dbo lets you write you own Column implementations, which can be used for:
+db-Objekts lets you write you own Column implementations. This can be useful to:
 
-* Using a business enum instead of an integer or character value, e.g. the `AddressTypeAsStringColumn` which maps to the `AddressType` enum
-* Adding extra validation or formatting to a column, e.g. a `DutchPostCodeColumn`.
+* Use a business enum instead of an integer or character value, e.g. the `AddressTypeAsStringColumn` which maps to the `AddressType` enum
+* Add extra validation or formatting to a column, e.g. a `DutchPostCodeColumn`.
+* Cover up poor database design decision, for example a CHAR column which is abused as a Boolean with Ja/Nein.
+
+See the xref:_creating_custom_column_types[advanced section] for details.
 
 ```kotlin
 generator.configureColumnTypeMapping()
@@ -229,14 +265,7 @@ generator.configureColumnTypeMapping()
         column = "KIND",
         columnType = AddressTypeAsStringColumn::class.java)
 ```
-The `AddressTypeAsStringColumn` is a custom specialization of `EnumAsStringColumn<AddressType>`, which only needs to override the `toEnum` and `nullable` method`:
-
-```kotlin
-class AddressTypeAsStringColumn(table: Table, name: String) : EnumAsStringColumn<AddressType>(table, name, AddressType::class.java) {
-    override val nullable = NullableAddressTypeAsStringColumn(table, name)
-    override fun toEnum(name: String): AddressType = AddressType.valueOf(name)
-}
-```
+The `AddressTypeAsStringColumn` is a custom specialization of `EnumAsStringColumn<AddressType>`.
 
 === Setting sequence names
 Many vendors support sequences for generating primary keys, but the information schema does not store which sequence is used for which table. So, unfortunately, you have to manually configure this, as follows:
@@ -250,8 +279,9 @@ generator.mappingConfigurer()
  .sequenceForPrimaryKeyResolver(AcmeSequenceMapper)
 
   object AcmeSequenceMapper : SequenceForPrimaryKeyMapper {
+        //every column offered is already a primary key. No need to check for it yourself
         override fun invoke(properties: ColumnMappingProperties): String? =
-            if (properties.isPrimaryKey) properties.table.value + "_SEQ" else null
+            properties.table.value + "_SEQ"
     }
 ```
 ==== Output configuration
@@ -285,7 +315,7 @@ Or would you rather fix it in production?
 
 
 == Querying
-TBD
+The next section will be all about writing queries. For that, you need a reference to a `TransactionManager`.
 
 === The TransactionManager and Transaction
 TBD
@@ -370,8 +400,9 @@ The power of relational databases lies in combining results from multiple tables
 ```
 
 We can select from the `Employee` table with a constraint on the `Address` table, without specifying the join! This mechanism saves you a lot of typing, but comes with limitations:
-1) There must be an explicit foreign-key relationship between the tables used in your statement, or a join table that links two tables referred in your query, like in the above example.
-2) all joins are left outer joins.
+
+* There must be an explicit foreign-key relationship between the tables used in your statement, or a join table that links two tables referred in your query, like in the above example.
+* By default, the joins are inner joins. Using outer joins is possible, but comes with some caveats, so it has a xref:_outer_joins_and_more_customization[dedicated section].
 
 If the framework cannot unambiguously resolve the join conditions, you have to provide them yourself. Call the `from(SomeTable)` method with the driving table of your selection, and add the tables to joined as follows:
 
@@ -408,10 +439,57 @@ Note that these constraints are executed server-side, as they are part of the SQ
 ```
 
 === Outer joins and more customization
-TBD
+Recall the previous query `tm.select(Employee.name, Hobby.name)`, which does an inner join and only returns results where a `hobby` record is linked to an `employee`. If we want all employee records, what we need is a left outer join. There are two basic options.
+```
+tr.select(Employee.name, Hobby.name).useOuterJoins()
+tr.select(Employee.name, Hobby.name).from(Employee.leftJoin(Hobby))
+```
+The method `useOuterJoins` is an instruction to use left outer joins for every table involved. The other option is to build the join chain yourself, which gives you greater control when there are more tables involved. Maybe not everything should be an outer join.
+
+But the above code will run into trouble! Do you see it? `Hobby.name` is an instance of a non-nullable `VarcharColumn`, which demands a `String` data type, but when there are no matches, it gets a null back from the database and slaps you with a RuntimeException, because the query wants to return `Tuple2<String,String?>`. Ouch.
+
+Not worry. Again, there are two options at hand. The first is to use the nullable counterpart for the columns that can be null. Notice the use of `Hobby.name.nullable`. Each non-nullable column implementation has such a value, and it's there for exactly this purpose. Now the return type of the query will be `Tuple2<String,String?>`.
+```kotlin
+tr.select(Employee.name, Hobby.name.nullable).useOuterJoins()
+```
+A more sweeping solution is to stick to the standard parameterized return type and use default values instead of nulls, e.g. the empty string for character columns and zero for anything numeric.
+The following verbose method handles that.
+```
+tr.select(Employee.name, Hobby.name).useOuterJoinsWithDefaultValues()
+```
+Now whenever a null is encountered for a Column that cannot be null, a default value is used.
+
+Remember though that the `Hobby.name.nullable` strategy is nearly always preferable. NULL values in a database are potentially significant, especially in numeric values. If number of children is zero, you don't have any. If it is null, we don't know. The two are not equal, and `useOuterJoinsWithDefaultValues()` ignores these differences.
 
 === Custom sql queries
-TBD
+db-Objekts is not out to kill SQL. There are many cases where the select, insert, update and delete queries fall short of your wishes. That is a deliberate design decision. db-Objekts aims to make mundane queries a joy, and not over-complicate its API.
+
+But you can still execute native free-form SQL through the TransactionManager and enjoy the same benefits of type-safe results. There are two flavors: queries that return results and those that don't. Let's tackle the latter first.
+
+```kotlin
+ tr.execute("CREATE SCHEMA if not exists core")
+```
+`Transaction.execute` takes a String of SQL and a vararg of arbitrary parameters. The length must match the number of `?` placeholders in the query.
+```kotlin
+ tr.execute("update core.employee where e.name=?", "john")
+```
+That was too easy. Let's move up to statements that retrieve results.
+
+Take the example from https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/CustomSQLComponentTest.kt[CustomSQLComponentTest]
+```kotlin
+val (id, name, salary, married, children, hobby) =
+    it.sql(
+        "select e.id,e.name,e.salary,e.married, e.children, h.NAME from core.employee e join hr.HOBBY h on h.ID = e.HOBBY_ID where e.name = ?",
+        "John"
+    ).withResultTypes().long().string().double().booleanNil().intNil().stringNil()
+        .first()
+```
+
+The `sql` method on `Transaction` works the same as regular select statements when it comes to retrieving parameterized tuples. But instead of providing that information through a list of Columns, you do it in a call to `withResultTypes`.
+
+This returns a builder with methods for each available standard SQL type in a nullable and non-nullable flavour. String together all the methods you need, call `first()`, or `asList()`, and the output of the custom query will be returned in a type-safe tuple.
+
+image::custom_sql.png[autocomplete_update, 600]
 
 == Advanced topics
 TBD
