@@ -4,6 +4,7 @@ import com.dbobjekts.metadata.Table
 import java.lang.IllegalStateException
 import java.sql.PreparedStatement
 import java.sql.ResultSet
+import java.sql.Types
 
 abstract class NonNullableColumn<I>(
     name: String,

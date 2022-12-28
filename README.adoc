@@ -138,6 +138,23 @@ tr.select(Loan.dateLoaned, Item.id, Book.title, Author.name, Member.name).asList
   }
 
 ```
+
+Native SQL queries are also possible, while still keeping the convenience of type-safe tuples.
+```kotlin
+val (id, name, salary, married, children, hobby) =
+    tr.sql(
+        "select e.id,e.name,e.salary,e.married, e.children, h.NAME from core.employee e left join hr.HOBBY h on h.ID = e.HOBBY_ID where e.name = ?",
+        "John"
+    ).withResultTypes()
+        .long()//refers to employee.id
+        .string()//refers to employee.name
+        .double()//refers to employee.salary
+        .booleanNil()//refers to employee.married
+        .intNil()//refers to employee.children
+        .stringNil()//refers to hobby.name, possibly null because it's an outer join
+        .first()
+```
+
 This concludes our bird's eye view of db-Objekts. Check out `LibraryComponentTest` to get you going.
 
 There is much, much more to explore in the following sections, so let's dig in!
@@ -540,7 +557,180 @@ object Book:Table("BOOK"){
 All that is needed to create queries is expressed in the column types: how to create primary keys (auto generated, with a sequence, or manually), whether a type is nullable, and the parent table/column for primary keys.
 
 === Creating custom column types
-TBD
+The power of db-Objekts is that you can fully customize the way values are read from and written to the database. For this we need to dig deeper in the `Column` hierarchy.
+
+Abstract `com.dbobjekts.metadata.column.Column<T>` is at the basis and has only two direct abstract descendants: `NonNullableColumn<T>` and `NullableColumn<T>`, parameterized for a certain value type. Implementations must override
+```kotlin
+ abstract fun getValue(position: Int, resultSet: ResultSet): I?
+ abstract fun setValue(position: Int, statement: PreparedStatement, value: I)
+```
+`getValue` deals with `ResultSet`, `setValue` with `PreparedStatement`. For the concrete class `VarcharColumn`, this looks as follows:
+```kotlin
+override fun getValue(position: Int, resultSet: ResultSet): String? = resultSet.getString(position)
+override fun setValue(position: Int, statement: PreparedStatement, value: String) = statement.setString(position, value)
+```
+Notice that `getValue` must always return a nullable result, also for `NonNullableColumn`, because getter calls on a `ResulSet` can return null. The base class will cast it to a non-nullable value: you never directly invoke `getValue`.
+
+The JDBC getter and setter methods cover all the Java primitives, including dates, string, blobs and other esoteric types. For each of these there is a suitable implementation in `com.dbobjekts.metadata.column`, with a companion `Nullable*Column`.
+
+|===
+|Column class  |value class
+
+|BigDecimalColumn
+|java.math.BigDecimal
+
+|BlobColumn
+|java.sql.Blob
+
+|BooleanColumn
+|Boolean
+
+|NumberAsBooleanColumn
+|Boolean (but stored as an Int)
+
+|ByteArrayColumn
+|ByteArray
+
+|ByteColumn
+|Byte
+
+|ClobColumn
+|Clob
+
+|DateColumn
+|java.time.LocalDate
+
+|DateTimeColumn
+|LocalDateTime
+
+|DoubleColumn
+|Double
+
+|EnumAsIntColumn
+|Enum stored by its `ordinal()` as an Int
+
+|EnumAsStringColumn
+|Enum, stored by its `name()` as a String
+
+|FloatColumn
+|Float
+
+|IntegerColumn
+|Int
+
+|LongColumn
+|Long
+
+|OffsetDateTimeColumn
+|java.time.OffsetDateTime
+
+|ShortColumn
+|Short
+
+|TimeColumn
+|java.time.Time
+
+|TimeStampColumn
+|java.time.Instant
+
+|VarcharColumn
+|String
+
+|===
+
+==== A custom AddressTypeColumn
+Suppose we have the following `AddressType` enum:
+
+```kotlin
+enum class AddressType : Serializable {
+    HOME, WORK
+}
+```
+
+To make a compliant Column, you need to override `EnumAsStringColumn<AddressType>`. Unless you are absolutely positive that the value can never be null, you need to provide a Nullable counterpart as well:
+```kotlin
+class AddressTypeAsStringColumn(table: Table, name: String) : EnumAsStringColumn<AddressType>(table, name, AddressType::class.java) {
+    override val nullable = NullableAddressTypeAsStringColumn(table, name)
+    override fun toEnum(name: String): AddressType = AddressType.valueOf(name)
+}
+class NullableAddressTypeAsStringColumn(table: Table, name: String) :
+    NullableEnumAsStringColumn<AddressType>(table, name, AddressType::class.java) {
+    override fun toEnum(name: String): AddressType = AddressType.valueOf(name)
+}
+```
+You need to signal the `CodeGenerator` where this custom column applies, and then you can use it.
+```kotlin
+generator.configureColumnTypeMapping()
+    .setColumnTypeForName(table = "EMPLOYEE_ADDRESS", column = "KIND", columnType = AddressTypeAsStringColumn::class.java)
+
+tr.insert(EmployeeAddress)
+    .mandatoryColumns(employeeId = 43,
+        addressId = 42,
+        kind = AddressType.WORK)
+    .execute()
+```
+
+==== A custom ObjectColumn
+H2 supports a data type for storing UUIDs (universally unique identifiers), which has no JDBC counterpart. To read and retrieve `java.util.UUID`, you extend `ObjectColumn`.
+```kotlin
+package com.dbobjekts.vendors.h2
+import java.util.UUID
+class UUIDColumn(table: Table, name: String) : ObjectColumn<UUID>(table, name, UUID::class.java) {
+    override val nullable: NullableColumn<UUID?> = NullableUUIDColumn(table, name)
+}
+class NullableUUIDColumn(table: Table, name: String) : NullableObjectColumn<UUID?>(table, name, UUID::class.java) {
+}
+```
+Indeed, there's nothing to override other than the `nullable` property. The classes are only there to supply the type. The base class takes care of calling set/getObject.
+
+==== Some more examples
+Let's have some fun. Imagine you encounter a German database where a Boolean result is stored as Ja for true and Nein for false. Yikes.
+This variation on the `NumberAsBooleanColumn` column fixes it.
+
+```kotlin
+class JaOderNeinColumn(table: Table, name: String) : NonNullableColumn<Boolean>(name, table, Boolean::class.java) {
+    override val nullable: NullableColumn<Boolean?> = NullableJaOderNeinColumn(table, name)
+    override fun getValue(position: Int, resultSet: ResultSet): Boolean = resultSet.getString(position) == "Ja"
+
+    override fun setValue(position: Int, statement: PreparedStatement, value: Boolean) =
+        statement.setString(position, if (value) "Ja" else "Nein")
+
+    override fun defaultValue() = false
+
+}
+
+class NullableJaOderNeinColumn(table: Table, name: String) :
+    NullableColumn<Boolean?>(name, table, Types.VARCHAR, Boolean::class.java) {
+    override fun getValue(position: Int, resultSet: ResultSet): Boolean? = resultSet.getString(position) == "Ja"
+
+    override fun setValue(position: Int, statement: PreparedStatement, value: Boolean?) =
+        statement.setString(position, if (value != null && value) "Ja" else "Nein")
+}
+```
+
+The above is an example where we return a different datatype than the one stored in the table. We store a String but return a Boolean. You can keep the datatype, but perhaps require some extra validation. Suppose we want to make sure only valid Dutch postcodes are stored in `Address.postcode`. See the full example in `com.dbobjekts.testdb.DutchPostCodeColumn`.
+
+You extend from a regular `VarcharColumn`, but add some extra validation of your own.
+```kotlin
+class DutchPostCodeColumn(table: Table, name: String) : VarcharColumn(table, name) {
+    override fun getValue(position: Int, resultSet: ResultSet): String? {
+        return super.getValue(position, resultSet)?.also { validate(it) }
+    }
+
+    override fun setValue(position: Int, statement: PreparedStatement, value: String) {
+        validate(value)
+        super.setValue(position, statement, value)
+    }
+
+    companion object {
+        val pattern = Pattern.compile("^\\d{4}[A-Z]{2}$")
+        fun validate(postcode: String) {
+            if (!pattern.matcher(postcode).matches())
+                throw IllegalStateException("$postcode is not a valid Dutch postcode.")
+        }
+    }
+}
+```
 
 == Status and roadmap
 db-Objekts has been a long time in the making. I started it in Scala, but switched to Kotlin because its null-safety is perfectly suited to the world of (relational) data. For several years it remained a hobby project and was not mature enough to become the Open Source tool I had in mind. But that time has now come.

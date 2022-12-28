@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import com.dbobjekts.testdb.AddressType
+import org.assertj.core.api.Assertions.assertThatThrownBy
 
 class SelectionComponentTest {
 
@@ -40,16 +41,23 @@ class SelectionComponentTest {
                     .salary(3000.0).execute()
                 it.insert(Country).id("DE").name("Germany").execute()
                 it.insert(Country).id("NL").name("Netherlands").execute()
-                val zuidhoek = it.insert(Address).mandatoryColumns(street = "Zuidhoek", countryId = "NL").execute()
+                val zuidhoek = it.insert(Address).mandatoryColumns(street = "Zuidhoek", countryId = "NL", postcode = "5941ED").execute()
                 it.insert(EmployeeAddress).mandatoryColumns(employeeId = jane, addressId = zuidhoek, kind = AddressType.WORK).execute()
             }
         }
     }
 
     @Test
+    fun `use invalid postcode`() {
+        AcmeDB.newTransaction {
+            assertThatThrownBy { it.insert(Address).mandatoryColumns(street = "Zuidhoek", countryId = "NL", postcode = "5941 EDX").execute() }
+        }
+    }
+
+    @Test
     fun `use default values for null`() {
         AcmeDB.newTransaction({
-            val (name,hobby) =
+            val (name, hobby) =
                 it.select(e.name, h.name).where(e.name.eq("Arthur")).useOuterJoinsWithDefaultValues().first()
             assert(hobby == "")
         })
@@ -58,7 +66,7 @@ class SelectionComponentTest {
     @Test
     fun `use nullable counterpart`() {
         AcmeDB.newTransaction({
-            val (name,hobby) =
+            val (name, hobby) =
                 it.select(e.name, h.name.nullable).where(e.name.eq("Arthur")).useOuterJoins().first()
             assertThat(hobby).isNull()
         })

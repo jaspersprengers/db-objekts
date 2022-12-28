@@ -8,6 +8,7 @@ import com.dbobjekts.metadata.column.NumberAsBooleanColumn
 import org.junit.jupiter.api.Test
 import com.dbobjekts.testdb.AddressTypeAsStringColumn
 import com.dbobjekts.testdb.AddressTypeAsIntegerColumn
+import com.dbobjekts.testdb.DutchPostCodeColumn
 import com.dbobjekts.testdb.acme.CatalogDefinition
 import org.assertj.core.api.Assertions.assertThat
 import java.nio.file.Paths
@@ -26,7 +27,6 @@ class AcmeCatalogCodeGenComponentTest {
             it.execute("alter table core.employee add date_created DATETIME not null default now()")
             it.execute("alter table core.country add date_created DATETIME not null default now()")
             it.execute("alter table core.country add audit_pending DATETIME null")
-            it.execute("alter table core.employee add shoe_size INT not null")
         }
 
         val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
@@ -45,15 +45,16 @@ class AcmeCatalogCodeGenComponentTest {
 
         generator.configureColumnTypeMapping()
             .setColumnTypeForJDBCType("TINYINT(1)", NumberAsBooleanColumn::class.java)
+            .setColumnTypeForName(table = "ADDRESS", column = "postcode", columnType = DutchPostCodeColumn::class.java)
             .setColumnTypeForName(table = "EMPLOYEE_ADDRESS", column = "KIND", columnType = AddressTypeAsStringColumn::class.java)
             .setColumnTypeForName(column = "address_string", columnType = AddressTypeAsStringColumn::class.java)
             .setColumnTypeForName(column = "address_int", columnType = AddressTypeAsIntegerColumn::class.java)
         generator.configureOutput()
             .basePackageForSources("com.dbobjekts.testdb.acme")
-            //.outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
+        //.outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff: List<String> = generator.differencesWithCatalog(CatalogDefinition)
         assertThat(diff).describedAs("acme catalog differs from database definition").isEmpty()
-        generator.generateSourceFiles()
+        //generator.generateSourceFiles()
 
     }
 
