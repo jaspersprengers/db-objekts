@@ -1,0 +1,11 @@
+= Release notes
+
+== 0.1-alpha-1
+First alpha release
+
+== 0.1-alpha-2
+* Documentation updates
+* Component tests for `db-objekts-mariadb`, using TestContainers.
+* User MariaDB 10.10 in TestContainers setup
+* Rework in CodeGenerator configuration for setting sequences for primary keys. Separate configurer for greater clarity
+
