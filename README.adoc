@@ -487,14 +487,6 @@ Not to worry. Again, there are two options at hand. The first is to use the null
 ```kotlin
 tr.select(Employee.name, Hobby.name.nullable).useOuterJoins()
 ```
-A more sweeping solution is to stick to the standard parameterized return type and use default values instead of nulls, e.g. the empty string for character columns and zero for anything numeric.
-The following verbose method handles that.
-```
-tr.select(Employee.name, Hobby.name).useOuterJoinsWithDefaultValues()
-```
-Now whenever a null is encountered for a Column that cannot be null, a default value is used.
-
-Remember though that the `Hobby.name.nullable` strategy is nearly always preferable. NULL values in a database are potentially significant, especially in numeric values. If number of children is zero, you don't have any. If it is null, we don't know. The two are not equal, and `useOuterJoinsWithDefaultValues()` ignores these differences.
 
 === Custom sql queries
 db-Objekts is not out to kill SQL. There are many cases where the select, insert, update and delete queries fall short of your wishes. That is a deliberate design decision. db-Objekts aims to make mundane queries a joy, and not over-complicate its API.

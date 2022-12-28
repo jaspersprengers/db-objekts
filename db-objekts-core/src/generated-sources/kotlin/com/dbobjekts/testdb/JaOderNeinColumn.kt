@@ -14,8 +14,6 @@ class JaOderNeinColumn(table: Table, name: String) : NonNullableColumn<Boolean>(
     override fun setValue(position: Int, statement: PreparedStatement, value: Boolean) =
         statement.setString(position, if (value) "Ja" else "Nein")
 
-    override fun defaultValue() = false
-
 }
 
 class NullableJaOderNeinColumn(table: Table, name: String) :

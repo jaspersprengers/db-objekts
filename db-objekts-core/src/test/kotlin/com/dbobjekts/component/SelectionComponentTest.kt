@@ -55,15 +55,6 @@ class SelectionComponentTest {
     }
 
     @Test
-    fun `use default values for null`() {
-        AcmeDB.newTransaction({
-            val (name, hobby) =
-                it.select(e.name, h.name).where(e.name.eq("Arthur")).useOuterJoinsWithDefaultValues().first()
-            assert(hobby == "")
-        })
-    }
-
-    @Test
     fun `use nullable counterpart`() {
         AcmeDB.newTransaction({
             val (name, hobby) =

@@ -11,9 +11,6 @@ import java.util.regex.Pattern
 class DutchPostCodeColumn(table: Table, name: String) : VarcharColumn(table, name) {
     override val nullable: NullableColumn<String?> = NullableDutchPostCodeColumn(table, name)
 
-    override fun getValue(position: Int, resultSet: ResultSet): String? {
-        return super.getValue(position, resultSet)?.also { validate(it) }
-    }
 
     override fun setValue(position: Int, statement: PreparedStatement, value: String) {
         validate(value)
@@ -30,13 +27,9 @@ class DutchPostCodeColumn(table: Table, name: String) : VarcharColumn(table, nam
 }
 
 class NullableDutchPostCodeColumn(table: Table, name: String) : NullableVarcharColumn(table, name) {
-    override fun getValue(position: Int, resultSet: ResultSet): String? {
-        return super.getValue(position, resultSet)?.also { DutchPostCodeColumn.validate(it) }
-    }
 
     override fun setValue(position: Int, statement: PreparedStatement, value: String?) {
-        if (value != null)
-            DutchPostCodeColumn.validate(value)
+        value?.let { DutchPostCodeColumn.validate(it) }
         super.setValue(position, statement, value)
     }
 }

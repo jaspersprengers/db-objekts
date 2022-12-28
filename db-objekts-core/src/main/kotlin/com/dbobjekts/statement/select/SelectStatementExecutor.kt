@@ -22,7 +22,6 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
 
     override val statementType = "select"
     private var useOuterJoins = false
-    private var useDefaultValues = false
 
     init {
         semaphore.claim("select")
@@ -113,26 +112,8 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
      * ```kotlin
      *   transaction.select(Item.isbn, Loan.dateLoaned.nullable).useOuterJoins().asList()
      * ```
-     *
-     * Alternative, use [useOuterJoinsWithDefaultValues] to get default values for the nulls
      */
     fun useOuterJoins(): SelectStatementExecutor<T, RSB> {
-        useDefaultValues = false
-        useOuterJoins = true
-        return this
-    }
-
-    /**
-     * Signal that all tables involved in the select statement are joined using outer joins.
-     * When a non-nullable column is involved in an outer join and no row can be matched, this will
-     * return default values, e.g. zero for numerics and an empty string for character columns.
-     *  ```kotlin
-     *     transaction.select(Item.isbn, Loan.dateLoaned).useOuterJoinsWithDefaultValues().asList()
-     *   ```
-     * dateLoaned will now return the default [java.time.LocalDate], determined by [com.dbobjekts.metadata.column.NonNullableColumn.defaultValue]
-     */
-    fun useOuterJoinsWithDefaultValues(): SelectStatementExecutor<T, RSB> {
-        useDefaultValues = true
         useOuterJoins = true
         return this
     }
@@ -190,8 +171,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
             sql,
             params,
             columnsToFetch(),
-            selectResultSet,
-            useDefaultValues
+            selectResultSet
         )
     }
 

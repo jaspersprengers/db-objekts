@@ -18,7 +18,6 @@ class BigDecimalColumn(table: Table, name: String) : NonNullableColumn<BigDecima
     override fun setValue(position: Int, statement: PreparedStatement, value: BigDecimal) =
         statement.setBigDecimal(position, value as BigDecimal)
 
-    override fun defaultValue() = BigDecimal.ZERO
 }
 
 class NullableBigDecimalColumn(table: Table, name: String) : NullableColumn<BigDecimal?>(name, table, Types.NUMERIC, BigDecimal::class.java){

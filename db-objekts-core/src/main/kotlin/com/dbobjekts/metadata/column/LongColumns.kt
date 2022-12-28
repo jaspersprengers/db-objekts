@@ -10,7 +10,6 @@ open class LongColumn(table: Table, name: String) : NonNullableColumn<Long>(name
     override val nullable: NullableColumn<Long?> = NullableLongColumn(table, name)
     override fun setValue(position: Int, statement: PreparedStatement, value: Long) = statement.setLong(position, value)
     override fun getValue(position: Int, resultSet: ResultSet): Long = resultSet.getLong(position)
-    override fun defaultValue() = 0L
 }
 
 open class NullableLongColumn(table: Table, name: String) :  NullableColumn<Long?>(name, table, Types.NUMERIC, Long::class.java){

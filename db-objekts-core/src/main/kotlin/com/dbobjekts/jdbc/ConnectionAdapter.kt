@@ -54,10 +54,9 @@ data class ConnectionAdapter(
         sql: String,
         parameters: List<AnySqlParameter>,
         columnsToFetch: List<ColumnInResultRow>,
-        selectResultSet: T,
-        useDefaultValuesInOuterJoins: Boolean = false
+        selectResultSet: T
     ): T {
-        val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters), useDefaultValuesInOuterJoins)
+        val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters))
         selectResultSet.initialize(resultSetAdapter)
         selectResultSet.retrieveAll()
         return selectResultSet
@@ -68,10 +67,9 @@ data class ConnectionAdapter(
         parameters: List<AnySqlParameter>,
         columnsToFetch: List<ColumnInResultRow>,
         selectResultSet: RS,
-        iteratorFunction: (T) -> Boolean,
-        useDefaultValuesInOuterJoins: Boolean = false
+        iteratorFunction: (T) -> Boolean
     ) {
-        val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters), useDefaultValuesInOuterJoins)
+        val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters))
         selectResultSet.initialize(resultSetAdapter)
         resultSetAdapter.retrieveWithIterator(selectResultSet, iteratorFunction)
     }

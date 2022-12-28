@@ -20,7 +20,6 @@ class TimeColumn(table: Table, name: String) : NonNullableColumn<LocalTime>(name
 
     override fun setValue(position: Int, statement: PreparedStatement, value: LocalTime) =
         statement.setTime(position, DateUtil.toTime(value))
-    override fun defaultValue() = LocalTime.MIN
 }
 
 class NullableTimeColumn(table: Table, name: String) : NullableColumn<LocalTime?>(name, table, Types.TIME, LocalTime::class.java){

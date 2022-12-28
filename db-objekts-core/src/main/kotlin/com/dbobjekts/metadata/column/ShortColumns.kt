@@ -9,7 +9,6 @@ open class ShortColumn(table: Table, name: String) : NonNullableColumn<Short>(na
     override val nullable: NullableColumn<Short?> = NullableShortColumn(table, name)
     override fun setValue(position: Int, statement: PreparedStatement, value: Short) = statement.setShort(position, value)
     override fun getValue(position: Int, resultSet: ResultSet): Short = resultSet.getShort(position)
-    override fun defaultValue() = 0.toShort()
 }
 
 open class NullableShortColumn(table: Table, name: String) :  NullableColumn<Short?>(name, table, Types.SMALLINT, Short::class.java){

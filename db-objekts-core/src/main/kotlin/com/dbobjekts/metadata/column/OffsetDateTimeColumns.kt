@@ -20,7 +20,6 @@ class OffsetDateTimeColumn(table: Table, name: String) : NonNullableColumn<Offse
     override fun setValue(position: Int, statement: PreparedStatement, value: OffsetDateTime) {
         statement.setObject(position, value)
     }
-    override fun defaultValue() = OffsetDateTime.MIN
 }
 
 class NullableOffsetDateTimeColumn(table: Table, name: String) : NullableColumn<OffsetDateTime?>(name, table, Types.TIMESTAMP, OffsetDateTime::class.java){

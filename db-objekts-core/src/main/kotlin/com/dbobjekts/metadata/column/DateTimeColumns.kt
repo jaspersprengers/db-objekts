@@ -13,7 +13,6 @@ class DateTimeColumn(table: Table, name: String) : NonNullableColumn<LocalDateTi
 
     override fun setValue(position: Int, statement: PreparedStatement, value: LocalDateTime) =
         statement.setTimestamp(position, DateUtil.toSqlTimeStamp(value))
-    override fun defaultValue() = LocalDateTime.MIN
 }
 class NullableDateTimeColumn(table: Table, name: String) : NullableColumn<LocalDateTime?>(name, table, Types.TIMESTAMP, LocalDateTime::class.java){
     override fun getValue(position: Int, resultSet: ResultSet): LocalDateTime? = resultSet.getTimestamp(position)?.let {DateUtil.toLocalDateTime(it)}

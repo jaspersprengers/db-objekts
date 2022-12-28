@@ -16,8 +16,6 @@ class BooleanColumn(table: Table, name: String) : NonNullableColumn<Boolean>(nam
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Boolean) =
         statement.setBoolean(position, value as Boolean)
-
-    override fun defaultValue() = false
 }
 
 class NullableBooleanColumn(table: Table, name: String) : NullableColumn<Boolean?>(name, table, Types.BOOLEAN, Boolean::class.java) {
@@ -33,9 +31,6 @@ class NumberAsBooleanColumn(table: Table, name: String) : NonNullableColumn<Bool
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Boolean) =
         statement.setInt(position, if (value) 1 else 0)
-
-    override fun defaultValue() = false
-
 }
 
 class NullableNumberAsBooleanColumn(table: Table, name: String) :

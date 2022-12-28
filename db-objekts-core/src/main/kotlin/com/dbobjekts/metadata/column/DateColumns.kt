@@ -21,7 +21,6 @@ class DateColumn(table: Table, name: String) : NonNullableColumn<LocalDate>(name
     }
     override fun setValue(position: Int, statement: PreparedStatement, value: LocalDate) =
         statement.setDate(position, DateUtil.toSqlDate(value))
-    override fun defaultValue() = LocalDate.MIN
 }
 class NullableDateColumn(table: Table, name: String) : NullableColumn<LocalDate?>(name, table, Types.DATE, LocalDate::class.java){
     fun of(year: Int, month: Int, day: Int): ColumnAndValue<LocalDate?> = create(LocalDate.of(year, month, day))

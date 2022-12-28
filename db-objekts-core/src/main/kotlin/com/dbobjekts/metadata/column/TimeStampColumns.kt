@@ -19,7 +19,6 @@ class TimeStampColumn(table: Table, name: String) : NonNullableColumn<Instant>(n
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Instant) =
         statement.setTimestamp(position, DateUtil.toSqlTimeStamp(value))
-    override fun defaultValue() = Instant.EPOCH
 }
 
 class NullableTimeStampColumn(table: Table, name: String) : NullableColumn<Instant?>(name, table, Types.TIMESTAMP, Instant::class.java){

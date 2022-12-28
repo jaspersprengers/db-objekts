@@ -12,7 +12,6 @@ open class VarcharColumn(table: Table, name: String) : NonNullableColumn<String>
     override fun setValue(position: Int, statement: PreparedStatement, value: String) =
         statement.setString(position, value)
 
-    override fun defaultValue(): String = ""
 }
 
 open class NullableVarcharColumn(table: Table, name: String) : NullableColumn<String?>(name, table, Types.VARCHAR, String::class.java) {

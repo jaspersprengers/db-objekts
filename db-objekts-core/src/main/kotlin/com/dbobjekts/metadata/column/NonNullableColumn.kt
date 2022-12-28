@@ -19,14 +19,14 @@ abstract class NonNullableColumn<I>(
     fun of(value: I): ColumnAndValue<I> = create(value)
     override fun retrieveValue(
         position: Int,
-        rs: ResultSet,
-        useDefaultValuesInOuterJoins: Boolean
+        rs: ResultSet
     ): I? {
         val value = getValue(position, rs)
         return if (rs.wasNull()) {
-            if (useDefaultValuesInOuterJoins) defaultValue() else throw IllegalStateException("Cannot return null value for non-nullable column $tableDotName. " +
-                    "This happens when the column is selected in an outer join. Either use the nullable counterpart of the non-nullable column like so: transaction.select(Employee.name, Department.name.nullable)." +
-                    "Another strategy is to invoke useOuterJoins(true) on the select statement")
+            throw IllegalStateException(
+                "Cannot return null value for non-nullable column $tableDotName. " +
+                        "This happens when the column is selected in an outer join. Use the nullable counterpart of the non-nullable column like so: transaction.select(Employee.name, Department.name.nullable)."
+            )
         } else value
     }
 
@@ -35,8 +35,5 @@ abstract class NonNullableColumn<I>(
     override fun putValue(position: Int, statement: PreparedStatement, value: I?) {
         setValue(position, statement, value ?: throw IllegalStateException("Cannot be null"))
     }
-
-    open fun defaultValue(): I =
-        throw IllegalStateException("Retrieved null value for non-nullable column '$tableDotName' and no default value is available.")
 
 }
