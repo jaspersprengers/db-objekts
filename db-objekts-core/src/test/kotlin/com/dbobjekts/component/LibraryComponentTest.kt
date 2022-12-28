@@ -1,17 +1,23 @@
 package com.dbobjekts.component
 
+import com.dbobjekts.api.Tuple3
+import com.dbobjekts.testdb.acme.library.*
+import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
 
 
 class LibraryComponentTest {
 
     @Test
-    fun `integration test`() {
+    fun `Library component test`() {
 
         AcmeDB.setupDatabaseObjects()
         AcmeDB.newTransaction { transaction ->
-/*
-            val orwell: Long = transaction.insert(Author).mandatoryColumns("George Orwell").bio("Pseudonym of Eric Blair (1903-1950)").execute()
+
+            val orwell: Long =
+                transaction.insert(Author).mandatoryColumns("George Orwell").bio("Pseudonym of Eric Blair (1903-1950)").execute()
             transaction.update(Author)
                 .bio("(1903-1950) Pseudonym of Eric Blair. One of the most influential English authors and journalist of the early 20th century.")
                 .where(Author.id.eq(orwell))
@@ -19,23 +25,17 @@ class LibraryComponentTest {
 
             transaction.insert(Book).mandatoryColumns("ISBN-1984", "Nineteen-eighty Four", orwell, LocalDate.of(1948, 1, 1)).execute()
             transaction.insert(Book).mandatoryColumns("ISBN-WIGAN", "The Road to Wigan Pier", orwell, LocalDate.of(1940, 1, 1)).execute()
+            transaction.insert(Book)
+                .mandatoryColumns("ISBN-PHILOSOPHER", "Harry Potter and the Philosopher's Stone", rowling, LocalDate.of(2000, 1, 1))
+                .execute()
 
             val item19 = transaction.insert(Item).mandatoryColumns("ISBN-1984", LocalDate.of(1980, 5, 5)).execute()
-            transaction.insert(Item).mandatoryColumns("ISBN-1984", LocalDate.of(1990, 5, 5)).execute()
-
-            transaction.deleteFrom(Book).where(Book.isbn.eq("ISBN"))
-
-            transaction.select(Item.isbn, Loan.dateLoaned.nullable).useOuterJoins().asList()
-
-            transaction.select(Book.isbn).where(Book.authorId.eq(5)
-                .or(Book.title.startsWith("Harry Potter").and(Book.published.gt(LocalDate.of(1998,1,1)))))
-                .firstOrNull()
 
             val phil1 = transaction.insert(Item).mandatoryColumns("ISBN-PHILOSOPHER", LocalDate.of(2005, 5, 5)).execute()
             val phil2 = transaction.insert(Item).mandatoryColumns("ISBN-PHILOSOPHER", LocalDate.of(2005, 5, 5)).execute()
 
-            val john = transaction.insert(Member).mandatoryColumns("John Wayne").execute()
-            val sally = transaction.insert(Member).mandatoryColumns("Sally Hawkins").execute()
+            val john = transaction.insert(Member).mandatoryColumns("John").execute()
+            val sally = transaction.insert(Member).mandatoryColumns("Sally").execute()
 
             val rows: List<Tuple3<String, String, Long>> =
                 transaction.select(Book.title, Author.name, Item.id).where(Book.published.lt(LocalDate.of(1980, 1, 1))).asList()
@@ -47,12 +47,12 @@ class LibraryComponentTest {
             transaction.insert(Loan).mandatoryColumns(memberId = sally, itemId = phil1, dateLoaned = LocalDate.now()).execute()
             transaction.insert(Loan).mandatoryColumns(memberId = john, itemId = phil2, dateLoaned = LocalDate.now()).execute()
 
-            assertThat(transaction.select(Book.title, Item.id, Item.dateAcquired).where(Book.isbn.eq("ISBN-WIGAN")).firstOrNull()).isNull()
+            assertThat(
+                transaction.select(Book.title, Item.id, Item.dateAcquired).where(Book.isbn.eq("ISBN-WIGAN")).firstOrNull()
+            ).isNull()
 
-            val bookAuthors: List<Tuple3<String, String, String?>> = transaction.select(Book.title, Author.name, Author.bio).asList()
-
-            val itemsWigan = transaction.select(Book.title, Item.id.nullable).where(Book.isbn.eq("ISBN-WIGAN")).useOuterJoins().first()
-            assertThat(itemsWigan.v2).isNull()
+            val (title, item) = transaction.select(Book.title, Item.id.nullable).where(Book.isbn.eq("ISBN-WIGAN")).useOuterJoins().first()
+            assertThat(item).isNull()
 
 
             transaction.select(Loan.dateLoaned, Item.id, Book.title, Author.name, Member.name).asList()
@@ -66,11 +66,10 @@ class LibraryComponentTest {
                     println("$item $isbn $loaned by $member returned $returned")
                     true
                 }
-        }*/
-
         }
 
     }
+
 }
 
 

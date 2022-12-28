@@ -42,7 +42,6 @@ class SelectionComponentTest {
                 it.insert(Country).id("NL").name("Netherlands").execute()
                 val zuidhoek = it.insert(Address).mandatoryColumns(street = "Zuidhoek", countryId = "NL").execute()
                 it.insert(EmployeeAddress).mandatoryColumns(employeeId = jane, addressId = zuidhoek, kind = AddressType.WORK).execute()
-                it.transactionExecutionLog().forEach { println(it) }
             }
         }
     }
