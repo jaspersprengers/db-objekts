@@ -16,7 +16,7 @@ class BigDecimalColumn(table: Table, name: String) : NonNullableColumn<BigDecima
     override fun getValue(position: Int, resultSet: ResultSet): BigDecimal = resultSet.getBigDecimal(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: BigDecimal) =
-        statement.setBigDecimal(position, value as BigDecimal)
+        statement.setBigDecimal(position, value)
 
 }
 

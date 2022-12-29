@@ -1,6 +1,5 @@
 package com.dbobjekts.vendors
 
-import com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper
 import com.dbobjekts.codegen.datatypemapper.VendorDefaultColumnTypeMapper
 import com.dbobjekts.codegen.parsers.VendorSpecificMetaDataExtractor
 
@@ -12,26 +11,14 @@ import com.dbobjekts.codegen.parsers.VendorSpecificMetaDataExtractor
  *
  * For most vendors, such a distinction is not relevant at present.
  */
-enum class Vendors(val vendorClass: String) {
-    H2("com.dbobjekts.vendors.h2.H2Vendor"),
-    MARIADB("com.dbobjekts.vendors.mariadb.MariaDBVendor");
+enum class Vendors(
+    val vendorClass: String,
+    val majorVersion: Int
+) {
+    H2("com.dbobjekts.vendors.h2.H2Vendor", 10),
+    MARIADB("com.dbobjekts.vendors.mariadb.MariaDBVendor", 10);
 
     companion object {
-
-        /**
-         * Finds a [Vendor] instance by matching on its name, case-insensitive
-         */
-        fun byName(name: String): Vendor {
-            val vendor = Vendors.values().find {
-                it.name.equals(name, true)
-            } ?: throw IllegalArgumentException(
-                "Vendor $name is not supported, Choose from ${
-                    Vendors.values().map { it.name }.joinToString(",")
-                }"
-            )
-            val kClass = Class.forName(vendor.vendorClass).kotlin
-            return (kClass.objectInstance ?: kClass.java.newInstance()) as Vendor
-        }
 
         /**
          * Retrieves the appropriate vendor, if available.
@@ -41,7 +28,17 @@ enum class Vendors(val vendorClass: String) {
          * @param name the name as returned by [java.sql.DatabaseMetaData.getDatabaseProductVersion]
          * @version the major version as returned by [java.sql.DatabaseMetaData.getDatabaseMajorVersion]
          */
-        fun byProductAndVersion(name: String, version: Int) = byName(name)
+        fun byProductAndVersion(name: String, version: Int? = null): Vendor {
+            val vendor = Vendors.values().find {
+                it.name.equals(name, true)
+                if (version != null) it.majorVersion >= version else true
+            } ?: throw IllegalArgumentException(
+                "Vendor $name is not supported, Choose from ${
+                    values().joinToString(",") { it.name }
+                }"
+            )
+            return Class.forName(vendor.vendorClass).kotlin.objectInstance as Vendor
+        }
     }
 }
 
@@ -55,7 +52,7 @@ interface Vendor {
     val name: String
 
     /**
-     * The vendor-specific implementation to map JDBC types to db-objekts [Column] implemetations
+     * The vendor-specific implementation to map JDBC types to db-objekts [com.dbobjekts.metadata.column.Column] implementations.
      */
     val defaultMapper: VendorDefaultColumnTypeMapper
     val properties: VendorSpecificProperties

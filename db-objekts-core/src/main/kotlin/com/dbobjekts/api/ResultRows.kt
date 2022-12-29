@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.dbobjekts.api
 
 import com.dbobjekts.statement.ColumnInResultRow

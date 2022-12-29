@@ -16,7 +16,6 @@ class H2DataTypeMapper : VendorDefaultColumnTypeMapper {
     override fun map(properties: ColumnMappingProperties): AnyColumn? {
         val nullable = properties.isNullable
         val col = properties.jdbcType.uppercase().trim()
-        val objectColumnPattern = Regex("(JAVA_OBJECT|OBJECT|OTHER)")
 
         return when {
             //character columns as string

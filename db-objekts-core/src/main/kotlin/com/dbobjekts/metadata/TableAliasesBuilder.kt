@@ -5,10 +5,8 @@ import com.dbobjekts.api.TableName
 
 class SchemaAndTable(val schema: SchemaName, val table: TableName) : Comparable<SchemaAndTable> {
 
-    constructor (pair: Pair<SchemaName, TableName>) : this(pair.first, pair.second)
-
-    override fun compareTo(that: SchemaAndTable): Int = when (val i = schema.value.compareTo(that.schema.value)) {
-        0 -> table.value.compareTo(that.table.value)
+    override fun compareTo(other: SchemaAndTable): Int = when (val i = schema.value.compareTo(other.schema.value)) {
+        0 -> table.value.compareTo(other.table.value)
         else -> i
     }
 

@@ -16,7 +16,6 @@ class SourcesGenerator(
     private val logger = LoggerFactory.getLogger(SourcesGenerator::class.java)
 
     fun generate() {
-        val dir = File(basedir)
         val writer = SourceFileWriter(basedir)
 
         fun writeSourceFile(

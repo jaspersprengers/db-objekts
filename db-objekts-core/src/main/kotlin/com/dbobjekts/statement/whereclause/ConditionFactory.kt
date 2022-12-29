@@ -119,6 +119,7 @@ import com.dbobjekts.metadata.column.Column
         createSubClause(sql, null, col)
 
 
+    @Suppress("UNCHECKED_CAST")
     private fun createLikeCondition(v: String, sql: String): W =
         createSubClause(sql, listOf(v as I), null)
 

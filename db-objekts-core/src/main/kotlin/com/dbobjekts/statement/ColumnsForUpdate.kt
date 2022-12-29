@@ -21,7 +21,7 @@ class ColumnsForUpdate {
 
     fun numberOfParameters(): Int = params.size
 
-    fun getCommaSeparatedColumnList(): String = params.map { it.column!!.nameInTable }.joinToString(",")
+    fun getCommaSeparatedColumnList(): String = params.map { it.column.nameInTable }.joinToString(",")
 
     fun getCommaSeparatedQuestionMarks(): String = params.map { "?" }.joinToString(",")
 

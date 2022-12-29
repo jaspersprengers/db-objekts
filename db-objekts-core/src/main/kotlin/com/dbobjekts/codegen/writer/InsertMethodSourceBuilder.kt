@@ -45,10 +45,10 @@ class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
         val updateBuilderBase = UpdateBuilderBase::class.java.simpleName
         val insertBuilderBase = InsertBuilderBase::class.java.simpleName
 
-        fun writeMethod(data: FieldData, updateOrInsert: String = "Update", returnType: String) =  "    fun ${data.field}(value: ${data.fieldType}): $returnType = put($tableName.${data.field}, value)"
+        fun writeMethod(data: FieldData, returnType: String) =  "    fun ${data.field}(value: ${data.fieldType}): $returnType = put($tableName.${data.field}, value)"
 
-        val (pk, allMethodsExceptPK) = fields.partition { it.autoGenPK }
-        val (nullFields, nonNullFields) = allMethodsExceptPK.partition { it.nullable || it.autoGenPK}
+        val allMethodsExceptPK = fields.filterNot { it.autoGenPK }
+        val nonNullFields = allMethodsExceptPK.filterNot { it.nullable || it.autoGenPK}
 
         val mandatoryColumnsMethod = if (nonNullFields.isEmpty()) "" else
 """
@@ -62,11 +62,11 @@ ${nonNullFields.map { f -> "      mandatory($tableName.${f.field}, ${f.field})" 
 
 return """
 class $updateBuilder() : $updateBuilderBase($tableName) {
-${allMethodsExceptPK.map { d -> writeMethod(d, "Update", updateBuilder) }.joinToString("\n")}
+${allMethodsExceptPK.map { d -> writeMethod(d, updateBuilder) }.joinToString("\n")}
 }
 
 class $insertBuilder():$insertBuilderBase(){
-   ${allMethodsExceptPK.map { d -> writeMethod(d, "Insert", insertBuilder) }.joinToString("\n")}
+   ${allMethodsExceptPK.map { d -> writeMethod(d, insertBuilder) }.joinToString("\n")}
 $mandatoryColumnsMethod
 }
 """

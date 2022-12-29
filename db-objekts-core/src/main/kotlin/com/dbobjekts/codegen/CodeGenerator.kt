@@ -84,16 +84,6 @@ open class CodeGenerator {
         logger.info("Source files were generated OK.")
     }
 
-    /**
-     * Only writes source files if the state of the new Catalog is different from the one provided.
-     *
-     * This avoids unnecessarily overwriting files that have not changed.
-     * @return true if the catalogs differed and sources were written, false otherwise
-     */
-    fun generateSourceFilesIfChanged(referenceCatalog: Catalog): Boolean {
-        return true;
-    }
-
     internal fun createCatalogDefinition(): DBCatalogDefinition {
         logger.info("Running code generation tool. Validating configuration settings.")
         val generatorConfig: CodeGeneratorConfig = build()

@@ -31,9 +31,9 @@ class TableSourcesBuilder(
     /**
      *
      */
-    private fun generateFieldComment(column: DBColumnDefinition): TableSourcesBuilder {
+/*    private fun generateFieldComment(column: DBColumnDefinition): TableSourcesBuilder {
         return this
-    }
+    }*/
 
 
     fun build(): String {
@@ -66,7 +66,7 @@ class TableSourcesBuilder(
         val tbl = model.asClassName()
         strBuilder.appendLine("""object $tbl:Table("${model.tableName}"), $updateBuilderInterface<${tbl}UpdateBuilder, ${tbl}InsertBuilder> {""".trimMargin())
         model.columns.forEach {
-            generateFieldComment(it)
+            //generateFieldComment(it)
             generateField(it)
         }
         val columnNames = model.columns.map { it.asFieldName() }.joinToString(",")

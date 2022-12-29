@@ -37,7 +37,7 @@ data class Condition<I, W : WhereClauseComponent>(
 
     override fun toSQL(options: SQLOptions): String {
 
-        fun columnComponent(col: AnyColumn): String = if (options.includeAlias) column.aliasDotName() else column.nameInTable
+        fun columnComponent(): String = if (options.includeAlias) column.aliasDotName() else column.nameInTable
 
         fun getOptionalAlias(col: AnyColumn) = "${col.table.alias()}.${col.nameInTable}"
 
@@ -46,7 +46,7 @@ data class Condition<I, W : WhereClauseComponent>(
 
         return StringUtil.concat(
             listOf(
-                columnComponent(column),
+                columnComponent(),
                 symbol ?: throw IllegalStateException("This Condition is not finished"),
                 rightOperand
             )

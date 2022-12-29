@@ -15,7 +15,7 @@ class DoubleColumn(table: Table, name: String) : NonNullableColumn<Double>(name,
     override fun getValue(position: Int, resultSet: ResultSet): Double = resultSet.getDouble(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Double) =
-        statement.setDouble(position, value as Double)
+        statement.setDouble(position, value)
 
 }
 

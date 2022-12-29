@@ -6,7 +6,6 @@ import com.dbobjekts.testdb.acme.core.Address
 import com.dbobjekts.testdb.acme.core.AllTypes
 import com.dbobjekts.testdb.acme.core.Country
 import com.dbobjekts.testdb.acme.core.Department
-import com.dbobjekts.testdb.acme.core.DutchAddress
 import com.dbobjekts.testdb.acme.core.Employee
 import com.dbobjekts.testdb.acme.core.EmployeeAddress
 import com.dbobjekts.testdb.acme.core.EmployeeDepartment
@@ -23,7 +22,6 @@ object Aliases {
     val at = AllTypes
     val c = Country
     val d = Department
-    val da = DutchAddress
     val e = Employee
     val ea = EmployeeAddress
     val ed = EmployeeDepartment

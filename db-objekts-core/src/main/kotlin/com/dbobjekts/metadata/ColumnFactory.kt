@@ -95,6 +95,7 @@ object ColumnFactory {
     fun timeStampColumn(nullable: Boolean = false) = if (nullable) TIMESTAMP_NIL else TIMESTAMP
     fun offsetDateTimeColumn(nullable: Boolean = false) = if (nullable) OFFSET_DATETIME_NIL else OFFSET_DATETIME
 
+    @Suppress("UNCHECKED_CAST")
     fun <C : NonNullableColumn<*>> forClass(clz: Class<C>): C {
         val constructor = clz.constructors
             .filter { it.parameterCount == 2 && it.parameters[0].type == Table::class.java && it.parameters[1].type == String::class.java }
@@ -102,6 +103,7 @@ object ColumnFactory {
         return constructor.newInstance(table, DUMMY) as C
     }
 
+    @Suppress("UNCHECKED_CAST")
     fun <T> getColumnForValue(value: T): Column<T> =
         when (value) {
             is Int -> INTEGER

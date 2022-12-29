@@ -53,7 +53,7 @@ class TransactionManager private constructor(
                     "You provided a Catalog implementation that is associated with vendor ${catalog.vendor}, " +
                             "but you connected to a ${vendorByDBMetaData} DataSource."
                 )
-            Vendors.byName(catalog.vendor)
+            Vendors.byProductAndVersion(catalog.vendor)
         }
     }
 

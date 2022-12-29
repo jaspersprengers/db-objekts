@@ -18,7 +18,7 @@ data class SqlParameter<T>(
         column.putValue(oneBasedPosition, preparedStatement, value)
     }
 
-    override fun toString(): String = column!!::class.java.getSimpleName() + value + "position " + oneBasedPosition
+    override fun toString(): String = column::class.java.getSimpleName() + value + "position " + oneBasedPosition
 
 
     companion object {
