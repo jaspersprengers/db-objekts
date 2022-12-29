@@ -3,39 +3,41 @@
 = Introduction
 :imagesdir: ./docs
 
-NOTE: db-Objekts is currently in alpha. The API is still subject to change and is not production ready. During the alpha release it will only support MariaDB. A beta is planned for early 2023 followed by a first official release later that year. This release will support MySQL, PostgreSQL and Oracle. See xref:_status_and_roadmap[for the planning]
+NOTE: db-Objekts is currently in alpha, which means the API is subject to change and not considered production ready. During this stage it will only support MariaDB.
+A beta is planned for early 2023 and a first stable release hopefully later that year. This will support MySQL, PostgreSQL and Oracle. See xref:_status_and_roadmap[for the planning]
 
 == Fluent, type-safe, lightweight and opinionated
-db-Objekts is a Kotlin library to perform queries on a relational databases in application code.
-It generates source code that acts as metadata for all tables, columns and foreign keys. You then use these stateless Kotlin objects to build type-safe and fluent queries, comfortably using
-your IDE's autocomplete, while db-Objekts takes care of the SQL boilerplate and type conversions.
+db-Objekts is a Kotlin library to build relational database queries, using generated Kotlin metadata objects that represent the tables, columns and foreign keys. This lets you build type-safe and fluent queries, while db-Objekts takes care of join syntax and type conversions. The project was conceived and built by Jasper Sprengers.
 
-The project was conceived and built by me, Jasper Sprengers, a software developer living in the Netherlands.
+In short, db-Objekts lets you do things like this:
+```kotlin
+val customResult: List<Tuple3<String, Boolean?, String>> = transaction
+    .select(Employee.name, Employee.married, Address.street)
+    .where(Employee.dateOfBirth.lt(LocalDate.of(1980, 1, 1))
+        .and(EmployeeAddress.kind.eq(AddressType.HOME)))
+    .asList()
+```
+and use the full power and convenience of your IDE's auto-complete to build type-safe queries.
 
-=== So, this is going to make ORM obsolete?
+image::autocomplete.png[autocomplete, 800]
+
+db-Objekts was devised and is built by me, Jasper Sprengers. I am a Dutch software developer living in the Eindhoven region.
+
+=== So, is this going to make ORM obsolete?
 Certainly not.
 
-db-Objekts has conceptual similarities to object relational mapping (ORM) frameworks like Hibernate, but it serves a different use case. ORMs work with stateful entities that abstract away the database reality of tables and links. ORMs are deceptively simple. They work great at the level of individual entities, but
-to keep them performant at scale isn't easy. They are neither lightweight nor easy to master in-depth.
+db-Objekts is quite different from object relational mapping (ORM) frameworks like Hibernate and serves a different use case. ORMs work with stateful entities that abstract away the reality of tables and foreign keys. ORMs are only easy when your needs are simple. They work fine at the level of individual entities, but to keep them performant at scale is hard. They are neither lightweight nor easy to master in-depth.
 
-db-Objekts is deliberately limited in its features and capabilities. It focuses on queries that write or read individual table columns through generated metadata objects that are part of your application's source code. This gives you all the benefits of your IDE's auto-complete, in addition to Kotlin's type and null-safety.
+db-Objekts is deliberately limited in its features and capabilities. It does not try to emulate all you can do in native SQL or Hibernate. In fact, a hybrid solution can work best in a single application.
 
-Let's start with an overview of features.
+== A bird's eye view of features
+Let's start with an overview of feature. (https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/AcmeCatalogCodeGenComponentTest.kt[full source code])
 
-== A bird's eye feature view
-The following demo showcases what you can achieve with db-Objekts (https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/AcmeCatalogCodeGenComponentTest.kt[full source code]).
-
-We have a simple database of a lending library with five tables
-
-* `author` represents a person, with name, bio, and data of birth.
-* `book` has the official isbn as its primary key, a title, year of publication and a reference to its author.
-* `item` represents a physical copy of a book. It refers to the `book` table and stores the date of acquisition. There can be zero or more copies of a book title.
-* `member` only stores the name of an invdividual member
-* `loan` keeps a record of all the books (items) taken out by a member. It refers to `item` and `member` and keeps the date taken out and returned.
+We have a simple in-memory H2 database that models a lending library with five tables
 
 image::datamodel.png[datamodel,600]
 
-First, generate metadata objects for our database. `CodeGenerator` takes care of that.
+First we're going to create metadata objects with `CodeGenerator`.
 ```kotlin
 val generator = CodeGenerator()
        .withDataSource(datasource = H2DB.dataSource)
@@ -46,48 +48,31 @@ generator.outputConfigurer()
 generator.generateSourceFiles()
 ```
 
-This is a bare-bones setup. There is much more to fine-tune. This writes metadata objects under the package `com.acme.dbobjekts` in a `gen` source folder (to indicate you should not alter them manually).
+There is more to fine-tune -- this is a bare-bones setup. Under the package `com.acme.dbobjekts` in the `gen` source folder we now have a `Book`, `Author`, `Loan`,`Item` and `Member` source file. These contain fields that correspond to the columns in the table, and we'll use them to build. Tying the schema(s) and tables together is also a `CatalogDefinition` object.
 
-For each table you now have a corresponding `Table` implementation, i.e. `Book`, `Author`, `Loan`, etc. Each contains fields corresponding to the columns in the table, and we'll use them to build type-safe queries. In simplified form:
-```kotlin
-object Author : Table("AUTHOR") {
-    //primary keys for this table are generated by using a sequence
-    val id = com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "ID", "AUTHOR_SEQ")
-    val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
-    //notice that bio can be null, while name cannot, so they have different Column implementations
-    val bio = com.dbobjekts.metadata.column.NullableVarcharColumn(this, "BIO")
-}
-```
-
-But first we need to get a `TransactionManager`. This wraps a `javax.sql.DataSource` and acts as a factory for transactions. You typically only need one instance per database. This example is for an embedded H2 database, taken from the project `com.db-Objekts.sampledbs.h2.H2DB`.
-
-The code generation stage produced a `CatalogDefinition` Kotlin object. The TransactionManager needs this to produce SQL boilerplate specific to our schemas.
+The final step before we can make queries is to configure a `TransactionManager`, which wraps a `javax.sql.DataSource`. It also needs the `CatalogDefinition` that was just generated.
 
 ```kotlin
-val dataSource = HikariDataSourceFactory.create(url = "jdbc:h2:mem:test",
-    username = "sa",
-    password = null,
-    driver = "org.h2.Driver")
+val dataSource = HikariDataSourceFactory.create("jdbc:h2:mem:test","sa",null)
 val transactionManager = TransactionManager.builder()
     .withCatalog(CatalogDefinition)
     .withDataSource(dataSource).build()
 ```
-
-To get a connection from the TransactionManager and start performing queries, use the following syntax (we'll use `tm` for TransactionManager instances and `tr` for Transaction throughout this tutorial)
+The `TransactionManager` hands out `Transaction` instances, which wrap a short-lived `javax.sql.Connection`. You use the following syntax:
 ```kotlin
 val resultOfQuery = tm.newTransaction { tr->
     //execute your query/queries here
 }
 ```
-The `newTransaction()` method's signature is `fun <T> newTransaction(function: (Transaction) -> T): T`. You provide it with a lambda that takes a `Transaction` and can produce any result. The `invoke()` operator does the same, so you can express it even more concisely:
+
+(we'll stick to `tm` for TransactionManager and `tr` for Transaction throughout this page)
+
+`newTransaction()` takes a lambda that receives a `Transaction` and returns `Any?`. The `TransactionManager.invoke()` operator does the same, so you can express it even more concisely:
 ```kotlin
 val books: List<String> = tm { it.select(Book.isbn).asList() }
 ```
 
-That was our very first query: select the ISBN column from the `book` table and return it as a `List<String`. Now let's add an author, title and member.
-
-The `mandatoryColumns(..)` call is a convenience method to make sure you don't miss any of the non-null columns in your insert.
-When the table in question has an auto-generated id, it is returned as a `Long`. We need to store it to be used as a foreign key later.
+That was our first query: select the ISBN column from the `Book` table and return it as a `List<String`. Now let's add an author, title and member.
 
 ```kotlin
 val orwell: Long = tr.insert(Author)
@@ -101,9 +86,10 @@ tr.insert(Book)
 val john = tr.insert(Member).mandatoryColumns("John").execute()
 ```
 
-We forgot to put a bio for George Orwell. Let's do that now. Notice the use of the where clause. Common sql operator symbols (=,<,>,!=) have textual counterparts `eq`, `lt`, `ne` etc,
+The `mandatoryColumns(..)` call is a convenience method to make sure you don't miss any of the non-null columns in your insert. When the table in question has an auto-generated id, it is returned as a `Long`.
 
-And/Or conditions and even embedded conditions are possible. More on that later.
+Let's update the George Orwell record with a bio. Notice the use of the where clause. Common sql operator symbols (=,<,>,!=) have textual counterparts `eq`, `lt`, `ne` etc,
+
 ```kotlin
   tr.update(Author)
       .bio("(1903-1950) Pseudonym of Eric Blair. Influential writer of novels, essays and journalism.")
@@ -131,9 +117,11 @@ Now we can start selections. Let's get a list of all titles and their author dat
 val bookAuthors: List<Tuple3<String, String, String?>> =
     tr.select(Book.title, Author.name, Author.bio).asList()
 ```
-Notice there is no `from` clause, because table references are present in the columns that you provide in the call to `select(..`) and db-Objekts can figure out the necessary joins. The terminating `asList()` call returns a list of type-safe tuples that correspond exactly to the number and types of the columns in the `select(..)` call. Notice that `Author.bio` is a nullable column. Hence, the corresponding value in the tuple is `String?`, not `String`.
+Note that there's no `from` clause. db-Objekts can figure out the necessary joins from the columns provided in `select(..`). The terminating `asList()` call returns a list of type-safe tuples that correspond exactly to the number and types of the columns in the `select(..)` call.
 
-Let's take it up a notch! This query involves all five tables and returns `List<Tuple5<LocalDate, Long, String, String, String>>`. Since all `Tuple*` classes are data classes, you can deconstruct them into a more readable output
+Note that `Author.bio` is a nullable column, so it produces a `String?`, not `String` value.
+
+Let's take it up a notch. This query involves all five tables and returns `List<Tuple5<LocalDate, Long, String, String, String>>`. Since all `Tuple*` classes are data classes, you can deconstruct them into a more readable output
 
 ```kotlin
 // the type returned is List<Tuple5<LocalDate, Long, String, String, String>>
@@ -172,7 +160,7 @@ You can get the latest release from https://mvnrepository.com/search?q=com.db-ob
 
 The following https://github.com/jaspersprengers/db-objekts-demo[stand-alone github project] contains the examples from this section and is a good starting point to get you going.
 
-The main jar is `com.db-objekts:db-objekts-core`, but you also need a vendor-specific implementation, which includes the core jar. Include it in you maven or gradle build:
+The main jar is `com.db-objekts:db-objekts-core`, and you also need a vendor-specific implementation. Since the latter depends on core, you need only add the vendor-specific dependency to your maven or gradle file.
 ```xml
 <dependency>
 	<groupId>com.db-objekts</groupId>
@@ -181,9 +169,9 @@ The main jar is `com.db-objekts:db-objekts-core`, but you also need a vendor-spe
 </dependency>
 ```
 
-`DataSource` and  an appropriate JDBC driver are not inherited from db-objekts, as these should be already on the classpath.
+There is no transitive dependency on the appropriate JDBC driver, as this is most likely already on your classpath. If not, you need to add it explicitly.
 
-All you need in a SpringBoot context is to create a Bean for your `TransactionManager` (provided the DataSource is already configured):
+All you need in a SpringBoot context is to create a Bean for your `TransactionManager` (provided the DataSource is properly configured):
 ```kotlin
 // Call the method something other than transactionManager(), or it will clash with the one in org.springframework.transaction
 @Bean()
@@ -209,32 +197,33 @@ class DataService(val transactionManager: TransactionManager) {
 ```
 
 === Generating metadata objects
-Before we dive into the details of code generation, some clarification is in order.
+Some clarification is in order before we dive into the details of code generation.
 
-Auto-generating code is an established practice, ever since WSDL. For example, you can create richly annotated interfaces from an `openapi.yaml` file that specify the available REST endpoints and expected messages. By implementing these interfaces you create a compile-time dependency on the generated code.
+Auto-generating code is an established practice. For example, you can create richly annotated interfaces from an `openapi.yaml` file that specify the available REST endpoints and expected messages. By implementing these interfaces you create a compile-time dependency on the generated code.
 
-db-Objekts is similar in that the generated metadata objects which represent the tables and columns become tightly coupled to your source code. That is a good thing, because the database _is_ already an integral part of the application logic, also if you interact through native SQL. The drawback of that approach is that structural changes to the schemas will go unnoticed unless you have extensive integration tests (unit tests won't catch it). Otherwise, defect pop up only in production. Not good!
+db-Objekts is similar in that its generated metadata objects become tightly coupled to the business source code. That is a good thing, because the database _is_ already an integral part of the application logic, whatever way you interact with the database. The drawback of using uncompiled, raw SQL is that structural changes to the db goes unnoticed unless you have extensive integration tests (unit tests won't catch it). Otherwise, defects pop up only in production. Not good.
 
-When a component implements a service, it often owns the specification (or rather the team does). Such files belong to the source repository and since _you_ manage them, it's fine to re-generate the code whenever you do a fresh buil (during the generate-sources phase, which takes place before compilation).
+When a component implements a service, it often owns the specification (or rather the team does). Such files belong to the source repository and since _you_ manage them, it's fine to re-generate the code whenever you do a fresh build .
 
-A database creation script is similar in purpose to an openapi.yaml file. However, the important difference is one of ownership: your project may not own the database structure. Even if you have a copy of the dump in source control and can create a containerized version of it, it matters a great deal whether that dump file is the source of truth. If not, unannounced changes may mess up the status quo. We need more validation.
+A database creation script is similar in purpose to an openapi.yaml file. The difference is one of ownership: your project may not own the db. Even if you keep a dump file in source control and can create a containerized db from it, it matters whether that dump file is the source of truth. If not, unannounced changes may mess up the status quo. We need more validation.
 
 ==== Code generation and validation during the SDLC
-Generating code is harmless when you're starting out with db-Objekts, since there's no source code yet that uses the new metadata. But later, it makes sense to compare the current db structure to the generated metadata, before overwriting anything. So please stick to the following best practices:
+Generating code is harmless when there's no source code yet that uses the metadata. But later, it makes sense to compare the current db structure to the generated metadata, before overwriting anything. So please stick to the following best practices:
 
-* Always write generated code to a separate source folder, called `gen` or `generated-sources`. Never manually alter this code. All the tweaks you should need are explained in the next sections, and we gladly consider feature requests :-)
-* Put the generated kotlin sources under version control, yes, even though they are generated. Remember, the state of the database may not be in your hands.
+* Always write generated code to a separate source folder, called `gen` or `generated-sources`. Never alter this code manually. All the tweaks you should need are explained in the next sections, and we gladly consider feature requests.
+* Put the generated kotlin sources under version control -- yes, even though they are generated. Remember, the state of the database may not be in your hands.
 * Include a regular automated test to validate the database against the generated sources. Validation should take place in the test phase, not the generate-sources phase. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-mariadb/src/test/kotlin/com.dbobjekts.mariadb/MariaDBIntegrationTest.kt[MariaDBIntegrationTest] for an example.
 
 === Code generation in detail
 With this in mind, let's have a detailed look at the process. https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/codegen/CodeGenerator.kt[CodeGenerator] is our port of call for the entire process and you can check out https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/AcmeCatalogCodeGenComponentTest.kt[AcmeCatalogCodeGenComponentTest] for a comprehensive example.
-Configuration is grouped into the following sections:
 
-* The mandatory javax.sql.DataSource.
-* Configuration for exclusions.
-* Configuration for mapping column types to SQL types, using custom type for certain columns
-* Configuration for setting the sequence names for auto-generated keys.
-* Configuration of the output
+Configuration covers the following
+
+* Mandatory `DataSource`.
+* Optional configuration for exclusions.
+* Optional configuration for mapping column types to SQL types and using custom types for specific columns
+* Optional configuration for setting the sequence names for auto-generated keys.
+* Mandatory configuration of the output
 
 ==== First steps
 We're making the code generation part of the standard test phase and include a component test for it.
