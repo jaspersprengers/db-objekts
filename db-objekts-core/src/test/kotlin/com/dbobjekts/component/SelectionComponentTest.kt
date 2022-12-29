@@ -41,16 +41,9 @@ class SelectionComponentTest {
                     .salary(3000.0).execute()
                 it.insert(Country).id("DE").name("Germany").execute()
                 it.insert(Country).id("NL").name("Netherlands").execute()
-                val zuidhoek = it.insert(Address).mandatoryColumns(street = "Zuidhoek", countryId = "NL", postcode = "5941ED").execute()
+                val zuidhoek = it.insert(Address).mandatoryColumns(street = "Zuidhoek", countryId = "NL").execute()
                 it.insert(EmployeeAddress).mandatoryColumns(employeeId = jane, addressId = zuidhoek, kind = AddressType.WORK).execute()
             }
-        }
-    }
-
-    @Test
-    fun `use invalid postcode`() {
-        AcmeDB.newTransaction {
-            assertThatThrownBy { it.insert(Address).mandatoryColumns(street = "Zuidhoek", countryId = "NL", postcode = "5941 EDX").execute() }
         }
     }
 

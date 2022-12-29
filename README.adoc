@@ -660,10 +660,6 @@ And a number of utility columns, most of them abstract, to serve as a basis for 
 |Any
 |Yes
 
-|SerializableColumn
-|String
-|Yes
-
 |NumberAsBooleanColumn
 |Boolean stored as an Int 0/1
 |No
@@ -716,40 +712,14 @@ class NullableUUIDColumn(table: Table, name: String) : NullableObjectColumn<UUID
 There's nothing to override other than the `nullable` property. `UUIDColumn` is only there to fill in the `<T>`. The base class takes care of calling `getObject(..)` on the `ResultSet`.
 
 ==== Customizing SerializableColumn
-Let's have some fun. Imagine you encounter a German database where a Boolean result is stored as Ja for true and Nein for false. Yikes.
-This variation on the `NumberAsBooleanColumn` column fixes it.
 
-```kotlin
-class JaOderNeinColumn(table: Table, name: String) : NonNullableColumn<Boolean>(name, table, Boolean::class.java) {
-    override val nullable: NullableColumn<Boolean?> = NullableJaOderNeinColumn(table, name)
-    override fun getValue(position: Int, resultSet: ResultSet): Boolean = resultSet.getString(position) == "Ja"
-
-    override fun setValue(position: Int, statement: PreparedStatement, value: Boolean) =
-        statement.setString(position, if (value) "Ja" else "Nein")
-
-    override fun defaultValue() = false
-
-}
-
-class NullableJaOderNeinColumn(table: Table, name: String) :
-    NullableColumn<Boolean?>(name, table, Types.VARCHAR, Boolean::class.java) {
-    override fun getValue(position: Int, resultSet: ResultSet): Boolean? = resultSet.getString(position) == "Ja"
-
-    override fun setValue(position: Int, statement: PreparedStatement, value: Boolean?) =
-        statement.setString(position, if (value != null && value) "Ja" else "Nein")
-}
-```
-
-The above is an example where we return a different datatype than the one stored in the table. We store a String but return a Boolean. You can keep the datatype, but perhaps require some extra validation. Suppose we want to make sure only valid Dutch postcodes are stored in `Address.postcode`. See the full example in `com.dbobjekts.testdb.DutchPostCodeColumn`.
+Sometimes it would be good to have some extra validation. Suppose we want to make sure only valid Dutch postcodes are stored in `Address.postcode`. See the full example in `com.dbobjekts.testdb.DutchPostCodeColumn`.
 
 You extend from a regular `VarcharColumn`, but add some extra validation of your own.
 ```kotlin
 class DutchPostCodeColumn(table: Table, name: String) : VarcharColumn(table, name) {
-    override fun getValue(position: Int, resultSet: ResultSet): String? {
-        return super.getValue(position, resultSet)?.also { validate(it) }
-    }
 
-    override fun setValue(position: Int, statement: PreparedStatement, value: String) {
+override fun setValue(position: Int, statement: PreparedStatement, value: String) {
         validate(value)
         super.setValue(position, statement, value)
     }
