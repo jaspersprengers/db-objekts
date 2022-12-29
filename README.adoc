@@ -12,7 +12,13 @@ your IDE's autocomplete, while db-Objekts takes care of the SQL boilerplate and 
 
 The project was conceived and built by me, Jasper Sprengers, a software developer living in the Netherlands.
 
-db-Objekts has conceptual similarities to object relational mapping (ORM) frameworks like Hibernate, but is also quite different. ORMs work with stateful entities that abstract away the database layer, even the individual tables. They are not lightweight or easy to master well. db-Objekts is focused on executing queries on tables, but these tables have become part of your application's source code. This gives you all the benefits of your IDE's auto-complete features, in addition to Kotlin's type and null-safety.
+=== So, this is going to make ORM obsolete?
+Certainly not.
+
+db-Objekts has conceptual similarities to object relational mapping (ORM) frameworks like Hibernate, but it serves a different use case. ORMs work with stateful entities that abstract away the database reality of tables and links. ORMs are deceptively simple. They work great at the level of individual entities, but
+to keep them performant at scale isn't easy. They are neither lightweight nor easy to master in-depth.
+
+db-Objekts is deliberately limited in its features and capabilities. It focuses on queries that write or read individual table columns through generated metadata objects that are part of your application's source code. This gives you all the benefits of your IDE's auto-complete, in addition to Kotlin's type and null-safety.
 
 Let's start with an overview of features.
 
@@ -161,9 +167,10 @@ There is much, much more to explore in the following sections, so let's dig in!
 
 == Getting started
 
-
 === Installation and configuration
 You can get the latest release from https://mvnrepository.com/search?q=com.db-objekts[Maven central]
+
+The following https://github.com/jaspersprengers/db-objekts-demo[stand-alone github project] contains the examples from this section and is a good starting point to get you going.
 
 The main jar is `com.db-objekts:db-objekts-core`, but you also need a vendor-specific implementation, which includes the core jar. Include it in you maven or gradle build:
 ```xml
