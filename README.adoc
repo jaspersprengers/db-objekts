@@ -565,47 +565,15 @@ Notice that `getValue` must always return a nullable result, also for `NonNullab
 
 The JDBC getter and setter methods cover all the Java primitives, including dates, string, blobs and other esoteric types. For each of these there is a suitable implementation in `com.dbobjekts.metadata.column`, with a companion `Nullable*Column`.
 
+For numeric types we have, from small to large
 |===
 |Column class  |value class
-
-|BigDecimalColumn
-|java.math.BigDecimal
-
-|BlobColumn
-|java.sql.Blob
-
-|BooleanColumn
-|Boolean
-
-|NumberAsBooleanColumn
-|Boolean (but stored as an Int)
-
-|ByteArrayColumn
-|ByteArray
 
 |ByteColumn
 |Byte
 
-|ClobColumn
-|Clob
-
-|DateColumn
-|java.time.LocalDate
-
-|DateTimeColumn
-|LocalDateTime
-
-|DoubleColumn
-|Double
-
-|EnumAsIntColumn
-|Enum stored by its `ordinal()` as an Int
-
-|EnumAsStringColumn
-|Enum, stored by its `name()` as a String
-
-|FloatColumn
-|Float
+|ShortColumn
+|Short
 
 |IntegerColumn
 |Int
@@ -613,11 +581,59 @@ The JDBC getter and setter methods cover all the Java primitives, including date
 |LongColumn
 |Long
 
+|FloatColumn
+|Float
+
+|DoubleColumn
+|Double
+
+|BigDecimalColumn
+|java.math.BigDecimal
+
+|===
+
+Then there is String and Boolean
+
+|===
+|Column class  |value class
+
+|VarcharColumn
+|String
+
+|BooleanColumn
+|Boolean
+
+|===
+
+Byte arrays and large objects:
+
+|===
+|Column class  |value class
+
+|BlobColumn
+|java.sql.Blob
+
+|ByteArrayColumn
+|ByteArray
+
+|ClobColumn
+|Clob
+
+|===
+
+Date and time columns
+
+|===
+|Column class  |value class
+
+|DateColumn
+|java.time.LocalDate
+
+|DateTimeColumn
+|LocalDateTime
+
 |OffsetDateTimeColumn
 |java.time.OffsetDateTime
-
-|ShortColumn
-|Short
 
 |TimeColumn
 |java.time.Time
@@ -625,12 +641,36 @@ The JDBC getter and setter methods cover all the Java primitives, including date
 |TimeStampColumn
 |java.time.Instant
 
-|VarcharColumn
+|===
+
+And a number of utility columns, most of them abstract, to serve as a basis for custom extensions.
+
+|===
+|Column class  |value class|abstract?
+
+|EnumAsIntColumn
+|Enum stored by its `ordinal()` as an Int
+|Yes
+
+|EnumAsStringColumn
+|Enum, stored by its `name()` as a String
+|Yes
+
+|ObjectColumn
+|Any
+|Yes
+
+|SerializableColumn
 |String
+|Yes
+
+|NumberAsBooleanColumn
+|Boolean stored as an Int 0/1
+|No
 
 |===
 
-==== A custom AddressTypeColumn
+==== Customizing EnumAsString with AddressTypeColumn
 Suppose we have the following `AddressType` enum:
 
 ```kotlin
@@ -662,7 +702,7 @@ tr.insert(EmployeeAddress)
     .execute()
 ```
 
-==== A custom ObjectColumn
+==== Customizing ObjectColumn for UUIDs
 H2 supports a data type for storing UUIDs (universally unique identifiers), which has no JDBC counterpart. To read and retrieve `java.util.UUID`, you extend `ObjectColumn`.
 ```kotlin
 package com.dbobjekts.vendors.h2
@@ -673,9 +713,9 @@ class UUIDColumn(table: Table, name: String) : ObjectColumn<UUID>(table, name, U
 class NullableUUIDColumn(table: Table, name: String) : NullableObjectColumn<UUID?>(table, name, UUID::class.java) {
 }
 ```
-Indeed, there's nothing to override other than the `nullable` property. The classes are only there to supply the type. The base class takes care of calling set/getObject.
+There's nothing to override other than the `nullable` property. `UUIDColumn` is only there to fill in the `<T>`. The base class takes care of calling `getObject(..)` on the `ResultSet`.
 
-==== Some more examples
+==== Customizing SerializableColumn
 Let's have some fun. Imagine you encounter a German database where a Boolean result is stored as Ja for true and Nein for false. Yikes.
 This variation on the `NumberAsBooleanColumn` column fixes it.
 

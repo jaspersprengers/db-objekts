@@ -5,10 +5,8 @@ import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.codegen.datatypemapper.SequenceForPrimaryKeyResolver
 import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
+import com.dbobjekts.testdb.*
 import org.junit.jupiter.api.Test
-import com.dbobjekts.testdb.AddressTypeAsStringColumn
-import com.dbobjekts.testdb.AddressTypeAsIntegerColumn
-import com.dbobjekts.testdb.DutchPostCodeColumn
 import com.dbobjekts.testdb.acme.CatalogDefinition
 import org.assertj.core.api.Assertions.assertThat
 import java.nio.file.Paths
@@ -45,7 +43,9 @@ class AcmeCatalogCodeGenComponentTest {
 
         generator.configureColumnTypeMapping()
             .setColumnTypeForJDBCType("TINYINT(1)", NumberAsBooleanColumn::class.java)
+            .setColumnTypeForName(table = "EMPLOYEE", column = "married", columnType = YesNoBooleanColumn::class.java)
             .setColumnTypeForName(table = "ADDRESS", column = "postcode", columnType = DutchPostCodeColumn::class.java)
+            .setColumnTypeForName(table = "ADDRESS", column = "street_and_town", columnType = StreetAndTownColumn::class.java)
             .setColumnTypeForName(table = "EMPLOYEE_ADDRESS", column = "KIND", columnType = AddressTypeAsStringColumn::class.java)
             .setColumnTypeForName(column = "address_string", columnType = AddressTypeAsStringColumn::class.java)
             .setColumnTypeForName(column = "address_int", columnType = AddressTypeAsIntegerColumn::class.java)

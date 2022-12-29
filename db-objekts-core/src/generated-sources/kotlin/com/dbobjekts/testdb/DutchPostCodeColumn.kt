@@ -1,10 +1,10 @@
 package com.dbobjekts.testdb
 
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.metadata.column.*
-import java.lang.IllegalStateException
+import com.dbobjekts.metadata.column.NullableColumn
+import com.dbobjekts.metadata.column.NullableVarcharColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import java.sql.PreparedStatement
-import java.sql.ResultSet
 import java.util.regex.Pattern
 
 
