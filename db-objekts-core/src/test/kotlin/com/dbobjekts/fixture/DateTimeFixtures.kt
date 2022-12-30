@@ -2,42 +2,22 @@ package com.dbobjekts.fixture
 
 import java.time.*
 
- interface DateTimeFixtures {
+object DateFixtures {
 
-    val time : LocalTime
+    val time = LocalTime.of(12, 13, 14).withNano(123456000)
 
-    val date : LocalDate
+    val date = LocalDate.of(1980, 12, 5)
 
-    val dateTime : LocalDateTime
+    val dateTime = LocalDateTime.of(date, time)
 
-    val australia : ZoneId
+    val australia = ZoneId.of("Australia/Brisbane")
 
-    val europe : ZoneId
+    val europe = ZoneId.of("Europe/Madrid")
 
-    val dateTimeEurope : ZonedDateTime
+    val dateTimeEurope = ZonedDateTime.of(dateTime, europe)
 
-    val dateTimeEuropeAsOffset : OffsetDateTime
+    val dateTimeEuropeAsOffset = OffsetDateTime.ofInstant(dateTimeEurope.toInstant(), europe)
 
-    val dateTimeAsia : ZonedDateTime
-
-}
-
-class DateTimeFixturesImpl : DateTimeFixtures {
-
-    override val time = LocalTime.of(12, 13, 14).withNano(123456000)
-
-    override val date = LocalDate.of(1980, 12, 5)
-
-    override val dateTime = LocalDateTime.of(date, time)
-
-    override val australia = ZoneId.of("Australia/Brisbane")
-
-    override val europe = ZoneId.of("Europe/Madrid")
-
-    override val dateTimeEurope = ZonedDateTime.of(dateTime, europe)
-
-    override val dateTimeEuropeAsOffset = OffsetDateTime.ofInstant(dateTimeEurope.toInstant(), europe)
-
-    override val dateTimeAsia = ZonedDateTime.of(dateTime, australia)
+    val dateTimeAsia = ZonedDateTime.of(dateTime, australia)
 
 }

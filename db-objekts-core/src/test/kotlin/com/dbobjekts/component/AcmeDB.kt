@@ -8,24 +8,27 @@ import com.dbobjekts.testdb.acme.hr.Hobby
 import com.dbobjekts.testdb.acme.CatalogDefinition
 import com.dbobjekts.util.HikariDataSourceFactory
 import org.slf4j.LoggerFactory
+import javax.sql.DataSource
 
 object AcmeDB {
     private val logger = LoggerFactory.getLogger(AcmeDB::class.java)
 
-    val dataSource =
-        HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
+    val dataSource: DataSource
 
-    val transactionManager = TransactionManager.builder().withDataSource(dataSource).withCatalog(CatalogDefinition).build()
+    val transactionManager: TransactionManager
     fun <T> newTransaction(fct: (Transaction) -> T) = transactionManager.newTransaction(fct)
 
-    fun setupDatabaseObjects() {
-        createExampleCatalog()
+    init {
+        dataSource =
+            HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
+        transactionManager = TransactionManager.builder().withDataSource(dataSource).withCatalog(CatalogDefinition).build()
+        createExampleCatalog(transactionManager)
         //tables are not created when they exist and may contain data
-        deleteAllTables()
+        deleteAllTables(transactionManager)
     }
 
-    fun deleteAllTables() {
-        transactionManager.newTransaction { tr ->
+    fun deleteAllTables(tm: TransactionManager) {
+        tm.newTransaction { tr ->
             tr.deleteFrom(EmployeeAddress).where()
             tr.deleteFrom(EmployeeDepartment).where()
             tr.deleteFrom(Department).where()
@@ -38,8 +41,8 @@ object AcmeDB {
         }
     }
 
-    private fun createExampleCatalog() {
-        transactionManager.newTransaction { transaction ->
+    fun createExampleCatalog(tm: TransactionManager) {
+        tm.newTransaction { transaction ->
             transaction.execute("CREATE SCHEMA if not exists core")
             transaction.execute("CREATE SCHEMA if not exists hr")
 
@@ -144,8 +147,10 @@ object AcmeDB {
 
             transaction.execute("create table if not exists library.member(id BIGINT NOT NULL primary key,name varchar(200) NOT NULl)")
 
-            transaction.execute("create table if not exists library.loan(item_id BIGINT NOT NULL,member_id BIGINT NOT NULL,date_loaned DATE NOT NULL,date_returned DATE NULL," +
-                    "foreign key (item_id) references library.item(id),foreign key (member_id) references library.member(id))");
+            transaction.execute(
+                "create table if not exists library.loan(item_id BIGINT NOT NULL,member_id BIGINT NOT NULL,date_loaned DATE NOT NULL,date_returned DATE NULL," +
+                        "foreign key (item_id) references library.item(id),foreign key (member_id) references library.member(id))"
+            );
 
 
         }

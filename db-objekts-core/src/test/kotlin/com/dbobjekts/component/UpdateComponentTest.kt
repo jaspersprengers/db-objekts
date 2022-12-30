@@ -15,13 +15,12 @@ class UpdateComponentTest {
     val h = Hobby
 
     companion object {
-        @BeforeAll
         @JvmStatic
-        fun beforeGroup() {
-            AcmeDB.setupDatabaseObjects()
+        @BeforeAll
+        fun setup(){
+            AcmeDB.deleteAllTables(AcmeDB.transactionManager)
         }
     }
-
 
     @Test
     @Order(1)

@@ -30,7 +30,7 @@ class ForeignKeyComponentTest {
         @BeforeAll
         @JvmStatic
          fun setup() {
-            AcmeDB.setupDatabaseObjects()
+
             AcmeDB.newTransaction { tr ->
                 tr.insert(c).id("us").name("USA").execute()
                 tr.insert(c).id("nl").name("Netherlands").execute()

@@ -16,9 +16,4 @@ class Semaphore {
         statement = null
     }
 
-    fun assertEmpty() {
-        if (this.statement != null) {
-            throw IllegalStateException("The last $statement statement was not completed with a call to execute() or select. This is most likely an oversight in your application code.")
-        }
-    }
 }

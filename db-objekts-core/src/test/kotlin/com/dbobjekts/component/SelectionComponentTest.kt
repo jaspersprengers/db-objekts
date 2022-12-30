@@ -31,7 +31,7 @@ class SelectionComponentTest {
         @BeforeAll
         @JvmStatic
         fun setup() {
-            AcmeDB.setupDatabaseObjects()
+            AcmeDB.deleteAllTables(AcmeDB.transactionManager)
             AcmeDB.newTransaction {
                 val dob = LocalDate.of(1990, 12, 5)
                 it.insert(Hobby).mandatoryColumns("chess", "chess").execute()

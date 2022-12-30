@@ -30,11 +30,11 @@ enum class Vendors(
          */
         fun byProductAndVersion(name: String, version: Int? = null): Vendor {
             val vendor = Vendors.values().find {
-                it.name.equals(name, true)
+                it.name.equals(name, true) &&
                 if (version != null) it.majorVersion >= version else true
             } ?: throw IllegalArgumentException(
-                "Vendor $name is not supported, Choose from ${
-                    values().joinToString(",") { it.name }
+                "Vendor $name and/or version $version is not supported, Choose from ${
+                    values().joinToString(",") { "${it.name} version <= ${it.majorVersion}" }
                 }"
             )
             return Class.forName(vendor.vendorClass).kotlin.objectInstance as Vendor

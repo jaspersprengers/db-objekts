@@ -3,14 +3,23 @@ package com.dbobjekts.component
 import com.dbobjekts.testdb.acme.core.Employee
 import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 class CustomSQLComponentTest {
 
+    companion object {
+        @JvmStatic
+        @BeforeAll
+        fun setup(){
+            AcmeDB.deleteAllTables(AcmeDB.transactionManager)
+        }
+    }
+
     @Test
     fun `test select two columns from two tables`() {
-        AcmeDB.setupDatabaseObjects()
+
         AcmeDB.newTransaction({
             //it.insert(AllTypes)
             LocalDate.of(1990, 12, 5)

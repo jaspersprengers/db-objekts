@@ -16,15 +16,6 @@ import java.util.*
 
 class AllH2TypesComponentTest {
 
-    companion object {
-        @BeforeAll
-        @JvmStatic
-        fun beforeGroup() {
-            AcmeDB.setupDatabaseObjects()
-        }
-    }
-
-
     val time = LocalTime.of(12, 13, 14).withNano(123456000)
     val date = LocalDate.of(1980, 12, 5)
     val dateTime = LocalDateTime.of(date, time)

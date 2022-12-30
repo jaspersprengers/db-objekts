@@ -36,9 +36,9 @@ class TransactionManager private constructor(
     private val customConnectionProvider: ((DataSource) -> Connection)? = null
 ) {
     private val log = LoggerFactory.getLogger(TransactionManager::class.java)
-    internal val dataSource: DataSourceAdapter
+    private val dataSource: DataSourceAdapter
     private var catalog: Catalog
-    val vendor: Vendor
+    internal val vendor: Vendor
 
     init {
         this.dataSource = when (ds) {
@@ -47,14 +47,12 @@ class TransactionManager private constructor(
         }
         val vendorByDBMetaData = extractDBMetaData().vendor
         catalog = catalogOpt ?: Catalog(vendorByDBMetaData)
-        vendor = if (catalogOpt == null) vendorByDBMetaData else {
-            if (catalog.vendor != vendorByDBMetaData.name)
-                throw java.lang.IllegalStateException(
-                    "You provided a Catalog implementation that is associated with vendor ${catalog.vendor}, " +
-                            "but you connected to a ${vendorByDBMetaData} DataSource."
-                )
-            Vendors.byProductAndVersion(catalog.vendor)
-        }
+        if (catalog.vendor != vendorByDBMetaData.name)
+            throw java.lang.IllegalStateException(
+                "You provided a Catalog implementation that is associated with vendor ${catalog.vendor}, " +
+                        "but you connected to a ${vendorByDBMetaData.name} DataSource."
+            )
+        vendor = vendorByDBMetaData
     }
 
     /**
@@ -90,7 +88,7 @@ class TransactionManager private constructor(
         }
     }
 
-    fun extractDBMetaData(): DBConnectionMetaData {
+    private fun extractDBMetaData(): DBConnectionMetaData {
         val connection = dataSource.createConnection()
         try {
             val metaData = connection.metaData

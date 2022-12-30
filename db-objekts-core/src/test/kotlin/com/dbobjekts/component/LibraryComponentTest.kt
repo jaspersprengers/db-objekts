@@ -13,7 +13,6 @@ class LibraryComponentTest {
     @Test
     fun `Library component test`() {
 
-        AcmeDB.setupDatabaseObjects()
         AcmeDB.newTransaction { transaction ->
 
             val orwell: Long =

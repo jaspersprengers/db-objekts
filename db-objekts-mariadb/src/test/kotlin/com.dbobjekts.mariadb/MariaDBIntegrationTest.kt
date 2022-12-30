@@ -38,7 +38,9 @@ class MariaDBIntegrationTest {
         @BeforeAll
         fun beforeAll() {
             dataSource = container.createDataSource()
-            tm = TransactionManager.builder().withDataSource(dataSource).withCatalog(CatalogDefinition).build()
+            tm = TransactionManager.builder()
+                .withDataSource(dataSource)
+                .withCatalog(CatalogDefinition).build()
         }
 
     }

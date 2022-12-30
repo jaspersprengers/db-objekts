@@ -16,8 +16,6 @@ class AcmeCatalogCodeGenComponentTest {
     @Test
     fun `validate acme catalog`() {
 
-        AcmeDB.setupDatabaseObjects()
-
         AcmeDB.transactionManager {
             //add some stuff to the test db that wel will ignore for the code generator
             it.execute("create table IF NOT EXISTS hr.COUNTRY(id varchar(10) primary key, name varchar(50) not null)")
