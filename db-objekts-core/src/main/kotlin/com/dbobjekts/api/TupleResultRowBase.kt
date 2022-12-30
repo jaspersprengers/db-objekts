@@ -48,7 +48,21 @@ abstract class ResultRow<out O> {
 
     internal fun asList(): List<O> = rows
 
-    abstract fun extractRow(cols: List<ColumnInResultRow>, resultSet: ResultSet): O
+    internal fun extractRow(cols: List<ColumnInResultRow>, resultSet: ResultSet): O{
+        var index = 0
+        val values = mutableListOf<Any?>()
+        for (s in selectables){
+            val retrieved: List<Any?> = s.columns.mapIndexed() { idx, col ->
+                val curr = index + idx
+                extractValue(cols[curr], resultSet)
+            }
+            values += s.toValue(retrieved)
+            index += s.columns.size
+        }
+        return castToRow(values)
+    }
+
+    abstract fun castToRow(values: List<Any?>): O
 
     internal fun columns(): List<AnyColumn> = jdbcResultSetAdapter.resultSetColumns().map { it.column }
 

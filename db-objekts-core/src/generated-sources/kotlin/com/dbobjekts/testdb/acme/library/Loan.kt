@@ -13,11 +13,9 @@ object Loan:Table<LoanRow>("LOAN"), HasUpdateBuilder<LoanUpdateBuilder, LoanInse
     val dateLoaned = com.dbobjekts.metadata.column.DateColumn(this, "DATE_LOANED")
     val dateReturned = com.dbobjekts.metadata.column.NullableDateColumn(this, "DATE_RETURNED")
     override val columns: List<AnyColumn> = listOf(itemId,memberId,dateLoaned,dateReturned)
-    override fun toValue(values: List<Any?>): LoanRow = LoanRow()
-
+    override fun toValue(values: List<Any?>) = LoanRow(values[0] as Long,values[1] as Long,values[2] as java.time.LocalDate,values[3] as java.time.LocalDate?)
     override fun metadata(): WriteQueryAccessors<LoanUpdateBuilder, LoanInsertBuilder> = WriteQueryAccessors(LoanUpdateBuilder(), LoanInsertBuilder())
 }
-class LoanRow()
 
 class LoanUpdateBuilder() : UpdateBuilderBase(Loan) {
     fun itemId(value: Long): LoanUpdateBuilder = put(Loan.itemId, value)
@@ -41,3 +39,8 @@ class LoanInsertBuilder():InsertBuilderBase(){
 
 }
 
+data class LoanRow(
+    val itemId: Long,
+    val memberId: Long,
+    val dateLoaned: java.time.LocalDate,
+    val dateReturned: java.time.LocalDate?)

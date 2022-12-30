@@ -41,7 +41,7 @@ enum class Vendors(
         }
 
         fun byName(name: String): Vendors =
-            Vendors.values().find { it.name == name } ?: throw IllegalStateException("Unknown vendor $name")
+            Vendors.values().find { it.name.equals(name, true) } ?: throw IllegalStateException("Unknown vendor $name")
     }
 }
 

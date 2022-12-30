@@ -13,12 +13,9 @@ object Address:Table<AddressRow>("ADDRESS"), HasUpdateBuilder<AddressUpdateBuild
     val postcode = com.dbobjekts.metadata.column.NullableVarcharColumn(this, "POSTCODE")
     val countryId = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "COUNTRY_ID", Country.id)
     override val columns: List<AnyColumn> = listOf(id,street,postcode,countryId)
-    override fun toValue(values: List<Any?>): AddressRow = AddressRow()
-
+    override fun toValue(values: List<Any?>) = AddressRow(values[0] as Long,values[1] as String,values[2] as String?,values[3] as String)
     override fun metadata(): WriteQueryAccessors<AddressUpdateBuilder, AddressInsertBuilder> = WriteQueryAccessors(AddressUpdateBuilder(), AddressInsertBuilder())
 }
-
-class AddressRow()
 
 class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
     fun street(value: String): AddressUpdateBuilder = put(Address.street, value)
@@ -39,3 +36,8 @@ class AddressInsertBuilder():InsertBuilderBase(){
 
 }
 
+data class AddressRow(
+    val id: Long,
+    val street: String,
+    val postcode: String?,
+    val countryId: String)

@@ -67,11 +67,10 @@ object AllTypes:Table<AllTypesRow>("ALL_TYPES"), HasUpdateBuilder<AllTypesUpdate
     val addressString = com.dbobjekts.testdb.AddressTypeAsStringColumn(this, "ADDRESS_STRING")
     val addressStringNil = com.dbobjekts.testdb.AddressTypeAsStringColumn(this, "ADDRESS_STRING_NIL")
     override val columns: List<AnyColumn> = listOf(id,characterCol,characterColNil,charactervaryingCol,charactervaryingColNil,characterlargeobjectCol,characterlargeobjectColNil,varcharIgnorecaseCol,varcharIgnorecaseColNil,enumCol,enumColNil,binaryCol,binaryColNil,binaryvaryingCol,binaryvaryingColNil,binarylargeobjectCol,binarylargeobjectColNil,jsonCol,jsonColNil,booleanCol,booleanColNil,tinyintCol,tinyintColNil,smallintCol,smallintColNil,integerCol,integerColNil,bigintCol,bigintColNil,numericCol,numericColNil,decfloatCol,decfloatColNil,realCol,realColNil,doubleprecisionCol,doubleprecisionColNil,dateCol,dateColNil,timeCol,timeColNil,timewithtimezoneCol,timewithtimezoneColNil,timestampCol,timestampColNil,timestampwithtimezoneCol,timestampwithtimezoneColNil,uuidCol,uuidColNil,intervalCol,intervalColNil,geometryColNil,intArrayCol,intArrayColNil,addressInt,addressIntNil,addressString,addressStringNil)
-    override fun toValue(values: List<Any?>): AllTypesRow = AllTypesRow()
-
+    override fun toValue(values: List<Any?>) = AllTypesRow(values[0] as Long,values[1] as String,values[2] as String?,values[3] as String,values[4] as String?,values[5] as String,values[6] as String?,values[7] as String,values[8] as String?,values[9] as String,values[10] as String?,values[11] as ByteArray,values[12] as ByteArray?,values[13] as ByteArray,values[14] as ByteArray?,values[15] as java.sql.Blob,values[16] as java.sql.Blob?,values[17] as ByteArray,values[18] as ByteArray?,values[19] as Boolean,values[20] as Boolean?,values[21] as Byte,values[22] as Byte?,values[23] as Int,values[24] as Int?,values[25] as Int,values[26] as Int?,values[27] as Long,values[28] as Long?,values[29] as java.math.BigDecimal,values[30] as java.math.BigDecimal?,values[31] as java.math.BigDecimal,values[32] as java.math.BigDecimal?,values[33] as Float,values[34] as Float?,values[35] as Double,values[36] as Double?,values[37] as java.time.LocalDate,values[38] as java.time.LocalDate?,values[39] as java.time.LocalTime,values[40] as java.time.LocalTime?,values[41] as java.time.OffsetDateTime,values[42] as java.time.OffsetDateTime?,values[43] as java.time.Instant,values[44] as java.time.Instant?,values[45] as java.time.OffsetDateTime,values[46] as java.time.OffsetDateTime?,values[47] as java.util.UUID,values[48] as java.util.UUID?,values[49] as org.h2.api.Interval,values[50] as org.h2.api.Interval?,values[51] as String?,values[52] as Array<Any>,values[53] as Array<Any>?,values[54] as com.dbobjekts.testdb.AddressType,values[55] as com.dbobjekts.testdb.AddressType,values[56] as com.dbobjekts.testdb.AddressType,values[57] as com.dbobjekts.testdb.AddressType)
     override fun metadata(): WriteQueryAccessors<AllTypesUpdateBuilder, AllTypesInsertBuilder> = WriteQueryAccessors(AllTypesUpdateBuilder(), AllTypesInsertBuilder())
 }
-class AllTypesRow()
+
 class AllTypesUpdateBuilder() : UpdateBuilderBase(AllTypes) {
     fun characterCol(value: String): AllTypesUpdateBuilder = put(AllTypes.characterCol, value)
     fun characterColNil(value: String?): AllTypesUpdateBuilder = put(AllTypes.characterColNil, value)
@@ -227,3 +226,62 @@ class AllTypesInsertBuilder():InsertBuilderBase(){
 
 }
 
+data class AllTypesRow(
+    val id: Long,
+    val characterCol: String,
+    val characterColNil: String?,
+    val charactervaryingCol: String,
+    val charactervaryingColNil: String?,
+    val characterlargeobjectCol: String,
+    val characterlargeobjectColNil: String?,
+    val varcharIgnorecaseCol: String,
+    val varcharIgnorecaseColNil: String?,
+    val enumCol: String,
+    val enumColNil: String?,
+    val binaryCol: ByteArray,
+    val binaryColNil: ByteArray?,
+    val binaryvaryingCol: ByteArray,
+    val binaryvaryingColNil: ByteArray?,
+    val binarylargeobjectCol: java.sql.Blob,
+    val binarylargeobjectColNil: java.sql.Blob?,
+    val jsonCol: ByteArray,
+    val jsonColNil: ByteArray?,
+    val booleanCol: Boolean,
+    val booleanColNil: Boolean?,
+    val tinyintCol: Byte,
+    val tinyintColNil: Byte?,
+    val smallintCol: Int,
+    val smallintColNil: Int?,
+    val integerCol: Int,
+    val integerColNil: Int?,
+    val bigintCol: Long,
+    val bigintColNil: Long?,
+    val numericCol: java.math.BigDecimal,
+    val numericColNil: java.math.BigDecimal?,
+    val decfloatCol: java.math.BigDecimal,
+    val decfloatColNil: java.math.BigDecimal?,
+    val realCol: Float,
+    val realColNil: Float?,
+    val doubleprecisionCol: Double,
+    val doubleprecisionColNil: Double?,
+    val dateCol: java.time.LocalDate,
+    val dateColNil: java.time.LocalDate?,
+    val timeCol: java.time.LocalTime,
+    val timeColNil: java.time.LocalTime?,
+    val timewithtimezoneCol: java.time.OffsetDateTime,
+    val timewithtimezoneColNil: java.time.OffsetDateTime?,
+    val timestampCol: java.time.Instant,
+    val timestampColNil: java.time.Instant?,
+    val timestampwithtimezoneCol: java.time.OffsetDateTime,
+    val timestampwithtimezoneColNil: java.time.OffsetDateTime?,
+    val uuidCol: java.util.UUID,
+    val uuidColNil: java.util.UUID?,
+    val intervalCol: org.h2.api.Interval,
+    val intervalColNil: org.h2.api.Interval?,
+    val geometryColNil: String?,
+    val intArrayCol: Array<Any>,
+    val intArrayColNil: Array<Any>?,
+    val addressInt: com.dbobjekts.testdb.AddressType,
+    val addressIntNil: com.dbobjekts.testdb.AddressType,
+    val addressString: com.dbobjekts.testdb.AddressType,
+    val addressStringNil: com.dbobjekts.testdb.AddressType)

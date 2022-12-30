@@ -11,11 +11,9 @@ object EmployeeDepartment:Table<EmployeeDepartmentRow>("EMPLOYEE_DEPARTMENT"), H
     val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "EMPLOYEE_ID", Employee.id)
     val departmentId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "DEPARTMENT_ID", Department.id)
     override val columns: List<AnyColumn> = listOf(employeeId,departmentId)
-    override fun toValue(values: List<Any?>): EmployeeDepartmentRow = EmployeeDepartmentRow()
-
+    override fun toValue(values: List<Any?>) = EmployeeDepartmentRow(values[0] as Long,values[1] as Long)
     override fun metadata(): WriteQueryAccessors<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder> = WriteQueryAccessors(EmployeeDepartmentUpdateBuilder(), EmployeeDepartmentInsertBuilder())
 }
-class EmployeeDepartmentRow()
 
 class EmployeeDepartmentUpdateBuilder() : UpdateBuilderBase(EmployeeDepartment) {
     fun employeeId(value: Long): EmployeeDepartmentUpdateBuilder = put(EmployeeDepartment.employeeId, value)
@@ -34,3 +32,6 @@ class EmployeeDepartmentInsertBuilder():InsertBuilderBase(){
 
 }
 
+data class EmployeeDepartmentRow(
+    val employeeId: Long,
+    val departmentId: Long)

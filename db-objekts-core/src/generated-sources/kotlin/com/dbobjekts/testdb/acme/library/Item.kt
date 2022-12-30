@@ -12,11 +12,10 @@ object Item:Table<ItemRow>("ITEM"), HasUpdateBuilder<ItemUpdateBuilder, ItemInse
     val isbn = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "ISBN", Book.isbn)
     val dateAcquired = com.dbobjekts.metadata.column.DateColumn(this, "DATE_ACQUIRED")
     override val columns: List<AnyColumn> = listOf(id,isbn,dateAcquired)
-    override fun toValue(values: List<Any?>): ItemRow = ItemRow()
-
+    override fun toValue(values: List<Any?>) = ItemRow(values[0] as Long,values[1] as String,values[2] as java.time.LocalDate)
     override fun metadata(): WriteQueryAccessors<ItemUpdateBuilder, ItemInsertBuilder> = WriteQueryAccessors(ItemUpdateBuilder(), ItemInsertBuilder())
 }
-class ItemRow()
+
 class ItemUpdateBuilder() : UpdateBuilderBase(Item) {
     fun isbn(value: String): ItemUpdateBuilder = put(Item.isbn, value)
     fun dateAcquired(value: java.time.LocalDate): ItemUpdateBuilder = put(Item.dateAcquired, value)
@@ -34,3 +33,7 @@ class ItemInsertBuilder():InsertBuilderBase(){
 
 }
 
+data class ItemRow(
+    val id: Long,
+    val isbn: String,
+    val dateAcquired: java.time.LocalDate)

@@ -11,11 +11,9 @@ object Department:Table<DepartmentRow>("DEPARTMENT"), HasUpdateBuilder<Departmen
     val id = com.dbobjekts.metadata.column.AutoKeyLongColumn(this, "ID")
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     override val columns: List<AnyColumn> = listOf(id,name)
-    override fun toValue(values: List<Any?>): DepartmentRow = DepartmentRow()
-
+    override fun toValue(values: List<Any?>) = DepartmentRow(values[0] as Long,values[1] as String)
     override fun metadata(): WriteQueryAccessors<DepartmentUpdateBuilder, DepartmentInsertBuilder> = WriteQueryAccessors(DepartmentUpdateBuilder(), DepartmentInsertBuilder())
 }
-class DepartmentRow()
 
 class DepartmentUpdateBuilder() : UpdateBuilderBase(Department) {
     fun name(value: String): DepartmentUpdateBuilder = put(Department.name, value)
@@ -31,3 +29,6 @@ class DepartmentInsertBuilder():InsertBuilderBase(){
 
 }
 
+data class DepartmentRow(
+    val id: Long,
+    val name: String)

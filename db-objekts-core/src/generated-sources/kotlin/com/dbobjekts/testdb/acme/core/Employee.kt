@@ -7,7 +7,6 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 import com.dbobjekts.testdb.acme.hr.Hobby
-import java.time.LocalDate
 
 
 object Employee:Table<EmployeeRow>("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, EmployeeInsertBuilder> {
@@ -19,25 +18,9 @@ object Employee:Table<EmployeeRow>("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateB
     val children = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "CHILDREN")
     val hobbyId = com.dbobjekts.metadata.column.OptionalForeignKeyVarcharColumn(this, "HOBBY_ID", Hobby.id)
     override val columns: List<AnyColumn> = listOf(id,name,salary,married,dateOfBirth,children,hobbyId)
-    override fun toValue(values: List<Any?>) =
-        EmployeeRow(
-            id = values[0] as Long,
-            name = values[1] as String,
-            salary = values[2] as Double,
-            married = values[3] as Boolean?,
-            dateOfBirth = values[4] as LocalDate,
-            children = values[5] as Int?,
-            hobbyId  = values[6] as String?)
-
+    override fun toValue(values: List<Any?>) = EmployeeRow(values[0] as Long,values[1] as String,values[2] as Double,values[3] as Boolean?,values[4] as java.time.LocalDate,values[5] as Int?,values[6] as String?)
     override fun metadata(): WriteQueryAccessors<EmployeeUpdateBuilder, EmployeeInsertBuilder> = WriteQueryAccessors(EmployeeUpdateBuilder(), EmployeeInsertBuilder())
 }
-data class EmployeeRow(val id: Long,
-                  val name: String,
-                  val salary: Double,
-                  val married: Boolean?,
-                  val dateOfBirth: LocalDate,
-                  val children: Int?,
-                  val hobbyId: String?)
 
 class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
     fun name(value: String): EmployeeUpdateBuilder = put(Employee.name, value)
@@ -65,3 +48,11 @@ class EmployeeInsertBuilder():InsertBuilderBase(){
 
 }
 
+data class EmployeeRow(
+    val id: Long,
+    val name: String,
+    val salary: Double,
+    val married: Boolean?,
+    val dateOfBirth: java.time.LocalDate,
+    val children: Int?,
+    val hobbyId: String?)

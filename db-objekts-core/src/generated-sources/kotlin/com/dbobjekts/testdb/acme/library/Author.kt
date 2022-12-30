@@ -7,16 +7,15 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
-object Author:Table<AuthorTable>("AUTHOR"), HasUpdateBuilder<AuthorUpdateBuilder, AuthorInsertBuilder> {
+object Author:Table<AuthorRow>("AUTHOR"), HasUpdateBuilder<AuthorUpdateBuilder, AuthorInsertBuilder> {
     val id = com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "ID", "AUTHOR_SEQ")
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     val bio = com.dbobjekts.metadata.column.NullableVarcharColumn(this, "BIO")
     override val columns: List<AnyColumn> = listOf(id,name,bio)
-    override fun toValue(values: List<Any?>): AuthorTable = AuthorTable()
-
+    override fun toValue(values: List<Any?>) = AuthorRow(values[0] as Long,values[1] as String,values[2] as String?)
     override fun metadata(): WriteQueryAccessors<AuthorUpdateBuilder, AuthorInsertBuilder> = WriteQueryAccessors(AuthorUpdateBuilder(), AuthorInsertBuilder())
 }
-class AuthorTable()
+
 class AuthorUpdateBuilder() : UpdateBuilderBase(Author) {
     fun name(value: String): AuthorUpdateBuilder = put(Author.name, value)
     fun bio(value: String?): AuthorUpdateBuilder = put(Author.bio, value)
@@ -33,3 +32,7 @@ class AuthorInsertBuilder():InsertBuilderBase(){
 
 }
 
+data class AuthorRow(
+    val id: Long,
+    val name: String,
+    val bio: String?)

@@ -14,11 +14,9 @@ object Certificate:Table<CertificateRow>("CERTIFICATE"), HasUpdateBuilder<Certif
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "EMPLOYEE_ID", Employee.id)
     override val columns: List<AnyColumn> = listOf(id,name,employeeId)
-    override fun toValue(values: List<Any?>): CertificateRow = CertificateRow()
-
+    override fun toValue(values: List<Any?>) = CertificateRow(values[0] as Long,values[1] as String,values[2] as Long)
     override fun metadata(): WriteQueryAccessors<CertificateUpdateBuilder, CertificateInsertBuilder> = WriteQueryAccessors(CertificateUpdateBuilder(), CertificateInsertBuilder())
 }
-class CertificateRow()
 
 class CertificateUpdateBuilder() : UpdateBuilderBase(Certificate) {
     fun name(value: String): CertificateUpdateBuilder = put(Certificate.name, value)
@@ -37,3 +35,7 @@ class CertificateInsertBuilder():InsertBuilderBase(){
 
 }
 
+data class CertificateRow(
+    val id: Long,
+    val name: String,
+    val employeeId: Long)

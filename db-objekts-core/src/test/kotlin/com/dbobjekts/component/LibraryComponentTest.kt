@@ -54,7 +54,7 @@ class LibraryComponentTest {
             assertThat(item).isNull()
 
 
-            transaction.select(Loan.dateLoaned, Item.id, Book.title, Author.name, Member.name).asList()
+            transaction.select(Loan, Item, Book, Author, Member).asList()
                 .forEach { (dateLoaned, item, book, author, member) ->
                     println("Item $item of $book by $author loaned to $member on $dateLoaned")
                 }

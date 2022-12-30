@@ -155,9 +155,9 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>
     ): SelectStatementExecutor<Tuple3<T1, T2, T3>, ResultRow3<T1, T2, T3>> =
         SelectStatementExecutor(semaphore, connection, listOf(c1, c2, c3), ResultRow3<T1, T2, T3>())
 
@@ -165,10 +165,10 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>
     ): SelectStatementExecutor<Tuple4<T1, T2, T3, T4>, ResultRow4<T1, T2, T3, T4>> =
         SelectStatementExecutor(semaphore, connection, listOf(c1, c2, c3, c4), ResultRow4<T1, T2, T3, T4>())
 
@@ -176,11 +176,11 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>
     ): SelectStatementExecutor<Tuple5<T1, T2, T3, T4, T5>, ResultRow5<T1, T2, T3, T4, T5>> =
         SelectStatementExecutor(semaphore, connection, listOf(c1, c2, c3, c4, c5), ResultRow5<T1, T2, T3, T4, T5>())
 
@@ -188,12 +188,12 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>
     ): SelectStatementExecutor<Tuple6<T1, T2, T3, T4, T5, T6>, ResultRow6<T1, T2, T3, T4, T5, T6>> =
         SelectStatementExecutor(semaphore, connection, listOf(c1, c2, c3, c4, c5, c6), ResultRow6<T1, T2, T3, T4, T5, T6>())
 
@@ -201,13 +201,13 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>,
-        c7: Column<T7>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>,
+        c7: Selectable<T7>
     ): SelectStatementExecutor<Tuple7<T1, T2, T3, T4, T5, T6, T7>, ResultRow7<T1, T2, T3, T4, T5, T6, T7>> =
         SelectStatementExecutor(semaphore, connection, listOf(c1, c2, c3, c4, c5, c6, c7), ResultRow7<T1, T2, T3, T4, T5, T6, T7>())
 
@@ -215,14 +215,14 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>,
-        c7: Column<T7>,
-        c8: Column<T8>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>,
+        c7: Selectable<T7>,
+        c8: Selectable<T8>
     ): SelectStatementExecutor<Tuple8<T1, T2, T3, T4, T5, T6, T7, T8>, ResultRow8<T1, T2, T3, T4, T5, T6, T7, T8>> =
         SelectStatementExecutor(semaphore, connection, listOf(c1, c2, c3, c4, c5, c6, c7, c8), ResultRow8<T1, T2, T3, T4, T5, T6, T7, T8>())
 
@@ -230,15 +230,15 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>,
-        c7: Column<T7>,
-        c8: Column<T8>,
-        c9: Column<T9>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>,
+        c7: Selectable<T7>,
+        c8: Selectable<T8>,
+        c9: Selectable<T9>
     ): SelectStatementExecutor<Tuple9<T1, T2, T3, T4, T5, T6, T7, T8, T9>, ResultRow9<T1, T2, T3, T4, T5, T6, T7, T8, T9>> =
         SelectStatementExecutor(
             semaphore,
@@ -251,16 +251,16 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>,
-        c7: Column<T7>,
-        c8: Column<T8>,
-        c9: Column<T9>,
-        c10: Column<T10>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>,
+        c7: Selectable<T7>,
+        c8: Selectable<T8>,
+        c9: Selectable<T9>,
+        c10: Selectable<T10>
     ): SelectStatementExecutor<Tuple10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>, ResultRow10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>> =
         SelectStatementExecutor(
             semaphore,
@@ -273,17 +273,17 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>,
-        c7: Column<T7>,
-        c8: Column<T8>,
-        c9: Column<T9>,
-        c10: Column<T10>,
-        c11: Column<T11>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>,
+        c7: Selectable<T7>,
+        c8: Selectable<T8>,
+        c9: Selectable<T9>,
+        c10: Selectable<T10>,
+        c11: Selectable<T11>
     ): SelectStatementExecutor<Tuple11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>, ResultRow11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>> =
         SelectStatementExecutor(
             semaphore,
@@ -296,18 +296,18 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>,
-        c7: Column<T7>,
-        c8: Column<T8>,
-        c9: Column<T9>,
-        c10: Column<T10>,
-        c11: Column<T11>,
-        c12: Column<T12>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>,
+        c7: Selectable<T7>,
+        c8: Selectable<T8>,
+        c9: Selectable<T9>,
+        c10: Selectable<T10>,
+        c11: Selectable<T11>,
+        c12: Selectable<T12>
     ): SelectStatementExecutor<Tuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>, ResultRow12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>> =
         SelectStatementExecutor(
             semaphore,
@@ -320,19 +320,19 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>,
-        c7: Column<T7>,
-        c8: Column<T8>,
-        c9: Column<T9>,
-        c10: Column<T10>,
-        c11: Column<T11>,
-        c12: Column<T12>,
-        c13: Column<T13>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>,
+        c7: Selectable<T7>,
+        c8: Selectable<T8>,
+        c9: Selectable<T9>,
+        c10: Selectable<T10>,
+        c11: Selectable<T11>,
+        c12: Selectable<T12>,
+        c13: Selectable<T13>
     ): SelectStatementExecutor<Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>, ResultRow13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>> =
         SelectStatementExecutor(
             semaphore,
@@ -345,20 +345,20 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>,
-        c7: Column<T7>,
-        c8: Column<T8>,
-        c9: Column<T9>,
-        c10: Column<T10>,
-        c11: Column<T11>,
-        c12: Column<T12>,
-        c13: Column<T13>,
-        c14: Column<T14>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>,
+        c7: Selectable<T7>,
+        c8: Selectable<T8>,
+        c9: Selectable<T9>,
+        c10: Selectable<T10>,
+        c11: Selectable<T11>,
+        c12: Selectable<T12>,
+        c13: Selectable<T13>,
+        c14: Selectable<T14>
     ): SelectStatementExecutor<Tuple14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>, ResultRow14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>> =
         SelectStatementExecutor(
             semaphore,
@@ -371,21 +371,21 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>,
-        c7: Column<T7>,
-        c8: Column<T8>,
-        c9: Column<T9>,
-        c10: Column<T10>,
-        c11: Column<T11>,
-        c12: Column<T12>,
-        c13: Column<T13>,
-        c14: Column<T14>,
-        c15: Column<T15>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>,
+        c7: Selectable<T7>,
+        c8: Selectable<T8>,
+        c9: Selectable<T9>,
+        c10: Selectable<T10>,
+        c11: Selectable<T11>,
+        c12: Selectable<T12>,
+        c13: Selectable<T13>,
+        c14: Selectable<T14>,
+        c15: Selectable<T15>
     ): SelectStatementExecutor<Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>, ResultRow15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>> =
         SelectStatementExecutor(
             semaphore,
@@ -398,22 +398,22 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>,
-        c7: Column<T7>,
-        c8: Column<T8>,
-        c9: Column<T9>,
-        c10: Column<T10>,
-        c11: Column<T11>,
-        c12: Column<T12>,
-        c13: Column<T13>,
-        c14: Column<T14>,
-        c15: Column<T15>,
-        c16: Column<T16>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>,
+        c7: Selectable<T7>,
+        c8: Selectable<T8>,
+        c9: Selectable<T9>,
+        c10: Selectable<T10>,
+        c11: Selectable<T11>,
+        c12: Selectable<T12>,
+        c13: Selectable<T13>,
+        c14: Selectable<T14>,
+        c15: Selectable<T15>,
+        c16: Selectable<T16>
     ): SelectStatementExecutor<Tuple16<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>, ResultRow16<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>> =
         SelectStatementExecutor(
             semaphore,
@@ -426,23 +426,23 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>,
-        c7: Column<T7>,
-        c8: Column<T8>,
-        c9: Column<T9>,
-        c10: Column<T10>,
-        c11: Column<T11>,
-        c12: Column<T12>,
-        c13: Column<T13>,
-        c14: Column<T14>,
-        c15: Column<T15>,
-        c16: Column<T16>,
-        c17: Column<T17>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>,
+        c7: Selectable<T7>,
+        c8: Selectable<T8>,
+        c9: Selectable<T9>,
+        c10: Selectable<T10>,
+        c11: Selectable<T11>,
+        c12: Selectable<T12>,
+        c13: Selectable<T13>,
+        c14: Selectable<T14>,
+        c15: Selectable<T15>,
+        c16: Selectable<T16>,
+        c17: Selectable<T17>
     ): SelectStatementExecutor<Tuple17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17>, ResultRow17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17>> =
         SelectStatementExecutor(
             semaphore,
@@ -455,24 +455,24 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>,
-        c7: Column<T7>,
-        c8: Column<T8>,
-        c9: Column<T9>,
-        c10: Column<T10>,
-        c11: Column<T11>,
-        c12: Column<T12>,
-        c13: Column<T13>,
-        c14: Column<T14>,
-        c15: Column<T15>,
-        c16: Column<T16>,
-        c17: Column<T17>,
-        c18: Column<T18>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>,
+        c7: Selectable<T7>,
+        c8: Selectable<T8>,
+        c9: Selectable<T9>,
+        c10: Selectable<T10>,
+        c11: Selectable<T11>,
+        c12: Selectable<T12>,
+        c13: Selectable<T13>,
+        c14: Selectable<T14>,
+        c15: Selectable<T15>,
+        c16: Selectable<T16>,
+        c17: Selectable<T17>,
+        c18: Selectable<T18>
     ): SelectStatementExecutor<Tuple18<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18>, ResultRow18<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18>> =
         SelectStatementExecutor(
             semaphore,
@@ -485,25 +485,25 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>,
-        c7: Column<T7>,
-        c8: Column<T8>,
-        c9: Column<T9>,
-        c10: Column<T10>,
-        c11: Column<T11>,
-        c12: Column<T12>,
-        c13: Column<T13>,
-        c14: Column<T14>,
-        c15: Column<T15>,
-        c16: Column<T16>,
-        c17: Column<T17>,
-        c18: Column<T18>,
-        c19: Column<T19>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>,
+        c7: Selectable<T7>,
+        c8: Selectable<T8>,
+        c9: Selectable<T9>,
+        c10: Selectable<T10>,
+        c11: Selectable<T11>,
+        c12: Selectable<T12>,
+        c13: Selectable<T13>,
+        c14: Selectable<T14>,
+        c15: Selectable<T15>,
+        c16: Selectable<T16>,
+        c17: Selectable<T17>,
+        c18: Selectable<T18>,
+        c19: Selectable<T19>
     ): SelectStatementExecutor<Tuple19<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19>, ResultRow19<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19>> =
         SelectStatementExecutor(
             semaphore,
@@ -516,26 +516,26 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>,
-        c7: Column<T7>,
-        c8: Column<T8>,
-        c9: Column<T9>,
-        c10: Column<T10>,
-        c11: Column<T11>,
-        c12: Column<T12>,
-        c13: Column<T13>,
-        c14: Column<T14>,
-        c15: Column<T15>,
-        c16: Column<T16>,
-        c17: Column<T17>,
-        c18: Column<T18>,
-        c19: Column<T19>,
-        c20: Column<T20>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>,
+        c7: Selectable<T7>,
+        c8: Selectable<T8>,
+        c9: Selectable<T9>,
+        c10: Selectable<T10>,
+        c11: Selectable<T11>,
+        c12: Selectable<T12>,
+        c13: Selectable<T13>,
+        c14: Selectable<T14>,
+        c15: Selectable<T15>,
+        c16: Selectable<T16>,
+        c17: Selectable<T17>,
+        c18: Selectable<T18>,
+        c19: Selectable<T19>,
+        c20: Selectable<T20>
     ): SelectStatementExecutor<Tuple20<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20>, ResultRow20<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20>> =
         SelectStatementExecutor(
             semaphore,
@@ -548,27 +548,27 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>,
-        c7: Column<T7>,
-        c8: Column<T8>,
-        c9: Column<T9>,
-        c10: Column<T10>,
-        c11: Column<T11>,
-        c12: Column<T12>,
-        c13: Column<T13>,
-        c14: Column<T14>,
-        c15: Column<T15>,
-        c16: Column<T16>,
-        c17: Column<T17>,
-        c18: Column<T18>,
-        c19: Column<T19>,
-        c20: Column<T20>,
-        c21: Column<T21>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>,
+        c7: Selectable<T7>,
+        c8: Selectable<T8>,
+        c9: Selectable<T9>,
+        c10: Selectable<T10>,
+        c11: Selectable<T11>,
+        c12: Selectable<T12>,
+        c13: Selectable<T13>,
+        c14: Selectable<T14>,
+        c15: Selectable<T15>,
+        c16: Selectable<T16>,
+        c17: Selectable<T17>,
+        c18: Selectable<T18>,
+        c19: Selectable<T19>,
+        c20: Selectable<T20>,
+        c21: Selectable<T21>
     ): SelectStatementExecutor<Tuple21<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21>, ResultRow21<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21>> =
         SelectStatementExecutor(
             semaphore,
@@ -581,28 +581,28 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22> select(
-        c1: Column<T1>,
-        c2: Column<T2>,
-        c3: Column<T3>,
-        c4: Column<T4>,
-        c5: Column<T5>,
-        c6: Column<T6>,
-        c7: Column<T7>,
-        c8: Column<T8>,
-        c9: Column<T9>,
-        c10: Column<T10>,
-        c11: Column<T11>,
-        c12: Column<T12>,
-        c13: Column<T13>,
-        c14: Column<T14>,
-        c15: Column<T15>,
-        c16: Column<T16>,
-        c17: Column<T17>,
-        c18: Column<T18>,
-        c19: Column<T19>,
-        c20: Column<T20>,
-        c21: Column<T21>,
-        c22: Column<T22>
+        c1: Selectable<T1>,
+        c2: Selectable<T2>,
+        c3: Selectable<T3>,
+        c4: Selectable<T4>,
+        c5: Selectable<T5>,
+        c6: Selectable<T6>,
+        c7: Selectable<T7>,
+        c8: Selectable<T8>,
+        c9: Selectable<T9>,
+        c10: Selectable<T10>,
+        c11: Selectable<T11>,
+        c12: Selectable<T12>,
+        c13: Selectable<T13>,
+        c14: Selectable<T14>,
+        c15: Selectable<T15>,
+        c16: Selectable<T16>,
+        c17: Selectable<T17>,
+        c18: Selectable<T18>,
+        c19: Selectable<T19>,
+        c20: Selectable<T20>,
+        c21: Selectable<T21>,
+        c22: Selectable<T22>
     ): SelectStatementExecutor<Tuple22<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22>, ResultRow22<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22>> =
         SelectStatementExecutor(
             semaphore,

@@ -13,11 +13,10 @@ object Book:Table<BookRow>("BOOK"), HasUpdateBuilder<BookUpdateBuilder, BookInse
     val authorId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "AUTHOR_ID", Author.id)
     val published = com.dbobjekts.metadata.column.DateColumn(this, "PUBLISHED")
     override val columns: List<AnyColumn> = listOf(isbn,title,authorId,published)
-    override fun toValue(values: List<Any?>): BookRow = BookRow()
-
+    override fun toValue(values: List<Any?>) = BookRow(values[0] as String,values[1] as String,values[2] as Long,values[3] as java.time.LocalDate)
     override fun metadata(): WriteQueryAccessors<BookUpdateBuilder, BookInsertBuilder> = WriteQueryAccessors(BookUpdateBuilder(), BookInsertBuilder())
 }
-class BookRow()
+
 class BookUpdateBuilder() : UpdateBuilderBase(Book) {
     fun isbn(value: String): BookUpdateBuilder = put(Book.isbn, value)
     fun title(value: String): BookUpdateBuilder = put(Book.title, value)
@@ -41,3 +40,8 @@ class BookInsertBuilder():InsertBuilderBase(){
 
 }
 
+data class BookRow(
+    val isbn: String,
+    val title: String,
+    val authorId: Long,
+    val published: java.time.LocalDate)

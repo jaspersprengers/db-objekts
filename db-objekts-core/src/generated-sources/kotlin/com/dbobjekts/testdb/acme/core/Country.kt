@@ -11,11 +11,9 @@ object Country:Table<CountryRow>("COUNTRY"), HasUpdateBuilder<CountryUpdateBuild
     val id = com.dbobjekts.metadata.column.VarcharColumn(this, "ID")
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     override val columns: List<AnyColumn> = listOf(id,name)
-    override fun toValue(values: List<Any?>): CountryRow = CountryRow()
-
+    override fun toValue(values: List<Any?>) = CountryRow(values[0] as String,values[1] as String)
     override fun metadata(): WriteQueryAccessors<CountryUpdateBuilder, CountryInsertBuilder> = WriteQueryAccessors(CountryUpdateBuilder(), CountryInsertBuilder())
 }
-class CountryRow()
 
 class CountryUpdateBuilder() : UpdateBuilderBase(Country) {
     fun id(value: String): CountryUpdateBuilder = put(Country.id, value)
@@ -34,3 +32,6 @@ class CountryInsertBuilder():InsertBuilderBase(){
 
 }
 
+data class CountryRow(
+    val id: String,
+    val name: String)

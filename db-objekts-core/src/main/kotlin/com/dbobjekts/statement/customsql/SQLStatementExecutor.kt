@@ -29,6 +29,10 @@ open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
     internal val columnsToFetch: List<ColumnInResultRow> =
         columnClasses.mapIndexed { index, column -> ColumnInResultRow(1 + index, column) }
 
+    init {
+        selectResultSet.selectables = columnClasses
+    }
+
     /**
      * Executes the select statement, fetches all rows and returns the first result.
      * For better performance, use this only when you expect a single result, or use the [limit] clause in addition.

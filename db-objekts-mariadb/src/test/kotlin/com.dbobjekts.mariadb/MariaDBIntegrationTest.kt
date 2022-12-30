@@ -20,12 +20,11 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import javax.sql.DataSource
+import com.dbobjekts.mariadb.testdb.Aliases.e
+import com.dbobjekts.mariadb.testdb.Aliases.h
 
 @Testcontainers
 class MariaDBIntegrationTest {
-
-    val e = Employee
-    val h = Hobby
 
     companion object {
 
@@ -40,7 +39,8 @@ class MariaDBIntegrationTest {
             dataSource = container.createDataSource()
             tm = TransactionManager.builder()
                 .withDataSource(dataSource)
-                .withCatalog(CatalogDefinition).build()
+                .withCatalog(CatalogDefinition)
+                .build()
         }
 
     }
@@ -55,7 +55,6 @@ class MariaDBIntegrationTest {
         .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff = gen.differencesWithCatalog(CatalogDefinition)
         assertThat(diff).isEmpty()
-        //gen.generateSourceFiles()
     }
 
     @Test

@@ -12,11 +12,9 @@ object EmployeeAddress:Table<EmployeeAddressRow>("EMPLOYEE_ADDRESS"), HasUpdateB
     val addressId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "ADDRESS_ID", Address.id)
     val kind = com.dbobjekts.testdb.AddressTypeAsStringColumn(this, "KIND")
     override val columns: List<AnyColumn> = listOf(employeeId,addressId,kind)
-    override fun toValue(values: List<Any?>): EmployeeAddressRow = EmployeeAddressRow()
-
+    override fun toValue(values: List<Any?>) = EmployeeAddressRow(values[0] as Long,values[1] as Long,values[2] as com.dbobjekts.testdb.AddressType)
     override fun metadata(): WriteQueryAccessors<EmployeeAddressUpdateBuilder, EmployeeAddressInsertBuilder> = WriteQueryAccessors(EmployeeAddressUpdateBuilder(), EmployeeAddressInsertBuilder())
 }
-class EmployeeAddressRow()
 
 class EmployeeAddressUpdateBuilder() : UpdateBuilderBase(EmployeeAddress) {
     fun employeeId(value: Long): EmployeeAddressUpdateBuilder = put(EmployeeAddress.employeeId, value)
@@ -38,3 +36,7 @@ class EmployeeAddressInsertBuilder():InsertBuilderBase(){
 
 }
 
+data class EmployeeAddressRow(
+    val employeeId: Long,
+    val addressId: Long,
+    val kind: com.dbobjekts.testdb.AddressType)
