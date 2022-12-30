@@ -1,6 +1,6 @@
 package com.dbobjekts.metadata.column
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyTable
 import java.sql.Clob
 import java.sql.PreparedStatement
 import java.sql.ResultSet
@@ -12,7 +12,7 @@ import javax.sql.rowset.serial.SerialClob
  *
  * @param name The column name in the corresponding database table
  */
-class ClobColumn(table: Table, name: String) : NonNullableColumn<Clob>(name, table, Clob::class.java){
+class ClobColumn(table: AnyTable, name: String) : NonNullableColumn<Clob>(name, table, Clob::class.java){
     override val nullable: NullableColumn<Clob?> = NullableClobColumn(table, name)
     override fun getValue(position: Int, resultSet: ResultSet): Clob? = resultSet.getClob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Clob) =
@@ -24,7 +24,7 @@ class ClobColumn(table: Table, name: String) : NonNullableColumn<Clob>(name, tab
     }
 }
 
-class NullableClobColumn(table: Table, name: String) : NullableColumn<Clob?>(name, table, Types.CLOB, Clob::class.java){
+class NullableClobColumn(table: AnyTable, name: String) : NullableColumn<Clob?>(name, table, Types.CLOB, Clob::class.java){
     override fun getValue(position: Int, resultSet: ResultSet): Clob? = resultSet.getClob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Clob?) =
         statement.setClob(position, value)

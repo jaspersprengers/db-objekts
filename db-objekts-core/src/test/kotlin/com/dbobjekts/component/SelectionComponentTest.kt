@@ -48,6 +48,17 @@ class SelectionComponentTest {
     }
 
     @Test
+    fun `select all from employee and hobby`() {
+        AcmeDB.newTransaction({
+            val (employee, hobby) =
+                it.select(Employee, h.name).where(e.name.eq("Jane")).first()
+            assertThat(hobby).isEqualTo("chess")
+            assertThat(employee.name).isEqualTo("Jane")
+            assertThat(employee.salary).isEqualTo(300.50)
+        })
+    }
+
+    @Test
     fun `use nullable counterpart`() {
         AcmeDB.newTransaction({
             val (name, hobby) =

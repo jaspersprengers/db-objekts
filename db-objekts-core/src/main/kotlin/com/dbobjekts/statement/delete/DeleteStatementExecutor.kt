@@ -1,5 +1,6 @@
 package com.dbobjekts.statement.delete
 
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.Semaphore
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
@@ -22,7 +23,7 @@ class DeleteStatementExecutor(
         semaphore.claim("delete")
     }
 
-    internal fun withTable(table: Table): DeleteStatementExecutor {
+    internal fun withTable(table: AnyTable): DeleteStatementExecutor {
         registerTable(table)
         return this
     }

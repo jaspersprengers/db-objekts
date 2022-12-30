@@ -32,6 +32,20 @@ class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
         FieldData(fieldName, dataType, defaultClause, isNullable, autoGenPk)
     }
 
+    fun sourceForToValue(): String {
+        val elements = fields.mapIndexed { i,field ->
+            "values[$i] as ${field.fieldType}"
+        }.joinToString(",")
+        return "    override fun toValue(values: List<Any?>) = ${tableName}Row($elements)"
+    }
+
+    fun sourceForStatefulEntity(): String {
+        val elements = fields.mapIndexed { i,field ->
+            "\n    val ${field.field}: ${field.fieldType}"
+        }.joinToString(",")
+        return "data class ${tableName}Row($elements)"
+    }
+
     fun sourceForMetaDataVal(): String {
 
         val accessorClass = WriteQueryAccessors::class.java.simpleName

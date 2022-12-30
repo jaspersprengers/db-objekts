@@ -1,6 +1,7 @@
 package com.dbobjekts.metadata.joins
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 
 abstract class JoinBase(val leftPart: AnyColumn,
@@ -12,6 +13,6 @@ abstract class JoinBase(val leftPart: AnyColumn,
 
   override fun toString(): String = "${leftPart.table.toSQL()} $keyWord $conditionSQL"
 
-  fun containsTable(table: Table): Boolean = leftPart.table == table || rightPart.table == table
+  fun containsTable(table: AnyTable): Boolean = leftPart.table == table || rightPart.table == table
 
 }

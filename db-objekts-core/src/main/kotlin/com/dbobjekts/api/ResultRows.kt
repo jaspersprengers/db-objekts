@@ -2,6 +2,7 @@
 
 package com.dbobjekts.api
 
+import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.statement.ColumnInResultRow
 import java.sql.ResultSet
 
@@ -10,10 +11,18 @@ class ResultRow1<A> : ResultRow<A>() {
     override fun extractRow(cols: List<ColumnInResultRow>, resultSet: ResultSet): A = extractValue(cols[0], resultSet) as A
 }
 
-class ResultRow2<T1, T2> : ResultRow<Tuple2<T1, T2>>() {
+/*class ResultRow2<T1, T2> : ResultRow<Tuple2<T1, T2>>() {
     override fun extractRow(cols: List<ColumnInResultRow>, resultSet: ResultSet): Tuple2<T1, T2> =
         Tuple2(extractValue(cols[0], resultSet) as T1, extractValue(cols[1], resultSet) as T2)
+}*/
+
+class ResultRow2<T1, T2> : ResultRow<Tuple2<T1, T2>>() {
+    override fun extractRow(cols: List<ColumnInResultRow>, resultSet: ResultSet): Tuple2<T1, T2> {
+        val values = extractRow_2(cols, resultSet)
+        return Tuple2(values[0] as T1, values[1] as T2)
+    }
 }
+
 
 class ResultRow3<T1, T2, T3> : ResultRow<Tuple3<T1, T2, T3>>() {
     override fun extractRow(cols: List<ColumnInResultRow>, resultSet: ResultSet): Tuple3<T1, T2, T3> =

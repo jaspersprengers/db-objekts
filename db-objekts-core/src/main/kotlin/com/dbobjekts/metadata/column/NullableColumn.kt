@@ -1,13 +1,13 @@
 package com.dbobjekts.metadata.column
 
 import com.dbobjekts.metadata.DefaultTable
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyTable
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 
 abstract class NullableColumn<I>(
     name: String = "dummy",
-    table: Table = DefaultTable,
+    table: AnyTable = DefaultTable,
     val sqlType: Int,
     valueClass: Class<*>
 ) : Column<I>(name, table, valueClass) {

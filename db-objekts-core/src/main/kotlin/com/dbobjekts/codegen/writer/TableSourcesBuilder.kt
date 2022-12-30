@@ -64,17 +64,19 @@ class TableSourcesBuilder(
         strBuilder.append(importLineBuilder.build())
         strBuilder.appendLine()
         val tbl = model.asClassName()
-        strBuilder.appendLine("""object $tbl:Table("${model.tableName}"), $updateBuilderInterface<${tbl}UpdateBuilder, ${tbl}InsertBuilder> {""".trimMargin())
+        strBuilder.appendLine("""object $tbl:Table<${tbl}Row>("${model.tableName}"), $updateBuilderInterface<${tbl}UpdateBuilder, ${tbl}InsertBuilder> {""".trimMargin())
         model.columns.forEach {
             //generateFieldComment(it)
             generateField(it)
         }
         val columnNames = model.columns.map { it.asFieldName() }.joinToString(",")
-        strBuilder.appendLine("    override val columns: List<AnyColumn> = listOf($columnNames)")
 
+        strBuilder.appendLine("    override val columns: List<AnyColumn> = listOf($columnNames)")
+        strBuilder.appendLine(updateMethodSourceBuilder.sourceForToValue())
         strBuilder.appendLine(updateMethodSourceBuilder.sourceForMetaDataVal())
         strBuilder.appendLine("}")
         strBuilder.appendLine(updateMethodSourceBuilder.sourceForBuilderClasses())
+        strBuilder.appendLine(updateMethodSourceBuilder.sourceForStatefulEntity())
         return strBuilder.toString()
     }
 

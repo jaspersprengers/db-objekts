@@ -1,10 +1,10 @@
 package com.dbobjekts.metadata.column
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyTable
 
 interface IsForeignKey<T, P> {
     val column: Column<T>
-    val table: Table
+    val table: AnyTable
     val nameInTable: String
     val parentColumn: Column<P>
 }

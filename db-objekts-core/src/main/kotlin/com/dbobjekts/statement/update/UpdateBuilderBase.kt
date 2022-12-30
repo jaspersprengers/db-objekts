@@ -1,6 +1,7 @@
 package com.dbobjekts.statement.update
 
 import com.dbobjekts.api.AnyColumnAndValue
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.Semaphore
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
@@ -40,7 +41,7 @@ class ColumnForWriteMapContainerImpl<T>(val builder: T) : ColumnForWriteMapConta
 }
 
 abstract class UpdateBuilderBase(
-    internal val table: Table) {
+    internal val table: AnyTable) {
     private val ct = ColumnForWriteMapContainerImpl(this)
     internal lateinit var connection: ConnectionAdapter
     internal lateinit var semaphore: Semaphore

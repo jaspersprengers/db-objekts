@@ -2,6 +2,7 @@ package com.dbobjekts.statement.update
 
 import com.dbobjekts.api.AnyColumnAndValue
 import com.dbobjekts.api.AnySqlParameter
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.Semaphore
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
@@ -18,7 +19,7 @@ import java.lang.IllegalStateException
 class UpdateStatementExecutor(
     semaphore: Semaphore,
     connection: ConnectionAdapter,
-    table: Table,
+    table: AnyTable,
     values: List<AnyColumnAndValue>
 ) : StatementBase<Long>(semaphore, connection) {
 

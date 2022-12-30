@@ -1,6 +1,6 @@
 package com.dbobjekts.metadata.column
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyTable
 import java.nio.charset.Charset
 import java.sql.Blob
 import java.sql.PreparedStatement
@@ -13,7 +13,7 @@ import javax.sql.rowset.serial.SerialBlob
  *
  * @param name The column name in the corresponding database table
  */
-class BlobColumn(table: Table, name: String) : NonNullableColumn<Blob>(name, table, Blob::class.java){
+class BlobColumn(table: AnyTable, name: String) : NonNullableColumn<Blob>(name, table, Blob::class.java){
     override val nullable: NullableColumn<Blob?> = NullableBlobColumn(table, name)
     override fun getValue(position: Int, resultSet: ResultSet): Blob? = resultSet.getBlob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Blob) =
@@ -26,7 +26,7 @@ class BlobColumn(table: Table, name: String) : NonNullableColumn<Blob>(name, tab
     }
 }
 
-class NullableBlobColumn(table: Table, name: String) : NullableColumn<Blob?>(name, table, Types.BLOB, Blob::class.java){
+class NullableBlobColumn(table: AnyTable, name: String) : NullableColumn<Blob?>(name, table, Types.BLOB, Blob::class.java){
     override fun getValue(position: Int, resultSet: ResultSet): Blob? = resultSet.getBlob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Blob?) =
         statement.setBlob(position, value)

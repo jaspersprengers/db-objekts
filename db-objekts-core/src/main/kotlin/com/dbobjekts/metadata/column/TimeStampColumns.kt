@@ -1,6 +1,6 @@
 package com.dbobjekts.metadata.column
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.util.DateUtil
 import java.sql.PreparedStatement
 import java.sql.ResultSet
@@ -13,7 +13,7 @@ import java.time.LocalTime
  *
  * @param name The column name in the corresponding database table
  */
-class TimeStampColumn(table: Table, name: String) : NonNullableColumn<Instant>(name, table, Instant::class.java){
+class TimeStampColumn(table: AnyTable, name: String) : NonNullableColumn<Instant>(name, table, Instant::class.java){
     override val nullable: NullableColumn<Instant?> = NullableTimeStampColumn(table, name)
     override fun getValue(position: Int, resultSet: ResultSet): Instant? = resultSet.getTimestamp(position)?.let {DateUtil.toInstant(it)}
 
@@ -21,7 +21,7 @@ class TimeStampColumn(table: Table, name: String) : NonNullableColumn<Instant>(n
         statement.setTimestamp(position, DateUtil.toSqlTimeStamp(value))
 }
 
-class NullableTimeStampColumn(table: Table, name: String) : NullableColumn<Instant?>(name, table, Types.TIMESTAMP, Instant::class.java){
+class NullableTimeStampColumn(table: AnyTable, name: String) : NullableColumn<Instant?>(name, table, Types.TIMESTAMP, Instant::class.java){
     override fun getValue(position: Int, resultSet: ResultSet): Instant? =resultSet.getTimestamp(position)?.let {DateUtil.toInstant(it)}
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Instant?) =

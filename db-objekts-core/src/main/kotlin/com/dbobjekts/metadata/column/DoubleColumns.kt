@@ -1,6 +1,6 @@
 package com.dbobjekts.metadata.column
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyTable
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Types
@@ -10,7 +10,7 @@ import java.sql.Types
  *
  * @param name    The column name in the corresponding database table
  */
-class DoubleColumn(table: Table, name: String) : NonNullableColumn<Double>(name, table, Double::class.java){
+class DoubleColumn(table: AnyTable, name: String) : NonNullableColumn<Double>(name, table, Double::class.java){
     override val nullable: NullableColumn<Double?> = NullableDoubleColumn(table, name)
     override fun getValue(position: Int, resultSet: ResultSet): Double = resultSet.getDouble(position)
 
@@ -19,7 +19,7 @@ class DoubleColumn(table: Table, name: String) : NonNullableColumn<Double>(name,
 
 }
 
-class NullableDoubleColumn(table: Table, name: String) : NullableColumn<Double?>(name, table, Types.DOUBLE, Double::class.java){
+class NullableDoubleColumn(table: AnyTable, name: String) : NullableColumn<Double?>(name, table, Types.DOUBLE, Double::class.java){
     override fun getValue(position: Int, resultSet: ResultSet): Double? = resultSet.getDouble(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Double?) =

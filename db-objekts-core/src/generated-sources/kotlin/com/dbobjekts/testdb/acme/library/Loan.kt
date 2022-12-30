@@ -7,14 +7,17 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
-object Loan:Table("LOAN"), HasUpdateBuilder<LoanUpdateBuilder, LoanInsertBuilder> {
+object Loan:Table<LoanRow>("LOAN"), HasUpdateBuilder<LoanUpdateBuilder, LoanInsertBuilder> {
     val itemId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "ITEM_ID", Item.id)
     val memberId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "MEMBER_ID", Member.id)
     val dateLoaned = com.dbobjekts.metadata.column.DateColumn(this, "DATE_LOANED")
     val dateReturned = com.dbobjekts.metadata.column.NullableDateColumn(this, "DATE_RETURNED")
     override val columns: List<AnyColumn> = listOf(itemId,memberId,dateLoaned,dateReturned)
+    override fun toValue(values: List<Any?>): LoanRow = LoanRow()
+
     override fun metadata(): WriteQueryAccessors<LoanUpdateBuilder, LoanInsertBuilder> = WriteQueryAccessors(LoanUpdateBuilder(), LoanInsertBuilder())
 }
+class LoanRow()
 
 class LoanUpdateBuilder() : UpdateBuilderBase(Loan) {
     fun itemId(value: Long): LoanUpdateBuilder = put(Loan.itemId, value)

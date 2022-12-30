@@ -7,15 +7,17 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
-object Book:Table("BOOK"), HasUpdateBuilder<BookUpdateBuilder, BookInsertBuilder> {
+object Book:Table<BookRow>("BOOK"), HasUpdateBuilder<BookUpdateBuilder, BookInsertBuilder> {
     val isbn = com.dbobjekts.metadata.column.VarcharColumn(this, "ISBN")
     val title = com.dbobjekts.metadata.column.VarcharColumn(this, "TITLE")
     val authorId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "AUTHOR_ID", Author.id)
     val published = com.dbobjekts.metadata.column.DateColumn(this, "PUBLISHED")
     override val columns: List<AnyColumn> = listOf(isbn,title,authorId,published)
+    override fun toValue(values: List<Any?>): BookRow = BookRow()
+
     override fun metadata(): WriteQueryAccessors<BookUpdateBuilder, BookInsertBuilder> = WriteQueryAccessors(BookUpdateBuilder(), BookInsertBuilder())
 }
-
+class BookRow()
 class BookUpdateBuilder() : UpdateBuilderBase(Book) {
     fun isbn(value: String): BookUpdateBuilder = put(Book.isbn, value)
     fun title(value: String): BookUpdateBuilder = put(Book.title, value)

@@ -1,13 +1,13 @@
 package com.dbobjekts.metadata.column
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyTable
 import java.io.Serializable
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Types
 
 abstract class ObjectColumn<E>(
-    table: Table,
+    table: AnyTable,
     name: String,
     val clz: Class<*>
 ) : NonNullableColumn<E>(name, table, clz) {
@@ -19,7 +19,7 @@ abstract class ObjectColumn<E>(
 }
 
 abstract class NullableObjectColumn<E>(
-    table: Table,
+    table: AnyTable,
     name: String,
     val clz: Class<*>
 ) : NullableColumn<E?>(name, table, Types.VARCHAR, clz) {

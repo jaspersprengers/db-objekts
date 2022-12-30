@@ -1,6 +1,7 @@
 package com.dbobjekts.statement.select
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.joins.TableJoinChain
@@ -9,6 +10,7 @@ import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.statement.ColumnInResultRow
 import com.dbobjekts.api.ResultRow
 import com.dbobjekts.api.Semaphore
+import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.statement.StatementBase
 import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
@@ -16,14 +18,17 @@ import com.dbobjekts.statement.whereclause.SubClause
 class SelectStatementExecutor<T, RSB : ResultRow<T>>(
     semaphore: Semaphore,
     connection: ConnectionAdapter,
-    internal val columns: List<AnyColumn>,
+    selectables: List<Selectable<*>>,
     internal val selectResultSet: RSB
 ) : StatementBase<SelectStatementExecutor<T, RSB>>(semaphore, connection) {
 
     override val statementType = "select"
+    internal val columns: List<AnyColumn>
     private var useOuterJoins = false
 
     init {
+        selectResultSet.selectables = selectables
+        columns = selectables.flatMap { it.columns }
         semaphore.claim("select")
         columns.forEach { registerTable(it.table) }
     }
@@ -42,7 +47,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
     fun from(joinChain: TableOrJoin): SelectStatementExecutor<T, RSB> {
         when (val obj = joinChain) {
             is TableJoinChain -> registerJoinChain(obj)
-            is Table -> registerDrivingTable(obj)
+            is AnyTable -> registerDrivingTable(obj)
             else -> throw IllegalStateException("Unsupported operation: argument must be subclass of TableJoinChain or Table")
         }
         return this

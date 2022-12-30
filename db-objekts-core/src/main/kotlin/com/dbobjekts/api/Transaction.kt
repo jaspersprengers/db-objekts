@@ -1,6 +1,7 @@
 package com.dbobjekts.api
 
 import com.dbobjekts.jdbc.ConnectionAdapter
+import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.TableOrJoin
 import com.dbobjekts.metadata.joins.TableJoinChain
@@ -75,7 +76,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
     fun deleteFrom(tableOrJoin: TableOrJoin): DeleteStatementExecutor {
         val statement = DeleteStatementExecutor(semaphore, connection)
         return when (tableOrJoin) {
-            is Table -> statement.withTable(tableOrJoin)
+            is AnyTable -> statement.withTable(tableOrJoin)
             is TableJoinChain -> statement.withJoinChain(tableOrJoin)
             else -> throw IllegalArgumentException("Illegal implementation of TableOrJoin provided. Must be Table or TableJoinChain")
         }
@@ -147,7 +148,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
     /**
      * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
      */
-    fun <T1, T2> select(c1: Column<T1>, c2: Column<T2>): SelectStatementExecutor<Tuple2<T1, T2>, ResultRow2<T1, T2>> =
+    fun <T1, T2> select(c1: Selectable<T1>, c2: Selectable<T2>): SelectStatementExecutor<Tuple2<T1, T2>, ResultRow2<T1, T2>> =
         SelectStatementExecutor(semaphore, connection, listOf(c1, c2), ResultRow2<T1, T2>())
 
     /**

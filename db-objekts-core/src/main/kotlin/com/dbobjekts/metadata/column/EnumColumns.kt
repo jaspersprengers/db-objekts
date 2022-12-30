@@ -1,12 +1,12 @@
 package com.dbobjekts.metadata.column
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyTable
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Types
 
 abstract class EnumAsIntColumn<E : Enum<E>>(
-    table: Table,
+    table: AnyTable,
     name: String,
     enumClass: Class<E>
 ) : NonNullableColumn<E>(name, table, enumClass) {
@@ -20,7 +20,7 @@ abstract class EnumAsIntColumn<E : Enum<E>>(
 }
 
 abstract class NullableEnumAsIntColumn<E : Enum<E>>(
-    table: Table,
+    table: AnyTable,
     name: String,
     enumClass: Class<E>
 ) : NullableColumn<E?>(name, table, Types.VARCHAR, enumClass) {
@@ -33,7 +33,7 @@ abstract class NullableEnumAsIntColumn<E : Enum<E>>(
 
 
 abstract class EnumAsStringColumn<E : Enum<E>>(
-    table: Table,
+    table: AnyTable,
     name: String,
     enumClass: Class<E>
 ) : NonNullableColumn<E>(name, table, enumClass) {
@@ -47,7 +47,7 @@ abstract class EnumAsStringColumn<E : Enum<E>>(
 }
 
 abstract class NullableEnumAsStringColumn<E : Enum<E>>(
-    table: Table,
+    table: AnyTable,
     name: String,
     enumClass: Class<E>
 ) : NullableColumn<E?>(name, table, Types.VARCHAR, enumClass) {

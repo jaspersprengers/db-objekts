@@ -1,12 +1,13 @@
 package com.dbobjekts.metadata.joins
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.TableOrJoin
 import com.dbobjekts.metadata.SerializableToSQL
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.util.StringUtil
 
-class TableJoinChain(val table: Table) : TableOrJoin, Cloneable, SerializableToSQL {
+class TableJoinChain(val table: AnyTable) : TableOrJoin, Cloneable, SerializableToSQL {
 
     private val joins: MutableList<JoinBase> = mutableListOf()
 
@@ -15,29 +16,29 @@ class TableJoinChain(val table: Table) : TableOrJoin, Cloneable, SerializableToS
         return this
     }
 
-    fun leftJoin(table: Table): TableJoinChain {
+    fun leftJoin(table: AnyTable): TableJoinChain {
         checkTableNotJoinedAlready(table)
         addJoin(createLeftJoin(extractJoinedColumnPair(table)))
         return this
     }
 
-    fun innerJoin(table: Table): TableJoinChain {
+    fun innerJoin(table: AnyTable): TableJoinChain {
         checkTableNotJoinedAlready(table)
         addJoin(createInnerJoin(extractJoinedColumnPair(table)))
         return this
     }
 
 
-    internal fun checkTableNotJoinedAlready(table: Table) {
+    internal fun checkTableNotJoinedAlready(table: AnyTable) {
         if (joins.any { it.containsTable(table) })
             throw IllegalArgumentException("Table ${table.tableName} is already present in join. You cannot add it again: ${toSQL()}")
     }
 
-    internal fun lastJoinTable(): Table = if (joins.isEmpty()) table else joins.last().rightPart.table
+    internal fun lastJoinTable(): AnyTable = if (joins.isEmpty()) table else joins.last().rightPart.table
 
     internal fun hasJoins(): Boolean = !joins.isEmpty()
 
-    private fun extractJoinedColumnPair(table: Table): Pair<AnyColumn, AnyColumn> {
+    private fun extractJoinedColumnPair(table: AnyTable): Pair<AnyColumn, AnyColumn> {
         val head =
             if (joins.isEmpty()) getJoinPair(lastJoinTable(), lastJoinTable(), table)
             else joins.reversed().map { getJoinPair(it.leftPart.table, it.rightPart.table, table) }.filterNotNull().firstOrNull()
@@ -45,13 +46,13 @@ class TableJoinChain(val table: Table) : TableOrJoin, Cloneable, SerializableToS
         return if (head == null) throw IllegalStateException("Cannot join ${table.toSQL()} to ${lastJoinTable().toSQL()}") else head
     }
 
-    internal fun canJoin(table: Table): Boolean {
+    internal fun canJoin(table: AnyTable): Boolean {
         val head = if (joins.isEmpty()) getJoinPair(lastJoinTable(), lastJoinTable(), table)
         else joins.reversed().map { getJoinPair(it.leftPart.table, it.rightPart.table, table) }.filterNotNull().firstOrNull()
         return head != null
     }
 
-    private fun getJoinPair(left: Table, right: Table, tableToAdd: Table): Pair<AnyColumn, AnyColumn>? {
+    private fun getJoinPair(left: AnyTable, right: AnyTable, tableToAdd: AnyTable): Pair<AnyColumn, AnyColumn>? {
 
         left.getForeignKeyToParent(tableToAdd)?.let {
             return Pair(it.column, tableToAdd.columnByName(it.parentColumn.nameInTable) ?: throw java.lang.IllegalStateException(""))

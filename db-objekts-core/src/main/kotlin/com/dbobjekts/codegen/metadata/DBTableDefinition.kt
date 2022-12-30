@@ -1,5 +1,6 @@
 package com.dbobjekts.codegen.metadata
 
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.PackageName
 import com.dbobjekts.api.SchemaName
 import com.dbobjekts.api.TableName
@@ -24,7 +25,7 @@ data class DBTableDefinition(
            |${columns.map { it.prettyPrint() }.joinToString(", ")}"""
 
 
-    fun diff(codeObject: Table): List<String> {
+    fun diff(codeObject: AnyTable): List<String> {
         val diffs = mutableListOf<String>()
         if (columns.size != codeObject.columns.size){
             val inDb = columns.map { it.columnName.value }.joinToString(",")

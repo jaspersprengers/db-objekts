@@ -1,5 +1,6 @@
 package com.dbobjekts.metadata
 
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.vendors.Vendor
 import com.dbobjekts.vendors.Vendors
 import com.dbobjekts.vendors.h2.H2Vendor
@@ -23,7 +24,7 @@ open class Catalog(
 
     constructor(vendor: Vendor, schemas: List<Schema> = listOf()) : this(vendor.name, schemas)
 
-    internal val tables: List<Table>
+    internal val tables: List<AnyTable>
     private val aliases: TableAliases
 
     init {
@@ -34,7 +35,7 @@ open class Catalog(
         tables = schemas.flatMap { it.tables }
     }
 
-    internal fun assertContainsTable(table: Table): Table {
+    internal fun assertContainsTable(table: AnyTable): AnyTable {
         table.ensureSchema()
         if (tables.none { it.schemaAndName() == table.schemaAndName() }) {
             throw IllegalStateException("Table ${table.schemaAndName()} does not belong to the Catalog associated with the current TransactionManager")
@@ -44,7 +45,7 @@ open class Catalog(
 
     internal fun schemaByName(name: String): Schema? = schemas.find { it.schemaName.value.contentEquals(name, true) }
 
-    internal fun aliasForTable(table: Table): String = aliases.aliasForSchemaAndTable(table.schemaName(), table.tableName)
+    internal fun aliasForTable(table: AnyTable): String = aliases.aliasForSchemaAndTable(table.schemaName(), table.tableName)
 
     override fun toString(): String = this::class.java.canonicalName
 

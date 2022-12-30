@@ -1,6 +1,6 @@
 package com.dbobjekts.metadata.column
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyTable
 import java.lang.IllegalStateException
 import java.sql.PreparedStatement
 import java.sql.ResultSet
@@ -8,7 +8,7 @@ import java.sql.Types
 
 abstract class NonNullableColumn<I>(
     name: String,
-    table: Table,
+    table: AnyTable,
     valueClass: Class<*>
 ) : Column<I>(name, table, valueClass) {
     abstract val nullable: NullableColumn<I?>

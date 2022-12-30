@@ -1,6 +1,8 @@
 package com.dbobjekts.metadata.column
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.metadata.Selectable
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.statement.And
 import com.dbobjekts.statement.whereclause.ConditionFactory
 import com.dbobjekts.statement.whereclause.SubClause
@@ -17,9 +19,9 @@ import java.sql.ResultSet
  */
 abstract class Column<I>(
     val nameInTable: String,
-    val table: Table,
+    val table: AnyTable,
     internal val valueClass: Class<*>
-) : ConditionFactory<I, SubClause> {
+) : ConditionFactory<I, SubClause>, Selectable<I> {
     init {
         if (!ValidateDBObjectName(nameInTable))
             throw IllegalArgumentException("Not a valid column name: '$nameInTable'")
@@ -34,6 +36,11 @@ abstract class Column<I>(
         clause.addCondition(this, And, symbol, values, secondColumn)
         return clause
     }
+
+    override val columns: List<AnyColumn> = listOf(this)
+
+    @Suppress("UNCHECKED_CAST")
+    override fun toValue(values: List<Any?>) = values.get(0) as I
 
     internal abstract fun retrieveValue(position: Int, rs: ResultSet): I?
 

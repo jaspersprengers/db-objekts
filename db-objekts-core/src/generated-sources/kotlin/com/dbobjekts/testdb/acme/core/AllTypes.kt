@@ -7,7 +7,7 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
-object AllTypes:Table("ALL_TYPES"), HasUpdateBuilder<AllTypesUpdateBuilder, AllTypesInsertBuilder> {
+object AllTypes:Table<AllTypesRow>("ALL_TYPES"), HasUpdateBuilder<AllTypesUpdateBuilder, AllTypesInsertBuilder> {
     val id = com.dbobjekts.metadata.column.AutoKeyLongColumn(this, "ID")
     val characterCol = com.dbobjekts.metadata.column.VarcharColumn(this, "CHARACTER_COL")
     val characterColNil = com.dbobjekts.metadata.column.NullableVarcharColumn(this, "CHARACTER_COL_NIL")
@@ -67,9 +67,11 @@ object AllTypes:Table("ALL_TYPES"), HasUpdateBuilder<AllTypesUpdateBuilder, AllT
     val addressString = com.dbobjekts.testdb.AddressTypeAsStringColumn(this, "ADDRESS_STRING")
     val addressStringNil = com.dbobjekts.testdb.AddressTypeAsStringColumn(this, "ADDRESS_STRING_NIL")
     override val columns: List<AnyColumn> = listOf(id,characterCol,characterColNil,charactervaryingCol,charactervaryingColNil,characterlargeobjectCol,characterlargeobjectColNil,varcharIgnorecaseCol,varcharIgnorecaseColNil,enumCol,enumColNil,binaryCol,binaryColNil,binaryvaryingCol,binaryvaryingColNil,binarylargeobjectCol,binarylargeobjectColNil,jsonCol,jsonColNil,booleanCol,booleanColNil,tinyintCol,tinyintColNil,smallintCol,smallintColNil,integerCol,integerColNil,bigintCol,bigintColNil,numericCol,numericColNil,decfloatCol,decfloatColNil,realCol,realColNil,doubleprecisionCol,doubleprecisionColNil,dateCol,dateColNil,timeCol,timeColNil,timewithtimezoneCol,timewithtimezoneColNil,timestampCol,timestampColNil,timestampwithtimezoneCol,timestampwithtimezoneColNil,uuidCol,uuidColNil,intervalCol,intervalColNil,geometryColNil,intArrayCol,intArrayColNil,addressInt,addressIntNil,addressString,addressStringNil)
+    override fun toValue(values: List<Any?>): AllTypesRow = AllTypesRow()
+
     override fun metadata(): WriteQueryAccessors<AllTypesUpdateBuilder, AllTypesInsertBuilder> = WriteQueryAccessors(AllTypesUpdateBuilder(), AllTypesInsertBuilder())
 }
-
+class AllTypesRow()
 class AllTypesUpdateBuilder() : UpdateBuilderBase(AllTypes) {
     fun characterCol(value: String): AllTypesUpdateBuilder = put(AllTypes.characterCol, value)
     fun characterColNil(value: String?): AllTypesUpdateBuilder = put(AllTypes.characterColNil, value)

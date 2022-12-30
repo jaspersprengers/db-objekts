@@ -7,12 +7,15 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
-object Department:Table("DEPARTMENT"), HasUpdateBuilder<DepartmentUpdateBuilder, DepartmentInsertBuilder> {
+object Department:Table<DepartmentRow>("DEPARTMENT"), HasUpdateBuilder<DepartmentUpdateBuilder, DepartmentInsertBuilder> {
     val id = com.dbobjekts.metadata.column.AutoKeyLongColumn(this, "ID")
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     override val columns: List<AnyColumn> = listOf(id,name)
+    override fun toValue(values: List<Any?>): DepartmentRow = DepartmentRow()
+
     override fun metadata(): WriteQueryAccessors<DepartmentUpdateBuilder, DepartmentInsertBuilder> = WriteQueryAccessors(DepartmentUpdateBuilder(), DepartmentInsertBuilder())
 }
+class DepartmentRow()
 
 class DepartmentUpdateBuilder() : UpdateBuilderBase(Department) {
     fun name(value: String): DepartmentUpdateBuilder = put(Department.name, value)

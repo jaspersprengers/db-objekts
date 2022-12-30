@@ -1,10 +1,11 @@
 package com.dbobjekts.statement
 
 import com.dbobjekts.api.AnyColumnAndValue
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.Semaphore
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Catalog
-import com.dbobjekts.metadata.Table
+
 import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.metadata.joins.TableJoinChainBuilder
 import com.dbobjekts.statement.whereclause.EmptyWhereClause
@@ -17,10 +18,10 @@ abstract class StatementBase<W>(protected val semaphore: Semaphore,
 
     internal open val catalog: Catalog = connection.catalog()
     internal val statementLog: StatementLogger = connection.statementLog
-    internal var tables: MutableList<Table> = mutableListOf<Table>()
+    internal var tables: MutableList<AnyTable> = mutableListOf<AnyTable>()
     internal abstract val statementType: String
 
-    private var _drivingTable: Table? = null
+    private var _drivingTable: AnyTable? = null
     private var _joinChain: TableJoinChain? = null
     protected lateinit var _whereClause: WhereClause
 
@@ -28,7 +29,7 @@ abstract class StatementBase<W>(protected val semaphore: Semaphore,
         _joinChain = joinChain
     }
 
-    internal fun registerDrivingTable(table: Table) {
+    internal fun registerDrivingTable(table: AnyTable) {
         _drivingTable = table
     }
 
@@ -41,7 +42,7 @@ abstract class StatementBase<W>(protected val semaphore: Semaphore,
         ).build()
 
 
-    internal fun registerTable(table: Table) {
+    internal fun registerTable(table: AnyTable) {
         if (!tables.contains(catalog.assertContainsTable(table)))
             tables.add(table)
     }
@@ -61,7 +62,7 @@ abstract class StatementBase<W>(protected val semaphore: Semaphore,
         tables.forEach { registerTable(it) }
     }
 
-    internal fun getTable(): Table =
+    internal fun getTable(): AnyTable =
         if (tables.isEmpty()) throw IllegalStateException("Expected at least one table for query") else tables.first()
 
 }

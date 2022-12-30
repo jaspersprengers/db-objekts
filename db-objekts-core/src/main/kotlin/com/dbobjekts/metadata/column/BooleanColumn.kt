@@ -1,6 +1,6 @@
 package com.dbobjekts.metadata.column
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyTable
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Types
@@ -10,7 +10,7 @@ import java.sql.Types
  *
  * @param name    The column name in the corresponding database table
  */
-class BooleanColumn(table: Table, name: String) : NonNullableColumn<Boolean>(name, table, Boolean::class.java) {
+class BooleanColumn(table: AnyTable, name: String) : NonNullableColumn<Boolean>(name, table, Boolean::class.java) {
     override val nullable: NullableColumn<Boolean?> = NullableBooleanColumn(table, name)
     override fun getValue(position: Int, resultSet: ResultSet): Boolean = resultSet.getBoolean(position)
 
@@ -18,14 +18,14 @@ class BooleanColumn(table: Table, name: String) : NonNullableColumn<Boolean>(nam
         statement.setBoolean(position, value as Boolean)
 }
 
-class NullableBooleanColumn(table: Table, name: String) : NullableColumn<Boolean?>(name, table, Types.BOOLEAN, Boolean::class.java) {
+class NullableBooleanColumn(table: AnyTable, name: String) : NullableColumn<Boolean?>(name, table, Types.BOOLEAN, Boolean::class.java) {
     override fun getValue(position: Int, resultSet: ResultSet): Boolean? = resultSet.getBoolean(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Boolean?) =
         statement.setBoolean(position, value as Boolean)
 }
 
-class NumberAsBooleanColumn(table: Table, name: String) : NonNullableColumn<Boolean>(name, table, Boolean::class.java) {
+class NumberAsBooleanColumn(table: AnyTable, name: String) : NonNullableColumn<Boolean>(name, table, Boolean::class.java) {
     override val nullable: NullableColumn<Boolean?> = NullableNumberAsBooleanColumn(table, name)
     override fun getValue(position: Int, resultSet: ResultSet): Boolean = resultSet.getInt(position) == 1
 
@@ -33,7 +33,7 @@ class NumberAsBooleanColumn(table: Table, name: String) : NonNullableColumn<Bool
         statement.setInt(position, if (value) 1 else 0)
 }
 
-class NullableNumberAsBooleanColumn(table: Table, name: String) :
+class NullableNumberAsBooleanColumn(table: AnyTable, name: String) :
     NullableColumn<Boolean?>(name, table, Types.INTEGER, Boolean::class.java) {
     override fun getValue(position: Int, resultSet: ResultSet): Boolean? = resultSet.getInt(position) == 1
 

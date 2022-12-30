@@ -7,13 +7,15 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
-object Member:Table("MEMBER"), HasUpdateBuilder<MemberUpdateBuilder, MemberInsertBuilder> {
+object Member:Table<MemberRow>("MEMBER"), HasUpdateBuilder<MemberUpdateBuilder, MemberInsertBuilder> {
     val id = com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "ID", "MEMBER_SEQ")
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     override val columns: List<AnyColumn> = listOf(id,name)
+    override fun toValue(values: List<Any?>): MemberRow = MemberRow()
+
     override fun metadata(): WriteQueryAccessors<MemberUpdateBuilder, MemberInsertBuilder> = WriteQueryAccessors(MemberUpdateBuilder(), MemberInsertBuilder())
 }
-
+class MemberRow()
 class MemberUpdateBuilder() : UpdateBuilderBase(Member) {
     fun name(value: String): MemberUpdateBuilder = put(Member.name, value)
 }

@@ -7,14 +7,16 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
-object Item:Table("ITEM"), HasUpdateBuilder<ItemUpdateBuilder, ItemInsertBuilder> {
+object Item:Table<ItemRow>("ITEM"), HasUpdateBuilder<ItemUpdateBuilder, ItemInsertBuilder> {
     val id = com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "ID", "ITEM_SEQ")
     val isbn = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "ISBN", Book.isbn)
     val dateAcquired = com.dbobjekts.metadata.column.DateColumn(this, "DATE_ACQUIRED")
     override val columns: List<AnyColumn> = listOf(id,isbn,dateAcquired)
+    override fun toValue(values: List<Any?>): ItemRow = ItemRow()
+
     override fun metadata(): WriteQueryAccessors<ItemUpdateBuilder, ItemInsertBuilder> = WriteQueryAccessors(ItemUpdateBuilder(), ItemInsertBuilder())
 }
-
+class ItemRow()
 class ItemUpdateBuilder() : UpdateBuilderBase(Item) {
     fun isbn(value: String): ItemUpdateBuilder = put(Item.isbn, value)
     fun dateAcquired(value: java.time.LocalDate): ItemUpdateBuilder = put(Item.dateAcquired, value)

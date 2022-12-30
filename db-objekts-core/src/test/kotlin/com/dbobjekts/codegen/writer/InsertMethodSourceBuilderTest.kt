@@ -62,9 +62,7 @@ class InsertMethodSourceBuilderTest {
         assertField(fields[3], "hobbies", "String?", " = null", true, false)
         assertField(fields[4], "married", "Boolean?", " = false", true, false)
     }
-    object TestTable : Table("Employee") {
-        override val columns: List<AnyColumn> = listOf()
-    }
+
 }
 
 

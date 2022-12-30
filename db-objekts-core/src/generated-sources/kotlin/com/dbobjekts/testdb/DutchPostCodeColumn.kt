@@ -1,5 +1,6 @@
 package com.dbobjekts.testdb
 
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.NullableColumn
 import com.dbobjekts.metadata.column.NullableVarcharColumn
@@ -8,7 +9,7 @@ import java.sql.PreparedStatement
 import java.util.regex.Pattern
 
 
-class DutchPostCodeColumn(table: Table, name: String) : VarcharColumn(table, name) {
+class DutchPostCodeColumn(table: AnyTable, name: String) : VarcharColumn(table, name) {
     override val nullable: NullableColumn<String?> = NullableDutchPostCodeColumn(table, name)
 
 
@@ -26,7 +27,7 @@ class DutchPostCodeColumn(table: Table, name: String) : VarcharColumn(table, nam
     }
 }
 
-class NullableDutchPostCodeColumn(table: Table, name: String) : NullableVarcharColumn(table, name) {
+class NullableDutchPostCodeColumn(table: AnyTable, name: String) : NullableVarcharColumn(table, name) {
 
     override fun setValue(position: Int, statement: PreparedStatement, value: String?) {
         value?.let { DutchPostCodeColumn.validate(it) }

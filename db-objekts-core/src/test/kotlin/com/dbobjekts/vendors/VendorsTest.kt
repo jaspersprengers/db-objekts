@@ -9,9 +9,9 @@ class VendorsTest {
     @Test
     fun `get vendor by name and version`() {
         Assertions.assertThat(Vendors.byProductAndVersion("H2")).isEqualTo(H2Vendor)
-        Assertions.assertThat(Vendors.byProductAndVersion("H2", 10)).isEqualTo(H2Vendor)
-        Assertions.assertThat(Vendors.byProductAndVersion("H2", 9)).isEqualTo(H2Vendor)
-        Assertions.assertThatThrownBy { Vendors.byProductAndVersion("H2", 11) }
+        Assertions.assertThat(Vendors.byProductAndVersion("H2", 2)).isEqualTo(H2Vendor)
+        Assertions.assertThat(Vendors.byProductAndVersion("H2", 1)).isEqualTo(H2Vendor)
+        Assertions.assertThatThrownBy { Vendors.byProductAndVersion("H2", 3) }
     }
 
 }

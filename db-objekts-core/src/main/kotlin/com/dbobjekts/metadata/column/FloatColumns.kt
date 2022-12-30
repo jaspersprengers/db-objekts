@@ -1,6 +1,6 @@
 package com.dbobjekts.metadata.column
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyTable
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Types
@@ -10,7 +10,7 @@ import java.sql.Types
  *
  * @param name    The column name in the corresponding database table
  */
-class FloatColumn(table: Table, name: String) : NonNullableColumn<Float>(name, table, Float::class.java){
+class FloatColumn(table: AnyTable, name: String) : NonNullableColumn<Float>(name, table, Float::class.java){
     override val nullable: NullableColumn<Float?> = NullableFloatColumn(table, name)
     override fun getValue(position: Int, resultSet: ResultSet): Float = resultSet.getFloat(position)
 
@@ -18,7 +18,7 @@ class FloatColumn(table: Table, name: String) : NonNullableColumn<Float>(name, t
         statement.setFloat(position, value)
 }
 
-class NullableFloatColumn(table: Table, name: String) : NullableColumn<Float?>(name, table, Types.FLOAT, Float::class.java){
+class NullableFloatColumn(table: AnyTable, name: String) : NullableColumn<Float?>(name, table, Types.FLOAT, Float::class.java){
     override fun getValue(position: Int, resultSet: ResultSet): Float? = resultSet.getFloat(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Float?) =

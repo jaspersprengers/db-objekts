@@ -12,11 +12,11 @@ import java.lang.IllegalStateException
  * Parent of all the generated [Table] objects that represent the tables in the database and act as metadata for the query engine.
  *
  */
-abstract class Table(
+abstract class Table<I> (
     internal val dbName: String
-) : TableOrJoin, SerializableToSQL {
+) : TableOrJoin, SerializableToSQL, Selectable<I> {
 
-    abstract val columns: List<AnyColumn>
+    override abstract val columns: List<AnyColumn>
 
     private lateinit var schema: Schema
 
@@ -29,7 +29,7 @@ abstract class Table(
 
     internal val foreignKeys: List<AnyForeignKey> by lazy { columns.filter { it is AnyForeignKey }.map { it as AnyForeignKey } }
 
-    internal fun getForeignKeyToParent(parent: Table): AnyForeignKey? = foreignKeys.find { it.parentColumn.table == parent }
+    internal fun getForeignKeyToParent(parent: AnyTable): AnyForeignKey? = foreignKeys.find { it.parentColumn.table == parent }
 
     internal fun columnByName(column: String): AnyColumn? = columns.find { it.nameInTable.equals(column, true) }
 
@@ -75,7 +75,7 @@ abstract class Table(
      *  employee e left join hobby h on e.hobby_id = h.id
      * ```
      */
-    fun leftJoin(table: Table): TableJoinChain =
+    fun leftJoin(table: AnyTable): TableJoinChain =
         TableJoinChain(this).addJoin(JoinFactory.createLeftJoin(this, table))
 
     /**
@@ -88,7 +88,7 @@ abstract class Table(
      *  employee e right join hobby h on e.hobby_id = h.id
      * ```
      */
-    fun rightJoin(table: Table): TableJoinChain =
+    fun rightJoin(table: AnyTable): TableJoinChain =
         TableJoinChain(this).addJoin(JoinFactory.createRightJoin(this, table))
 
     /**
@@ -101,7 +101,7 @@ abstract class Table(
      *  employee e join hobby h on e.hobby_id = h.id
      * ```
      */
-    fun innerJoin(table: Table): TableJoinChain =
+    fun innerJoin(table: AnyTable): TableJoinChain =
         TableJoinChain(this).addJoin(JoinFactory.createInnerJoin(this, table))
 
     /**

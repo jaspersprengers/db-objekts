@@ -1,5 +1,6 @@
 package com.dbobjekts.metadata
 
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.SchemaName
 
 /**
@@ -9,10 +10,10 @@ import com.dbobjekts.api.SchemaName
 open class Schema(
     var catalog: Catalog,
     val schemaName: SchemaName,
-    val tables: List<Table>
+    val tables: List<Table<*>>
 ) {
 
-    constructor(name: String, tables: List<Table>) : this(PlaceHolderCatalog, SchemaName(name), tables)
+    constructor(name: String, tables: List<AnyTable>) : this(PlaceHolderCatalog, SchemaName(name), tables)
 
     init {
         tables.forEach { it.withSchema(this) }
@@ -24,7 +25,7 @@ open class Schema(
 
     internal val dottedName: String = if (schemaName.value.isEmpty()) "" else "$schemaName."
 
-    internal fun aliasForTable(table: Table): String = catalog.aliasForTable(table)
+    internal fun aliasForTable(table: AnyTable): String = catalog.aliasForTable(table)
 
     override fun toString(): String = schemaName.value
 

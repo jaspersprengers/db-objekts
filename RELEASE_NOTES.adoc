@@ -11,3 +11,6 @@ First alpha release
 
 
 == 0.2-alpha-1
+
+
+== 0.3-alpha-1

@@ -1,6 +1,7 @@
 package com.dbobjekts.metadata.joins
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.util.StringUtil
 
@@ -13,23 +14,23 @@ object JoinFactory {
     fun createInnerJoin(left: AnyColumn, right: AnyColumn): InnerJoin = InnerJoin(left, right)
 
 
-    fun createLeftJoin(left: Table, right: Table): LeftJoin = extractJoinedColumnPair(left, right).let {
+    fun createLeftJoin(left: AnyTable, right: AnyTable): LeftJoin = extractJoinedColumnPair(left, right).let {
         createLeftJoin(it.first, it.second)
     }
 
-    fun createRightJoin(left: Table, right: Table): RightJoin =
+    fun createRightJoin(left: AnyTable, right: AnyTable): RightJoin =
         extractJoinedColumnPair(left, right).let {
             createRightJoin(it.first, it.second)
         }
 
 
-    fun createInnerJoin(left: Table, right: Table): InnerJoin =
+    fun createInnerJoin(left: AnyTable, right: AnyTable): InnerJoin =
         extractJoinedColumnPair(left, right).let {
             createInnerJoin(it.first, it.second)
         }
 
 
-    private fun extractJoinedColumnPair(left: Table, right: Table): Pair<AnyColumn, AnyColumn> {
+    private fun extractJoinedColumnPair(left: AnyTable, right: AnyTable): Pair<AnyColumn, AnyColumn> {
         //1: person left join hobby (person has optional FK to hobby)
         val fkToParent = left.getForeignKeyToParent(right)
         if ( fkToParent == null ){

@@ -1,12 +1,12 @@
 package com.dbobjekts.metadata.column
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyTable
 
 interface AutoKeyColumn<I> : IsPrimaryKey
 
-class AutoKeyIntegerColumn(table: Table, name: String) : IntegerColumn(table, name), AutoKeyColumn<Int>
+class AutoKeyIntegerColumn(table: AnyTable, name: String) : IntegerColumn(table, name), AutoKeyColumn<Int>
 
-class AutoKeyLongColumn(table: Table, name: String):LongColumn(table, name), AutoKeyColumn<Long>
+class AutoKeyLongColumn(table: AnyTable, name: String):LongColumn(table, name), AutoKeyColumn<Long>
 
 
 

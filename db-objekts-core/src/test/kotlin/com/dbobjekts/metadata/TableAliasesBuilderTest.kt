@@ -71,24 +71,29 @@ class TableAliasesBuilderTest {
         assertEquals("a1", Address2.alias())
     }
 
-    object Members : Table("members") {
+    object Members : Table<String>("members") {
         override val columns = listOf<AnyColumn>()
+        override fun toValue(values: List<Any?>): String = ""
     }
 
-    object Address : Table("address") {
+    object Address : Table<String>("address") {
         override val columns = listOf<AnyColumn>()
+        override fun toValue(values: List<Any?>): String = ""
     }
 
-    object MemberAddress : Table("member_address") {
+    object MemberAddress : Table<String>("member_address") {
         override val columns = listOf<AnyColumn>()
+        override fun toValue(values: List<Any?>): String = ""
     }
 
-    object Members2 : Table("members") {
+    object Members2 : Table<String>("members") {
         override val columns = listOf<AnyColumn>()
+        override fun toValue(values: List<Any?>): String = ""
     }
 
-    object Address2 : Table("address") {
+    object Address2 : Table<String>("address") {
         override val columns = listOf<AnyColumn>()
+        override fun toValue(values: List<Any?>): String = ""
     }
 }
 

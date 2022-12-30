@@ -1,6 +1,7 @@
 package com.dbobjekts.api
 
 import com.dbobjekts.jdbc.JDBCResultSetAdapter
+import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.statement.ColumnInResultRow
 import java.sql.ResultSet
 
@@ -11,6 +12,7 @@ abstract class ResultRow<out O> {
 
     protected lateinit var jdbcResultSetAdapter: JDBCResultSetAdapter
     private lateinit var rows: List<O>
+    internal lateinit var selectables: List<Selectable<*>>
 
     internal fun initialize(jdbcResultSetAdapter: JDBCResultSetAdapter) {
         this.jdbcResultSetAdapter = jdbcResultSetAdapter
@@ -22,6 +24,19 @@ abstract class ResultRow<out O> {
 
     internal fun extractValue(column: ColumnInResultRow, resultSet: ResultSet): Any? {
         return column.column.retrieveValue(column.position, resultSet)
+    }
+    protected fun extractRow_2(cols: List<ColumnInResultRow>, resultSet: ResultSet): List<Any?>{
+        var index = 0
+        val values = mutableListOf<Any?>()
+        for (s in selectables){
+            val retrieved: List<Any?> = s.columns.mapIndexed() { idx, col ->
+                val curr = index + idx
+                extractValue(cols[curr], resultSet)
+            }
+            values += s.toValue(retrieved)
+            index += s.columns.size
+        }
+        return values
     }
 
     internal fun first(): O =
