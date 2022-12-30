@@ -13,10 +13,16 @@ import com.dbobjekts.codegen.parsers.VendorSpecificMetaDataExtractor
  */
 enum class Vendors(
     val vendorClass: String,
-    val majorVersion: Int
+    val requiredMajorVersion: Int
 ) {
-    H2("com.dbobjekts.vendors.h2.H2Vendor", 10),
+    H2("com.dbobjekts.vendors.h2.H2Vendor", 2),
     MARIADB("com.dbobjekts.vendors.mariadb.MariaDBVendor", 10);
+
+    private fun validateVersion(actualVersionOfDataSource: Int): Vendors {
+        if (requiredMajorVersion < actualVersionOfDataSource)
+            throw IllegalStateException("Vendor major version $actualVersionOfDataSource is not supported.")
+        return this
+    }
 
     companion object {
 
@@ -29,16 +35,13 @@ enum class Vendors(
          * @version the major version as returned by [java.sql.DatabaseMetaData.getDatabaseMajorVersion]
          */
         fun byProductAndVersion(name: String, version: Int? = null): Vendor {
-            val vendor = Vendors.values().find {
-                it.name.equals(name, true) &&
-                if (version != null) it.majorVersion >= version else true
-            } ?: throw IllegalArgumentException(
-                "Vendor $name and/or version $version is not supported, Choose from ${
-                    values().joinToString(",") { "${it.name} version <= ${it.majorVersion}" }
-                }"
-            )
+            val vendor = byName(name)
+            version?.let { vendor.validateVersion(version) }
             return Class.forName(vendor.vendorClass).kotlin.objectInstance as Vendor
         }
+
+        fun byName(name: String): Vendors =
+            Vendors.values().find { it.name == name } ?: throw IllegalStateException("Unknown vendor $name")
     }
 }
 
