@@ -54,7 +54,6 @@ class LibraryComponentTest {
             val (title, item) = transaction.select(Book.title, Item.id.nullable).where(Book.isbn.eq("ISBN-WIGAN")).useOuterJoins().first()
             assertThat(item).isNull()
 
-
             transaction.select(Loan, Item, Book, Author, Member).asList()
                 .forEach { (dateLoaned, item, book, author, member) ->
                     println("Item $item of $book by $author loaned to $member on $dateLoaned")

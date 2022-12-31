@@ -60,15 +60,6 @@ class EntityBasedComponentTest {
             assertThat(addressType).isEqualTo(AddressType.HOME)
             assertThat(country).isEqualTo("Netherlands")
 
-
-                tr.select(Employee, Address, EmployeeAddress.kind, Country.name)
-                    .where(Employee.id.eq(empId)).asList().forEach {
-                        (emp, add, addType, country) ->
-                        println("${emp.name}'s $addType address is ${add.street} ${add.postcode}, $country")
-                    }
-
-
-
         }
     }
 
