@@ -3,6 +3,7 @@ package com.dbobjekts.codegen.exclusionfilters
 import com.dbobjekts.api.ColumnExclusionFilter
 import com.dbobjekts.api.SchemaExclusionFilter
 import com.dbobjekts.api.TableExclusionFilter
+import com.dbobjekts.api.exception.CodeGenerationException
 import com.dbobjekts.codegen.metadata.ColumnMetaData
 import com.dbobjekts.codegen.metadata.DBTableDefinition
 import com.dbobjekts.codegen.metadata.TableMetaData
@@ -118,7 +119,7 @@ class ExclusionConfigurer() {
         val cannotExclude = column.isPrimaryKey ||
                 table.foreignKeys.any { (it.schema == table.schema && it.col == column.columnName) || (it.parentSchema == table.schema && it.parentColumn == column.columnName) }
         if (markedForExclusion && cannotExclude) {
-            throw IllegalStateException("Column $column cannot be marked for exclusion. It is either a primary key or foreign key.")
+            throw CodeGenerationException("Column $column cannot be marked for exclusion. It is either a primary key or foreign key.")
         }
         return markedForExclusion
     }

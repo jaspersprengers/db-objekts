@@ -1,5 +1,6 @@
 package com.dbobjekts.vendors
 
+import com.dbobjekts.api.exception.DBObjektsException
 import com.dbobjekts.codegen.datatypemapper.VendorDefaultColumnTypeMapper
 import com.dbobjekts.codegen.parsers.VendorSpecificMetaDataExtractor
 
@@ -20,7 +21,7 @@ enum class Vendors(
 
     private fun validateVersion(actualVersionOfDataSource: Int): Vendors {
         if (requiredMajorVersion < actualVersionOfDataSource)
-            throw IllegalStateException("Vendor major version $actualVersionOfDataSource is not supported.")
+            throw DBObjektsException("Vendor major version $actualVersionOfDataSource is not supported.")
         return this
     }
 
@@ -41,7 +42,7 @@ enum class Vendors(
         }
 
         fun byName(name: String): Vendors =
-            Vendors.values().find { it.name.equals(name, true) } ?: throw IllegalStateException("Unknown vendor $name")
+            Vendors.values().find { it.name.equals(name, true) } ?: throw DBObjektsException("Unknown vendor $name")
     }
 }
 

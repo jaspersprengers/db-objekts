@@ -1,5 +1,6 @@
 package com.dbobjekts.util
 
+import com.dbobjekts.api.exception.DBObjektsException
 import java.sql.SQLException
 
 /**
@@ -13,7 +14,7 @@ object Errors {
     operator fun invoke(
         message: String,
         sqlException: SQLException? = null
-    ): Nothing = throw IllegalStateException(message, sqlException)
+    ): Nothing = throw DBObjektsException(message, sqlException)
 
     /**
      * @param f function must return true
@@ -21,7 +22,7 @@ object Errors {
      */
     fun require(f: Boolean, msg: String) {
         if (!f)
-            throw IllegalStateException(msg)
+            throw DBObjektsException(msg)
     }
 
 }

@@ -230,14 +230,6 @@ class UpdateComponentTest {
     }
 
     @Test
-    @Order(15)
-    fun `delete without whereclause`() {
-        AcmeDB.newTransaction { s ->
-            s.deleteFrom(Employee).where()
-        }
-    }
-
-    @Test
     @Order(16)
     fun `update with join fails`() {
         AcmeDB.newTransaction { tr ->
@@ -254,5 +246,27 @@ class UpdateComponentTest {
                 .hasMessage("Your database does not support DELETE statements with JOIN syntax.")
         }
     }
+
+    @Test
+    @Order(18)
+    fun `update salary for everybody to 5000`() {
+        AcmeDB.newTransaction { tr ->
+            tr.update(Employee).children(5).where()
+            val children = tr.select(Employee.children).asList()
+            assertThat(children).hasSize(11)
+            assertThat(children).containsOnly(5)
+        }
+    }
+
+
+    @Test
+    @Order(19)
+    fun `delete without whereclause`() {
+        AcmeDB.newTransaction { s ->
+            s.deleteFrom(Employee).where()
+            assertThat(s.select(Employee).asList()).isEmpty()
+        }
+    }
+
 
 }

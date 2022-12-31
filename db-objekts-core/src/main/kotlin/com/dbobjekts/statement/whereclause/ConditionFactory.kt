@@ -1,10 +1,11 @@
 package com.dbobjekts.statement.whereclause
 
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.column.Column
 
  interface ConditionFactory<I, W : WhereClauseComponent> {
 
-    fun eq(value: I): W = if (value == null) throw IllegalArgumentException("Cannot supply null argument. Use isNull()") else createSimpleCondition(value, "=")
+    fun eq(value: I): W = if (value == null) throw StatementBuilderException("Cannot supply null argument. Use isNull()") else createSimpleCondition(value, "=")
 
     fun isNull(): W = createIsNullCondition("is null")
 
@@ -19,7 +20,7 @@ import com.dbobjekts.metadata.column.Column
      *
      * @param value a non-null value
      */
-    fun ne(value: I): W = if (value == null) throw IllegalArgumentException("Cannot supply null argument. Use isNotNull()") else createSimpleCondition(value, "<>")
+    fun ne(value: I): W = if (value == null) throw StatementBuilderException("Cannot supply null argument. Use isNotNull()") else createSimpleCondition(value, "<>")
 
      fun isNotNull(): W = createIsNullCondition("is not null")
 

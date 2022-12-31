@@ -1,6 +1,7 @@
 package com.dbobjekts.codegen.parsers
 
 import com.dbobjekts.api.*
+import com.dbobjekts.api.exception.CodeGenerationException
 import com.dbobjekts.codegen.TableBuilder
 import com.dbobjekts.codegen.ValidateForeignKeyConstraints
 import com.dbobjekts.codegen.datatypemapper.ColumnTypeResolver
@@ -100,7 +101,7 @@ class CatalogParser(private val parserConfig: ParserConfig,
         return if (!ValidateForeignKeyConstraints(catalog)) {
             val missing: List<Pair<String, String>> = ValidateForeignKeyConstraints.reportMissing(catalog)
             val errstr = missing.map { "Column ${it.first} refers to ${it.second}." }
-            throw IllegalStateException(
+            throw CodeGenerationException(
                 """One or more tables have a foreign key reference to a table or column that has been excluded.
                    |Code generation has been aborted, because the generated code cannot compile.
                    |Either relax your exclusion criteria, or exclude these tables too.

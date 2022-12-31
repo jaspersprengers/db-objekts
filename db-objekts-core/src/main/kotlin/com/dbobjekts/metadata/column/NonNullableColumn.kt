@@ -1,6 +1,7 @@
 package com.dbobjekts.metadata.column
 
 import com.dbobjekts.api.AnyTable
+import com.dbobjekts.api.exception.StatementExecutionException
 import java.lang.IllegalStateException
 import java.sql.PreparedStatement
 import java.sql.ResultSet
@@ -13,7 +14,7 @@ abstract class NonNullableColumn<I>(
 ) : Column<I>(name, table, valueClass) {
     abstract val nullable: NullableColumn<I?>
     override fun create(value: I?): ColumnAndValue<I> = NonNullableColumnAndValue(
-        this, value ?: throw IllegalArgumentException("Value cannot be null in non-null column")
+        this, value ?: throw StatementExecutionException("Value cannot be null in non-null column")
     )
 
     fun of(value: I): ColumnAndValue<I> = create(value)
@@ -23,7 +24,7 @@ abstract class NonNullableColumn<I>(
     ): I? {
         val value = getValue(position, rs)
         return if (rs.wasNull()) {
-            throw IllegalStateException(
+            throw StatementExecutionException(
                 "Cannot return null value for non-nullable column $tableDotName. " +
                         "This happens when the column is selected in an outer join. Use the nullable counterpart of the non-nullable column like so: transaction.select(Employee.name, Department.name.nullable)."
             )
@@ -33,7 +34,7 @@ abstract class NonNullableColumn<I>(
     abstract fun getValue(position: Int, resultSet: ResultSet): I?
     abstract fun setValue(position: Int, statement: PreparedStatement, value: I)
     override fun putValue(position: Int, statement: PreparedStatement, value: I?) {
-        setValue(position, statement, value ?: throw IllegalStateException("Cannot be null"))
+        setValue(position, statement, value ?: throw StatementExecutionException("Cannot be null"))
     }
 
 }

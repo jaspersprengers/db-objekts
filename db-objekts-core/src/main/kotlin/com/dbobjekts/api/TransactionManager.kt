@@ -1,5 +1,6 @@
 package com.dbobjekts.api
 
+import com.dbobjekts.api.exception.DBObjektsException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.jdbc.DataSourceAdapter
 import com.dbobjekts.jdbc.DataSourceAdapterImpl
@@ -48,7 +49,7 @@ class TransactionManager private constructor(
         val vendorByDBMetaData = extractDBMetaData().vendor
         catalog = catalogOpt ?: Catalog(vendorByDBMetaData)
         if (catalog.vendor != vendorByDBMetaData.name)
-            throw java.lang.IllegalStateException(
+            throw DBObjektsException(
                 "You provided a Catalog implementation that is associated with vendor ${catalog.vendor}, " +
                         "but you connected to a ${vendorByDBMetaData.name} DataSource."
             )

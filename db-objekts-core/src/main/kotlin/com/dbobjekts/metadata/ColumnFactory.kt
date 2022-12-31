@@ -1,5 +1,8 @@
 package com.dbobjekts.metadata
 
+import com.dbobjekts.api.exception.CodeGenerationException
+import com.dbobjekts.api.exception.DBObjektsException
+import com.dbobjekts.api.exception.StatementExecutionException
 import com.dbobjekts.metadata.column.*
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -99,7 +102,7 @@ object ColumnFactory {
     fun <C : NonNullableColumn<*>> forClass(clz: Class<C>): C {
         val constructor = clz.constructors
             .filter { it.parameterCount == 2 && it.parameters[0].type == Table::class.java && it.parameters[1].type == String::class.java }
-            .firstOrNull() ?: throw IllegalStateException("Class does not define a constructor with (table: Table, name: String")
+            .firstOrNull() ?: throw CodeGenerationException("Class does not define a constructor with (table: Table, name: String")
         return constructor.newInstance(table, DUMMY) as C
     }
 
@@ -114,7 +117,7 @@ object ColumnFactory {
             is LocalDate -> DATE
             is ZonedDateTime -> OFFSET_DATETIME
             is Boolean -> BOOLEAN
-            else -> throw IllegalArgumentException("Type $value not supported for parameter: only Int, Long, Double, Date or String")
+            else -> throw StatementExecutionException("Type $value not supported for parameter: only Int, Long, Double, Date or String")
         } as Column<T>
 
 

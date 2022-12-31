@@ -2,6 +2,7 @@ package com.dbobjekts.metadata.joins
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.TableOrJoin
 import com.dbobjekts.metadata.SerializableToSQL
 import com.dbobjekts.metadata.Table
@@ -31,7 +32,7 @@ class TableJoinChain(val table: AnyTable) : TableOrJoin, Cloneable, Serializable
 
     internal fun checkTableNotJoinedAlready(table: AnyTable) {
         if (joins.any { it.containsTable(table) })
-            throw IllegalArgumentException("Table ${table.tableName} is already present in join. You cannot add it again: ${toSQL()}")
+            throw StatementBuilderException("Table ${table.tableName} is already present in join. You cannot add it again: ${toSQL()}")
     }
 
     internal fun lastJoinTable(): AnyTable = if (joins.isEmpty()) table else joins.last().rightPart.table
@@ -43,7 +44,7 @@ class TableJoinChain(val table: AnyTable) : TableOrJoin, Cloneable, Serializable
             if (joins.isEmpty()) getJoinPair(lastJoinTable(), lastJoinTable(), table)
             else joins.reversed().map { getJoinPair(it.leftPart.table, it.rightPart.table, table) }.filterNotNull().firstOrNull()
 
-        return if (head == null) throw IllegalStateException("Cannot join ${table.toSQL()} to ${lastJoinTable().toSQL()}") else head
+        return if (head == null) throw StatementBuilderException("Cannot join ${table.toSQL()} to ${lastJoinTable().toSQL()}") else head
     }
 
     internal fun canJoin(table: AnyTable): Boolean {
@@ -55,43 +56,20 @@ class TableJoinChain(val table: AnyTable) : TableOrJoin, Cloneable, Serializable
     private fun getJoinPair(left: AnyTable, right: AnyTable, tableToAdd: AnyTable): Pair<AnyColumn, AnyColumn>? {
 
         left.getForeignKeyToParent(tableToAdd)?.let {
-            return Pair(it.column, tableToAdd.columnByName(it.parentColumn.nameInTable) ?: throw java.lang.IllegalStateException(""))
+            return Pair(it.column, tableToAdd.columnByName(it.parentColumn.nameInTable) ?: throw StatementBuilderException("Cannot resolve foreign key for $tableToAdd"))
         }
 
         right.getForeignKeyToParent(tableToAdd)?.let {
-            return Pair(it.column, tableToAdd.columnByName(it.parentColumn.nameInTable) ?: throw java.lang.IllegalStateException(""))
+            return Pair(it.column, tableToAdd.columnByName(it.parentColumn.nameInTable) ?: throw StatementBuilderException("Cannot resolve foreign key for $tableToAdd"))
         }
 
         tableToAdd.getForeignKeyToParent(left)?.let {
-            return Pair(left.columnByName(it.parentColumn.nameInTable) ?: throw java.lang.IllegalStateException(""), it.column)
+            return Pair(left.columnByName(it.parentColumn.nameInTable) ?: throw StatementBuilderException("Cannot resolve foreign key for $tableToAdd"), it.column)
         }
 
         tableToAdd.getForeignKeyToParent(right)?.let {
-            return Pair(right.columnByName(it.parentColumn.nameInTable) ?: throw java.lang.IllegalStateException(""), it.column)
+            return Pair(right.columnByName(it.parentColumn.nameInTable) ?: throw StatementBuilderException("Cannot resolve foreign key for $tableToAdd"), it.column)
         }
-
-        /*   *//* val lrFK = left.getForeignKeyToParent(tableToAdd)
-        if (lrFK != null) {
-            val fk = lrFK
-            return Pair(fk.column, tableToAdd.columnByName(fk.parentColumn.dbName)?:throw java.lang.IllegalStateException(""))
-        }
-
-        val lrFK2 = right.getForeignKeyToParent(tableToAdd)
-        if (lrFK2 != null) {
-            val fk = lrFK2
-            return Pair(fk.column, tableToAdd.columnByName(fk.parentColumn.dbName)?:throw java.lang.IllegalStateException(""))
-        }*//*
-
-        val rlFK = tableToAdd.getForeignKeyToParent(left)
-        if (rlFK != null) {
-            val fk = rlFK
-            return Pair(left.columnByName(fk.parentColumn.dbName)?:throw java.lang.IllegalStateException(""), fk.column)
-        }
-        val rlFK2 = tableToAdd.getForeignKeyToParent(right)
-        if (rlFK2 != null) {
-            val fk = rlFK2
-            return Pair(right.columnByName(fk.parentColumn.dbName)?:throw java.lang.IllegalStateException(""), fk.column)
-        }*/
         return null
     }
 

@@ -1,5 +1,6 @@
 package com.dbobjekts.api
 
+import com.dbobjekts.api.exception.StatementExecutionException
 import com.dbobjekts.jdbc.JDBCResultSetAdapter
 import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.statement.ColumnInResultRow
@@ -41,7 +42,7 @@ abstract class ResultRow<out O> {
 
     internal fun first(): O =
         if (rows.isEmpty())
-            throw IllegalStateException("Expected exactly one row, but result set was empty.")
+            throw StatementExecutionException("Expected exactly one row, but result set was empty.")
         else rows.get(0)
 
     internal fun firstOrNull(): O? = if (rows.isEmpty()) null else rows.get(0)

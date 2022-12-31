@@ -1,13 +1,14 @@
 package com.dbobjekts.statement
 
 import com.dbobjekts.api.ResultRow
+import com.dbobjekts.api.exception.StatementExecutionException
 import com.dbobjekts.statement.customsql.SQLStatementExecutor
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
 object TransactionResultValidator {
   fun <T> validate(result: T): T {
-    fun exception(tp: String = "") = IllegalStateException(
+    fun exception(tp: String = "") = StatementExecutionException(
       """You are not allowed to return an unfinished statement from a transactional block, because the underlying Connection handle has been closed.
          $tp. """)
     return when(result) {

@@ -10,6 +10,7 @@ import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.statement.ColumnInResultRow
 import com.dbobjekts.api.ResultRow
 import com.dbobjekts.api.Semaphore
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.statement.StatementBase
 import com.dbobjekts.statement.whereclause.EmptyWhereClause
@@ -48,7 +49,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         when (val obj = joinChain) {
             is TableJoinChain -> registerJoinChain(obj)
             is AnyTable -> registerDrivingTable(obj)
-            else -> throw IllegalStateException("Unsupported operation: argument must be subclass of TableJoinChain or Table")
+            else -> throw StatementBuilderException("Unsupported operation: argument must be subclass of TableJoinChain or Table")
         }
         return this
     }
@@ -126,7 +127,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
     /**
      * Executes the select statement, fetches all rows and returns the first result.
      * For better performance, use this only when you expect a single result, or use the [limit] clause in addition.
-     * @throws IllegalStateException if there are no results. To prevent this, use [firstOrNull]
+     * @throws com.dbobjekts.api.exception.StatementExecutionException if there are no results. To prevent this, use [firstOrNull]
      */
     fun first(): T = execute().first().also { semaphore.clear(); statementLog.logResult(it) }
 

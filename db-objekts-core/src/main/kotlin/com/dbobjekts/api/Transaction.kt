@@ -1,5 +1,6 @@
 package com.dbobjekts.api
 
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.metadata.Table
@@ -104,7 +105,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         return when (tableOrJoin) {
             is AnyTable -> statement.withTable(tableOrJoin)
             is TableJoinChain -> statement.withJoinChain(tableOrJoin)
-            else -> throw IllegalArgumentException("Illegal implementation of TableOrJoin provided. Must be Table or TableJoinChain")
+            else -> throw StatementBuilderException("Illegal implementation of TableOrJoin provided. Must be Table or TableJoinChain")
         }
     }
 

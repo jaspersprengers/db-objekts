@@ -1,6 +1,7 @@
 package com.dbobjekts.statement
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.statement.whereclause.ConditionFactory
 import com.dbobjekts.statement.whereclause.WhereClauseComponent
@@ -47,7 +48,7 @@ data class Condition<I, W : WhereClauseComponent>(
         return StringUtil.concat(
             listOf(
                 columnComponent(),
-                symbol ?: throw IllegalStateException("This Condition is not finished"),
+                symbol ?: throw StatementBuilderException("This Condition is not finished"),
                 rightOperand
             )
         )

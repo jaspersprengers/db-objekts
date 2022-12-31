@@ -1,11 +1,13 @@
 package com.dbobjekts.statement.update
 
 import com.dbobjekts.api.*
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.metadata.column.NullableColumnAndValue
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
 
 interface HasUpdateBuilder<U : UpdateBuilderBase, I : InsertBuilderBase> {
@@ -60,10 +62,14 @@ abstract class UpdateBuilderBase(
      */
     fun where(whereClause: SubClause): Long {
         if (ct.data.isEmpty())
-            throw IllegalStateException("Need at least one column to update")
+            throw StatementBuilderException("Need at least one column to update")
         val stm = UpdateStatementExecutor(semaphore, connection, table, ct.data.toList())
         return stm.where(whereClause ).also { connection.statementLog.logResult(it) }
     }
+    /**
+     * Executes the update statement for all rows in a table. Handle with care!
+     */
+    fun where(): Long = where(EmptyWhereClause)
 
 }
 

@@ -2,6 +2,7 @@ package com.dbobjekts.metadata.joins
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.util.StringUtil
 
@@ -35,7 +36,7 @@ object JoinFactory {
         val fkToParent = left.getForeignKeyToParent(right)
         if ( fkToParent == null ){
             val fk = right.getForeignKeyToParent (left)
-            if ( fk == null ) throw IllegalStateException("Could not establish foreign key relation between tables ${left.tableName} and ${right.tableName}")
+            if ( fk == null ) throw StatementBuilderException("Could not establish foreign key relation between tables ${left.tableName} and ${right.tableName}")
             else return Pair(left.columnByName(fk.parentColumn.nameInTable)!!, fk.column)
         } else
             return Pair(fkToParent.column, right.columnByName(fkToParent.parentColumn.nameInTable)!!)

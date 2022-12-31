@@ -3,6 +3,7 @@ package com.dbobjekts.statement
 import com.dbobjekts.api.AnyColumnAndValue
 import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.Semaphore
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Catalog
 
@@ -36,7 +37,7 @@ abstract class StatementBase<W>(protected val semaphore: Semaphore,
     internal fun buildJoinChain(useOuterJoins: Boolean = false): TableJoinChain =
         _joinChain ?: TableJoinChainBuilder(
             catalog = catalog,
-            drivingTable = _drivingTable ?: tables.firstOrNull() ?: throw IllegalStateException("Cannot build query: no tables to select"),
+            drivingTable = _drivingTable ?: tables.firstOrNull() ?: throw StatementBuilderException("Cannot build query: no tables to select"),
             tables = tables.toList(),
             useOuterJoins = useOuterJoins
         ).build()
@@ -58,11 +59,11 @@ abstract class StatementBase<W>(protected val semaphore: Semaphore,
 
     internal fun registerTablesInColumn(values: List<AnyColumnAndValue>) {
         val tables = values.map { it.column.table }.toSet()
-        if (tables.size != 1) throw IllegalStateException("Parameter should contain exactly one table but was ${tables.size}")
+        if (tables.size != 1) throw StatementBuilderException("Parameter should contain exactly one table but was ${tables.size}")
         tables.forEach { registerTable(it) }
     }
 
     internal fun getTable(): AnyTable =
-        if (tables.isEmpty()) throw IllegalStateException("Expected at least one table for query") else tables.first()
+        if (tables.isEmpty()) throw StatementBuilderException("Expected at least one table for query") else tables.first()
 
 }

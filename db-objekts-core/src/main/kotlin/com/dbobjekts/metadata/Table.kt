@@ -1,6 +1,8 @@
 package com.dbobjekts.metadata
 
 import com.dbobjekts.api.*
+import com.dbobjekts.api.exception.CodeGenerationException
+import com.dbobjekts.api.exception.DBObjektsException
 import com.dbobjekts.metadata.column.IsPrimaryKey
 import com.dbobjekts.metadata.joins.JoinFactory
 import com.dbobjekts.metadata.joins.TableJoinChain
@@ -24,7 +26,7 @@ abstract class Table<I> (
 
     init {
         if (!ValidateDBObjectName(tableName.value))
-            throw IllegalArgumentException("Not a valid table name: " + tableName)
+            throw DBObjektsException("Not a valid table name: " + tableName)
     }
 
     internal val foreignKeys: List<AnyForeignKey> by lazy { columns.filter { it is AnyForeignKey }.map { it as AnyForeignKey } }
@@ -45,7 +47,7 @@ abstract class Table<I> (
 
     internal fun ensureSchema(): Schema {
         if (!this::schema.isInitialized)
-            throw IllegalStateException(
+            throw DBObjektsException(
                 "Table $dbName is not associated with a Schema yet. " +
                         "This typically happens when it does not belong to the Catalog associated with the current TransactionManager or when you have not provided a Catalog when building the TransactionManager. You must provide a Catalog in order to use the metadata objects in q ueries."
             )

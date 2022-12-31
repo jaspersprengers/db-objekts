@@ -8,7 +8,8 @@ import java.sql.SQLException
 class StatementExecutionException(
     msg: String,
     throwable: Throwable?,
-    val sql: String
+    val sql: String?
 ) : DBObjektsException(msg, throwable) {
+    constructor(msg: String) : this(msg, null, null)
     constructor(msg: String, sql: String) : this(msg, null, sql)
 }

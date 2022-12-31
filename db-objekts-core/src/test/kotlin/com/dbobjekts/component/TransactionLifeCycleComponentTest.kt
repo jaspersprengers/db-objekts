@@ -9,6 +9,7 @@ import com.dbobjekts.vendors.Vendors
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.util.UUID
+import javax.sql.DataSource
 
 
 class TransactionLifeCycleComponentTest {
@@ -78,7 +79,7 @@ class TransactionLifeCycleComponentTest {
             val tm = TransactionManager.builder()
                 .withCatalog(CatalogDefinition)
                 .withDataSource(AcmeDB.dataSource)
-                .withCustomConnectionProvider { ds ->
+                .withCustomConnectionProvider { ds: DataSource ->
                     val conn = ds.connection
                     conn.autoCommit = autoCommit
                     conn

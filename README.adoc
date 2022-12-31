@@ -52,7 +52,7 @@ generator.generateSourceFiles()
 
 There is more to fine-tune -- this is a bare-bones setup. Under the package `com.acme.dbobjekts` in the `gen` source folder we now have a `Book`, `Author`, `Loan`,`Item` and `Member` source file. These contain fields that correspond to the columns in the table, and we'll use them to build. Tying the schema(s) and tables together is also a `CatalogDefinition` object.
 
-The final step before we can make queries is to configure a `TransactionManager`, which wraps a `javax.sql.DataSource`. It also needs the `CatalogDefinition` that was just generated.
+The final step before we can make queries is to configure a `TransactionManager`, which requires a `javax.sql.DataSource` and `CatalogDefinition` (that was just generated).
 
 ```kotlin
 val dataSource = HikariDataSourceFactory.create("jdbc:h2:mem:test","sa",null)
@@ -121,7 +121,7 @@ val bookAuthors: List<Tuple2<String, AuthorRow>> =
 ```
 Note that there's no `from` clause. db-Objekts can figure out the necessary joins from the columns provided in `select(..`). The terminating `asList()` call returns a list of type-safe tuples that correspond exactly to the number and types of the columns in the `select(..)` call.
 
-You can supply individual columns or an entire table in the select clause, as you would in SQL: `SELECT book.title, author.*`. For each `Table` metadata object there is a stateful, immutable entity class (`AuthorRow`) which contains the values of an author row and is returned in the Tuple. You will later see how you can use these same entities in update and insert statements.
+You can supply individual columns or an entire table in the select clause, as you would in SQL: `SELECT book.title, author.*`. For each `Table` metadata object there is a stateful, immutable class (`AuthorRow`) which contains the values of an author row and is returned in the Tuple. You will later see how you can use these same entities in update and insert statements.
 
 Let's take it up a notch. This query involves all five tables and returns `List<Tuple5<LocalDate, Long, String, String, String>>`. Since all `Tuple*` classes are data classes, you can deconstruct them into a more readable output
 
@@ -339,12 +339,43 @@ Once aware of the changes, you can generate the catalog again and make appropria
 
 Or would you rather fix it in production?
 
-
 == Querying
 The next section will be all about writing queries. For that, you need a reference to a `TransactionManager`.
 
 === The TransactionManager and Transaction
-TBD
+We already met the `TransactionManager` briefly. It provides access to your database and contains a `javax.sql.DataSource`. A datasource manages connections to the db-server, logging in, pooling and supplying short-lived `javax.sql.Connection` objects to execute the low-level JDBC calls. All these details are hidden from view. Live connections are represented by a `Transaction`. This is the object on which you create the queries.
+
+You only need a single `TransactionManager` for each `DataSource` per application, so it makes sense to create it centrally and make it available through dependency injection. Since a `TransactionManager` is stateless, there is no harm in assigning it to a singleton: different threads can use the same instance.
+
+==== Creating a TransactionManager
+As you saw, the syntax is simple. You obtain a `TransactionManagerBuilder` instance through the static call to `TransactionManager.builder()`. This has two mandatory configuration methods, for the `CatalogDefinition` and the `DataSource`, respectively.
+```kotlin
+val transactionManager = TransactionManager.builder()
+    .withCatalog(CatalogDefinition)
+    .withDataSource(someDataSource).build()
+```
+There is a third and optional method if you want complete control over the way `Connection` objects are obtained from the `DataSource`: `withCustomConnectionProvider`. You can use it as follows:
+```kotlin
+   .withCustomConnectionProvider { ds: DataSource ->
+                    val conn = ds.connection
+                    conn.autoCommit = autoCommit
+                    conn
+                }
+```
+In this example you override the default setting for autocommit, which is usually configured at the level of the DataSource.
+
+==== The Transaction lifecycle
+Every query against db-Objekts must be executed through a call to `TransactionManager.newTransaction` or its shortcut `invoke` method. This takes a lambda that receives a fresh `Transaction` object. In the body of the lambda you execute one or more queries and return a result. The `TransactionManager` then commits the underlying `Connection` and returns the result that was returned by the lambda.
+```kotlin
+val verboseForm: List<BookRow> = tm.newTransaction { tr: Transaction -> tr.select(Book).asList() }
+val shortForm: List<BookRow> = tm { it.select(Book).asList() }
+```
+
+If the lambda threw an Exception, the connection is rolled back. The effect will depend on the autocommit setting of the session. Some data may have been successfully persisted. You can find a comprehensive example in `TransactionLifeCycleComponentTest`.
+
+The `Transaction` is a short-lived object that should not leave the scope of its lambda, so stick to the standard idiom. Do not assign it to a variable outside that scope! Its lifecycle will no longer be managed and the underlying `Connection` will quickly stale.
+
+Let's now explore all the query methods that are available on the `Transaction`: inserting, updating, deleting, selecting and native sql queries.
 
 === Inserting data
 Let's start with getting some data into the tables. The `insert(..)` method takes a `Table` implementation and returns a corresponding `*InsertBuilder` instance.
@@ -365,9 +396,23 @@ The insert builders contain setter methods for all columns. In addition it has a
 - The `Employee` table has four mandatory columns. The optional `married` property is set in a setter method. The table has a generated primary key, which is returned by the `execute()` method.
 
 ==== Inserting a stateful row data object
-TBD
+For each stateless Kotlin object that represents a db table there is also a corresponding stateful, immutable data class to represent a single row of data, called `__Table__Row` They are most useful for retrieving all columns in a table, but you can also use them to insert data.
+```kotlin
+val row = EmployeeRow(
+    name = "John",
+    salary = 300.5,
+    married = true,
+    dateOfBirth = LocalDate.of(1980, 3, 3),
+    children = 2,
+    hobbyId = "chess"
+)
+val johnsId = tr.insert(row) //immediately executes and returns the auto-generated ID
+```
+It's your own responsibility to make sure all the mandatory columns have non-null values, obviously.
 
-=== Updating and deleting
+A warning about auto-generated primary keys applies to this example. `EmployeeRow` has a non-null `id` field, which is auto-generated, but it won't be available before the call to `insert(...)`. We could define such numeric PKs as `Long?` or `Int?`, but that would mean unnecessary null-checks in cases when you can be certain that the id will never be null, e.g. as the result of a select. The compromise is to provide a default value of zero. For the insert logic, the primary key value in `EmployeeRow` will be ignored anyway.
+
+=== Updating
 Update statements have a similar syntax, so let's discuss them now before moving on the more elaborate select statements. The `update(..)` method also takes a table and returns a `*UpdateBuilder` object.
 
 ```kotlin
@@ -381,9 +426,23 @@ Update statements have a similar syntax, so let's discuss them now before moving
 - You can provide a null to a setter method if the corresponding database column is nullable: `update(Employee).married(null)`.
 - Note that you cannot do the same with `salary`, because that is non-nullable: `.salary(null)` will not compile
 - You close the statement with an explicit `execute()`.
+- The call to `where(...)` is always mandatory. If you want to update all rows, use the no-arg version `where()`
 
 ==== Updating with a stateful row data object
-TBD
+You can use the data row objects also to do updates. But some important conditions apply. db-Objekts can only manage it if the Table has _one_ designated primary key, because it creates an update query with a simple `where(Table.id.eq(pk))`. Let's give John a well-earned raise:
+```kotlin
+val retrieved: EmployeeRow = tr.select(Employee).where(Employee.id.eq(johnsId)).first()
+tr.update(retrieved.copy(salary = retrieved.salary + 100))
+```
+Note that the row data object that was retrieved is immutable. You need to make a copy first.
+
+=== Deleting
+The statement to delete rows has the fewest options.
+```kotlin
+tr.deleteFrom(Employee).where(Employee.id.eq(id))
+```
+* The `deleteFrom` method takes a single table or a join (not all vendors supports it). More on join chains later.
+* The call to `where(...)` is always mandatory. If you want to delete all rows, use the no-arg version: `tr.deleteFrom(Employee).where()`
 
 === The where-clause in details
 Update, select and delete are executed against a range of database rows that satisfy certain criteria. These criteria are expressed in the where-clause.

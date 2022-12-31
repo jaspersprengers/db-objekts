@@ -3,6 +3,7 @@ package com.dbobjekts.metadata.column
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.api.AnyTable
+import com.dbobjekts.api.exception.DBObjektsException
 import com.dbobjekts.statement.And
 import com.dbobjekts.statement.whereclause.ConditionFactory
 import com.dbobjekts.statement.whereclause.SubClause
@@ -24,7 +25,7 @@ abstract class Column<I>(
 ) : ConditionFactory<I, SubClause>, Selectable<I> {
     init {
         if (!ValidateDBObjectName(nameInTable))
-            throw IllegalArgumentException("Not a valid column name: '$nameInTable'")
+            throw DBObjektsException("Not a valid column name: '$nameInTable'")
     }
 
     override fun toString() = "${table.tableName}.$nameInTable"

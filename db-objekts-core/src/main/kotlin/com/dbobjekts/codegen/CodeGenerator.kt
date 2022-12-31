@@ -1,6 +1,7 @@
 package com.dbobjekts.codegen
 
 import com.dbobjekts.api.TransactionManager
+import com.dbobjekts.api.exception.CodeGenerationException
 import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
 import com.dbobjekts.codegen.configbuilders.ColumnTypeMappingConfigurer
 import com.dbobjekts.codegen.configbuilders.OutputConfigurer
@@ -41,7 +42,7 @@ open class CodeGenerator {
 
     fun withDataSource(datasource: DataSource): CodeGenerator {
         if (this::dataSource.isInitialized)
-            throw IllegalArgumentException("DataSource is already set!")
+            throw CodeGenerationException("DataSource is already set!")
         this.dataSource = datasource
         return this
     }
@@ -77,7 +78,7 @@ open class CodeGenerator {
         //can be null for writers that do not write to the file system
         SourcesGenerator(
             outputConfigurer.basedirOpt
-                ?: throw java.lang.IllegalStateException("Missing mandatory setting outputDirectoryForGeneratedSources on outputConfigurer"),
+                ?: throw CodeGenerationException("Missing mandatory setting outputDirectoryForGeneratedSources on outputConfigurer"),
             catalogDefinition.packageName,
             catalogDefinition
         ).generate()
@@ -104,7 +105,7 @@ open class CodeGenerator {
             dataSource = dataSource,
             exclusionConfigurer = exclusionConfigurer,
             basePackage = outputConfigurer.basePackage
-                ?: throw IllegalStateException("Missing mandatory setting basePackageForSources on outputConfigurer"),
+                ?: throw CodeGenerationException("Missing mandatory setting basePackageForSources on outputConfigurer"),
             customColumnMappers = columnTypeMappingConfigurer.mappers.toList(),
             sequenceResolvers = primaryKeySequenceConfigurer.resolvers
         )

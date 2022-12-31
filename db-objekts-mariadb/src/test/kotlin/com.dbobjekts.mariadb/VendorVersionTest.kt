@@ -6,7 +6,7 @@ import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
 
-class VersionTest {
+class VendorVersionTest {
 
     @Test
     fun `get vendor by name and version`() {

@@ -1,6 +1,7 @@
 package com.dbobjekts.metadata
 
 import com.dbobjekts.api.AnyTable
+import com.dbobjekts.api.exception.DBObjektsException
 import com.dbobjekts.vendors.Vendor
 import com.dbobjekts.vendors.Vendors
 import com.dbobjekts.vendors.h2.H2Vendor
@@ -38,7 +39,7 @@ open class Catalog(
     internal fun assertContainsTable(table: AnyTable): AnyTable {
         table.ensureSchema()
         if (tables.none { it.schemaAndName() == table.schemaAndName() }) {
-            throw IllegalStateException("Table ${table.schemaAndName()} does not belong to the Catalog associated with the current TransactionManager")
+            throw DBObjektsException("Table ${table.schemaAndName()} does not belong to the Catalog associated with the current TransactionManager")
         }
         return table
     }

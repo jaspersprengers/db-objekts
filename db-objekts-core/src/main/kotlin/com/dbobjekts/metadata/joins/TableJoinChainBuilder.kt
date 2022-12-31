@@ -2,6 +2,7 @@ package com.dbobjekts.metadata.joins
 
 import com.dbobjekts.api.AnyForeignKey
 import com.dbobjekts.api.AnyTable
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.util.StringUtil
 
@@ -29,7 +30,7 @@ class TableJoinChainBuilder(
         }
 
         if (tables.isEmpty())
-            throw IllegalArgumentException("Need at least one table")
+            throw StatementBuilderException("Need at least one table")
         if (tables.size == 1)
             return TableJoinChain(tables[0])
 
@@ -60,7 +61,7 @@ class TableJoinChainBuilder(
         fun getForeignKeyFor(child: AnyTable, parent: AnyTable): AnyForeignKey? = child.foreignKeys.find { it.parentColumn.table == parent }
 
         if (pair.first == pair.second) {
-            throw IllegalStateException("Pair elements must not refer to the same object")
+            throw StatementBuilderException("Pair elements must not refer to the same object")
         }
         return catalog.tables.map {Pair(getForeignKeyFor(it, pair.first), getForeignKeyFor(it, pair.second))}
           .find { it.first != null && it.second != null }?.first?.table
@@ -91,7 +92,7 @@ class TableJoinChainBuilder(
         val sortedSet = sortedTables.toHashSet()
         val unUsed = tablesToJoin.filterNot { sortedSet.contains(it) }
         if (unUsed.isNotEmpty())
-            throw IllegalStateException("The following table(s) could not be joined: ${StringUtil.joinBy(unUsed, {it.dbName})}")
+            throw StatementBuilderException("The following table(s) could not be joined: ${StringUtil.joinBy(unUsed, {it.dbName})}")
         val chain = TableJoinChain(sortedTables.first())
         sortedTables.drop(1).forEach { if (useOuterJoins) chain.leftJoin(it) else chain.innerJoin(it)}
         return chain

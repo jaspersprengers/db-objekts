@@ -2,6 +2,7 @@ package com.dbobjekts.metadata
 
 import com.dbobjekts.api.SchemaName
 import com.dbobjekts.api.TableName
+import com.dbobjekts.api.exception.DBObjektsException
 
 class SchemaAndTable(val schema: SchemaName, val table: TableName) : Comparable<SchemaAndTable> {
 
@@ -70,7 +71,7 @@ class TableAliasesBuilder {
     }
 
     private fun validate(str: String) =
-        if (str.contains("_")) throw IllegalArgumentException("value must be camel case") else str
+        if (str.contains("_")) throw DBObjektsException("value must be camel case") else str
 
     private fun tryWithIncrement(alias: String, counter: Int): String {
         val concat = "$alias$counter"

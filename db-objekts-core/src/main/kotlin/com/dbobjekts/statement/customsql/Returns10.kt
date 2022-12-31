@@ -2,6 +2,7 @@
  
   import com.dbobjekts.api.*
   import com.dbobjekts.api.Semaphore
+  import com.dbobjekts.api.exception.StatementBuilderException
   import com.dbobjekts.jdbc.ConnectionAdapter
   import com.dbobjekts.metadata.ColumnFactory
   import com.dbobjekts.metadata.column.Column
@@ -159,7 +160,7 @@ class Returns10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
 
     /**
      * Executes the statement, fetches all rows and returns the first result.
-     * @throws IllegalStateException if there are no results. To prevent this, use [firstOrNull]
+     * @throws com.dbobjekts.api.exception.StatementExecutionException if there are no results. To prevent this, use [firstOrNull]
      */
     fun first() = execute().first()
 
@@ -187,4 +188,3 @@ class Returns10<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
     }
 }
 
- 

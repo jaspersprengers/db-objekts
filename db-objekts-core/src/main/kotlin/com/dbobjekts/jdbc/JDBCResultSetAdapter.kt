@@ -2,6 +2,7 @@ package com.dbobjekts.jdbc
 
 import com.dbobjekts.statement.ColumnInResultRow
 import com.dbobjekts.api.ResultRow
+import com.dbobjekts.api.exception.StatementExecutionException
 import java.sql.ResultSet
 
 class JDBCResultSetAdapter(
@@ -39,7 +40,7 @@ class JDBCResultSetAdapter(
 
     private fun advanceResultSet(): Boolean {
         if (resultSet.isClosed) {
-            throw IllegalStateException(
+            throw StatementExecutionException(
                 "Cannot read from java.sql.ResultSet: it is already closed. " +
                         "This can happen if you try to access a com.dbobjekts.result.ResultSetBase outside the transaction block and the underlying java.sql.Connection is already closed."
             )

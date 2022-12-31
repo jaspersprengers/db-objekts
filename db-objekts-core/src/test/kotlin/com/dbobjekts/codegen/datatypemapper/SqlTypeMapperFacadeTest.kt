@@ -1,6 +1,7 @@
 package com.dbobjekts.codegen.datatypemapper
 
 import com.dbobjekts.api.CustomColumnTypeMapper
+import com.dbobjekts.api.exception.CodeGenerationException
 import com.dbobjekts.metadata.column.LongColumn
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
 import com.dbobjekts.vendors.Vendors
@@ -53,7 +54,7 @@ class SqlTypeMapperFacadeTest {
 
     @Test
     fun `unknown type throws`() {
-        Assertions.assertThrows(IllegalStateException::class.java) {
+        Assertions.assertThrows(CodeGenerationException::class.java) {
             mapper.mapDataType(ColumnMappingProperties.of(column = "location", jdbcType = "GEODATA"))
         }
     }

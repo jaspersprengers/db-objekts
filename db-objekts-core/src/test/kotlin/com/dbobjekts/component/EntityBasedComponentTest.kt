@@ -28,24 +28,25 @@ class EntityBasedComponentTest {
         AcmeDB.newTransaction { tr ->
             val hobby = HobbyRow("chess", "The game of champions")
             tr.insert(hobby)
-         
-            val empId = tr.insert(EmployeeRow(
+
+            val row = EmployeeRow(
                 name = "John",
                 salary = 300.5,
                 married = true,
                 dateOfBirth = LocalDate.of(1980, 3, 3),
                 children = 2,
                 hobbyId = "chess"
-            ))
+            )
+            val johnsId = tr.insert(row)
 
             tr.insert(CountryRow("nl", "Netherlands"))
 
             val addressId = tr.insert(AddressRow(street="Zuidhoek", postcode="5591HA", countryId = "nl"))
-            tr.insert(EmployeeAddressRow(empId, addressId, AddressType.HOME))
+            tr.insert(EmployeeAddressRow(johnsId, addressId, AddressType.HOME))
 
             val (employee, address, addressType, country) =
                 tr.select(Employee, Address, EmployeeAddress.kind, Country.name)
-                    .where(Employee.id.eq(empId)).first()
+                    .where(Employee.id.eq(johnsId)).first()
             assertThat(employee.name).isEqualTo("John")
             assertThat(employee.salary).isEqualTo(300.5)
             assertThat(employee.married).isTrue()
@@ -97,6 +98,11 @@ class EntityBasedComponentTest {
                 children = 2,
                 hobbyId = "go"
             ))
+
+            val retrieved2: EmployeeRow = tr.select(Employee).where(Employee.id.eq(empId)).first()
+            tr.update(retrieved2.copy(salary = retrieved2.salary + 100))
+
+
             val retrieved: EmployeeRow = tr.select(Employee).where(Employee.id.eq(empId)).first()
             val updated = retrieved.copy(
                 name = "Jake",

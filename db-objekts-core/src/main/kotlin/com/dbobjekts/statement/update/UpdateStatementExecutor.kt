@@ -4,11 +4,13 @@ import com.dbobjekts.api.AnyColumnAndValue
 import com.dbobjekts.api.AnySqlParameter
 import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.Semaphore
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.statement.ColumnsForUpdate
 import com.dbobjekts.statement.SQLOptions
 import com.dbobjekts.statement.StatementBase
+import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.util.Errors
 import com.dbobjekts.util.StringUtil
@@ -72,7 +74,7 @@ class UpdateStatementExecutor(
         val joinChain = buildJoinChain()
         val supportsJoins = connection.vendorSpecificProperties.supportsJoinsInUpdateAndDelete()
         if (joinChain.hasJoins() && !supportsJoins) {
-            throw IllegalStateException("Your database does not support UPDATE statements with JOIN syntax.")
+            throw StatementBuilderException("Your database does not support UPDATE statements with JOIN syntax.")
         }
         return StringUtil.concat(listOf("update", joinChain.toSQL(), "set", columns, clause))
     }

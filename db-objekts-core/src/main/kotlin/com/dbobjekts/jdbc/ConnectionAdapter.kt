@@ -2,6 +2,7 @@ package com.dbobjekts.jdbc
 
 import com.dbobjekts.api.AnySqlParameter
 import com.dbobjekts.api.ResultRow
+import com.dbobjekts.api.exception.StatementExecutionException
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.statement.ColumnInResultRow
 import com.dbobjekts.util.StatementLogger
@@ -118,7 +119,7 @@ data class ConnectionAdapter(
             return if (genKey?.next() ?: false) {
                 genKey.getLong(1)
             } else {
-                throw IllegalStateException("could not retrieve generated key from PreparedStatement")
+                throw StatementExecutionException("Could not retrieve generated key from PreparedStatement")
             }
         } finally {
             genKey?.close()

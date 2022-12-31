@@ -1,5 +1,6 @@
 package com.dbobjekts.component
 
+import com.dbobjekts.api.Transaction
 import com.dbobjekts.api.Tuple2
 import com.dbobjekts.api.Tuple3
 import com.dbobjekts.testdb.acme.library.*
@@ -14,7 +15,12 @@ class LibraryComponentTest {
     @Test
     fun `Library component test`() {
 
-        AcmeDB.newTransaction { transaction ->
+        val tm = AcmeDB.transactionManager
+
+        val books: List<BookRow> = tm.newTransaction { tr: Transaction -> tr.select(Book).asList() }
+        val books2: List<BookRow> = tm { it.select(Book).asList() }
+
+        tm { transaction ->
 
             val orwell: Long =
                 transaction.insert(Author).mandatoryColumns("George Orwell").bio("Pseudonym of Eric Blair (1903-1950)").execute()
