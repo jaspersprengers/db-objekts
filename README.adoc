@@ -11,13 +11,15 @@ db-Objekts is a Kotlin library to build relational database queries, using gener
 
 In short, db-Objekts lets you do things like this:
 ```kotlin
-val customResult: List<Tuple3<String, Boolean?, String>> = transaction
-    .select(Employee.name, Employee.married, Address.street)
-    .where(Employee.dateOfBirth.lt(LocalDate.of(1980, 1, 1))
-        .and(EmployeeAddress.kind.eq(AddressType.HOME)))
-    .asList()
+tr.select(Employee, Address, EmployeeAddress.kind, Country.name)
+                    .where(Employee.id.eq(empId)).asList().forEach {
+                        (emp, add, addType, country) ->
+                        println("${emp.name}'s $addType address is ${add.street} ${add.postcode}, $country")
+                        //Example: John's HOME address is Zuidhoek 80 3082TR, Nederland
+                    }
 ```
-and use the full power and convenience of your IDE's auto-complete to build type-safe queries.
+
+It uses the full power and convenience of your IDE's auto-complete to build type-safe queries.
 
 image::autocomplete.png[autocomplete, 800]
 
@@ -114,12 +116,12 @@ tr.insert(Loan).mandatoryColumns(memberId = john,
 
 Now we can start selections. Let's get a list of all titles and their author data. This is what a select query in db-Objekts looks like.
 ```kotlin
-val bookAuthors: List<Tuple3<String, String, String?>> =
-    tr.select(Book.title, Author.name, Author.bio).asList()
+val bookAuthors: List<Tuple2<String, AuthorRow>> =
+    tr.select(Book.title, Author).asList()
 ```
 Note that there's no `from` clause. db-Objekts can figure out the necessary joins from the columns provided in `select(..`). The terminating `asList()` call returns a list of type-safe tuples that correspond exactly to the number and types of the columns in the `select(..)` call.
 
-Note that `Author.bio` is a nullable column, so it produces a `String?`, not `String` value.
+You can supply individual columns or an entire table in the select clause, as you would in SQL: `SELECT book.title, author.*`. For each `Table` metadata object there is a stateful, immutable entity class (`AuthorRow`) which contains the values of an author row and is returned in the Tuple. You will later see how you can use these same entities in update and insert statements.
 
 Let's take it up a notch. This query involves all five tables and returns `List<Tuple5<LocalDate, Long, String, String, String>>`. Since all `Tuple*` classes are data classes, you can deconstruct them into a more readable output
 
@@ -362,6 +364,9 @@ The insert builders contain setter methods for all columns. In addition it has a
 - The `Country` object has two mandatory columns and no auto-generated key. The `execute()` method returns the value of the JDBC call `PreparedStatement.executeUpdate()`, which should be 1 for a successful insert.
 - The `Employee` table has four mandatory columns. The optional `married` property is set in a setter method. The table has a generated primary key, which is returned by the `execute()` method.
 
+==== Inserting a stateful row data object
+TBD
+
 === Updating and deleting
 Update statements have a similar syntax, so let's discuss them now before moving on the more elaborate select statements. The `update(..)` method also takes a table and returns a `*UpdateBuilder` object.
 
@@ -376,6 +381,9 @@ Update statements have a similar syntax, so let's discuss them now before moving
 - You can provide a null to a setter method if the corresponding database column is nullable: `update(Employee).married(null)`.
 - Note that you cannot do the same with `salary`, because that is non-nullable: `.salary(null)` will not compile
 - You close the statement with an explicit `execute()`.
+
+==== Updating with a stateful row data object
+TBD
 
 === The where-clause in details
 Update, select and delete are executed against a range of database rows that satisfy certain criteria. These criteria are expressed in the where-clause.
@@ -417,9 +425,9 @@ Let's move on to select statements now. The pattern is `transaction.select( col1
 
 This query selects name and salary for all rows in the employee table. Notice we have imported the 'e' alias from the Aliases object. This is a handy shortcut that refers to the exact same Employee object.
 ```kotlin
- val asList: List<<Long, String>> = it.select(e.id, e.name).noWhereClause().asList() // potentially empty
- val asOption: Tuple2<Long, String>? = it.select(e.id, e.name).noWhereClause().firstOrNull() // None if no row can be retrieved
- val singleResult: Tuple2<Long, String> = it.select(e.id, e.name).noWhereClause().first() //Will throw an exception if no row can be found
+ val asList: List<Long, String> = it.select(e.id, e.name).asList() // potentially empty
+ val asOption: Tuple2<Long, String>? = it.select(e.id, e.name).firstOrNull() // None if no row can be retrieved
+ val singleResult: Tuple2<Long, String> = it.select(e.id, e.name).first() //Will throw an exception if no row can be found
 ```
 
 The result is always a Tuple* object that corresponds in size and type to the colummns you specified in the `.select(..)` call.
@@ -455,7 +463,7 @@ When you execute a select statement, db-Objekts pulls all results into a list st
 The `forEachRow()` call lets you inspect the resultset row by row through a custom predicate so you can decide how to handle them and even abort further retrieval, which means reduced traffic from the RDBMS to your application.
 ```kotlin
   val buffer = mutableListOf<String?>()
-    transaction.select(e.name).noWhereClause().orderAsc(e.name).forEachRow({ row ->
+    transaction.select(e.name).orderAsc(e.name).forEachRow({ row ->
     buffer.add(row)
     //there are three rows in the resultset, but we stop fetching after two
     buffer.size != 2
@@ -466,7 +474,7 @@ You can further tweak select results with the `orderBy` and `limit(..)` methods.
 Note that these constraints are executed server-side, as they are part of the SQL. db-Objekts takes care of the proper syntax, because vendors handle the limit clause differently.
 
 ```kotlin
-  tr.select(e.name).noWhereClause.orderDesc(e.salary).orderAsc(e.name).limit(10).asList()
+  tr.select(e.name).orderDesc(e.salary).orderAsc(e.name).limit(10).asList()
 ```
 
 === Outer joins and more customization

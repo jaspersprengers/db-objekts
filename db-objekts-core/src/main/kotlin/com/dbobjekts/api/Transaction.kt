@@ -75,7 +75,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * @param a [Table] metadata object
      * @return a statement builder to set the fields to insert
      */
-    fun <U : UpdateBuilderBase, I : InsertBuilderBase, T : Entity<U, I>> save(entity: T): Long {
+    fun <U : UpdateBuilderBase, I : InsertBuilderBase, T : Entity<U, I>> update(entity: T): Long {
         val updater = entity.writeAccessors.updater
         updater.connection = connection
         semaphore.claim("update")

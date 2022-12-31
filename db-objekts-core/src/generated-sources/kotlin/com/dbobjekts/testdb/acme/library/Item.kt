@@ -54,7 +54,7 @@ class ItemInsertBuilder():InsertBuilderBase(){
 
 
 data class ItemRow(
-  val id: Long = 0,
+val id: Long = 0,
   val isbn: String,
   val dateAcquired: java.time.LocalDate    
 ) : Entity<ItemUpdateBuilder, ItemInsertBuilder>(Item.metadata())

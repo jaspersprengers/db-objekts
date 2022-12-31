@@ -357,7 +357,7 @@ class AllTypesInsertBuilder():InsertBuilderBase(){
 
 
 data class AllTypesRow(
-  val id: Long = 0,
+val id: Long = 0,
   val characterCol: String,
   val characterColNil: String?,
   val charactervaryingCol: String,

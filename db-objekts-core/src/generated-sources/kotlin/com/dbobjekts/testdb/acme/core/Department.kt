@@ -48,7 +48,7 @@ class DepartmentInsertBuilder():InsertBuilderBase(){
 
 
 data class DepartmentRow(
-  val id: Long = 0,
+val id: Long = 0,
   val name: String    
 ) : Entity<DepartmentUpdateBuilder, DepartmentInsertBuilder>(Department.metadata())
         

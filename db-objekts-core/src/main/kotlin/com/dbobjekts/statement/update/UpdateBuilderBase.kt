@@ -49,7 +49,7 @@ abstract class UpdateBuilderBase(
         return this as B
     }
 
-    internal fun <C> add(col: Column<C>, value: C?){
+    protected fun <C> add(col: Column<C>, value: C?){
         ct.put(col, value)
     }
 

@@ -48,7 +48,7 @@ class MemberInsertBuilder():InsertBuilderBase(){
 
 
 data class MemberRow(
-  val id: Long = 0,
+val id: Long = 0,
   val name: String    
 ) : Entity<MemberUpdateBuilder, MemberInsertBuilder>(Member.metadata())
         

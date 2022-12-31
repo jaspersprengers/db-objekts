@@ -64,7 +64,7 @@ class BookInsertBuilder():InsertBuilderBase(){
 
 
 data class BookRow(
-    val isbn: String,
+  val isbn: String,
   val title: String,
   val authorId: Long,
   val published: java.time.LocalDate    

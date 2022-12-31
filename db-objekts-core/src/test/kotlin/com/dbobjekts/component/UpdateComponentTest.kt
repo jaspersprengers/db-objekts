@@ -91,7 +91,7 @@ class UpdateComponentTest {
             tr.insert(e).name("Howard").salary(50.9).dateOfBirth(LocalDate.of(1970, 3, 3)).married(false).execute()
             val row: EmployeeRow = tr.select(e).where(e.name.eq("Howard")).first()
             val updated = row.copy(name = "Janet", married = true, salary = 50000.3, children = 5)
-            tr.save(updated)
+            tr.update(updated)
             val retrieved: EmployeeRow = tr.select(e).where(e.id.eq(row.id)).first()
             assertThat(retrieved).isEqualTo(updated)
         }

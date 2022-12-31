@@ -14,3 +14,4 @@ First alpha release
 
 
 == 0.3-alpha-1
+* Introducing stateful and immutable entities for CRUD operations

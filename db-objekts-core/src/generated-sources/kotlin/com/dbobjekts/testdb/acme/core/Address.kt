@@ -59,7 +59,7 @@ class AddressInsertBuilder():InsertBuilderBase(){
 
 
 data class AddressRow(
-  val id: Long = 0,
+val id: Long = 0,
   val street: String,
   val postcode: String?,
   val countryId: String    

@@ -53,7 +53,7 @@ class AuthorInsertBuilder():InsertBuilderBase(){
 
 
 data class AuthorRow(
-  val id: Long = 0,
+val id: Long = 0,
   val name: String,
   val bio: String?    
 ) : Entity<AuthorUpdateBuilder, AuthorInsertBuilder>(Author.metadata())

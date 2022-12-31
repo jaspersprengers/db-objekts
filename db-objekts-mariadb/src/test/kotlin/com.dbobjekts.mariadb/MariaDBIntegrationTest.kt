@@ -55,6 +55,7 @@ class MariaDBIntegrationTest {
         .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff = gen.differencesWithCatalog(CatalogDefinition)
         assertThat(diff).isEmpty()
+        //gen.generateSourceFiles()
     }
 
     @Test

@@ -53,6 +53,6 @@ class CountryInsertBuilder():InsertBuilderBase(){
 
 data class CountryRow(
   val id: String,
-    val name: String
+  val name: String    
 ) : Entity<CountryUpdateBuilder, CountryInsertBuilder>(Country.metadata())
         

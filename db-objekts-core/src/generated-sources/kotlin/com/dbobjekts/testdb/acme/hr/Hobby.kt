@@ -52,7 +52,7 @@ class HobbyInsertBuilder():InsertBuilderBase(){
 
 
 data class HobbyRow(
-    val id : String,
+  val id: String,
   val name: String    
 ) : Entity<HobbyUpdateBuilder, HobbyInsertBuilder>(Hobby.metadata())
         

@@ -56,7 +56,7 @@ class CertificateInsertBuilder():InsertBuilderBase(){
 
 
 data class CertificateRow(
-  val id: Long = 0,
+val id: Long = 0,
   val name: String,
   val employeeId: Long    
 ) : Entity<CertificateUpdateBuilder, CertificateInsertBuilder>(Certificate.metadata())

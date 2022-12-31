@@ -8,7 +8,6 @@ import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
-import java.time.LocalDate
 
 object Loan:Table<LoanRow>("LOAN"), HasUpdateBuilder<LoanUpdateBuilder, LoanInsertBuilder> {
     val itemId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "ITEM_ID", Item.id)
@@ -66,7 +65,7 @@ class LoanInsertBuilder():InsertBuilderBase(){
 data class LoanRow(
   val itemId: Long,
   val memberId: Long,
-  val dateLoaned: LocalDate,
+  val dateLoaned: java.time.LocalDate,
   val dateReturned: java.time.LocalDate?    
 ) : Entity<LoanUpdateBuilder, LoanInsertBuilder>(Loan.metadata())
         

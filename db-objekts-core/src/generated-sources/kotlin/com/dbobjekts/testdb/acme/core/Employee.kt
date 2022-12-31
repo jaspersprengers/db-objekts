@@ -77,7 +77,7 @@ class EmployeeInsertBuilder():InsertBuilderBase(){
 
 
 data class EmployeeRow(
-  val id: Long = 0,
+val id: Long = 0,
   val name: String,
   val salary: Double,
   val married: Boolean?,
