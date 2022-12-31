@@ -1,24 +1,19 @@
 package com.dbobjekts.component
 
 import com.dbobjekts.api.Transaction
-import com.dbobjekts.api.Tuple2
 import com.dbobjekts.api.Tuple3
 import com.dbobjekts.testdb.acme.library.*
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 
-class LibraryComponentTest {
+class QueryOverviewComponentTest {
 
     @Test
     fun `Library component test`() {
 
         val tm = AcmeDB.transactionManager
-
-        val books: List<BookRow> = tm.newTransaction { tr: Transaction -> tr.select(Book).asList() }
-        val books2: List<BookRow> = tm { it.select(Book).asList() }
 
         tm { transaction ->
 

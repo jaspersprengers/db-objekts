@@ -151,7 +151,7 @@ val (id, name, salary, married, children, hobby) =
         .first()
 ```
 
-This concludes our bird's eye view of db-Objekts. Check out `LibraryComponentTest` to get you going.
+This concludes our bird's eye view of db-Objekts. Check out `QueryOverviewComponentTest` to get you going.
 
 There is much, much more to explore in the following sections, so let's dig in!
 
