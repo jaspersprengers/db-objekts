@@ -39,9 +39,9 @@ internal class TableBuilder(
             )
         }
 
-    private fun findPrimaryKey(props: ColumnMetaData): DBColumnDefinition? {
+    private fun findPrimaryKey(props: ColumnMetaData, hasCompositePK: Boolean): DBColumnDefinition? {
         val columnMappingProperties = ColumnMappingProperties.fromMetaData(schema, tableName, props)
-        return if (!props.isPrimaryKey)
+        return if (hasCompositePK || !props.isPrimaryKey)
             null
         else {
             if (props.isAutoIncrement) {
@@ -73,15 +73,16 @@ internal class TableBuilder(
         table: TableName,
         columnMetaData: List<ColumnMetaData>
     ): TableBuilder {
+        val compositePk: Boolean = columnMetaData.filter { it.isPrimaryKey }.count() > 1
         columnMetaData.forEach { props ->
-            findPrimaryKey(props)?.let { pk ->
+            findPrimaryKey(props, compositePk)?.let { pk ->
                 log.debug("Adding primary key for ${pk.tableName}.${pk.columnName}")
                 addColumn(pk)
             } ?: getForeignKeyDefinition(props)?.let { fk ->
                 log.debug("Adding foreign key for ${fk.tableName}.${fk.columnName}")
                 addColumn(fk)
             } ?: sqlMapper.mapDataType(ColumnMappingProperties.fromMetaData(schema, table, props)).let { colType ->
-                val column = DBColumnDefinition(schema, tableName, props.columnName, colType, props.remarks)
+                val column = DBColumnDefinition(schema, tableName, props.columnName, colType, props.isPrimaryKey, props.remarks)
                 addColumn(column)
             }
         }

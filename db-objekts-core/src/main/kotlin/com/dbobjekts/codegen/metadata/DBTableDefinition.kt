@@ -19,6 +19,9 @@ data class DBTableDefinition(
 
     fun foreignKeys(): List<DBForeignKeyDefinition> = columns.map { it as? DBForeignKeyDefinition }.filterNotNull()
 
+    fun generatedPrimaryKey(): DBColumnDefinition? = columns
+        .filter { it is DBGeneratedPrimaryKey }.firstOrNull()
+
     fun prettyPrint(): String =
         """
            |   Table ${packageName.toString()}.${schema.value}.$tableName $alias has ${columns.size} columns.
@@ -27,7 +30,7 @@ data class DBTableDefinition(
 
     fun diff(codeObject: AnyTable): List<String> {
         val diffs = mutableListOf<String>()
-        if (columns.size != codeObject.columns.size){
+        if (columns.size != codeObject.columns.size) {
             val inDb = columns.map { it.columnName.value }.joinToString(",")
             val inCatalog = codeObject.columns.map { it.nameInTable }.joinToString(",")
             diffs += ("DB table $codeObject has ${columns.size} columns ($inDb), but catalog has ${codeObject.columns.size} ($inCatalog)}")

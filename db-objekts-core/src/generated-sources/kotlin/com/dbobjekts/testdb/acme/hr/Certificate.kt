@@ -1,6 +1,7 @@
 package com.dbobjekts.testdb.acme.hr
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.Entity
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -21,12 +22,13 @@ object Certificate:Table<CertificateRow>("CERTIFICATE"), HasUpdateBuilder<Certif
 class CertificateUpdateBuilder() : UpdateBuilderBase(Certificate) {
     fun name(value: String): CertificateUpdateBuilder = put(Certificate.name, value)
     fun employeeId(value: Long): CertificateUpdateBuilder = put(Certificate.employeeId, value)
+    override fun updateRow(entity: Entity<*, *>): Long = throw RuntimeException()
 }
 
 class CertificateInsertBuilder():InsertBuilderBase(){
        fun name(value: String): CertificateInsertBuilder = put(Certificate.name, value)
     fun employeeId(value: Long): CertificateInsertBuilder = put(Certificate.employeeId, value)
-
+    override fun insertRow(entity: Entity<*, *>): Long = throw RuntimeException()
     fun mandatoryColumns(name: String, employeeId: Long) : CertificateInsertBuilder {
       mandatory(Certificate.name, name)
       mandatory(Certificate.employeeId, employeeId)

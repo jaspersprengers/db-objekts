@@ -1,6 +1,7 @@
 package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.Entity
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -19,12 +20,13 @@ object Author:Table<AuthorRow>("AUTHOR"), HasUpdateBuilder<AuthorUpdateBuilder, 
 class AuthorUpdateBuilder() : UpdateBuilderBase(Author) {
     fun name(value: String): AuthorUpdateBuilder = put(Author.name, value)
     fun bio(value: String?): AuthorUpdateBuilder = put(Author.bio, value)
+    override fun updateRow(entity: Entity<*, *>): Long = throw RuntimeException()
 }
 
 class AuthorInsertBuilder():InsertBuilderBase(){
        fun name(value: String): AuthorInsertBuilder = put(Author.name, value)
     fun bio(value: String?): AuthorInsertBuilder = put(Author.bio, value)
-
+    override fun insertRow(entity: Entity<*, *>): Long = throw RuntimeException()
     fun mandatoryColumns(name: String) : AuthorInsertBuilder {
       mandatory(Author.name, name)
       return this

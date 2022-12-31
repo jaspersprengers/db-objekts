@@ -10,7 +10,7 @@ class DBForeignKeyDefinition(schema: SchemaName,
                              val parentTable: TableName,
                              val parentColumn: ColumnName,
                              comment: String? = null)
-   : DBColumnDefinition(schema, table, columnName, columnType, comment) {
+   : DBColumnDefinition(schema, table, columnName, columnType, false, comment) {
 
     val tableAndColumn = "${parentTable.capitalCamelCase()}.${parentColumn.lowerCamelCase()}"
 

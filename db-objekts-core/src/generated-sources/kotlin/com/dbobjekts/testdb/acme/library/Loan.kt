@@ -1,6 +1,7 @@
 package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.Entity
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -22,6 +23,8 @@ class LoanUpdateBuilder() : UpdateBuilderBase(Loan) {
     fun memberId(value: Long): LoanUpdateBuilder = put(Loan.memberId, value)
     fun dateLoaned(value: java.time.LocalDate): LoanUpdateBuilder = put(Loan.dateLoaned, value)
     fun dateReturned(value: java.time.LocalDate?): LoanUpdateBuilder = put(Loan.dateReturned, value)
+    override fun updateRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
 }
 
 class LoanInsertBuilder():InsertBuilderBase(){
@@ -29,6 +32,7 @@ class LoanInsertBuilder():InsertBuilderBase(){
     fun memberId(value: Long): LoanInsertBuilder = put(Loan.memberId, value)
     fun dateLoaned(value: java.time.LocalDate): LoanInsertBuilder = put(Loan.dateLoaned, value)
     fun dateReturned(value: java.time.LocalDate?): LoanInsertBuilder = put(Loan.dateReturned, value)
+    override fun insertRow(entity: Entity<*, *>): Long = throw RuntimeException()
 
     fun mandatoryColumns(itemId: Long, memberId: Long, dateLoaned: java.time.LocalDate) : LoanInsertBuilder {
       mandatory(Loan.itemId, itemId)

@@ -1,5 +1,6 @@
 package com.dbobjekts.statement.insert
 
+import com.dbobjekts.api.Entity
 import com.dbobjekts.api.Semaphore
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.column.Column
@@ -14,13 +15,19 @@ abstract class InsertBuilderBase() {
 
     @Suppress("UNCHECKED_CAST")
     protected fun <B : InsertBuilderBase, C> put(col: Column<C>, value: C?): B {
-        ct.put(col, value)
+        add(col, value)
         return this as B
+    }
+
+    internal fun <C> add(col: Column<C>, value: C?) {
+        ct.put(col, value)
     }
 
     protected fun <C> mandatory(col: Column<C>, value: C?) {
         ct.put(col, value)
     }
+
+    abstract fun insertRow(entity: Entity<*, *>): Long
 
     /**
      * Executes the insert statement and persists a new row to the table.

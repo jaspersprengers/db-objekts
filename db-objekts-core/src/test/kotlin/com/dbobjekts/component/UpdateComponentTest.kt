@@ -3,7 +3,9 @@ package com.dbobjekts.component
 import com.dbobjekts.testdb.acme.core.Employee
 import com.dbobjekts.testdb.acme.hr.Hobby
 import com.dbobjekts.statement.select.SelectStatementExecutor
+import com.dbobjekts.testdb.acme.core.EmployeeRow
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import java.time.LocalDate
@@ -27,6 +29,8 @@ class UpdateComponentTest {
     fun `verify ranges`() {
         fun insert(name: String, salary: Int) {
             val id = AcmeDB.newTransaction {
+                //val row = EmployeeRow(id =0,name=name,salary=salary.toDouble(),married=true,dateOfBirth =LocalDate.of(1980, 3, 3), children=0, hobbyId = null)
+                //it.save(row)
                 it.insert(e).name(name).salary(salary.toDouble()).dateOfBirth(LocalDate.of(1980, 3, 3)).married(true).execute()
             }
             assert(id > 0)
@@ -82,10 +86,14 @@ class UpdateComponentTest {
 
     @Test
     @Order(2)
-    fun `update name for existing e`() {
+    fun `update name for existing`() {
         AcmeDB.newTransaction { tr ->
-            tr.update(e).name("Janet").where(e.name.eq("Bob"))
-            assertEquals("Janet", tr.select(e.name).where(e.name.eq("Janet")).first())
+            tr.insert(e).name("Howard").salary(50.9).dateOfBirth(LocalDate.of(1970, 3, 3)).married(false).execute()
+            val row: EmployeeRow = tr.select(e).where(e.name.eq("Howard")).first()
+            val updated = row.copy(name = "Janet", married = true, salary = 50000.3, children = 5)
+            tr.save(updated)
+            val retrieved: EmployeeRow = tr.select(e).where(e.id.eq(row.id)).first()
+            assertThat(retrieved).isEqualTo(updated)
         }
     }
 

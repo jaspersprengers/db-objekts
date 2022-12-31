@@ -10,48 +10,109 @@ import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 import com.dbobjekts.util.StringUtil
 
- data class FieldData(
+data class FieldData(
     val field: String,
     val fieldType: String,
     val defaultClause: String,
     val nullable: Boolean,
-    val autoGenPK: Boolean
+    val autoGenPK: Boolean,
+    val regularPK: Boolean
 )
 
 class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
 
     private val tableName = tableDefinition.asClassName()
 
-     val fields: List<FieldData> = tableDefinition.columns.map { colDef ->
-        val fieldName =
-            ReservedKeywords.prependIfReserved(StringUtil.snakeToCamel(colDef.columnName.value.lowercase()))
-        val isNullable = colDef.column is NullableColumn<*>
-        val dataType = StringUtil.classToString(colDef.column.valueClass) + (if (isNullable) "?" else "")
-        val defaultClause: String = getDefaultValue(colDef)?.let { " = $it" } ?: ""
-        val autoGenPk = colDef is DBGeneratedPrimaryKey
-        FieldData(fieldName, dataType, defaultClause, isNullable, autoGenPk)
+    val fields: List<FieldData>
+    val allFieldsExceptAutoPK: List<FieldData>
+    val allFieldsExceptPK: List<FieldData>
+    val nonNullFields: List<FieldData>
+    val primaryKey: FieldData?
+
+    init {
+        fields = tableDefinition.columns.map { colDef ->
+            val fieldName =
+                ReservedKeywords.prependIfReserved(StringUtil.snakeToCamel(colDef.columnName.value.lowercase()))
+            val isNullable = colDef.column is NullableColumn<*>
+            val dataType = StringUtil.classToString(colDef.column.valueClass) + (if (isNullable) "?" else "")
+            val defaultClause: String = getDefaultValue(colDef)?.let { " = $it" } ?: ""
+            val autoGenPk = colDef is DBGeneratedPrimaryKey
+            FieldData(fieldName, dataType, defaultClause, isNullable, autoGenPk, colDef.isPrimaryKey)
+        }
+        allFieldsExceptAutoPK = fields.filterNot { it.autoGenPK }
+        allFieldsExceptPK = fields.filterNot { it.regularPK || it.autoGenPK }
+        nonNullFields = allFieldsExceptAutoPK.filterNot { it.nullable || it.autoGenPK }
+        primaryKey = fields.filter { it.regularPK || it.autoGenPK }.firstOrNull()
     }
 
     fun sourceForToValue(): String {
-        val elements = fields.mapIndexed { i,field ->
+        val elements = fields.mapIndexed { i, field ->
             "values[$i] as ${field.fieldType}"
         }.joinToString(",")
         return "    override fun toValue(values: List<Any?>) = ${tableName}Row($elements)"
     }
 
-    fun sourceForStatefulEntity(): String {
-        val elements = fields.mapIndexed { i,field ->
-            "\n    val ${field.field}: ${field.fieldType}"
-        }.joinToString(",")
-        return "data class ${tableName}Row($elements)"
+    fun sourceForUpdateRowMethod(): String {
+        if (primaryKey == null)
+            return """
+    override fun updateRow(entity: Entity<*, *>): Long = 
+      throw RuntimeException("Sorry, but you cannot use entity-based update for table ${tableName}. There must be exactly one column marked as primary key.")                
+            """
+
+        val elements = fields.mapIndexed { i, field ->
+            "      add($tableName.${field.field}, entity.${field.field})"
+        }.joinToString("\n")
+        val pkCol = primaryKey.field
+        val source = """
+    override fun updateRow(entity: Entity<*, *>): Long {
+      entity as ${tableName}Row
+$elements
+      return where (${tableName}.$pkCol.eq(entity.$pkCol))
+    }    
+        """
+        return source
+    }
+
+    fun sourceForEntityClass(): String {
+        val elements = fields.map { f ->
+            "  val ${f.field}: ${f.fieldType}"
+        }.joinToString(",\n")
+        val source = """
+data class ${tableName}Row(
+$elements    
+) : Entity<${tableName}UpdateBuilder, ${tableName}InsertBuilder>(${tableName}.metadata())
+        """
+        return source
+    }
+
+    private fun sourceForInsertRowMethod(): String {
+        val elements = allFieldsExceptAutoPK.mapIndexed { i, field ->
+            "      add($tableName.${field.field}, entity.${field.field})"
+        }.joinToString("\n")
+        val source = """
+    override fun insertRow(entity: Entity<*, *>): Long {
+      entity as ${tableName}Row
+$elements
+      return execute()
+    }    
+        """
+        return source
+    }
+
+    private fun sourceForMandatoryColumnsMethod(): String {
+        return if (nonNullFields.isEmpty()) "" else
+            """
+    fun mandatoryColumns(${nonNullFields.map { f -> "${f.field}: ${f.fieldType}" }.joinToString(", ")}) : ${tableName}InsertBuilder {
+${nonNullFields.map { f -> "      mandatory($tableName.${f.field}, ${f.field})" }.joinToString("\n")}
+      return this
+    }
+"""
     }
 
     fun sourceForMetaDataVal(): String {
-
         val accessorClass = WriteQueryAccessors::class.java.simpleName
         val updateBuilder = "${tableName}UpdateBuilder"
         val insertBuilder = "${tableName}InsertBuilder"
-
         return "    override fun metadata(): $accessorClass<$updateBuilder, $insertBuilder> = $accessorClass($updateBuilder(), $insertBuilder())"
     }
 
@@ -59,29 +120,26 @@ class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
         val updateBuilderBase = UpdateBuilderBase::class.java.simpleName
         val insertBuilderBase = InsertBuilderBase::class.java.simpleName
 
-        fun writeMethod(data: FieldData, returnType: String) =  "    fun ${data.field}(value: ${data.fieldType}): $returnType = put($tableName.${data.field}, value)"
+        fun writeMethod(data: FieldData, returnType: String) =
+            "    fun ${data.field}(value: ${data.fieldType}): $returnType = put($tableName.${data.field}, value)"
 
-        val allMethodsExceptPK = fields.filterNot { it.autoGenPK }
-        val nonNullFields = allMethodsExceptPK.filterNot { it.nullable || it.autoGenPK}
+        val updateRowMethodSource = sourceForUpdateRowMethod()
+        val insertRowMethodSource = sourceForInsertRowMethod()
+        val mandatoryColumnsMethod = sourceForMandatoryColumnsMethod()
 
-        val mandatoryColumnsMethod = if (nonNullFields.isEmpty()) "" else
-"""
-    fun mandatoryColumns(${nonNullFields.map { f -> "${f.field}: ${f.fieldType}" }.joinToString(", ")}) : ${tableName}InsertBuilder {
-${nonNullFields.map { f -> "      mandatory($tableName.${f.field}, ${f.field})" }.joinToString("\n")}
-      return this
-    }
-"""
         val updateBuilder = "${tableName}UpdateBuilder"
         val insertBuilder = "${tableName}InsertBuilder"
 
-return """
+        return """
 class $updateBuilder() : $updateBuilderBase($tableName) {
-${allMethodsExceptPK.map { d -> writeMethod(d, updateBuilder) }.joinToString("\n")}
+${allFieldsExceptAutoPK.map { d -> writeMethod(d, updateBuilder) }.joinToString("\n")}
+$updateRowMethodSource
 }
 
 class $insertBuilder():$insertBuilderBase(){
-   ${allMethodsExceptPK.map { d -> writeMethod(d, insertBuilder) }.joinToString("\n")}
+${allFieldsExceptAutoPK.map { d -> writeMethod(d, insertBuilder) }.joinToString("\n")}
 $mandatoryColumnsMethod
+$insertRowMethodSource
 }
 """
     }

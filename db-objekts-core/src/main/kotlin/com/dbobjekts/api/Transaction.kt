@@ -65,6 +65,22 @@ class Transaction(internal val connection: ConnectionAdapter) {
         return inserter
     }
 
+    fun <U : UpdateBuilderBase, I : InsertBuilderBase, T : Entity<U, I>> save(entity: T): Long {
+        val updater = entity.writeAccessors.updater
+        updater.connection = connection
+        semaphore.claim("update")
+        updater.semaphore = semaphore
+        return updater.updateRow(entity)
+    }
+
+    fun <U : UpdateBuilderBase, I : InsertBuilderBase, T : Entity<U, I>> insert(entity: T): Long {
+        val inserter: I = entity.writeAccessors.inserter
+        inserter.connection = connection
+        semaphore.claim("update")
+        inserter.semaphore = semaphore
+        return inserter.insertRow(entity)
+    }
+
     /**
      * Starts a delete statement. Example:
      * ```kotlin
@@ -142,7 +158,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
      *  transaction.select(Book.title).asList()
      * ```
      */
-    fun <I1> select(column1: Column<I1>): SelectStatementExecutor<I1, ResultRow1<I1>> =
+    fun <I1> select(column1: Selectable<I1>): SelectStatementExecutor<I1, ResultRow1<I1>> =
         SelectStatementExecutor(semaphore, connection, listOf(column1), ResultRow1<I1>())
 
     /**

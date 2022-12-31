@@ -1,11 +1,8 @@
 package com.dbobjekts.statement.update
 
-import com.dbobjekts.api.AnyColumnAndValue
-import com.dbobjekts.api.AnyTable
-import com.dbobjekts.api.Semaphore
+import com.dbobjekts.api.*
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.metadata.column.NullableColumnAndValue
 import com.dbobjekts.statement.insert.InsertBuilderBase
@@ -48,9 +45,15 @@ abstract class UpdateBuilderBase(
 
     @Suppress("UNCHECKED_CAST")
     protected fun <B : UpdateBuilderBase, C> put(col: Column<C>, value: C?): B{
-        ct.put(col, value)
+        add(col, value)
         return this as B
     }
+
+    internal fun <C> add(col: Column<C>, value: C?){
+        ct.put(col, value)
+    }
+
+    abstract fun updateRow(entity: Entity<*,*>): Long
 
     /**
      * Opens the whereclause for this update statement.

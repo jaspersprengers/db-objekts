@@ -1,6 +1,7 @@
 package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.Entity
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -18,12 +19,13 @@ object EmployeeDepartment:Table<EmployeeDepartmentRow>("EMPLOYEE_DEPARTMENT"), H
 class EmployeeDepartmentUpdateBuilder() : UpdateBuilderBase(EmployeeDepartment) {
     fun employeeId(value: Long): EmployeeDepartmentUpdateBuilder = put(EmployeeDepartment.employeeId, value)
     fun departmentId(value: Long): EmployeeDepartmentUpdateBuilder = put(EmployeeDepartment.departmentId, value)
+    override fun updateRow(entity: Entity<*, *>): Long = throw RuntimeException()
 }
 
 class EmployeeDepartmentInsertBuilder():InsertBuilderBase(){
        fun employeeId(value: Long): EmployeeDepartmentInsertBuilder = put(EmployeeDepartment.employeeId, value)
     fun departmentId(value: Long): EmployeeDepartmentInsertBuilder = put(EmployeeDepartment.departmentId, value)
-
+    override fun insertRow(entity: Entity<*, *>): Long = throw RuntimeException()
     fun mandatoryColumns(employeeId: Long, departmentId: Long) : EmployeeDepartmentInsertBuilder {
       mandatory(EmployeeDepartment.employeeId, employeeId)
       mandatory(EmployeeDepartment.departmentId, departmentId)

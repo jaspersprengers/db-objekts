@@ -1,6 +1,7 @@
 package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.Entity
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -21,12 +22,14 @@ class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
     fun street(value: String): AddressUpdateBuilder = put(Address.street, value)
     fun postcode(value: String?): AddressUpdateBuilder = put(Address.postcode, value)
     fun countryId(value: String): AddressUpdateBuilder = put(Address.countryId, value)
+    override fun updateRow(entity: Entity<*, *>): Long = throw RuntimeException()
 }
 
 class AddressInsertBuilder():InsertBuilderBase(){
        fun street(value: String): AddressInsertBuilder = put(Address.street, value)
     fun postcode(value: String?): AddressInsertBuilder = put(Address.postcode, value)
     fun countryId(value: String): AddressInsertBuilder = put(Address.countryId, value)
+    override fun insertRow(entity: Entity<*, *>): Long = throw RuntimeException()
 
     fun mandatoryColumns(street: String, countryId: String) : AddressInsertBuilder {
       mandatory(Address.street, street)

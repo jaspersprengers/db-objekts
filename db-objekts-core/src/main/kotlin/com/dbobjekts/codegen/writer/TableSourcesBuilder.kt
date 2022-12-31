@@ -1,5 +1,6 @@
 package com.dbobjekts.codegen.writer
 
+import com.dbobjekts.api.Entity
 import com.dbobjekts.api.PackageName
 import com.dbobjekts.codegen.metadata.DBColumnDefinition
 import com.dbobjekts.codegen.metadata.DBForeignKeyDefinition
@@ -50,6 +51,7 @@ class TableSourcesBuilder(
         )
         val classesToImport = listOf(
             Table::class.java,
+            Entity::class.java,
             WriteQueryAccessors::class.java,
             HasUpdateBuilder::class.java,
             InsertBuilderBase::class.java,
@@ -76,7 +78,7 @@ class TableSourcesBuilder(
         strBuilder.appendLine(updateMethodSourceBuilder.sourceForMetaDataVal())
         strBuilder.appendLine("}")
         strBuilder.appendLine(updateMethodSourceBuilder.sourceForBuilderClasses())
-        strBuilder.appendLine(updateMethodSourceBuilder.sourceForStatefulEntity())
+        strBuilder.appendLine(updateMethodSourceBuilder.sourceForEntityClass())
         return strBuilder.toString()
     }
 

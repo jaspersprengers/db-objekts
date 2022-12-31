@@ -149,7 +149,7 @@ object AcmeDB {
 
             transaction.execute(
                 "create table if not exists library.loan(item_id BIGINT NOT NULL,member_id BIGINT NOT NULL,date_loaned DATE NOT NULL,date_returned DATE NULL," +
-                        "foreign key (item_id) references library.item(id),foreign key (member_id) references library.member(id))"
+                        "primary key (item_id,member_id,date_loaned), foreign key (item_id) references library.item(id),foreign key (member_id) references library.member(id))"
             );
 
 

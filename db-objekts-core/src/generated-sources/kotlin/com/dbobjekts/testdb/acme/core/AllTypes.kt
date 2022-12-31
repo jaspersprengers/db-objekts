@@ -1,6 +1,7 @@
 package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.Entity
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -129,6 +130,7 @@ class AllTypesUpdateBuilder() : UpdateBuilderBase(AllTypes) {
     fun addressIntNil(value: com.dbobjekts.testdb.AddressType): AllTypesUpdateBuilder = put(AllTypes.addressIntNil, value)
     fun addressString(value: com.dbobjekts.testdb.AddressType): AllTypesUpdateBuilder = put(AllTypes.addressString, value)
     fun addressStringNil(value: com.dbobjekts.testdb.AddressType): AllTypesUpdateBuilder = put(AllTypes.addressStringNil, value)
+    override fun updateRow(entity: Entity<*, *>): Long = throw RuntimeException()
 }
 
 class AllTypesInsertBuilder():InsertBuilderBase(){
@@ -189,7 +191,7 @@ class AllTypesInsertBuilder():InsertBuilderBase(){
     fun addressIntNil(value: com.dbobjekts.testdb.AddressType): AllTypesInsertBuilder = put(AllTypes.addressIntNil, value)
     fun addressString(value: com.dbobjekts.testdb.AddressType): AllTypesInsertBuilder = put(AllTypes.addressString, value)
     fun addressStringNil(value: com.dbobjekts.testdb.AddressType): AllTypesInsertBuilder = put(AllTypes.addressStringNil, value)
-
+    override fun insertRow(entity: Entity<*, *>): Long = throw RuntimeException()
     fun mandatoryColumns(characterCol: String, charactervaryingCol: String, characterlargeobjectCol: String, varcharIgnorecaseCol: String, enumCol: String, binaryCol: ByteArray, binaryvaryingCol: ByteArray, binarylargeobjectCol: java.sql.Blob, jsonCol: ByteArray, booleanCol: Boolean, tinyintCol: Byte, smallintCol: Int, integerCol: Int, bigintCol: Long, numericCol: java.math.BigDecimal, decfloatCol: java.math.BigDecimal, realCol: Float, doubleprecisionCol: Double, dateCol: java.time.LocalDate, timeCol: java.time.LocalTime, timewithtimezoneCol: java.time.OffsetDateTime, timestampCol: java.time.Instant, timestampwithtimezoneCol: java.time.OffsetDateTime, uuidCol: java.util.UUID, intervalCol: org.h2.api.Interval, intArrayCol: Array<Any>, addressInt: com.dbobjekts.testdb.AddressType, addressIntNil: com.dbobjekts.testdb.AddressType, addressString: com.dbobjekts.testdb.AddressType, addressStringNil: com.dbobjekts.testdb.AddressType) : AllTypesInsertBuilder {
       mandatory(AllTypes.characterCol, characterCol)
       mandatory(AllTypes.charactervaryingCol, charactervaryingCol)

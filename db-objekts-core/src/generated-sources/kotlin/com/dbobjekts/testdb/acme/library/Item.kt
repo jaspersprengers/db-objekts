@@ -1,6 +1,7 @@
 package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.Entity
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -19,11 +20,14 @@ object Item:Table<ItemRow>("ITEM"), HasUpdateBuilder<ItemUpdateBuilder, ItemInse
 class ItemUpdateBuilder() : UpdateBuilderBase(Item) {
     fun isbn(value: String): ItemUpdateBuilder = put(Item.isbn, value)
     fun dateAcquired(value: java.time.LocalDate): ItemUpdateBuilder = put(Item.dateAcquired, value)
+    override fun updateRow(entity: Entity<*, *>): Long = throw RuntimeException()
 }
 
 class ItemInsertBuilder():InsertBuilderBase(){
        fun isbn(value: String): ItemInsertBuilder = put(Item.isbn, value)
     fun dateAcquired(value: java.time.LocalDate): ItemInsertBuilder = put(Item.dateAcquired, value)
+    override fun insertRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
 
     fun mandatoryColumns(isbn: String, dateAcquired: java.time.LocalDate) : ItemInsertBuilder {
       mandatory(Item.isbn, isbn)
