@@ -27,11 +27,13 @@ class ForeignKeyComponentTest {
         val d = Department
         val ed = EmployeeDepartment
 
+        val tm = AcmeDB.transactionManager
+        
         @BeforeAll
         @JvmStatic
          fun setup() {
 
-            AcmeDB.newTransaction { tr ->
+            tm { tr ->
                 tr.insert(c).id("us").name("USA").execute()
                 tr.insert(c).id("nl").name("Netherlands").execute()
                 tr.insert(c).id("fr").name("France").execute()
@@ -41,20 +43,20 @@ class ForeignKeyComponentTest {
             }
 
             val dob = LocalDate.of(1980, 3, 3)
-            val johnsId = AcmeDB.newTransaction { tr ->
+            val johnsId = tm { tr ->
                 tr.insert(Employee).name("John").salary(2000.0).married(true).dateOfBirth(dob).execute()
             }
-            val janesId = AcmeDB.newTransaction { tr ->
+            val janesId = tm { tr ->
                 tr.insert(Employee).name("Jane").salary(3000.0).married(true).dateOfBirth(dob).execute()
             }
-            val itDept = AcmeDB.newTransaction { tr -> tr.insert(Department).name("IT").execute() }
-            val hrDept = AcmeDB.newTransaction { tr -> tr.insert(Department).name("IT").execute() }
+            val itDept = tm { tr -> tr.insert(Department).name("IT").execute() }
+            val hrDept = tm { tr -> tr.insert(Department).name("IT").execute() }
             val johnAndJanesAddress =
-                AcmeDB.newTransaction { tr -> tr.insert(a).street("Home sweet home").countryId("nl").execute() }
-            AcmeDB.newTransaction { tr -> tr.insert(ed).departmentId(itDept).employeeId(johnsId).execute() }
-            AcmeDB.newTransaction { tr -> tr.insert(ed).departmentId(hrDept).employeeId(janesId).execute() }
-            AcmeDB.newTransaction { tr -> tr.insert(ed).departmentId(itDept).employeeId(janesId).execute() }
-            AcmeDB.newTransaction { tr ->
+                tm { tr -> tr.insert(a).street("Home sweet home").countryId("nl").execute() }
+            tm { tr -> tr.insert(ed).departmentId(itDept).employeeId(johnsId).execute() }
+            tm { tr -> tr.insert(ed).departmentId(hrDept).employeeId(janesId).execute() }
+            tm { tr -> tr.insert(ed).departmentId(itDept).employeeId(janesId).execute() }
+            tm { tr ->
                 
                 tr.insert(Certificate).name("BSC").employeeId(johnsId).execute()
                 tr.insert(Certificate).name("MA").employeeId(janesId).execute()
@@ -65,10 +67,10 @@ class ForeignKeyComponentTest {
             }
 
             val johnsWorkAddress =
-                AcmeDB.newTransaction { tr -> tr.insert(a).street("John's office").countryId("us").execute() }
+                tm { tr -> tr.insert(a).street("John's office").countryId("us").execute() }
             val janesWorkAddress =
-                AcmeDB.newTransaction { tr -> tr.insert(a).street("Jane's office").countryId("fr").execute() }
-            AcmeDB.newTransaction { tr ->
+                tm { tr -> tr.insert(a).street("Jane's office").countryId("fr").execute() }
+            tm { tr ->
                 tr.insert(ea).addressId(johnsWorkAddress).employeeId(johnsId).kind(AddressType.WORK).execute()
                 tr.insert(ea).addressId(janesWorkAddress).employeeId(janesId).kind(AddressType.WORK).execute()
             }
@@ -78,7 +80,7 @@ class ForeignKeyComponentTest {
 
     @Test
     fun `get all work addresses`() {
-        AcmeDB.newTransaction { tr ->
+        tm { tr ->
             val results: List<Tuple3<String?, String?, String?>> =
                 tr.select(e.name, a.street, c.name).where(ea.kind.eq(AddressType.WORK)).orderAsc(e.name).asList()
             assertEquals("Jane", results[0].v1)
@@ -94,7 +96,7 @@ class ForeignKeyComponentTest {
 
     @Test
     fun `get all private addresses`() {
-        val results: List<Tuple3<String, String, String>> = AcmeDB.newTransaction {
+        val results: List<Tuple3<String, String, String>> = tm {
             it.select(e.name, a.street, c.name).where(ea.kind.eq(AddressType.HOME)).orderAsc(e.name).asList()
         }
         assertEquals("Jane", results[0].v1)
@@ -109,7 +111,7 @@ class ForeignKeyComponentTest {
 
     @Test
     fun `get employees with hobbies`() {
-        AcmeDB.newTransaction { tr ->
+        tm { tr ->
             tr.update(e).hobbyId("c").where(e.name.eq("John"))
             val rows = tr.select(e.name, h.name).from(e.innerJoin(h)).asList()
             assertThat(rows).hasSize(1)
@@ -119,7 +121,7 @@ class ForeignKeyComponentTest {
 
     @Test
     fun `get employees address and departments`() {
-        AcmeDB.newTransaction { tr ->
+        tm { tr ->
             val rows = tr.select(a.street, d.name).where(e.name.eq("John")).asList()
             assertEquals("Home sweet home", rows[0].v1)
             assertEquals("IT", rows[0].v2)
@@ -128,7 +130,7 @@ class ForeignKeyComponentTest {
 
     @Test
     fun `test outer join on matching row`() {
-        AcmeDB.newTransaction { tr ->
+        tm { tr ->
             val row = tr.select(e.name, ce.name.nullable).where(e.name.eq("John").and(ce.name).eq("BSC")).first()
             assertEquals("John", row.v1)
             assertEquals("BSC", row.v2)

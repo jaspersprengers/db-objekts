@@ -20,12 +20,13 @@ class EntityBasedComponentTest {
         fun setup(){
             AcmeDB.deleteAllTables(AcmeDB.transactionManager)
         }
+        val tm = AcmeDB.transactionManager
     }
 
 
     @Test
     fun `test entity-based insertion`() {
-        AcmeDB.newTransaction { tr ->
+        tm { tr ->
             val hobby = HobbyRow("chess", "The game of champions")
             tr.insert(hobby)
 
@@ -66,7 +67,7 @@ class EntityBasedComponentTest {
 
     @Test
     fun `update entity with non-pk row throws`(){
-        AcmeDB.newTransaction { tr ->
+        tm { tr ->
             tr.insert(CountryRow("be", "Belgium"))
             val empId = tr.insert(EmployeeRow(
                 name = "Jill",
@@ -87,7 +88,7 @@ class EntityBasedComponentTest {
 
     @Test
     fun `test entity-based update`() {
-        AcmeDB.newTransaction { tr ->
+        tm { tr ->
             val hobby = HobbyRow("go", "the game of Go")
             tr.insert(hobby)
             val empId = tr.insert(EmployeeRow(

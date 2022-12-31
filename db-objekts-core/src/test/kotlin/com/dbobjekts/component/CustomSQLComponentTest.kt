@@ -15,12 +15,13 @@ class CustomSQLComponentTest {
         fun setup(){
             AcmeDB.deleteAllTables(AcmeDB.transactionManager)
         }
+        val tm = AcmeDB.transactionManager
     }
 
     @Test
     fun `test select two columns from two tables`() {
 
-        AcmeDB.newTransaction({
+        tm ({
             //it.insert(AllTypes)
             LocalDate.of(1990, 12, 5)
             it.insert(Hobby).mandatoryColumns("chess", "The game of champions").execute()

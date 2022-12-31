@@ -14,9 +14,8 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 import com.dbobjekts.testdb.AddressType
-import org.assertj.core.api.Assertions.assertThatThrownBy
 
-class SelectionComponentTest {
+class SelectStatementComponentTest {
 
 
     companion object {
@@ -28,11 +27,13 @@ class SelectionComponentTest {
         var john: Long = 0
         var arthur: Long = 0
 
+        val tm = AcmeDB.transactionManager
+        
         @BeforeAll
         @JvmStatic
         fun setup() {
             AcmeDB.deleteAllTables(AcmeDB.transactionManager)
-            AcmeDB.newTransaction {
+            tm {
                 val dob = LocalDate.of(1990, 12, 5)
                 it.insert(Hobby).mandatoryColumns("chess", "chess").execute()
                 arthur = it.insert(Employee).mandatoryColumns("Arthur", 300.50, dob).execute()
@@ -49,7 +50,7 @@ class SelectionComponentTest {
 
     @Test
     fun `select all from employee and hobby`() {
-        AcmeDB.newTransaction({
+        tm({
             val (employee, hobby) =
                 it.select(Employee, h.name).where(e.name.eq("Jane")).first()
             assertThat(hobby).isEqualTo("chess")
@@ -60,7 +61,7 @@ class SelectionComponentTest {
 
     @Test
     fun `use nullable counterpart`() {
-        AcmeDB.newTransaction({
+        tm({
             val (name, hobby) =
                 it.select(e.name, h.name.nullable).where(e.name.eq("Arthur")).useOuterJoins().first()
             assertThat(hobby).isNull()
@@ -69,14 +70,14 @@ class SelectionComponentTest {
 
     @Test
     fun `do not use default value for null result in non-nullable column throws`() {
-        AcmeDB.newTransaction({
+        tm({
             Assertions.assertThatThrownBy { it.select(e.name, h.name).where(e.name.eq("Arthur")).useOuterJoins().firstOrNull() }
         })
     }
 
     @Test
     fun `test select two columns from two tables`() {
-        AcmeDB.newTransaction({
+        tm({
             val (salary, street) =
                 it.select(e.salary, a.street).where(e.name.eq("Jane").and(a.street).eq("Zuidhoek")).first()
             assert(salary == 300.50)
@@ -86,7 +87,7 @@ class SelectionComponentTest {
 
     @Test
     fun `test select two rows with custom mapper`() {
-        AcmeDB.newTransaction({
+        tm({
             val buffer = mutableListOf<String?>()
             it.select(e.name).orderAsc(e.name).forEachRow({ row ->
                 buffer.add(row)
@@ -101,7 +102,7 @@ class SelectionComponentTest {
 
     @Test
     fun `test select, IN whereclause`() {
-        AcmeDB.newTransaction({ s ->
+        tm({ s ->
             s.select(e.name).asList()
             val name = s.select(e.name).where(e.name.within("John", "Jane").and(e.married).eq(true)).first()
             assert(name == "John")
@@ -110,7 +111,7 @@ class SelectionComponentTest {
 
     @Test
     fun `test select all without where clause`() {
-        AcmeDB.newTransaction({ s ->
+        tm({ s ->
             val ret = {
                 s.select(e.id).first()
             }
@@ -119,7 +120,7 @@ class SelectionComponentTest {
 
     @Test
     fun `test select all with optionally one row`() {
-        AcmeDB.newTransaction({ s ->
+        tm({ s ->
             val ret = s.select(e.name).orderAsc(e.name).first()
             assertNotNull(ret)
             assertEquals("Arthur", ret)
@@ -128,7 +129,7 @@ class SelectionComponentTest {
 
     @Test
     fun `test select some columns from two tables`() {
-        AcmeDB.newTransaction({ s ->
+        tm({ s ->
             val nameStreet: Tuple2<String, String> = s.select(e.name, a.street).where(e.name.eq("Jane")).first()
             assertEquals(nameStreet.v2, "Zuidhoek")
         })
@@ -136,14 +137,14 @@ class SelectionComponentTest {
 
     @Test
     fun `test left join select person name where hobby is null`() {
-        AcmeDB.newTransaction({ s ->
+        tm({ s ->
             assertThat(s.select(e.name).from(e.leftJoin(h)).where(e.hobbyId.isNull()).first()).isEqualTo("Arthur")
         })
     }
 
     @Test
     fun `test inner join for person based on country`() {
-        AcmeDB.newTransaction({ s ->
+        tm({ s ->
             assertThat(
                 s.select(e.name).from(
                     e.innerJoin(EmployeeAddress)
@@ -158,7 +159,7 @@ class SelectionComponentTest {
 
     @Test
     fun `test left join select person name and hobby name without where clause`() {
-        AcmeDB.newTransaction({ s ->
+        tm({ s ->
             val (name, hobby) = s.select(e.name, h.name.nullable).from(e.leftJoin(h)).first();
             assertThat(hobby).isNull()
         })
@@ -167,7 +168,7 @@ class SelectionComponentTest {
     @Test
     fun `test select the same column twice as a list is OK`() {
         val result =
-            AcmeDB.newTransaction({ s -> s.select(e.name, e.name).where(e.name.eq("Arthur")).first() })
+            tm({ s -> s.select(e.name, e.name).where(e.name.eq("Arthur")).first() })
         assertEquals("Arthur", result.v1)
         assertEquals("Arthur", result.v2)
     }
@@ -175,7 +176,7 @@ class SelectionComponentTest {
     @Test
     fun `use the same column in two conditions`() {
         val result =
-            AcmeDB.newTransaction({ s ->
+            tm({ s ->
                 s.select(e.name).where(e.salary.gt(300.0).and(e.salary).lt(500.0)).first()
             })
         assertEquals("Arthur", result)
@@ -183,42 +184,42 @@ class SelectionComponentTest {
 
     @Test
     fun `test select address with no driving table`() {
-        AcmeDB.newTransaction({ s ->
+        tm({ s ->
             assertThat(s.select(a.street).where(a.street.eq("Zuidhoek")).first()).isEqualTo("Zuidhoek")
         })
     }
 
     @Test
     fun `test select, IN whereclause invokes preparedstatement`() {
-        AcmeDB.newTransaction({ s ->
+        tm({ s ->
             assertThat(s.select(e.id).where(e.name.within("John", "Arthur")).asList()).hasSize(2)
         })
     }
 
     @Test
     fun `limit clause with invalid value returns one`() {
-        AcmeDB.newTransaction({ s ->
+        tm({ s ->
             s.select(e.name).where(e.id.gt(5)).limit(0).first()
         })
     }
 
     @Test
     fun `Order by clause`() {
-        AcmeDB.newTransaction({ s ->
+        tm({ s ->
             s.select(e.name).where(e.id.gt(5)).orderAsc(e.name).first()
         })
     }
 
     @Test
     fun `Multiple order by clauses`() {
-        AcmeDB.newTransaction({ s ->
+        tm({ s ->
             assertThat(s.select(e.name).where(e.id.gt(5)).orderAsc(e.name).orderDesc(e.salary).first()).isEqualTo("Arthur")
         })
     }
 
     @Test
     fun `limit clause with positive value produces proper clause`() {
-        AcmeDB.newTransaction({ s ->
+        tm({ s ->
             s.select(e.name).where(e.id.gt(5)).limit(3).first()
         })
     }

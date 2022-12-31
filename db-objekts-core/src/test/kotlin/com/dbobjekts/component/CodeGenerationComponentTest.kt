@@ -3,7 +3,6 @@ package com.dbobjekts.component
 import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.codegen.datatypemapper.SequenceForPrimaryKeyResolver
-import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
 import com.dbobjekts.testdb.*
 import org.junit.jupiter.api.Test
@@ -11,7 +10,7 @@ import com.dbobjekts.testdb.acme.CatalogDefinition
 import org.assertj.core.api.Assertions.assertThat
 import java.nio.file.Paths
 
-class AcmeCatalogCodeGenComponentTest {
+class CodeGenerationComponentTest {
 
     @Test
     fun `validate acme catalog`() {
