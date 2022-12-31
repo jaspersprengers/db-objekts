@@ -1,8 +1,9 @@
 package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.Entity
 import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.Entity
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
@@ -21,14 +22,17 @@ class EmployeeAddressUpdateBuilder() : UpdateBuilderBase(EmployeeAddress) {
     fun employeeId(value: Long): EmployeeAddressUpdateBuilder = put(EmployeeAddress.employeeId, value)
     fun addressId(value: Long): EmployeeAddressUpdateBuilder = put(EmployeeAddress.addressId, value)
     fun kind(value: com.dbobjekts.testdb.AddressType): EmployeeAddressUpdateBuilder = put(EmployeeAddress.kind, value)
-    override fun updateRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
+    override fun updateRow(entity: Entity<*, *>): Long = 
+      throw StatementBuilderException("Sorry, but you cannot use entity-based update for table EmployeeAddress. There must be exactly one column marked as primary key.")                
+            
 }
 
 class EmployeeAddressInsertBuilder():InsertBuilderBase(){
-       fun employeeId(value: Long): EmployeeAddressInsertBuilder = put(EmployeeAddress.employeeId, value)
+    fun employeeId(value: Long): EmployeeAddressInsertBuilder = put(EmployeeAddress.employeeId, value)
     fun addressId(value: Long): EmployeeAddressInsertBuilder = put(EmployeeAddress.addressId, value)
     fun kind(value: com.dbobjekts.testdb.AddressType): EmployeeAddressInsertBuilder = put(EmployeeAddress.kind, value)
-    override fun insertRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
     fun mandatoryColumns(employeeId: Long, addressId: Long, kind: com.dbobjekts.testdb.AddressType) : EmployeeAddressInsertBuilder {
       mandatory(EmployeeAddress.employeeId, employeeId)
       mandatory(EmployeeAddress.addressId, addressId)
@@ -36,9 +40,21 @@ class EmployeeAddressInsertBuilder():InsertBuilderBase(){
       return this
     }
 
+
+    override fun insertRow(entity: Entity<*, *>): Long {
+      entity as EmployeeAddressRow
+      add(EmployeeAddress.employeeId, entity.employeeId)
+      add(EmployeeAddress.addressId, entity.addressId)
+      add(EmployeeAddress.kind, entity.kind)
+      return execute()
+    }    
+        
 }
 
+
 data class EmployeeAddressRow(
-    val employeeId: Long,
-    val addressId: Long,
-    val kind: com.dbobjekts.testdb.AddressType)
+  val employeeId: Long,
+  val addressId: Long,
+  val kind: com.dbobjekts.testdb.AddressType    
+) : Entity<EmployeeAddressUpdateBuilder, EmployeeAddressInsertBuilder>(EmployeeAddress.metadata())
+        

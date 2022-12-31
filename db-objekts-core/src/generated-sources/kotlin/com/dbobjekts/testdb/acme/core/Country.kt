@@ -1,8 +1,9 @@
 package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.Entity
 import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.Entity
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
@@ -19,21 +20,39 @@ object Country:Table<CountryRow>("COUNTRY"), HasUpdateBuilder<CountryUpdateBuild
 class CountryUpdateBuilder() : UpdateBuilderBase(Country) {
     fun id(value: String): CountryUpdateBuilder = put(Country.id, value)
     fun name(value: String): CountryUpdateBuilder = put(Country.name, value)
-    override fun updateRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
+    override fun updateRow(entity: Entity<*, *>): Long {
+      entity as CountryRow
+      add(Country.id, entity.id)
+      add(Country.name, entity.name)
+      return where (Country.id.eq(entity.id))
+    }    
+        
 }
 
 class CountryInsertBuilder():InsertBuilderBase(){
-       fun id(value: String): CountryInsertBuilder = put(Country.id, value)
+    fun id(value: String): CountryInsertBuilder = put(Country.id, value)
     fun name(value: String): CountryInsertBuilder = put(Country.name, value)
-    override fun insertRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
     fun mandatoryColumns(id: String, name: String) : CountryInsertBuilder {
       mandatory(Country.id, id)
       mandatory(Country.name, name)
       return this
     }
 
+
+    override fun insertRow(entity: Entity<*, *>): Long {
+      entity as CountryRow
+      add(Country.id, entity.id)
+      add(Country.name, entity.name)
+      return execute()
+    }    
+        
 }
 
+
 data class CountryRow(
-    val id: String,
-    val name: String)
+  val id: String,
+    val name: String
+) : Entity<CountryUpdateBuilder, CountryInsertBuilder>(Country.metadata())
+        

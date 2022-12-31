@@ -1,8 +1,9 @@
 package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.Entity
 import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.Entity
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
@@ -20,14 +21,20 @@ object Item:Table<ItemRow>("ITEM"), HasUpdateBuilder<ItemUpdateBuilder, ItemInse
 class ItemUpdateBuilder() : UpdateBuilderBase(Item) {
     fun isbn(value: String): ItemUpdateBuilder = put(Item.isbn, value)
     fun dateAcquired(value: java.time.LocalDate): ItemUpdateBuilder = put(Item.dateAcquired, value)
-    override fun updateRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
+    override fun updateRow(entity: Entity<*, *>): Long {
+      entity as ItemRow
+      add(Item.id, entity.id)
+      add(Item.isbn, entity.isbn)
+      add(Item.dateAcquired, entity.dateAcquired)
+      return where (Item.id.eq(entity.id))
+    }    
+        
 }
 
 class ItemInsertBuilder():InsertBuilderBase(){
-       fun isbn(value: String): ItemInsertBuilder = put(Item.isbn, value)
+    fun isbn(value: String): ItemInsertBuilder = put(Item.isbn, value)
     fun dateAcquired(value: java.time.LocalDate): ItemInsertBuilder = put(Item.dateAcquired, value)
-    override fun insertRow(entity: Entity<*, *>): Long = throw RuntimeException()
-
 
     fun mandatoryColumns(isbn: String, dateAcquired: java.time.LocalDate) : ItemInsertBuilder {
       mandatory(Item.isbn, isbn)
@@ -35,9 +42,20 @@ class ItemInsertBuilder():InsertBuilderBase(){
       return this
     }
 
+
+    override fun insertRow(entity: Entity<*, *>): Long {
+      entity as ItemRow
+      add(Item.isbn, entity.isbn)
+      add(Item.dateAcquired, entity.dateAcquired)
+      return execute()
+    }    
+        
 }
 
+
 data class ItemRow(
-    val id: Long,
-    val isbn: String,
-    val dateAcquired: java.time.LocalDate)
+  val id: Long = 0,
+  val isbn: String,
+  val dateAcquired: java.time.LocalDate    
+) : Entity<ItemUpdateBuilder, ItemInsertBuilder>(Item.metadata())
+        

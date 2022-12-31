@@ -1,8 +1,9 @@
 package com.dbobjekts.testdb.acme.hr
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.Entity
 import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.Entity
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
@@ -19,21 +20,39 @@ object Hobby:Table<HobbyRow>("HOBBY"), HasUpdateBuilder<HobbyUpdateBuilder, Hobb
 class HobbyUpdateBuilder() : UpdateBuilderBase(Hobby) {
     fun id(value: String): HobbyUpdateBuilder = put(Hobby.id, value)
     fun name(value: String): HobbyUpdateBuilder = put(Hobby.name, value)
-    override fun updateRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
+    override fun updateRow(entity: Entity<*, *>): Long {
+      entity as HobbyRow
+      add(Hobby.id, entity.id)
+      add(Hobby.name, entity.name)
+      return where (Hobby.id.eq(entity.id))
+    }    
+        
 }
 
 class HobbyInsertBuilder():InsertBuilderBase(){
-       fun id(value: String): HobbyInsertBuilder = put(Hobby.id, value)
+    fun id(value: String): HobbyInsertBuilder = put(Hobby.id, value)
     fun name(value: String): HobbyInsertBuilder = put(Hobby.name, value)
-    override fun insertRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
     fun mandatoryColumns(id: String, name: String) : HobbyInsertBuilder {
       mandatory(Hobby.id, id)
       mandatory(Hobby.name, name)
       return this
     }
 
+
+    override fun insertRow(entity: Entity<*, *>): Long {
+      entity as HobbyRow
+      add(Hobby.id, entity.id)
+      add(Hobby.name, entity.name)
+      return execute()
+    }    
+        
 }
 
+
 data class HobbyRow(
-    val id: String,
-    val name: String)
+    val id : String,
+  val name: String    
+) : Entity<HobbyUpdateBuilder, HobbyInsertBuilder>(Hobby.metadata())
+        

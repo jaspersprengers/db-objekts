@@ -1,8 +1,9 @@
 package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.Entity
 import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.Entity
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
@@ -22,14 +23,22 @@ class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
     fun street(value: String): AddressUpdateBuilder = put(Address.street, value)
     fun postcode(value: String?): AddressUpdateBuilder = put(Address.postcode, value)
     fun countryId(value: String): AddressUpdateBuilder = put(Address.countryId, value)
-    override fun updateRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
+    override fun updateRow(entity: Entity<*, *>): Long {
+      entity as AddressRow
+      add(Address.id, entity.id)
+      add(Address.street, entity.street)
+      add(Address.postcode, entity.postcode)
+      add(Address.countryId, entity.countryId)
+      return where (Address.id.eq(entity.id))
+    }    
+        
 }
 
 class AddressInsertBuilder():InsertBuilderBase(){
-       fun street(value: String): AddressInsertBuilder = put(Address.street, value)
+    fun street(value: String): AddressInsertBuilder = put(Address.street, value)
     fun postcode(value: String?): AddressInsertBuilder = put(Address.postcode, value)
     fun countryId(value: String): AddressInsertBuilder = put(Address.countryId, value)
-    override fun insertRow(entity: Entity<*, *>): Long = throw RuntimeException()
 
     fun mandatoryColumns(street: String, countryId: String) : AddressInsertBuilder {
       mandatory(Address.street, street)
@@ -37,10 +46,22 @@ class AddressInsertBuilder():InsertBuilderBase(){
       return this
     }
 
+
+    override fun insertRow(entity: Entity<*, *>): Long {
+      entity as AddressRow
+      add(Address.street, entity.street)
+      add(Address.postcode, entity.postcode)
+      add(Address.countryId, entity.countryId)
+      return execute()
+    }    
+        
 }
 
+
 data class AddressRow(
-    val id: Long,
-    val street: String,
-    val postcode: String?,
-    val countryId: String)
+  val id: Long = 0,
+  val street: String,
+  val postcode: String?,
+  val countryId: String    
+) : Entity<AddressUpdateBuilder, AddressInsertBuilder>(Address.metadata())
+        

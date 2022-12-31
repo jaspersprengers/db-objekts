@@ -48,7 +48,7 @@ class AcmeCatalogCodeGenComponentTest {
             .basePackageForSources("com.dbobjekts.testdb.acme")
         .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff: List<String> = generator.differencesWithCatalog(CatalogDefinition)
-        //assertThat(diff).describedAs("acme catalog differs from database definition").isEmpty()
+        assertThat(diff).describedAs("acme catalog differs from database definition").isEmpty()
         generator.generateSourceFiles()
 
     }

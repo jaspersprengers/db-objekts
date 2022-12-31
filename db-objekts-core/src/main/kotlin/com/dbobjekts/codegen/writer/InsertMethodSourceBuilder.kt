@@ -28,6 +28,7 @@ class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
     val allFieldsExceptPK: List<FieldData>
     val nonNullFields: List<FieldData>
     val primaryKey: FieldData?
+    val autoPrimaryKey: FieldData?
 
     init {
         fields = tableDefinition.columns.map { colDef ->
@@ -43,6 +44,7 @@ class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
         allFieldsExceptPK = fields.filterNot { it.regularPK || it.autoGenPK }
         nonNullFields = allFieldsExceptAutoPK.filterNot { it.nullable || it.autoGenPK }
         primaryKey = fields.filter { it.regularPK || it.autoGenPK }.firstOrNull()
+        autoPrimaryKey = fields.filter { it.autoGenPK }.firstOrNull()
     }
 
     fun sourceForToValue(): String {
@@ -56,7 +58,7 @@ class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
         if (primaryKey == null)
             return """
     override fun updateRow(entity: Entity<*, *>): Long = 
-      throw RuntimeException("Sorry, but you cannot use entity-based update for table ${tableName}. There must be exactly one column marked as primary key.")                
+      throw StatementBuilderException("Sorry, but you cannot use entity-based update for table ${tableName}. There must be exactly one column marked as primary key.")                
             """
 
         val elements = fields.mapIndexed { i, field ->
@@ -74,12 +76,17 @@ $elements
     }
 
     fun sourceForEntityClass(): String {
-        val elements = fields.map { f ->
+        val elements = mutableListOf<String>()
+        if (autoPrimaryKey!=null)
+            elements += "val ${autoPrimaryKey.field}: ${autoPrimaryKey.fieldType} = 0"
+
+        elements.addAll(allFieldsExceptAutoPK.map { f ->
             "  val ${f.field}: ${f.fieldType}"
-        }.joinToString(",\n")
+        })
+        val fieldStr = elements.joinToString(",\n")
         val source = """
 data class ${tableName}Row(
-$elements    
+$fieldStr    
 ) : Entity<${tableName}UpdateBuilder, ${tableName}InsertBuilder>(${tableName}.metadata())
         """
         return source

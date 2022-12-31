@@ -1,8 +1,9 @@
 package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.Entity
 import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.Entity
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
@@ -20,21 +21,40 @@ object Author:Table<AuthorRow>("AUTHOR"), HasUpdateBuilder<AuthorUpdateBuilder, 
 class AuthorUpdateBuilder() : UpdateBuilderBase(Author) {
     fun name(value: String): AuthorUpdateBuilder = put(Author.name, value)
     fun bio(value: String?): AuthorUpdateBuilder = put(Author.bio, value)
-    override fun updateRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
+    override fun updateRow(entity: Entity<*, *>): Long {
+      entity as AuthorRow
+      add(Author.id, entity.id)
+      add(Author.name, entity.name)
+      add(Author.bio, entity.bio)
+      return where (Author.id.eq(entity.id))
+    }    
+        
 }
 
 class AuthorInsertBuilder():InsertBuilderBase(){
-       fun name(value: String): AuthorInsertBuilder = put(Author.name, value)
+    fun name(value: String): AuthorInsertBuilder = put(Author.name, value)
     fun bio(value: String?): AuthorInsertBuilder = put(Author.bio, value)
-    override fun insertRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
     fun mandatoryColumns(name: String) : AuthorInsertBuilder {
       mandatory(Author.name, name)
       return this
     }
 
+
+    override fun insertRow(entity: Entity<*, *>): Long {
+      entity as AuthorRow
+      add(Author.name, entity.name)
+      add(Author.bio, entity.bio)
+      return execute()
+    }    
+        
 }
 
+
 data class AuthorRow(
-    val id: Long,
-    val name: String,
-    val bio: String?)
+  val id: Long = 0,
+  val name: String,
+  val bio: String?    
+) : Entity<AuthorUpdateBuilder, AuthorInsertBuilder>(Author.metadata())
+        

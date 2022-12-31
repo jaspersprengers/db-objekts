@@ -1,8 +1,9 @@
 package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.Entity
 import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.Entity
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
@@ -130,11 +131,74 @@ class AllTypesUpdateBuilder() : UpdateBuilderBase(AllTypes) {
     fun addressIntNil(value: com.dbobjekts.testdb.AddressType): AllTypesUpdateBuilder = put(AllTypes.addressIntNil, value)
     fun addressString(value: com.dbobjekts.testdb.AddressType): AllTypesUpdateBuilder = put(AllTypes.addressString, value)
     fun addressStringNil(value: com.dbobjekts.testdb.AddressType): AllTypesUpdateBuilder = put(AllTypes.addressStringNil, value)
-    override fun updateRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
+    override fun updateRow(entity: Entity<*, *>): Long {
+      entity as AllTypesRow
+      add(AllTypes.id, entity.id)
+      add(AllTypes.characterCol, entity.characterCol)
+      add(AllTypes.characterColNil, entity.characterColNil)
+      add(AllTypes.charactervaryingCol, entity.charactervaryingCol)
+      add(AllTypes.charactervaryingColNil, entity.charactervaryingColNil)
+      add(AllTypes.characterlargeobjectCol, entity.characterlargeobjectCol)
+      add(AllTypes.characterlargeobjectColNil, entity.characterlargeobjectColNil)
+      add(AllTypes.varcharIgnorecaseCol, entity.varcharIgnorecaseCol)
+      add(AllTypes.varcharIgnorecaseColNil, entity.varcharIgnorecaseColNil)
+      add(AllTypes.enumCol, entity.enumCol)
+      add(AllTypes.enumColNil, entity.enumColNil)
+      add(AllTypes.binaryCol, entity.binaryCol)
+      add(AllTypes.binaryColNil, entity.binaryColNil)
+      add(AllTypes.binaryvaryingCol, entity.binaryvaryingCol)
+      add(AllTypes.binaryvaryingColNil, entity.binaryvaryingColNil)
+      add(AllTypes.binarylargeobjectCol, entity.binarylargeobjectCol)
+      add(AllTypes.binarylargeobjectColNil, entity.binarylargeobjectColNil)
+      add(AllTypes.jsonCol, entity.jsonCol)
+      add(AllTypes.jsonColNil, entity.jsonColNil)
+      add(AllTypes.booleanCol, entity.booleanCol)
+      add(AllTypes.booleanColNil, entity.booleanColNil)
+      add(AllTypes.tinyintCol, entity.tinyintCol)
+      add(AllTypes.tinyintColNil, entity.tinyintColNil)
+      add(AllTypes.smallintCol, entity.smallintCol)
+      add(AllTypes.smallintColNil, entity.smallintColNil)
+      add(AllTypes.integerCol, entity.integerCol)
+      add(AllTypes.integerColNil, entity.integerColNil)
+      add(AllTypes.bigintCol, entity.bigintCol)
+      add(AllTypes.bigintColNil, entity.bigintColNil)
+      add(AllTypes.numericCol, entity.numericCol)
+      add(AllTypes.numericColNil, entity.numericColNil)
+      add(AllTypes.decfloatCol, entity.decfloatCol)
+      add(AllTypes.decfloatColNil, entity.decfloatColNil)
+      add(AllTypes.realCol, entity.realCol)
+      add(AllTypes.realColNil, entity.realColNil)
+      add(AllTypes.doubleprecisionCol, entity.doubleprecisionCol)
+      add(AllTypes.doubleprecisionColNil, entity.doubleprecisionColNil)
+      add(AllTypes.dateCol, entity.dateCol)
+      add(AllTypes.dateColNil, entity.dateColNil)
+      add(AllTypes.timeCol, entity.timeCol)
+      add(AllTypes.timeColNil, entity.timeColNil)
+      add(AllTypes.timewithtimezoneCol, entity.timewithtimezoneCol)
+      add(AllTypes.timewithtimezoneColNil, entity.timewithtimezoneColNil)
+      add(AllTypes.timestampCol, entity.timestampCol)
+      add(AllTypes.timestampColNil, entity.timestampColNil)
+      add(AllTypes.timestampwithtimezoneCol, entity.timestampwithtimezoneCol)
+      add(AllTypes.timestampwithtimezoneColNil, entity.timestampwithtimezoneColNil)
+      add(AllTypes.uuidCol, entity.uuidCol)
+      add(AllTypes.uuidColNil, entity.uuidColNil)
+      add(AllTypes.intervalCol, entity.intervalCol)
+      add(AllTypes.intervalColNil, entity.intervalColNil)
+      add(AllTypes.geometryColNil, entity.geometryColNil)
+      add(AllTypes.intArrayCol, entity.intArrayCol)
+      add(AllTypes.intArrayColNil, entity.intArrayColNil)
+      add(AllTypes.addressInt, entity.addressInt)
+      add(AllTypes.addressIntNil, entity.addressIntNil)
+      add(AllTypes.addressString, entity.addressString)
+      add(AllTypes.addressStringNil, entity.addressStringNil)
+      return where (AllTypes.id.eq(entity.id))
+    }    
+        
 }
 
 class AllTypesInsertBuilder():InsertBuilderBase(){
-       fun characterCol(value: String): AllTypesInsertBuilder = put(AllTypes.characterCol, value)
+    fun characterCol(value: String): AllTypesInsertBuilder = put(AllTypes.characterCol, value)
     fun characterColNil(value: String?): AllTypesInsertBuilder = put(AllTypes.characterColNil, value)
     fun charactervaryingCol(value: String): AllTypesInsertBuilder = put(AllTypes.charactervaryingCol, value)
     fun charactervaryingColNil(value: String?): AllTypesInsertBuilder = put(AllTypes.charactervaryingColNil, value)
@@ -191,7 +255,7 @@ class AllTypesInsertBuilder():InsertBuilderBase(){
     fun addressIntNil(value: com.dbobjekts.testdb.AddressType): AllTypesInsertBuilder = put(AllTypes.addressIntNil, value)
     fun addressString(value: com.dbobjekts.testdb.AddressType): AllTypesInsertBuilder = put(AllTypes.addressString, value)
     fun addressStringNil(value: com.dbobjekts.testdb.AddressType): AllTypesInsertBuilder = put(AllTypes.addressStringNil, value)
-    override fun insertRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
     fun mandatoryColumns(characterCol: String, charactervaryingCol: String, characterlargeobjectCol: String, varcharIgnorecaseCol: String, enumCol: String, binaryCol: ByteArray, binaryvaryingCol: ByteArray, binarylargeobjectCol: java.sql.Blob, jsonCol: ByteArray, booleanCol: Boolean, tinyintCol: Byte, smallintCol: Int, integerCol: Int, bigintCol: Long, numericCol: java.math.BigDecimal, decfloatCol: java.math.BigDecimal, realCol: Float, doubleprecisionCol: Double, dateCol: java.time.LocalDate, timeCol: java.time.LocalTime, timewithtimezoneCol: java.time.OffsetDateTime, timestampCol: java.time.Instant, timestampwithtimezoneCol: java.time.OffsetDateTime, uuidCol: java.util.UUID, intervalCol: org.h2.api.Interval, intArrayCol: Array<Any>, addressInt: com.dbobjekts.testdb.AddressType, addressIntNil: com.dbobjekts.testdb.AddressType, addressString: com.dbobjekts.testdb.AddressType, addressStringNil: com.dbobjekts.testdb.AddressType) : AllTypesInsertBuilder {
       mandatory(AllTypes.characterCol, characterCol)
       mandatory(AllTypes.charactervaryingCol, charactervaryingCol)
@@ -226,64 +290,130 @@ class AllTypesInsertBuilder():InsertBuilderBase(){
       return this
     }
 
+
+    override fun insertRow(entity: Entity<*, *>): Long {
+      entity as AllTypesRow
+      add(AllTypes.characterCol, entity.characterCol)
+      add(AllTypes.characterColNil, entity.characterColNil)
+      add(AllTypes.charactervaryingCol, entity.charactervaryingCol)
+      add(AllTypes.charactervaryingColNil, entity.charactervaryingColNil)
+      add(AllTypes.characterlargeobjectCol, entity.characterlargeobjectCol)
+      add(AllTypes.characterlargeobjectColNil, entity.characterlargeobjectColNil)
+      add(AllTypes.varcharIgnorecaseCol, entity.varcharIgnorecaseCol)
+      add(AllTypes.varcharIgnorecaseColNil, entity.varcharIgnorecaseColNil)
+      add(AllTypes.enumCol, entity.enumCol)
+      add(AllTypes.enumColNil, entity.enumColNil)
+      add(AllTypes.binaryCol, entity.binaryCol)
+      add(AllTypes.binaryColNil, entity.binaryColNil)
+      add(AllTypes.binaryvaryingCol, entity.binaryvaryingCol)
+      add(AllTypes.binaryvaryingColNil, entity.binaryvaryingColNil)
+      add(AllTypes.binarylargeobjectCol, entity.binarylargeobjectCol)
+      add(AllTypes.binarylargeobjectColNil, entity.binarylargeobjectColNil)
+      add(AllTypes.jsonCol, entity.jsonCol)
+      add(AllTypes.jsonColNil, entity.jsonColNil)
+      add(AllTypes.booleanCol, entity.booleanCol)
+      add(AllTypes.booleanColNil, entity.booleanColNil)
+      add(AllTypes.tinyintCol, entity.tinyintCol)
+      add(AllTypes.tinyintColNil, entity.tinyintColNil)
+      add(AllTypes.smallintCol, entity.smallintCol)
+      add(AllTypes.smallintColNil, entity.smallintColNil)
+      add(AllTypes.integerCol, entity.integerCol)
+      add(AllTypes.integerColNil, entity.integerColNil)
+      add(AllTypes.bigintCol, entity.bigintCol)
+      add(AllTypes.bigintColNil, entity.bigintColNil)
+      add(AllTypes.numericCol, entity.numericCol)
+      add(AllTypes.numericColNil, entity.numericColNil)
+      add(AllTypes.decfloatCol, entity.decfloatCol)
+      add(AllTypes.decfloatColNil, entity.decfloatColNil)
+      add(AllTypes.realCol, entity.realCol)
+      add(AllTypes.realColNil, entity.realColNil)
+      add(AllTypes.doubleprecisionCol, entity.doubleprecisionCol)
+      add(AllTypes.doubleprecisionColNil, entity.doubleprecisionColNil)
+      add(AllTypes.dateCol, entity.dateCol)
+      add(AllTypes.dateColNil, entity.dateColNil)
+      add(AllTypes.timeCol, entity.timeCol)
+      add(AllTypes.timeColNil, entity.timeColNil)
+      add(AllTypes.timewithtimezoneCol, entity.timewithtimezoneCol)
+      add(AllTypes.timewithtimezoneColNil, entity.timewithtimezoneColNil)
+      add(AllTypes.timestampCol, entity.timestampCol)
+      add(AllTypes.timestampColNil, entity.timestampColNil)
+      add(AllTypes.timestampwithtimezoneCol, entity.timestampwithtimezoneCol)
+      add(AllTypes.timestampwithtimezoneColNil, entity.timestampwithtimezoneColNil)
+      add(AllTypes.uuidCol, entity.uuidCol)
+      add(AllTypes.uuidColNil, entity.uuidColNil)
+      add(AllTypes.intervalCol, entity.intervalCol)
+      add(AllTypes.intervalColNil, entity.intervalColNil)
+      add(AllTypes.geometryColNil, entity.geometryColNil)
+      add(AllTypes.intArrayCol, entity.intArrayCol)
+      add(AllTypes.intArrayColNil, entity.intArrayColNil)
+      add(AllTypes.addressInt, entity.addressInt)
+      add(AllTypes.addressIntNil, entity.addressIntNil)
+      add(AllTypes.addressString, entity.addressString)
+      add(AllTypes.addressStringNil, entity.addressStringNil)
+      return execute()
+    }    
+        
 }
 
+
 data class AllTypesRow(
-    val id: Long,
-    val characterCol: String,
-    val characterColNil: String?,
-    val charactervaryingCol: String,
-    val charactervaryingColNil: String?,
-    val characterlargeobjectCol: String,
-    val characterlargeobjectColNil: String?,
-    val varcharIgnorecaseCol: String,
-    val varcharIgnorecaseColNil: String?,
-    val enumCol: String,
-    val enumColNil: String?,
-    val binaryCol: ByteArray,
-    val binaryColNil: ByteArray?,
-    val binaryvaryingCol: ByteArray,
-    val binaryvaryingColNil: ByteArray?,
-    val binarylargeobjectCol: java.sql.Blob,
-    val binarylargeobjectColNil: java.sql.Blob?,
-    val jsonCol: ByteArray,
-    val jsonColNil: ByteArray?,
-    val booleanCol: Boolean,
-    val booleanColNil: Boolean?,
-    val tinyintCol: Byte,
-    val tinyintColNil: Byte?,
-    val smallintCol: Int,
-    val smallintColNil: Int?,
-    val integerCol: Int,
-    val integerColNil: Int?,
-    val bigintCol: Long,
-    val bigintColNil: Long?,
-    val numericCol: java.math.BigDecimal,
-    val numericColNil: java.math.BigDecimal?,
-    val decfloatCol: java.math.BigDecimal,
-    val decfloatColNil: java.math.BigDecimal?,
-    val realCol: Float,
-    val realColNil: Float?,
-    val doubleprecisionCol: Double,
-    val doubleprecisionColNil: Double?,
-    val dateCol: java.time.LocalDate,
-    val dateColNil: java.time.LocalDate?,
-    val timeCol: java.time.LocalTime,
-    val timeColNil: java.time.LocalTime?,
-    val timewithtimezoneCol: java.time.OffsetDateTime,
-    val timewithtimezoneColNil: java.time.OffsetDateTime?,
-    val timestampCol: java.time.Instant,
-    val timestampColNil: java.time.Instant?,
-    val timestampwithtimezoneCol: java.time.OffsetDateTime,
-    val timestampwithtimezoneColNil: java.time.OffsetDateTime?,
-    val uuidCol: java.util.UUID,
-    val uuidColNil: java.util.UUID?,
-    val intervalCol: org.h2.api.Interval,
-    val intervalColNil: org.h2.api.Interval?,
-    val geometryColNil: String?,
-    val intArrayCol: Array<Any>,
-    val intArrayColNil: Array<Any>?,
-    val addressInt: com.dbobjekts.testdb.AddressType,
-    val addressIntNil: com.dbobjekts.testdb.AddressType,
-    val addressString: com.dbobjekts.testdb.AddressType,
-    val addressStringNil: com.dbobjekts.testdb.AddressType)
+  val id: Long = 0,
+  val characterCol: String,
+  val characterColNil: String?,
+  val charactervaryingCol: String,
+  val charactervaryingColNil: String?,
+  val characterlargeobjectCol: String,
+  val characterlargeobjectColNil: String?,
+  val varcharIgnorecaseCol: String,
+  val varcharIgnorecaseColNil: String?,
+  val enumCol: String,
+  val enumColNil: String?,
+  val binaryCol: ByteArray,
+  val binaryColNil: ByteArray?,
+  val binaryvaryingCol: ByteArray,
+  val binaryvaryingColNil: ByteArray?,
+  val binarylargeobjectCol: java.sql.Blob,
+  val binarylargeobjectColNil: java.sql.Blob?,
+  val jsonCol: ByteArray,
+  val jsonColNil: ByteArray?,
+  val booleanCol: Boolean,
+  val booleanColNil: Boolean?,
+  val tinyintCol: Byte,
+  val tinyintColNil: Byte?,
+  val smallintCol: Int,
+  val smallintColNil: Int?,
+  val integerCol: Int,
+  val integerColNil: Int?,
+  val bigintCol: Long,
+  val bigintColNil: Long?,
+  val numericCol: java.math.BigDecimal,
+  val numericColNil: java.math.BigDecimal?,
+  val decfloatCol: java.math.BigDecimal,
+  val decfloatColNil: java.math.BigDecimal?,
+  val realCol: Float,
+  val realColNil: Float?,
+  val doubleprecisionCol: Double,
+  val doubleprecisionColNil: Double?,
+  val dateCol: java.time.LocalDate,
+  val dateColNil: java.time.LocalDate?,
+  val timeCol: java.time.LocalTime,
+  val timeColNil: java.time.LocalTime?,
+  val timewithtimezoneCol: java.time.OffsetDateTime,
+  val timewithtimezoneColNil: java.time.OffsetDateTime?,
+  val timestampCol: java.time.Instant,
+  val timestampColNil: java.time.Instant?,
+  val timestampwithtimezoneCol: java.time.OffsetDateTime,
+  val timestampwithtimezoneColNil: java.time.OffsetDateTime?,
+  val uuidCol: java.util.UUID,
+  val uuidColNil: java.util.UUID?,
+  val intervalCol: org.h2.api.Interval,
+  val intervalColNil: org.h2.api.Interval?,
+  val geometryColNil: String?,
+  val intArrayCol: Array<Any>,
+  val intArrayColNil: Array<Any>?,
+  val addressInt: com.dbobjekts.testdb.AddressType,
+  val addressIntNil: com.dbobjekts.testdb.AddressType,
+  val addressString: com.dbobjekts.testdb.AddressType,
+  val addressStringNil: com.dbobjekts.testdb.AddressType    
+) : Entity<AllTypesUpdateBuilder, AllTypesInsertBuilder>(AllTypes.metadata())
+        

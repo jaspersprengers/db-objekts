@@ -1,8 +1,9 @@
 package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.Entity
 import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.Entity
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
@@ -23,15 +24,24 @@ class BookUpdateBuilder() : UpdateBuilderBase(Book) {
     fun title(value: String): BookUpdateBuilder = put(Book.title, value)
     fun authorId(value: Long): BookUpdateBuilder = put(Book.authorId, value)
     fun published(value: java.time.LocalDate): BookUpdateBuilder = put(Book.published, value)
-    override fun updateRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
+    override fun updateRow(entity: Entity<*, *>): Long {
+      entity as BookRow
+      add(Book.isbn, entity.isbn)
+      add(Book.title, entity.title)
+      add(Book.authorId, entity.authorId)
+      add(Book.published, entity.published)
+      return where (Book.isbn.eq(entity.isbn))
+    }    
+        
 }
 
 class BookInsertBuilder():InsertBuilderBase(){
-       fun isbn(value: String): BookInsertBuilder = put(Book.isbn, value)
+    fun isbn(value: String): BookInsertBuilder = put(Book.isbn, value)
     fun title(value: String): BookInsertBuilder = put(Book.title, value)
     fun authorId(value: Long): BookInsertBuilder = put(Book.authorId, value)
     fun published(value: java.time.LocalDate): BookInsertBuilder = put(Book.published, value)
-    override fun insertRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
     fun mandatoryColumns(isbn: String, title: String, authorId: Long, published: java.time.LocalDate) : BookInsertBuilder {
       mandatory(Book.isbn, isbn)
       mandatory(Book.title, title)
@@ -40,10 +50,23 @@ class BookInsertBuilder():InsertBuilderBase(){
       return this
     }
 
+
+    override fun insertRow(entity: Entity<*, *>): Long {
+      entity as BookRow
+      add(Book.isbn, entity.isbn)
+      add(Book.title, entity.title)
+      add(Book.authorId, entity.authorId)
+      add(Book.published, entity.published)
+      return execute()
+    }    
+        
 }
+
 
 data class BookRow(
     val isbn: String,
-    val title: String,
-    val authorId: Long,
-    val published: java.time.LocalDate)
+  val title: String,
+  val authorId: Long,
+  val published: java.time.LocalDate    
+) : Entity<BookUpdateBuilder, BookInsertBuilder>(Book.metadata())
+        

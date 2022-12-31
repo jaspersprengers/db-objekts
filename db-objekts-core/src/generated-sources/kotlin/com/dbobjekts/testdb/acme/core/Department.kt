@@ -1,8 +1,9 @@
 package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.Entity
 import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.Entity
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
@@ -18,19 +19,36 @@ object Department:Table<DepartmentRow>("DEPARTMENT"), HasUpdateBuilder<Departmen
 
 class DepartmentUpdateBuilder() : UpdateBuilderBase(Department) {
     fun name(value: String): DepartmentUpdateBuilder = put(Department.name, value)
-    override fun updateRow(entity: Entity<*, *>): Long = throw RuntimeException()
+
+    override fun updateRow(entity: Entity<*, *>): Long {
+      entity as DepartmentRow
+      add(Department.id, entity.id)
+      add(Department.name, entity.name)
+      return where (Department.id.eq(entity.id))
+    }    
+        
 }
 
 class DepartmentInsertBuilder():InsertBuilderBase(){
-       fun name(value: String): DepartmentInsertBuilder = put(Department.name, value)
-    override fun insertRow(entity: Entity<*, *>): Long = throw RuntimeException()
+    fun name(value: String): DepartmentInsertBuilder = put(Department.name, value)
+
     fun mandatoryColumns(name: String) : DepartmentInsertBuilder {
       mandatory(Department.name, name)
       return this
     }
 
+
+    override fun insertRow(entity: Entity<*, *>): Long {
+      entity as DepartmentRow
+      add(Department.name, entity.name)
+      return execute()
+    }    
+        
 }
 
+
 data class DepartmentRow(
-    val id: Long,
-    val name: String)
+  val id: Long = 0,
+  val name: String    
+) : Entity<DepartmentUpdateBuilder, DepartmentInsertBuilder>(Department.metadata())
+        

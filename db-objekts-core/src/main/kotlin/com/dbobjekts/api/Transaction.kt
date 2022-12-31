@@ -65,6 +65,16 @@ class Transaction(internal val connection: ConnectionAdapter) {
         return inserter
     }
 
+    /**
+     * Starts a new insert statement. Example:
+     * ```kotlin
+     *   val idForNewRow: Long = transaction.insert(Author)
+     *   .mandatoryColumns("George Orwell")
+     *   .bio("Pseudonym of Eric Blair (1903-1950)").execute()
+     * ```
+     * @param a [Table] metadata object
+     * @return a statement builder to set the fields to insert
+     */
     fun <U : UpdateBuilderBase, I : InsertBuilderBase, T : Entity<U, I>> save(entity: T): Long {
         val updater = entity.writeAccessors.updater
         updater.connection = connection
