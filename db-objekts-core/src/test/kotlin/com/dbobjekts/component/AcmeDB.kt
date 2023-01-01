@@ -23,12 +23,36 @@ object AcmeDB {
             HikariDataSourceFactory.create(url = "jdbc:h2:mem:test", username = "sa", password = null, driver = "org.h2.Driver")
         transactionManager = TransactionManager.builder().withDataSource(dataSource).withCatalog(CatalogDefinition).build()
         createExampleCatalog(transactionManager)
-        //tables are not created when they exist and may contain data
-        deleteAllTables(transactionManager)
     }
 
-    fun deleteAllTables(tm: TransactionManager) {
+
+    fun createExampleCatalog(tm: TransactionManager) {
         tm.newTransaction { tr ->
+            tr.execute("CREATE SCHEMA if not exists core")
+            tr.execute("CREATE SCHEMA if not exists hr")
+
+            tr.execute("CREATE SEQUENCE IF NOT EXISTS core.EMPLOYEE_SEQ START WITH 100")
+            tr.execute("CREATE SEQUENCE IF NOT EXISTS core.ADDRESS_SEQ START WITH 100")
+            tr.execute("CREATE SEQUENCE IF NOT EXISTS core.DEPARTMENT_SEQ START WITH 100")
+
+            tr.execute("create table IF NOT EXISTS hr.HOBBY(id varchar(10) primary key, name varchar(50) not null)")
+            tr.execute(
+                "create table IF NOT EXISTS core.EMPLOYEE(id BIGINT primary key, name varchar(50) not null, salary double not null, " +
+                        "married boolean null, date_of_birth DATE not null, children SMALLINT null, hobby_id varchar(10) null," +
+                        "foreign key(hobby_id) references hr.HOBBY(id))"
+            )
+            tr.execute("create table IF NOT EXISTS hr.CERTIFICATE(id BIGINT primary key auto_increment, name varchar(50) not null, employee_id BIGINT not null, foreign key(employee_id) references core.employee(id) on DELETE CASCADE)")
+            tr.execute("create table IF NOT EXISTS core.COUNTRY(id varchar(10) primary key, name varchar(50) not null)")
+
+            tr.execute("create table IF NOT EXISTS core.ADDRESS(id BIGINT primary key, street varchar(50) not null, postcode varchar(10) null, country_id varchar(10) not null, foreign key(country_id) references core.country(id)  on DELETE CASCADE)")
+            tr.execute("create table if not exists core.EMPLOYEE_ADDRESS(employee_id BIGINT not null, address_id BIGINT not null,kind varchar(10) not null, foreign key(employee_id) references core.employee(id)  on DELETE CASCADE, foreign key(address_id) references core.ADDRESS(id)  on DELETE CASCADE)")
+
+            tr.execute("create table IF NOT EXISTS core.DEPARTMENT(id BIGINT primary key, name varchar(50) not null)")
+            tr.execute(
+                "create table if not exists core.EMPLOYEE_DEPARTMENT(employee_id BIGINT not null, department_id BIGINT not null, foreign key(employee_id) references core.employee(id)  on DELETE CASCADE, " +
+                        "foreign key(department_id) references core.DEPARTMENT(id)  on DELETE CASCADE)"
+            )
+
             tr.deleteFrom(EmployeeAddress).where()
             tr.deleteFrom(EmployeeDepartment).where()
             tr.deleteFrom(Department).where()
@@ -37,35 +61,83 @@ object AcmeDB {
             tr.deleteFrom(Employee).where()
             tr.deleteFrom(Country).where()
             tr.deleteFrom(Hobby).where()
-            //tr.deleteFrom(Shape).where()
-        }
-    }
 
-    fun createExampleCatalog(tm: TransactionManager) {
-        tm.newTransaction { transaction ->
-            transaction.execute("CREATE SCHEMA if not exists core")
-            transaction.execute("CREATE SCHEMA if not exists hr")
+            tr.execute("insert into core.COUNTRY (ID, NAME) values ('nl', 'Nederland')")
+            tr.execute("insert into core.COUNTRY (ID, NAME) values ('be', 'België')")
+            tr.execute("insert into core.COUNTRY (ID, NAME) values ('de', 'Deutschland')")
 
-            transaction.execute("CREATE SEQUENCE IF NOT EXISTS core.EMPLOYEE_SEQ START WITH 10")
-            transaction.execute("CREATE SEQUENCE IF NOT EXISTS core.ADDRESS_SEQ START WITH 10")
+            tr.execute("insert into core.DEPARTMENT (ID, NAME) values (1, 'Finance')")
+            tr.execute("insert into core.DEPARTMENT (ID, NAME) values (2, 'Human Resources')")
+            tr.execute("insert into core.DEPARTMENT (ID, NAME) values (3, 'Information Technology')")
 
-            transaction.execute("create table IF NOT EXISTS hr.HOBBY(id varchar(10) primary key, name varchar(50) not null)")
-            transaction.execute(
-                "create table IF NOT EXISTS core.EMPLOYEE(id BIGINT primary key, name varchar(50) not null, salary double not null, " +
-                        "married boolean null, date_of_birth DATE not null, children SMALLINT null, hobby_id varchar(10) null," +
-                        "foreign key(hobby_id) references hr.HOBBY(id))"
-            )
-            transaction.execute("create table IF NOT EXISTS hr.CERTIFICATE(id BIGINT primary key auto_increment, name varchar(50) not null, employee_id BIGINT not null, foreign key(employee_id) references core.employee(id))")
-            transaction.execute("create table IF NOT EXISTS core.COUNTRY(id varchar(10) primary key, name varchar(50) not null)")
+            tr.execute("insert into hr.HOBBY (ID, NAME) values ('c', 'Chess')")
+            tr.execute("insert into hr.HOBBY (ID, NAME) values ('p', 'Photography')")
+            tr.execute("insert into hr.HOBBY (ID, NAME) values ('f', 'Football')")
 
-            transaction.execute("create table IF NOT EXISTS core.ADDRESS(id BIGINT primary key, street varchar(50) not null, postcode varchar(10) null, country_id varchar(10) not null, foreign key(country_id) references core.country(id))")
-            transaction.execute("create table if not exists core.EMPLOYEE_ADDRESS(employee_id BIGINT not null, address_id BIGINT not null,kind varchar(10) not null, foreign key(employee_id) references core.employee(id), foreign key(address_id) references core.ADDRESS(id))")
+            tr.execute("insert into core.ADDRESS (ID, STREET, POSTCODE, COUNTRY_ID) values (1, 'Zuidhoek 80', '3015HP', 'nl')")
+            tr.execute("insert into core.ADDRESS (ID, STREET, POSTCODE, COUNTRY_ID) values (2, 'Kerkstraat 15', '5941AA', 'nl')")
+            //office address
+                    tr.execute("insert into core.ADDRESS (ID, STREET, POSTCODE, COUNTRY_ID) values (3, 'Damrak 3', '1015XX', 'nl')")
+            tr.execute("insert into core.ADDRESS (ID, STREET, POSTCODE, COUNTRY_ID) values (4, 'Zuidhoek 80', '3015HP', 'de')")
+            tr.execute("insert into core.ADDRESS (ID, STREET, POSTCODE, COUNTRY_ID) values (5, 'Südwal 10', '9998', 'de')")
+            tr.execute("insert into core.ADDRESS (ID, STREET, POSTCODE, COUNTRY_ID) values (6, 'Venloerstrase', '1234', 'de')")
+            //office address
+                    tr.execute("insert into core.ADDRESS (ID, STREET, POSTCODE, COUNTRY_ID) values (7, 'Am Hof', '2000', 'de')")
+            tr.execute("insert into core.ADDRESS (ID, STREET, POSTCODE, COUNTRY_ID) values (8, 'Brusselsesteenweg 5', '12345', 'be')")
+            tr.execute("insert into core.ADDRESS (ID, STREET, POSTCODE, COUNTRY_ID) values (9, 'Achelsesteenweg 10', '23456', 'be')")
 
-            transaction.execute("create table IF NOT EXISTS core.DEPARTMENT(id BIGINT primary key auto_increment, name varchar(50) not null)")
-            transaction.execute(
-                "create table if not exists core.EMPLOYEE_DEPARTMENT(employee_id BIGINT not null, department_id BIGINT not null, foreign key(employee_id) references core.employee(id), " +
-                        "foreign key(department_id) references core.DEPARTMENT(id))"
-            )
+            tr.execute("insert into core.EMPLOYEE (ID, NAME, SALARY, MARRIED, DATE_OF_BIRTH, CHILDREN, HOBBY_ID) values (1, 'Eve', 34000, true, '1990-10-3', 2, 'c')")
+            tr.execute("insert into core.EMPLOYEE (ID, NAME, SALARY, MARRIED, DATE_OF_BIRTH, CHILDREN, HOBBY_ID) values (2, 'Bob', 32000, true, '1980-5-5', 1, null)")
+            tr.execute("insert into core.EMPLOYEE (ID, NAME, SALARY, MARRIED, DATE_OF_BIRTH, CHILDREN, HOBBY_ID) values (3, 'Inez', 35000, true, '1968-8-15', 0, 'p')")
+            tr.execute("insert into core.EMPLOYEE (ID, NAME, SALARY, MARRIED, DATE_OF_BIRTH, CHILDREN, HOBBY_ID) values (4, 'Diane', 33000, true, '1980-12-12', 2, 'p')")
+            tr.execute("insert into core.EMPLOYEE (ID, NAME, SALARY, MARRIED, DATE_OF_BIRTH, CHILDREN, HOBBY_ID) values (5, 'Hardeep', 37000, false, '2000-1-27', 0, null)")
+            tr.execute("insert into core.EMPLOYEE (ID, NAME, SALARY, MARRIED, DATE_OF_BIRTH, CHILDREN, HOBBY_ID) values (6, 'Alice', 36000, true, '1960-8-8', 5, 'c')")
+            tr.execute("insert into core.EMPLOYEE (ID, NAME, SALARY, MARRIED, DATE_OF_BIRTH, CHILDREN, HOBBY_ID) values (7, 'Gina', 31000, true, '1983-12-12', 2, 'f')")
+            tr.execute("insert into core.EMPLOYEE (ID, NAME, SALARY, MARRIED, DATE_OF_BIRTH, CHILDREN, HOBBY_ID) values (8, 'Charlie', 30000, true, '1988-6-16', 3, 'p')")
+            tr.execute("insert into core.EMPLOYEE (ID, NAME, SALARY, MARRIED, DATE_OF_BIRTH, CHILDREN, HOBBY_ID) values (9, 'Fred', 38000, false, '1996-3-8', 0, 'f')")
+            tr.execute("insert into core.EMPLOYEE (ID, NAME, SALARY, MARRIED, DATE_OF_BIRTH, CHILDREN, HOBBY_ID) values (10, 'Jasper', 39000, false, '2000-5-5', 0, 'c')")
+
+            //finance people
+            tr.execute("insert into core.EMPLOYEE_DEPARTMENT (EMPLOYEE_ID, DEPARTMENT_ID) values ( 1,1 )")
+            tr.execute("insert into core.EMPLOYEE_DEPARTMENT (EMPLOYEE_ID, DEPARTMENT_ID) values ( 2,1 )")
+            //hr
+            tr.execute("insert into core.EMPLOYEE_DEPARTMENT (EMPLOYEE_ID, DEPARTMENT_ID) values ( 3,2 )")
+            tr.execute("insert into core.EMPLOYEE_DEPARTMENT (EMPLOYEE_ID, DEPARTMENT_ID) values ( 4,2 )")
+            tr.execute("insert into core.EMPLOYEE_DEPARTMENT (EMPLOYEE_ID, DEPARTMENT_ID) values ( 5,2 )")
+            //it
+            tr.execute("insert into core.EMPLOYEE_DEPARTMENT (EMPLOYEE_ID, DEPARTMENT_ID) values ( 6,3 )")
+            tr.execute("insert into core.EMPLOYEE_DEPARTMENT (EMPLOYEE_ID, DEPARTMENT_ID) values ( 7,3 )")
+            tr.execute("insert into core.EMPLOYEE_DEPARTMENT (EMPLOYEE_ID, DEPARTMENT_ID) values ( 8,3 )")
+            tr.execute("insert into core.EMPLOYEE_DEPARTMENT (EMPLOYEE_ID, DEPARTMENT_ID) values ( 9,3 )")
+            tr.execute("insert into core.EMPLOYEE_DEPARTMENT (EMPLOYEE_ID, DEPARTMENT_ID) values ( 10,3 )")
+
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 1, 3 ,'WORK')")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 2, 3 ,'WORK')")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 3, 3,'WORK' )")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 4, 3,'WORK' )")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 5, 3 ,'WORK')")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 6, 7 ,'WORK')")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 7, 7 ,'WORK')")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 8, 7 ,'WORK')")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 9, 7 ,'WORK')")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 10, 7 ,'WORK')")
+
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 1, 1 ,'HOME')")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 2, 2 ,'HOME')")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 3, 4,'HOME' )")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 4, 4,'HOME' )")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 5, 5 ,'HOME')")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 6, 6 ,'HOME')")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 7, 8 ,'HOME')")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 8, 9 ,'HOME')")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 9, 9 ,'HOME')")
+            tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 10, 5 ,'HOME')")
+
+            tr.execute("insert into hr.CERTIFICATE (NAME, EMPLOYEE_ID) values ('PSM1', 6)")
+            tr.execute("insert into hr.CERTIFICATE (NAME, EMPLOYEE_ID) values ('PSM1', 8)")
+            tr.execute("insert into hr.CERTIFICATE (NAME, EMPLOYEE_ID) values ('Prince 2', 2)")
+
+
 
             val allTypesSql = """
             create table IF NOT EXISTS core.ALL_TYPES
@@ -131,23 +203,23 @@ object AcmeDB {
             );
         """.trimIndent()
 
-            transaction.execute(allTypesSql)
+            tr.execute(allTypesSql)
 
-            transaction.execute("CREATE SCHEMA if not exists library");
+            tr.execute("CREATE SCHEMA if not exists library");
 
-            transaction.execute("CREATE SEQUENCE IF NOT EXISTS library.AUTHOR_SEQ START WITH 10")
-            transaction.execute("CREATE SEQUENCE IF NOT EXISTS library.ITEM_SEQ START WITH 10")
-            transaction.execute("CREATE SEQUENCE IF NOT EXISTS library.MEMBER_SEQ START WITH 10")
+            tr.execute("CREATE SEQUENCE IF NOT EXISTS library.AUTHOR_SEQ START WITH 10")
+            tr.execute("CREATE SEQUENCE IF NOT EXISTS library.ITEM_SEQ START WITH 10")
+            tr.execute("CREATE SEQUENCE IF NOT EXISTS library.MEMBER_SEQ START WITH 10")
 
-            transaction.execute("create table if not exists library.author(id BIGINT NOT NULL primary key,name varchar(200) NOT NULl,bio varchar(1000) NULL)")
+            tr.execute("create table if not exists library.author(id BIGINT NOT NULL primary key,name varchar(200) NOT NULl,bio varchar(1000) NULL)")
 
-            transaction.execute("create table if not exists library.book(isbn varchar(20) primary key NOT NULL,title varchar(200) NOT NULL,author_id BIGINT NOT NULL,published DATE NOT NULL,foreign key (author_id) references library.author(id))")
+            tr.execute("create table if not exists library.book(isbn varchar(20) primary key NOT NULL,title varchar(200) NOT NULL,author_id BIGINT NOT NULL,published DATE NOT NULL,foreign key (author_id) references library.author(id))")
 
-            transaction.execute("create table if not exists library.item(id BIGINT NOT NULL primary key,isbn varchar(20) NOT NULL,date_acquired DATE NOT NULL,foreign key (isbn) references library.book(isbn))")
+            tr.execute("create table if not exists library.item(id BIGINT NOT NULL primary key,isbn varchar(20) NOT NULL,date_acquired DATE NOT NULL,foreign key (isbn) references library.book(isbn))")
 
-            transaction.execute("create table if not exists library.member(id BIGINT NOT NULL primary key,name varchar(200) NOT NULl)")
+            tr.execute("create table if not exists library.member(id BIGINT NOT NULL primary key,name varchar(200) NOT NULl)")
 
-            transaction.execute(
+            tr.execute(
                 "create table if not exists library.loan(item_id BIGINT NOT NULL,member_id BIGINT NOT NULL,date_loaned DATE NOT NULL,date_returned DATE NULL," +
                         "primary key (item_id,member_id,date_loaned), foreign key (item_id) references library.item(id),foreign key (member_id) references library.member(id))"
             );

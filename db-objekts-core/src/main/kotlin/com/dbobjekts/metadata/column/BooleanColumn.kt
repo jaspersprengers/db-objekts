@@ -15,7 +15,7 @@ class BooleanColumn(table: AnyTable, name: String) : NonNullableColumn<Boolean>(
     override fun getValue(position: Int, resultSet: ResultSet): Boolean = resultSet.getBoolean(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Boolean) =
-        statement.setBoolean(position, value as Boolean)
+        statement.setBoolean(position, value)
 }
 
 class NullableBooleanColumn(table: AnyTable, name: String) : NullableColumn<Boolean?>(name, table, Types.BOOLEAN, Boolean::class.java) {

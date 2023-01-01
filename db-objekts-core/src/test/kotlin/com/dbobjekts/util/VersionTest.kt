@@ -7,8 +7,8 @@ class VersionTest {
 
     @Test
     fun `test current major and minor version`(){
-        Assertions.assertThat(Version.MAJOR).isEqualTo("0")
-        Assertions.assertThat(Version.MINOR).isEqualTo("2")
+        Assertions.assertThat(Version.MAJOR).isEqualTo(0)
+        Assertions.assertThat(Version.MINOR).isEqualTo(3)
     }
 
 }

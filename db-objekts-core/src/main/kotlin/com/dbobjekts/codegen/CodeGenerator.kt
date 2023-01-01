@@ -12,6 +12,7 @@ import com.dbobjekts.codegen.parsers.CatalogParser
 import com.dbobjekts.codegen.parsers.ParserConfig
 import com.dbobjekts.codegen.writer.SourcesGenerator
 import com.dbobjekts.metadata.Catalog
+import com.dbobjekts.metadata.PlaceHolderCatalog
 import org.slf4j.LoggerFactory
 import javax.sql.DataSource
 
@@ -92,7 +93,10 @@ open class CodeGenerator {
     }
 
     private fun createCatalogParser(codeGeneratorConfig: CodeGeneratorConfig): CatalogParser {
-        val transactionManager = TransactionManager.builder().withDataSource(codeGeneratorConfig.dataSource).build()
+        val transactionManager = TransactionManager.builder()
+            .withCatalog(PlaceHolderCatalog)
+            .withDataSource(codeGeneratorConfig.dataSource)
+            .build()
         val vendor = transactionManager.vendor
         val config = ParserConfig.fromCodeGeneratorConfig(vendor, codeGeneratorConfig)
         return CatalogParser(config, transactionManager, vendor.metadataExtractor)

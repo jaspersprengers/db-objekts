@@ -1,6 +1,7 @@
 package com.dbobjekts.codegen.writer
 
 import com.dbobjekts.codegen.metadata.DBCatalogDefinition
+import com.dbobjekts.util.Version
 
 class CatalogCodeBuilder(val catalog: DBCatalogDefinition) {
     private val strBuilder = StringBuilder()
@@ -17,7 +18,7 @@ class CatalogCodeBuilder(val catalog: DBCatalogDefinition) {
     private fun createObjectBody(): String {
         val schemas = catalog.schemas.map { it.asClassName() }.joinToString(", ")
         return """
-           object ${catalog.asClassName()} : Catalog("${catalog.vendor.name}", listOf($schemas))
+           object ${catalog.asClassName()} : Catalog(${Version.MAJOR}, "${catalog.vendor.name}", listOf($schemas))
        """.trimIndent()
 
     }

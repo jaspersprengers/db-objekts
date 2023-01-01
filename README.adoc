@@ -375,14 +375,12 @@ If the lambda threw an Exception, the connection is rolled back. The effect will
 
 The `Transaction` is a short-lived object that should not leave the scope of its lambda, so stick to the standard idiom. Do not assign it to a variable outside that scope! Its lifecycle will no longer be managed and the underlying `Connection` will quickly stale.
 
-Let's now explore all the query methods that are available on the `Transaction`: inserting, updating, deleting, selecting and native sql queries.
+Let's now explore all the query methods that are available on the `Transaction`: inserting, updating, deleting, selecting and native sql queries. A good way to learn is to study the component tests, which are linked in every section and act as a source of living documentation.
 
 === Inserting data
-Let's start with getting some data into the tables. The `insert(..)` method takes a `Table` implementation and returns a corresponding `*InsertBuilder` instance.
+Let's start with getting some data into the tables. The `insert(..)` method takes a `Table` implementation and returns a corresponding builder instance on which to set values. https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/InsertStatementComponentTest.kt[InsertStatementComponentTest]
 
-In the example below these would be `CountryInsertBuilder` and `EmployeeInsertBuilder`.
-
-The insert builders contain setter methods for all columns. In addition it has a handy `mandatoryColumns(..)` shortcut (provided the table has at least one non-nullable column) to make sure you provide all the required values.
+The insert builders contain setter methods for all columns. In addition, it has a handy `mandatoryColumns(..)` shortcut (provided the table has at least one non-nullable column) to make sure you provide all the required values.
 
 ```kotlin
   transaction.insert(Country).mandatoryColumns("nl", "Netherlands").execute()
@@ -413,7 +411,7 @@ It's your own responsibility to make sure all the mandatory columns have non-nul
 A warning about auto-generated primary keys applies to this example. `EmployeeRow` has a non-null `id` field, which is auto-generated, but it won't be available before the call to `insert(...)`. We could define such numeric PKs as `Long?` or `Int?`, but that would mean unnecessary null-checks in cases when you can be certain that the id will never be null, e.g. as the result of a select. The compromise is to provide a default value of zero. For the insert logic, the primary key value in `EmployeeRow` will be ignored anyway.
 
 === Updating
-Update statements have a similar syntax, so let's discuss them now before moving on the more elaborate select statements. The `update(..)` method also takes a table and returns a `*UpdateBuilder` object.
+Update statements have a similar syntax, so let's discuss them now before moving on the more elaborate select statements. The `update(..)` method also takes a table and returns a `*UpdateBuilder` object. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/UpdateStatementComponentTest.kt[UpdateStatementComponentTest]
 
 ```kotlin
  transaction.update(Employee)
@@ -437,7 +435,7 @@ tr.update(retrieved.copy(salary = retrieved.salary + 100))
 Note that the row data object that was retrieved is immutable. You need to make a copy first.
 
 === Deleting
-The statement to delete rows has the fewest options.
+The statement to delete rows has the fewest options. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/DeleteStatementComponentTest.kt[DeleteStatementComponentTest]
 ```kotlin
 tr.deleteFrom(Employee).where(Employee.id.eq(id))
 ```
@@ -480,7 +478,7 @@ You can chain conditions using `and` or `or` and you can even build nested condi
 If you have no conditions to constrain your selection you can omit the where clause in a SQL statement. In db-Objekts that is not possible, but for update and delete statements there is a no-arg `where()` overload that achieves the same thing. This is needed to finish and execute the statement. For select statements, a whereclause is optional, since there's no damage done if you omit it by mistake.
 
 === Basic select statements
-Let's move on to select statements now. The pattern is `transaction.select( col1, col2, ... ).where( conditions ).[first[orNull]()|asList()]`. You start with listing the columns you want to retrieve, the whereclause and then retrieve a list of results
+Let's move on to select statements now. The pattern is `transaction.select( col1, col2, ... ).where( conditions ).[first[orNull]()|asList()]`. You start with listing the columns you want to retrieve, the whereclause and then retrieve a list of results. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/SelectStatementComponentTest.kt[SelectStatementComponentTest]
 
 This query selects name and salary for all rows in the employee table. Notice we have imported the 'e' alias from the Aliases object. This is a handy shortcut that refers to the exact same Employee object.
 ```kotlin
@@ -552,7 +550,7 @@ tr.select(Employee.name, Hobby.name.nullable).useOuterJoins()
 ```
 
 === Custom sql queries
-db-Objekts is not out to kill SQL. There are many cases where the select, insert, update and delete queries fall short of your wishes. That is a deliberate design decision. db-Objekts aims to make mundane queries a joy, and not over-complicate its API.
+db-Objekts is not out to kill SQL. There are many cases where the select, insert, update and delete queries fall short of your wishes. That is a deliberate design decision. db-Objekts aims to make mundane queries a joy, and not over-complicate its API. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/CustomSQLComponentTest.kt[CustomSQLComponentTest]
 
 But you can still execute native free-form SQL through the TransactionManager and enjoy the same benefits of type-safe results. There are two flavors: queries that return results and those that don't. Let's tackle the latter first.
 
@@ -565,7 +563,6 @@ But you can still execute native free-form SQL through the TransactionManager an
 ```
 That was too easy. Let's move up to statements that retrieve results.
 
-Take the example from https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/CustomSQLComponentTest.kt[CustomSQLComponentTest]
 ```kotlin
 val (id, name, salary, married, children, hobby) =
     it.sql(

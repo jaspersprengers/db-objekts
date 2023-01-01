@@ -19,11 +19,12 @@ import java.lang.IllegalStateException
  * ```
  */
 open class Catalog(
+    val version: Int,
     val vendor: String,
     val schemas: List<Schema> = listOf()
 ) {
 
-    constructor(vendor: Vendor, schemas: List<Schema> = listOf()) : this(vendor.name, schemas)
+    constructor(vendor: Vendor, schemas: List<Schema> = listOf()) : this(0, vendor.name, schemas)
 
     internal val tables: List<AnyTable>
     private val aliases: TableAliases
@@ -54,4 +55,4 @@ open class Catalog(
 
 }
 
-internal object PlaceHolderCatalog : Catalog(H2Vendor.name)
+internal object PlaceHolderCatalog : Catalog(0, "")

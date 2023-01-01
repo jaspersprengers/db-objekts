@@ -12,7 +12,7 @@ class TableAliasesBuilderTest {
 
     val s1 = Schema("s1", listOf(Members, Address, MemberAddress))
     val s2 = Schema("s2", listOf(Members2, Address2))
-    val c = Catalog("vendor", listOf(s1, s2))
+    val c = Catalog(1, "vendor", listOf(s1, s2))
 
     fun doAssert(tables: List<String>, tableToTest: String, field: String) {
         val map = TableAliasesBuilder()

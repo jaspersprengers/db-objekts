@@ -61,7 +61,7 @@ class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
       throw StatementBuilderException("Sorry, but you cannot use entity-based update for table ${tableName}. There must be exactly one column marked as primary key.")                
             """
 
-        val elements = fields.mapIndexed { i, field ->
+        val elements = fields.mapIndexed { _, field ->
             "      add($tableName.${field.field}, entity.${field.field})"
         }.joinToString("\n")
         val pkCol = primaryKey.field
@@ -93,7 +93,7 @@ $fieldStr
     }
 
     private fun sourceForInsertRowMethod(): String {
-        val elements = allFieldsExceptAutoPK.mapIndexed { i, field ->
+        val elements = allFieldsExceptAutoPK.mapIndexed { _, field ->
             "      add($tableName.${field.field}, entity.${field.field})"
         }.joinToString("\n")
         val source = """

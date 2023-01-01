@@ -1,7 +1,5 @@
 package com.dbobjekts.component
 
-import com.dbobjekts.testdb.acme.core.Employee
-import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -9,35 +7,24 @@ import java.time.LocalDate
 
 class CustomSQLComponentTest {
 
-    companion object {
-        @JvmStatic
-        @BeforeAll
-        fun setup(){
-            AcmeDB.deleteAllTables(AcmeDB.transactionManager)
-        }
-        val tm = AcmeDB.transactionManager
-    }
-
     @Test
     fun `test select two columns from two tables`() {
-
+        AcmeDB.createExampleCatalog(AcmeDB.transactionManager)
+        val tm = AcmeDB.transactionManager
         tm ({
-            //it.insert(AllTypes)
             LocalDate.of(1990, 12, 5)
-            it.insert(Hobby).mandatoryColumns("chess", "The game of champions").execute()
-            it.insert(Employee).mandatoryColumns("John", 300.50, LocalDate.of(1990, 12, 5)).hobbyId("chess").execute()
             val (id, name, salary, married, children, hobby) =
                 it.sql(
                     "select e.id,e.name,e.salary,e.married, e.children, h.NAME from core.employee e join hr.HOBBY h on h.ID = e.HOBBY_ID where e.name = ?",
-                    "John"
+                    "Eve"
                 ).withResultTypes().long().string().double().booleanNil().intNil().stringNil()
                     .first()
             assertThat(id).isPositive()
-            assertThat(name).isEqualTo("John")
-            assertThat(salary).isEqualTo(300.5)
-            assertThat(married).isNull()
-            assertThat(children).isNull()
-            assertThat(hobby).isEqualTo("The game of champions")
+            assertThat(name).isEqualTo("Eve")
+            assertThat(salary).isEqualTo(34000.0)
+            assertThat(married).isTrue()
+            assertThat(children).isEqualTo(2)
+            assertThat(hobby).isEqualTo("Chess")
 
 
         })

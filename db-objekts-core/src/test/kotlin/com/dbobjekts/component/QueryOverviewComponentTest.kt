@@ -1,6 +1,5 @@
 package com.dbobjekts.component
 
-import com.dbobjekts.api.Transaction
 import com.dbobjekts.api.Tuple3
 import com.dbobjekts.testdb.acme.library.*
 import org.assertj.core.api.Assertions.assertThat

@@ -14,7 +14,7 @@ import javax.sql.DataSource
 
 class TransactionLifeCycleComponentTest {
 
-    object MariaCatalog : Catalog(Vendors.MARIADB.name)
+    object MariaCatalog : Catalog(1, Vendors.MARIADB.name)
 
     @Test
     fun `Vendor mismatch in db and catalog`() {

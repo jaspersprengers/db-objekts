@@ -36,6 +36,7 @@ class CodeGenerationComponentTest {
             .addCustomResolver(LibrarySchemaResolver)
             .setSequenceNameForPrimaryKey("core", "employee", "id", "EMPLOYEE_SEQUENCE")
             .setSequenceNameForPrimaryKey("core", "address", "id", "ADDRESS_SEQ")
+            .setSequenceNameForPrimaryKey("core", "department", "id", "DEPARTMENT_SEQ")
 
 
         generator.configureColumnTypeMapping()
@@ -48,7 +49,7 @@ class CodeGenerationComponentTest {
         .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff: List<String> = generator.differencesWithCatalog(CatalogDefinition)
         assertThat(diff).describedAs("acme catalog differs from database definition").isEmpty()
-        generator.generateSourceFiles()
+        //generator.generateSourceFiles()
 
     }
 

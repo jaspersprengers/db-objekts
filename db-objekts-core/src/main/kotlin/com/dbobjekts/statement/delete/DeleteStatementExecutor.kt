@@ -56,18 +56,21 @@ class DeleteStatementExecutor(
     fun where(): Long = where(EmptyWhereClause)
 
     private fun execute(): Long {
-        val wc = getWhereClause()
-        wc.getFlattenedConditions().forEach { registerTable(it.column.table) }
-        val joinChain = buildJoinChain()
-        val supportsJoins = connection.vendorSpecificProperties.supportsJoinsInUpdateAndDelete()
-        if (joinChain.hasJoins() && !supportsJoins) {
-            throw StatementBuilderException("Your database does not support DELETE statements with JOIN syntax.")
-        }
-        val alias = if (supportsJoins) "${joinChain.table.alias()}.*" else ""
-        val sql = StringUtil.concat(listOf("delete", alias, "from", joinChain.toSQL(), wc.build(SQLOptions(includeAlias = true))))
-        val params = wc.getParameters()
-        return connection.prepareAndExecuteDeleteStatement(sql, params).also {
-            connection.statementLog.logResult(it)
+        try {
+            val wc = getWhereClause()
+            wc.getFlattenedConditions().forEach { registerTable(it.column.table) }
+            val joinChain = buildJoinChain()
+            val supportsJoins = connection.vendorSpecificProperties.supportsJoinsInUpdateAndDelete()
+            if (joinChain.hasJoins() && !supportsJoins) {
+                throw StatementBuilderException("Your database does not support DELETE statements with JOIN syntax.")
+            }
+            val alias = if (supportsJoins) "${joinChain.table.alias()}.*" else ""
+            val sql = StringUtil.concat(listOf("delete", alias, "from", joinChain.toSQL(), wc.build(SQLOptions(includeAlias = true))))
+            val params = wc.getParameters()
+            return connection.prepareAndExecuteDeleteStatement(sql, params).also {
+                connection.statementLog.logResult(it)
+            }
+        } finally {
             semaphore.clear()
         }
     }
