@@ -1,11 +1,10 @@
 package com.dbobjekts.statement.insert
 
-import com.dbobjekts.api.Entity
+import com.dbobjekts.api.TableRowData
 import com.dbobjekts.api.Semaphore
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl
-import com.dbobjekts.util.Errors
 
 abstract class InsertBuilderBase() {
     internal lateinit var connection: ConnectionAdapter
@@ -27,7 +26,7 @@ abstract class InsertBuilderBase() {
         ct.put(col, value)
     }
 
-    abstract fun insertRow(entity: Entity<*, *>): Long
+    abstract fun insertRow(tableRowData: TableRowData<*, *>): Long
 
     /**
      * Executes the insert statement and persists a new row to the table.

@@ -2,7 +2,7 @@ package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.api.Entity
+import com.dbobjekts.api.TableRowData
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -25,13 +25,13 @@ class LoanUpdateBuilder() : UpdateBuilderBase(Loan) {
     fun dateLoaned(value: java.time.LocalDate): LoanUpdateBuilder = put(Loan.dateLoaned, value)
     fun dateReturned(value: java.time.LocalDate?): LoanUpdateBuilder = put(Loan.dateReturned, value)
 
-    override fun updateRow(entity: Entity<*, *>): Long {
-      entity as LoanRow
-      add(Loan.itemId, entity.itemId)
-      add(Loan.memberId, entity.memberId)
-      add(Loan.dateLoaned, entity.dateLoaned)
-      add(Loan.dateReturned, entity.dateReturned)
-      return where (Loan.dateLoaned.eq(entity.dateLoaned))
+    override fun updateRow(rowData: TableRowData<*, *>): Long {
+      rowData as LoanRow
+      add(Loan.itemId, rowData.itemId)
+      add(Loan.memberId, rowData.memberId)
+      add(Loan.dateLoaned, rowData.dateLoaned)
+      add(Loan.dateReturned, rowData.dateReturned)
+      return where (Loan.dateLoaned.eq(rowData.dateLoaned))
     }    
         
 }
@@ -50,12 +50,12 @@ class LoanInsertBuilder():InsertBuilderBase(){
     }
 
 
-    override fun insertRow(entity: Entity<*, *>): Long {
-      entity as LoanRow
-      add(Loan.itemId, entity.itemId)
-      add(Loan.memberId, entity.memberId)
-      add(Loan.dateLoaned, entity.dateLoaned)
-      add(Loan.dateReturned, entity.dateReturned)
+    override fun insertRow(rowData: TableRowData<*, *>): Long {
+      rowData as LoanRow
+      add(Loan.itemId, rowData.itemId)
+      add(Loan.memberId, rowData.memberId)
+      add(Loan.dateLoaned, rowData.dateLoaned)
+      add(Loan.dateReturned, rowData.dateReturned)
       return execute()
     }    
         
@@ -67,5 +67,5 @@ data class LoanRow(
   val memberId: Long,
   val dateLoaned: java.time.LocalDate,
   val dateReturned: java.time.LocalDate?    
-) : Entity<LoanUpdateBuilder, LoanInsertBuilder>(Loan.metadata())
+) : TableRowData<LoanUpdateBuilder, LoanInsertBuilder>(Loan.metadata())
         

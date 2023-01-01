@@ -2,7 +2,7 @@ package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.api.Entity
+import com.dbobjekts.api.TableRowData
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -25,13 +25,13 @@ class BookUpdateBuilder() : UpdateBuilderBase(Book) {
     fun authorId(value: Long): BookUpdateBuilder = put(Book.authorId, value)
     fun published(value: java.time.LocalDate): BookUpdateBuilder = put(Book.published, value)
 
-    override fun updateRow(entity: Entity<*, *>): Long {
-      entity as BookRow
-      add(Book.isbn, entity.isbn)
-      add(Book.title, entity.title)
-      add(Book.authorId, entity.authorId)
-      add(Book.published, entity.published)
-      return where (Book.isbn.eq(entity.isbn))
+    override fun updateRow(rowData: TableRowData<*, *>): Long {
+      rowData as BookRow
+      add(Book.isbn, rowData.isbn)
+      add(Book.title, rowData.title)
+      add(Book.authorId, rowData.authorId)
+      add(Book.published, rowData.published)
+      return where (Book.isbn.eq(rowData.isbn))
     }    
         
 }
@@ -51,12 +51,12 @@ class BookInsertBuilder():InsertBuilderBase(){
     }
 
 
-    override fun insertRow(entity: Entity<*, *>): Long {
-      entity as BookRow
-      add(Book.isbn, entity.isbn)
-      add(Book.title, entity.title)
-      add(Book.authorId, entity.authorId)
-      add(Book.published, entity.published)
+    override fun insertRow(rowData: TableRowData<*, *>): Long {
+      rowData as BookRow
+      add(Book.isbn, rowData.isbn)
+      add(Book.title, rowData.title)
+      add(Book.authorId, rowData.authorId)
+      add(Book.published, rowData.published)
       return execute()
     }    
         
@@ -68,5 +68,5 @@ data class BookRow(
   val title: String,
   val authorId: Long,
   val published: java.time.LocalDate    
-) : Entity<BookUpdateBuilder, BookInsertBuilder>(Book.metadata())
+) : TableRowData<BookUpdateBuilder, BookInsertBuilder>(Book.metadata())
         

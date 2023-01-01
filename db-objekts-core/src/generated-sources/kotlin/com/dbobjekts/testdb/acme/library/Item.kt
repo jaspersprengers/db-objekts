@@ -2,7 +2,7 @@ package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.api.Entity
+import com.dbobjekts.api.TableRowData
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -22,12 +22,12 @@ class ItemUpdateBuilder() : UpdateBuilderBase(Item) {
     fun isbn(value: String): ItemUpdateBuilder = put(Item.isbn, value)
     fun dateAcquired(value: java.time.LocalDate): ItemUpdateBuilder = put(Item.dateAcquired, value)
 
-    override fun updateRow(entity: Entity<*, *>): Long {
-      entity as ItemRow
-      add(Item.id, entity.id)
-      add(Item.isbn, entity.isbn)
-      add(Item.dateAcquired, entity.dateAcquired)
-      return where (Item.id.eq(entity.id))
+    override fun updateRow(rowData: TableRowData<*, *>): Long {
+      rowData as ItemRow
+      add(Item.id, rowData.id)
+      add(Item.isbn, rowData.isbn)
+      add(Item.dateAcquired, rowData.dateAcquired)
+      return where (Item.id.eq(rowData.id))
     }    
         
 }
@@ -43,10 +43,10 @@ class ItemInsertBuilder():InsertBuilderBase(){
     }
 
 
-    override fun insertRow(entity: Entity<*, *>): Long {
-      entity as ItemRow
-      add(Item.isbn, entity.isbn)
-      add(Item.dateAcquired, entity.dateAcquired)
+    override fun insertRow(rowData: TableRowData<*, *>): Long {
+      rowData as ItemRow
+      add(Item.isbn, rowData.isbn)
+      add(Item.dateAcquired, rowData.dateAcquired)
       return execute()
     }    
         
@@ -57,5 +57,5 @@ data class ItemRow(
 val id: Long = 0,
   val isbn: String,
   val dateAcquired: java.time.LocalDate    
-) : Entity<ItemUpdateBuilder, ItemInsertBuilder>(Item.metadata())
+) : TableRowData<ItemUpdateBuilder, ItemInsertBuilder>(Item.metadata())
         

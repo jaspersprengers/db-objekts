@@ -2,7 +2,7 @@ package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.api.Entity
+import com.dbobjekts.api.TableRowData
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -22,12 +22,12 @@ class AuthorUpdateBuilder() : UpdateBuilderBase(Author) {
     fun name(value: String): AuthorUpdateBuilder = put(Author.name, value)
     fun bio(value: String?): AuthorUpdateBuilder = put(Author.bio, value)
 
-    override fun updateRow(entity: Entity<*, *>): Long {
-      entity as AuthorRow
-      add(Author.id, entity.id)
-      add(Author.name, entity.name)
-      add(Author.bio, entity.bio)
-      return where (Author.id.eq(entity.id))
+    override fun updateRow(rowData: TableRowData<*, *>): Long {
+      rowData as AuthorRow
+      add(Author.id, rowData.id)
+      add(Author.name, rowData.name)
+      add(Author.bio, rowData.bio)
+      return where (Author.id.eq(rowData.id))
     }    
         
 }
@@ -42,10 +42,10 @@ class AuthorInsertBuilder():InsertBuilderBase(){
     }
 
 
-    override fun insertRow(entity: Entity<*, *>): Long {
-      entity as AuthorRow
-      add(Author.name, entity.name)
-      add(Author.bio, entity.bio)
+    override fun insertRow(rowData: TableRowData<*, *>): Long {
+      rowData as AuthorRow
+      add(Author.name, rowData.name)
+      add(Author.bio, rowData.bio)
       return execute()
     }    
         
@@ -56,5 +56,5 @@ data class AuthorRow(
 val id: Long = 0,
   val name: String,
   val bio: String?    
-) : Entity<AuthorUpdateBuilder, AuthorInsertBuilder>(Author.metadata())
+) : TableRowData<AuthorUpdateBuilder, AuthorInsertBuilder>(Author.metadata())
         

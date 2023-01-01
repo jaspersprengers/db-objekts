@@ -2,7 +2,7 @@ package com.dbobjekts.mariadb.testdb.core
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.api.Entity
+import com.dbobjekts.api.TableRowData
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -22,12 +22,12 @@ class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
     fun street(value: String): AddressUpdateBuilder = put(Address.street, value)
     fun countryId(value: String): AddressUpdateBuilder = put(Address.countryId, value)
 
-    override fun updateRow(entity: Entity<*, *>): Long {
-      entity as AddressRow
-      add(Address.id, entity.id)
-      add(Address.street, entity.street)
-      add(Address.countryId, entity.countryId)
-      return where (Address.id.eq(entity.id))
+    override fun updateRow(rowData: TableRowData<*, *>): Long {
+      rowData as AddressRow
+      add(Address.id, rowData.id)
+      add(Address.street, rowData.street)
+      add(Address.countryId, rowData.countryId)
+      return where (Address.id.eq(rowData.id))
     }    
         
 }
@@ -43,10 +43,10 @@ class AddressInsertBuilder():InsertBuilderBase(){
     }
 
 
-    override fun insertRow(entity: Entity<*, *>): Long {
-      entity as AddressRow
-      add(Address.street, entity.street)
-      add(Address.countryId, entity.countryId)
+    override fun insertRow(rowData: TableRowData<*, *>): Long {
+      rowData as AddressRow
+      add(Address.street, rowData.street)
+      add(Address.countryId, rowData.countryId)
       return execute()
     }    
         
@@ -57,5 +57,5 @@ data class AddressRow(
 val id: Long = 0,
   val street: String,
   val countryId: String    
-) : Entity<AddressUpdateBuilder, AddressInsertBuilder>(Address.metadata())
+) : TableRowData<AddressUpdateBuilder, AddressInsertBuilder>(Address.metadata())
         

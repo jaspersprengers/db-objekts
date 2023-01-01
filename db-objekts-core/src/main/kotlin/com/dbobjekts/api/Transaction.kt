@@ -14,7 +14,6 @@ import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.select.SelectStatementExecutor
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-import java.lang.IllegalArgumentException
 
 /**
  * A short-lived object that wraps a live [java.sql.Connection] to a database on which you perform queries that are committed by the [TransactionManager].
@@ -76,20 +75,20 @@ class Transaction(internal val connection: ConnectionAdapter) {
      * @param a [Table] metadata object
      * @return a statement builder to set the fields to insert
      */
-    fun <U : UpdateBuilderBase, I : InsertBuilderBase, T : Entity<U, I>> update(entity: T): Long {
-        val updater = entity.writeAccessors.updater
+    fun <U : UpdateBuilderBase, I : InsertBuilderBase, T : TableRowData<U, I>> update(rowData: T): Long {
+        val updater = rowData.writeAccessors.updater
         updater.connection = connection
         semaphore.claim("update")
         updater.semaphore = semaphore
-        return updater.updateRow(entity)
+        return updater.updateRow(rowData)
     }
 
-    fun <U : UpdateBuilderBase, I : InsertBuilderBase, T : Entity<U, I>> insert(entity: T): Long {
-        val inserter: I = entity.writeAccessors.inserter
+    fun <U : UpdateBuilderBase, I : InsertBuilderBase, T : TableRowData<U, I>> insert(rowData: T): Long {
+        val inserter: I = rowData.writeAccessors.inserter
         inserter.connection = connection
         semaphore.claim("update")
         inserter.semaphore = semaphore
-        return inserter.insertRow(entity)
+        return inserter.insertRow(rowData)
     }
 
     /**

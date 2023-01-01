@@ -156,9 +156,7 @@ class TransactionManager private constructor(
          * @throws com.dbobjekts.api.exception.DBObjektsException if the major version of this catalog is too much behind and would cause compatability issues
          */
         fun withCatalog(catalog: Catalog): TransactionManagerBuilder {
-            if (Version.MAJOR > catalog.version) {
-                throw DBObjektsException("Catalog was created with a lower major version than the present: must be ${Version.MAJOR} but is ${catalog.version}. You need to re-run CodeGenerator and fix any incompatibilities.")
-            }
+            Version.validateCatalogVersion(catalog.version)
             this.catalog = catalog
             return this
         }

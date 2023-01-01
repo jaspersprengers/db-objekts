@@ -57,25 +57,25 @@ class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
     fun sourceForUpdateRowMethod(): String {
         if (primaryKey == null)
             return """
-    override fun updateRow(entity: Entity<*, *>): Long = 
-      throw StatementBuilderException("Sorry, but you cannot use entity-based update for table ${tableName}. There must be exactly one column marked as primary key.")                
+    override fun updateRow(rowData: TableRowData<*, *>): Long = 
+      throw StatementBuilderException("Sorry, but you cannot use row-based updates for table ${tableName}. There must be exactly one column marked as primary key.")                
             """
 
         val elements = fields.mapIndexed { _, field ->
-            "      add($tableName.${field.field}, entity.${field.field})"
+            "      add($tableName.${field.field}, rowData.${field.field})"
         }.joinToString("\n")
         val pkCol = primaryKey.field
         val source = """
-    override fun updateRow(entity: Entity<*, *>): Long {
-      entity as ${tableName}Row
+    override fun updateRow(rowData: TableRowData<*, *>): Long {
+      rowData as ${tableName}Row
 $elements
-      return where (${tableName}.$pkCol.eq(entity.$pkCol))
+      return where (${tableName}.$pkCol.eq(rowData.$pkCol))
     }    
         """
         return source
     }
 
-    fun sourceForEntityClass(): String {
+    fun sourceForRowDataClass(): String {
         val elements = mutableListOf<String>()
         if (autoPrimaryKey!=null)
             elements += "val ${autoPrimaryKey.field}: ${autoPrimaryKey.fieldType} = 0"
@@ -87,18 +87,18 @@ $elements
         val source = """
 data class ${tableName}Row(
 $fieldStr    
-) : Entity<${tableName}UpdateBuilder, ${tableName}InsertBuilder>(${tableName}.metadata())
+) : TableRowData<${tableName}UpdateBuilder, ${tableName}InsertBuilder>(${tableName}.metadata())
         """
         return source
     }
 
     private fun sourceForInsertRowMethod(): String {
         val elements = allFieldsExceptAutoPK.mapIndexed { _, field ->
-            "      add($tableName.${field.field}, entity.${field.field})"
+            "      add($tableName.${field.field}, rowData.${field.field})"
         }.joinToString("\n")
         val source = """
-    override fun insertRow(entity: Entity<*, *>): Long {
-      entity as ${tableName}Row
+    override fun insertRow(rowData: TableRowData<*, *>): Long {
+      rowData as ${tableName}Row
 $elements
       return execute()
     }    

@@ -2,7 +2,7 @@ package com.dbobjekts.mariadb.testdb.hr
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.api.Entity
+import com.dbobjekts.api.TableRowData
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -24,12 +24,12 @@ class CertificateUpdateBuilder() : UpdateBuilderBase(Certificate) {
     fun name(value: String): CertificateUpdateBuilder = put(Certificate.name, value)
     fun employeeId(value: Long): CertificateUpdateBuilder = put(Certificate.employeeId, value)
 
-    override fun updateRow(entity: Entity<*, *>): Long {
-      entity as CertificateRow
-      add(Certificate.id, entity.id)
-      add(Certificate.name, entity.name)
-      add(Certificate.employeeId, entity.employeeId)
-      return where (Certificate.id.eq(entity.id))
+    override fun updateRow(rowData: TableRowData<*, *>): Long {
+      rowData as CertificateRow
+      add(Certificate.id, rowData.id)
+      add(Certificate.name, rowData.name)
+      add(Certificate.employeeId, rowData.employeeId)
+      return where (Certificate.id.eq(rowData.id))
     }    
         
 }
@@ -45,10 +45,10 @@ class CertificateInsertBuilder():InsertBuilderBase(){
     }
 
 
-    override fun insertRow(entity: Entity<*, *>): Long {
-      entity as CertificateRow
-      add(Certificate.name, entity.name)
-      add(Certificate.employeeId, entity.employeeId)
+    override fun insertRow(rowData: TableRowData<*, *>): Long {
+      rowData as CertificateRow
+      add(Certificate.name, rowData.name)
+      add(Certificate.employeeId, rowData.employeeId)
       return execute()
     }    
         
@@ -59,5 +59,5 @@ data class CertificateRow(
 val id: Long = 0,
   val name: String,
   val employeeId: Long    
-) : Entity<CertificateUpdateBuilder, CertificateInsertBuilder>(Certificate.metadata())
+) : TableRowData<CertificateUpdateBuilder, CertificateInsertBuilder>(Certificate.metadata())
         

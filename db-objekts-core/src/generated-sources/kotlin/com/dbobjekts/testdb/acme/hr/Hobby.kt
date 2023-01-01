@@ -2,7 +2,7 @@ package com.dbobjekts.testdb.acme.hr
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.api.Entity
+import com.dbobjekts.api.TableRowData
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -21,11 +21,11 @@ class HobbyUpdateBuilder() : UpdateBuilderBase(Hobby) {
     fun id(value: String): HobbyUpdateBuilder = put(Hobby.id, value)
     fun name(value: String): HobbyUpdateBuilder = put(Hobby.name, value)
 
-    override fun updateRow(entity: Entity<*, *>): Long {
-      entity as HobbyRow
-      add(Hobby.id, entity.id)
-      add(Hobby.name, entity.name)
-      return where (Hobby.id.eq(entity.id))
+    override fun updateRow(rowData: TableRowData<*, *>): Long {
+      rowData as HobbyRow
+      add(Hobby.id, rowData.id)
+      add(Hobby.name, rowData.name)
+      return where (Hobby.id.eq(rowData.id))
     }    
         
 }
@@ -41,10 +41,10 @@ class HobbyInsertBuilder():InsertBuilderBase(){
     }
 
 
-    override fun insertRow(entity: Entity<*, *>): Long {
-      entity as HobbyRow
-      add(Hobby.id, entity.id)
-      add(Hobby.name, entity.name)
+    override fun insertRow(rowData: TableRowData<*, *>): Long {
+      rowData as HobbyRow
+      add(Hobby.id, rowData.id)
+      add(Hobby.name, rowData.name)
       return execute()
     }    
         
@@ -54,5 +54,5 @@ class HobbyInsertBuilder():InsertBuilderBase(){
 data class HobbyRow(
   val id: String,
   val name: String    
-) : Entity<HobbyUpdateBuilder, HobbyInsertBuilder>(Hobby.metadata())
+) : TableRowData<HobbyUpdateBuilder, HobbyInsertBuilder>(Hobby.metadata())
         

@@ -413,73 +413,6 @@ It's your own responsibility to make sure all the mandatory columns have non-nul
 
 A warning about auto-generated primary keys applies to this example. `EmployeeRow` has a non-null `id` field, which is auto-generated, but it won't be available before the call to `insert(...)`. We could define such numeric PKs as `Long?` or `Int?`, but that would mean unnecessary null-checks in cases when you can be certain that the id will never be null, e.g. as the result of a select. The compromise is to provide a default value of zero. For the insert logic, the primary key value in `EmployeeRow` will be ignored anyway.
 
-=== Updating
-Update statements have a similar syntax, so let's discuss them now before moving on the more elaborate select statements. The `update(..)` method also takes a table and returns a `*UpdateBuilder` object. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/UpdateStatementComponentTest.kt[UpdateStatementComponentTest]
-
-```kotlin
- transaction.update(Employee)
-     .salary(4500.30)
-     .married(null)
-     .where(e.id.eq(12345))
-```
-
-- There is no `mandatoryColumns()` method.
-- You can provide a null to a setter method if the corresponding database column is nullable: `update(Employee).married(null)`.
-- Note that you cannot do the same with `salary`, because that is non-nullable: `.salary(null)` will not compile
-- You close the statement with an explicit `execute()`.
-- The call to `where(...)` is always mandatory. If you want to update all rows, use the no-arg version `where()`
-
-==== Updating with a stateful row data object
-You can use the data row objects also to do updates. But some important conditions apply. db-Objekts can only manage it if the Table has _one_ designated primary key, because it creates an update query with a simple `where(Table.id.eq(pk))`. Let's give John a well-earned raise:
-```kotlin
-val retrieved: EmployeeRow = tr.select(Employee).where(Employee.id.eq(johnsId)).first()
-tr.update(retrieved.copy(salary = retrieved.salary + 100))
-```
-Note that the row data object that was retrieved is immutable. You need to make a copy first.
-
-=== Deleting
-The statement to delete rows has the fewest options. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/DeleteStatementComponentTest.kt[DeleteStatementComponentTest]
-```kotlin
-tr.deleteFrom(Employee).where(Employee.id.eq(id))
-```
-* The `deleteFrom` method takes a single table or a join (not all vendors supports it). More on join chains later.
-* The call to `where(...)` is always mandatory. If you want to delete all rows, use the no-arg version: `tr.deleteFrom(Employee).where()`
-
-=== The where-clause in details
-Update, select and delete are executed against a range of database rows that satisfy certain criteria. These criteria are expressed in the where-clause.
-
-The possibilities for generated db-Objekts statements are not as flexible as what you can achieve in native SQL, but they are more convenient to use and still cover a lot of common scenarios.
-
-The canonical form of the where clause is `statement.where(column .. operator .. [value, otherColumn] [and|or] ... )` which is quite analogous to normal SQL usage.
-
-```kotlin
- where(Employee.name.eq("Janet"))
- where(Employee.dateOfBirth.gt(LocalDate.of(1980,1,1)))
-```
-These are the operators you can use.
-
-- `eq`: is equal to
-- `ne`: is not equal to.
-- `gt`: is greater than.
-- `lt`: is less than.
-- `gte`: is greater than or equal.
-- `lte`: is less than or equal.
-- `within`: is within a range of values.
-- `notIn`: is not within a range of values.
-- `startsWith`: (for character type only)
-- `endsWith`: (for character type only)
-- `contains`:  (for character type only)
-- `isNull`
-- `isNotNull`
-
-You can chain conditions using `and` or `or` and you can even build nested conditions:
-
-```kotlin
-  where(e.married.eq(true).or(e.name.eq("John").or(e.name).eq("Bob"))) // all married people, plus John and Bob
-```
-
-If you have no conditions to constrain your selection you can omit the where clause in a SQL statement. In db-Objekts that is not possible, but for update and delete statements there is a no-arg `where()` overload that achieves the same thing. This is needed to finish and execute the statement. For select statements, a whereclause is optional, since there's no damage done if you omit it by mistake.
-
 === Basic select statements
 Let's move on to select statements now. The pattern is `transaction.select( col1, col2, ... ).where( conditions ).[first[orNull]()|asList()]`. You start with listing the columns you want to retrieve, the whereclause and then retrieve a list of results. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/SelectStatementComponentTest.kt[SelectStatementComponentTest]
 
@@ -551,6 +484,74 @@ Not to worry. Again, there are two options at hand. The first is to use the null
 ```kotlin
 tr.select(Employee.name, Hobby.name.nullable).useOuterJoins()
 ```
+
+=== The where-clause in details
+Update, select and delete are executed against a range of database rows that satisfy certain criteria. These criteria are expressed in the where-clause.
+
+The possibilities for generated db-Objekts statements are not as flexible as what you can achieve in native SQL, but they are more convenient to use and still cover a lot of common scenarios.
+
+The canonical form of the where clause is `statement.where(column .. operator .. [value, otherColumn] [and|or] ... )` which is quite analogous to normal SQL usage.
+
+```kotlin
+ where(Employee.name.eq("Janet"))
+ where(Employee.dateOfBirth.gt(LocalDate.of(1980,1,1)))
+```
+These are the operators you can use.
+
+- `eq`: is equal to
+- `ne`: is not equal to.
+- `gt`: is greater than.
+- `lt`: is less than.
+- `gte`: is greater than or equal.
+- `lte`: is less than or equal.
+- `within`: is within a range of values.
+- `notIn`: is not within a range of values.
+- `startsWith`: (for character type only)
+- `endsWith`: (for character type only)
+- `contains`:  (for character type only)
+- `isNull`
+- `isNotNull`
+
+You can chain conditions using `and` or `or` and you can even build nested conditions:
+
+```kotlin
+  where(e.married.eq(true).or(e.name.eq("John").or(e.name).eq("Bob"))) // all married people, plus John and Bob
+```
+
+If you have no conditions to constrain your selection you can omit the where clause.
+
+=== Updating
+The `update(..)` method, like the `insert(..)`, takes a table and returns an `*UpdateBuilder`. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/UpdateStatementComponentTest.kt[UpdateStatementComponentTest]
+
+```kotlin
+ transaction.update(Employee)
+     .salary(4500.30)
+     .married(null)
+     .where(e.id.eq(12345))
+```
+
+- There is no `mandatoryColumns()` method.
+- You can provide a null to a setter method if the corresponding database column is nullable: `update(Employee).married(null)`.
+- Note that you cannot do the same with `salary`, because that is non-nullable: `.salary(null)` will not compile
+- You close the statement with an explicit `execute()`.
+- The call to `where(...)` is always mandatory. If you want to update all rows, use the no-arg version `where()`
+
+==== Updating with a stateful row data object
+You can use the data row objects also to do updates. But some important conditions apply. db-Objekts can only manage it if the Table has _one_ designated primary key, because it creates an update query with a simple `where(Table.id.eq(pk))`. Let's give John a well-earned raise:
+```kotlin
+val retrieved: EmployeeRow = tr.select(Employee).where(Employee.id.eq(johnsId)).first()
+tr.update(retrieved.copy(salary = retrieved.salary + 100))
+```
+Note that the row data object that was retrieved is immutable. You need to make a copy first.
+
+=== Deleting
+The statement to delete rows has the fewest options. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/DeleteStatementComponentTest.kt[DeleteStatementComponentTest]
+```kotlin
+tr.deleteFrom(Employee).where(Employee.id.eq(id))
+```
+* The `deleteFrom` method takes a single table or a join (not all vendors supports it). More on join chains later.
+* The call to `where(...)` is always mandatory. If you want to delete all rows, use the no-arg version: `tr.deleteFrom(Employee).where()`
+
 
 === Custom sql queries
 db-Objekts is not out to kill SQL. There are many cases where the select, insert, update and delete queries fall short of your wishes. That is a deliberate design decision. db-Objekts aims to make mundane queries a joy, and not over-complicate its API. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/CustomSQLComponentTest.kt[CustomSQLComponentTest]

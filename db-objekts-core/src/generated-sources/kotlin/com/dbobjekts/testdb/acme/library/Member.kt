@@ -2,7 +2,7 @@ package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.api.Entity
+import com.dbobjekts.api.TableRowData
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -20,11 +20,11 @@ object Member:Table<MemberRow>("MEMBER"), HasUpdateBuilder<MemberUpdateBuilder, 
 class MemberUpdateBuilder() : UpdateBuilderBase(Member) {
     fun name(value: String): MemberUpdateBuilder = put(Member.name, value)
 
-    override fun updateRow(entity: Entity<*, *>): Long {
-      entity as MemberRow
-      add(Member.id, entity.id)
-      add(Member.name, entity.name)
-      return where (Member.id.eq(entity.id))
+    override fun updateRow(rowData: TableRowData<*, *>): Long {
+      rowData as MemberRow
+      add(Member.id, rowData.id)
+      add(Member.name, rowData.name)
+      return where (Member.id.eq(rowData.id))
     }    
         
 }
@@ -38,9 +38,9 @@ class MemberInsertBuilder():InsertBuilderBase(){
     }
 
 
-    override fun insertRow(entity: Entity<*, *>): Long {
-      entity as MemberRow
-      add(Member.name, entity.name)
+    override fun insertRow(rowData: TableRowData<*, *>): Long {
+      rowData as MemberRow
+      add(Member.name, rowData.name)
       return execute()
     }    
         
@@ -50,5 +50,5 @@ class MemberInsertBuilder():InsertBuilderBase(){
 data class MemberRow(
 val id: Long = 0,
   val name: String    
-) : Entity<MemberUpdateBuilder, MemberInsertBuilder>(Member.metadata())
+) : TableRowData<MemberUpdateBuilder, MemberInsertBuilder>(Member.metadata())
         

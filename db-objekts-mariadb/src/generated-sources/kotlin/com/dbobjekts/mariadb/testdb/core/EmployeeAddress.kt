@@ -2,7 +2,7 @@ package com.dbobjekts.mariadb.testdb.core
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.api.Entity
+import com.dbobjekts.api.TableRowData
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -23,8 +23,8 @@ class EmployeeAddressUpdateBuilder() : UpdateBuilderBase(EmployeeAddress) {
     fun addressId(value: Long): EmployeeAddressUpdateBuilder = put(EmployeeAddress.addressId, value)
     fun kind(value: String): EmployeeAddressUpdateBuilder = put(EmployeeAddress.kind, value)
 
-    override fun updateRow(entity: Entity<*, *>): Long = 
-      throw StatementBuilderException("Sorry, but you cannot use entity-based update for table EmployeeAddress. There must be exactly one column marked as primary key.")                
+    override fun updateRow(rowData: TableRowData<*, *>): Long = 
+      throw StatementBuilderException("Sorry, but you cannot use row-based updates for table EmployeeAddress. There must be exactly one column marked as primary key.")                
             
 }
 
@@ -41,11 +41,11 @@ class EmployeeAddressInsertBuilder():InsertBuilderBase(){
     }
 
 
-    override fun insertRow(entity: Entity<*, *>): Long {
-      entity as EmployeeAddressRow
-      add(EmployeeAddress.employeeId, entity.employeeId)
-      add(EmployeeAddress.addressId, entity.addressId)
-      add(EmployeeAddress.kind, entity.kind)
+    override fun insertRow(rowData: TableRowData<*, *>): Long {
+      rowData as EmployeeAddressRow
+      add(EmployeeAddress.employeeId, rowData.employeeId)
+      add(EmployeeAddress.addressId, rowData.addressId)
+      add(EmployeeAddress.kind, rowData.kind)
       return execute()
     }    
         
@@ -56,5 +56,5 @@ data class EmployeeAddressRow(
   val employeeId: Long,
   val addressId: Long,
   val kind: String    
-) : Entity<EmployeeAddressUpdateBuilder, EmployeeAddressInsertBuilder>(EmployeeAddress.metadata())
+) : TableRowData<EmployeeAddressUpdateBuilder, EmployeeAddressInsertBuilder>(EmployeeAddress.metadata())
         

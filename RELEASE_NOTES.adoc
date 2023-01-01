@@ -10,9 +10,8 @@ First alpha release
 * Rework in CodeGenerator configuration for setting sequences for primary keys. Separate configurer for greater clarity
 
 
-== 0.2-alpha-1
+== 0.2.1-alpha
 
-
-== 0.3-alpha-1
-* Introducing stateful and immutable entities for CRUD operations
+* Introducing stateful and immutable row objects for CRUD operations
 * Use DbObjektsException and subclasses instead of generic IllegalStateException
+* Documentation and component tests

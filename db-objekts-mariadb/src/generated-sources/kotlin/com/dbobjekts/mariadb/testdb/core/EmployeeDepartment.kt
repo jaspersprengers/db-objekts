@@ -2,7 +2,7 @@ package com.dbobjekts.mariadb.testdb.core
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.api.Entity
+import com.dbobjekts.api.TableRowData
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -21,8 +21,8 @@ class EmployeeDepartmentUpdateBuilder() : UpdateBuilderBase(EmployeeDepartment) 
     fun employeeId(value: Long): EmployeeDepartmentUpdateBuilder = put(EmployeeDepartment.employeeId, value)
     fun departmentId(value: Long): EmployeeDepartmentUpdateBuilder = put(EmployeeDepartment.departmentId, value)
 
-    override fun updateRow(entity: Entity<*, *>): Long = 
-      throw StatementBuilderException("Sorry, but you cannot use entity-based update for table EmployeeDepartment. There must be exactly one column marked as primary key.")                
+    override fun updateRow(rowData: TableRowData<*, *>): Long = 
+      throw StatementBuilderException("Sorry, but you cannot use row-based updates for table EmployeeDepartment. There must be exactly one column marked as primary key.")                
             
 }
 
@@ -37,10 +37,10 @@ class EmployeeDepartmentInsertBuilder():InsertBuilderBase(){
     }
 
 
-    override fun insertRow(entity: Entity<*, *>): Long {
-      entity as EmployeeDepartmentRow
-      add(EmployeeDepartment.employeeId, entity.employeeId)
-      add(EmployeeDepartment.departmentId, entity.departmentId)
+    override fun insertRow(rowData: TableRowData<*, *>): Long {
+      rowData as EmployeeDepartmentRow
+      add(EmployeeDepartment.employeeId, rowData.employeeId)
+      add(EmployeeDepartment.departmentId, rowData.departmentId)
       return execute()
     }    
         
@@ -50,5 +50,5 @@ class EmployeeDepartmentInsertBuilder():InsertBuilderBase(){
 data class EmployeeDepartmentRow(
   val employeeId: Long,
   val departmentId: Long    
-) : Entity<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder>(EmployeeDepartment.metadata())
+) : TableRowData<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder>(EmployeeDepartment.metadata())
         

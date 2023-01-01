@@ -2,7 +2,7 @@ package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.api.Entity
+import com.dbobjekts.api.TableRowData
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -21,11 +21,11 @@ class CountryUpdateBuilder() : UpdateBuilderBase(Country) {
     fun id(value: String): CountryUpdateBuilder = put(Country.id, value)
     fun name(value: String): CountryUpdateBuilder = put(Country.name, value)
 
-    override fun updateRow(entity: Entity<*, *>): Long {
-      entity as CountryRow
-      add(Country.id, entity.id)
-      add(Country.name, entity.name)
-      return where (Country.id.eq(entity.id))
+    override fun updateRow(rowData: TableRowData<*, *>): Long {
+      rowData as CountryRow
+      add(Country.id, rowData.id)
+      add(Country.name, rowData.name)
+      return where (Country.id.eq(rowData.id))
     }    
         
 }
@@ -41,10 +41,10 @@ class CountryInsertBuilder():InsertBuilderBase(){
     }
 
 
-    override fun insertRow(entity: Entity<*, *>): Long {
-      entity as CountryRow
-      add(Country.id, entity.id)
-      add(Country.name, entity.name)
+    override fun insertRow(rowData: TableRowData<*, *>): Long {
+      rowData as CountryRow
+      add(Country.id, rowData.id)
+      add(Country.name, rowData.name)
       return execute()
     }    
         
@@ -54,5 +54,5 @@ class CountryInsertBuilder():InsertBuilderBase(){
 data class CountryRow(
   val id: String,
   val name: String    
-) : Entity<CountryUpdateBuilder, CountryInsertBuilder>(Country.metadata())
+) : TableRowData<CountryUpdateBuilder, CountryInsertBuilder>(Country.metadata())
         

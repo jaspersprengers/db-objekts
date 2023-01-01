@@ -2,7 +2,7 @@ package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.api.Entity
+import com.dbobjekts.api.TableRowData
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -32,16 +32,16 @@ class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
     fun children(value: Int?): EmployeeUpdateBuilder = put(Employee.children, value)
     fun hobbyId(value: String?): EmployeeUpdateBuilder = put(Employee.hobbyId, value)
 
-    override fun updateRow(entity: Entity<*, *>): Long {
-      entity as EmployeeRow
-      add(Employee.id, entity.id)
-      add(Employee.name, entity.name)
-      add(Employee.salary, entity.salary)
-      add(Employee.married, entity.married)
-      add(Employee.dateOfBirth, entity.dateOfBirth)
-      add(Employee.children, entity.children)
-      add(Employee.hobbyId, entity.hobbyId)
-      return where (Employee.id.eq(entity.id))
+    override fun updateRow(rowData: TableRowData<*, *>): Long {
+      rowData as EmployeeRow
+      add(Employee.id, rowData.id)
+      add(Employee.name, rowData.name)
+      add(Employee.salary, rowData.salary)
+      add(Employee.married, rowData.married)
+      add(Employee.dateOfBirth, rowData.dateOfBirth)
+      add(Employee.children, rowData.children)
+      add(Employee.hobbyId, rowData.hobbyId)
+      return where (Employee.id.eq(rowData.id))
     }    
         
 }
@@ -62,14 +62,14 @@ class EmployeeInsertBuilder():InsertBuilderBase(){
     }
 
 
-    override fun insertRow(entity: Entity<*, *>): Long {
-      entity as EmployeeRow
-      add(Employee.name, entity.name)
-      add(Employee.salary, entity.salary)
-      add(Employee.married, entity.married)
-      add(Employee.dateOfBirth, entity.dateOfBirth)
-      add(Employee.children, entity.children)
-      add(Employee.hobbyId, entity.hobbyId)
+    override fun insertRow(rowData: TableRowData<*, *>): Long {
+      rowData as EmployeeRow
+      add(Employee.name, rowData.name)
+      add(Employee.salary, rowData.salary)
+      add(Employee.married, rowData.married)
+      add(Employee.dateOfBirth, rowData.dateOfBirth)
+      add(Employee.children, rowData.children)
+      add(Employee.hobbyId, rowData.hobbyId)
       return execute()
     }    
         
@@ -84,5 +84,5 @@ val id: Long = 0,
   val dateOfBirth: java.time.LocalDate,
   val children: Int?,
   val hobbyId: String?    
-) : Entity<EmployeeUpdateBuilder, EmployeeInsertBuilder>(Employee.metadata())
+) : TableRowData<EmployeeUpdateBuilder, EmployeeInsertBuilder>(Employee.metadata())
         

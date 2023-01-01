@@ -84,7 +84,7 @@ class UpdateStatementComponentTest {
             tr.insert(ea)
 
             Assertions.assertThatThrownBy( { tr.update(ea.copy(kind = AddressType.WORK)) })
-                .hasMessage("Sorry, but you cannot use entity-based update for table EmployeeAddress. There must be exactly one column marked as primary key.")
+                .hasMessage("Sorry, but you cannot use row-based updates for table EmployeeAddress. There must be exactly one column marked as primary key.")
         }
     }
 

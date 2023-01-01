@@ -2,7 +2,7 @@ package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.api.Entity
+import com.dbobjekts.api.TableRowData
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -20,11 +20,11 @@ object Department:Table<DepartmentRow>("DEPARTMENT"), HasUpdateBuilder<Departmen
 class DepartmentUpdateBuilder() : UpdateBuilderBase(Department) {
     fun name(value: String): DepartmentUpdateBuilder = put(Department.name, value)
 
-    override fun updateRow(entity: Entity<*, *>): Long {
-      entity as DepartmentRow
-      add(Department.id, entity.id)
-      add(Department.name, entity.name)
-      return where (Department.id.eq(entity.id))
+    override fun updateRow(rowData: TableRowData<*, *>): Long {
+      rowData as DepartmentRow
+      add(Department.id, rowData.id)
+      add(Department.name, rowData.name)
+      return where (Department.id.eq(rowData.id))
     }    
         
 }
@@ -38,9 +38,9 @@ class DepartmentInsertBuilder():InsertBuilderBase(){
     }
 
 
-    override fun insertRow(entity: Entity<*, *>): Long {
-      entity as DepartmentRow
-      add(Department.name, entity.name)
+    override fun insertRow(rowData: TableRowData<*, *>): Long {
+      rowData as DepartmentRow
+      add(Department.name, rowData.name)
       return execute()
     }    
         
@@ -50,5 +50,5 @@ class DepartmentInsertBuilder():InsertBuilderBase(){
 data class DepartmentRow(
 val id: Long = 0,
   val name: String    
-) : Entity<DepartmentUpdateBuilder, DepartmentInsertBuilder>(Department.metadata())
+) : TableRowData<DepartmentUpdateBuilder, DepartmentInsertBuilder>(Department.metadata())
         

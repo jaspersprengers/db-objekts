@@ -3,7 +3,6 @@ package com.dbobjekts.statement.update
 import com.dbobjekts.api.*
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.metadata.column.NullableColumnAndValue
 import com.dbobjekts.statement.insert.InsertBuilderBase
@@ -55,7 +54,7 @@ abstract class UpdateBuilderBase(
         ct.put(col, value)
     }
 
-    abstract fun updateRow(entity: Entity<*,*>): Long
+    abstract fun updateRow(tableRowData: TableRowData<*,*>): Long
 
     /**
      * Opens the whereclause for this update statement.
