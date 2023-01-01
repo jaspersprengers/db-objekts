@@ -13,7 +13,7 @@ open class Schema(
     val tables: List<Table<*>>
 ) {
 
-    constructor(name: String, tables: List<AnyTable>) : this(PlaceHolderCatalog, SchemaName(name), tables)
+    constructor(name: String, tables: List<AnyTable>) : this(DefaultNoVendorCatalog, SchemaName(name), tables)
 
     init {
         tables.forEach { it.withSchema(this) }

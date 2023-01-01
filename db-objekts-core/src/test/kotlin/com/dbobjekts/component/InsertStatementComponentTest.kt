@@ -25,16 +25,18 @@ class InsertStatementComponentTest {
     }
 
     @Test
-    fun `verify null and default values`() {
+    fun `Insert employee record with null values where possible`() {
         tm { tr ->
             val id = tr.insert(e).mandatoryColumns("Jack", 3000.5, LocalDate.of(1980, 1, 1)).execute()
-            assertNull(tr.select(h.name.nullable).from(Employee.leftJoin(Hobby)).where(e.id.eq(id)).first())
-            assertNull(tr.select(e.children).where(e.id.eq(id)).first())
+            val jack: EmployeeRow = tr.select(e).where(e.id.eq(id)).first()
+            assertThat(jack.married).isNull()
+            assertThat(jack.children).isNull()
+            assertThat(jack.hobbyId).isNull()
         }
     }
 
     @Test
-    fun `test row-based insertion`() {
+    fun `Row-based insertion`() {
         tm { tr ->
 
             val row = EmployeeRow(

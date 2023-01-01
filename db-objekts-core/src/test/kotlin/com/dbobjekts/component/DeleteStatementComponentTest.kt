@@ -28,19 +28,21 @@ class DeleteStatementComponentTest {
     }
 
     @Test
-    fun `delete clause correct sql`() {
+    fun `Delete statement scenarios`() {
         tm { tr ->
-            tr.deleteFrom(Employee).where(Employee.id.eq(5L).and(Employee.name).notIn("bob", "alice", "eve"))
 
             tr.deleteFrom(Employee)
                 .where(Employee.name.notIn("Bob", "Alice", "Eve").and(Employee.married.eq(false).or(Employee.salary.gt(34000.0))))
             assertThat(tr.select(e.name).asList()).containsExactlyInAnyOrder("Eve", "Bob", "Diane", "Alice", "Gina", "Charlie")
 
             assertThat(tr.deleteFrom(Employee).where(Employee.id.eq(1))).isEqualTo(1)
+            assertThat(tr.deleteFrom(Employee).where(Employee.id.eq(1))).isEqualTo(0)
 
+            //this is not supported by H2, but possible in (e.g.) MariaDB
             Assertions.assertThatThrownBy { tr.deleteFrom(e.innerJoin(Hobby)).where(h.name.eq("curling")) }
                 .hasMessage("Your database does not support DELETE statements with JOIN syntax.")
 
+            //delete all Employee records
             tr.deleteFrom(Employee).where()
             assertThat(tr.select(Employee).asList()).isEmpty()
         }

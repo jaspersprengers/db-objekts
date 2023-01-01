@@ -5,14 +5,19 @@ import com.dbobjekts.metadata.column.Column
 
  interface ConditionFactory<I, W : WhereClauseComponent> {
 
+    /**
+     * operator for equality condition. Results in SQL: my_column = ?
+     */
     fun eq(value: I): W = if (value == null) throw StatementBuilderException("Cannot supply null argument. Use isNull()") else createSimpleCondition(value, "=")
 
+    /**
+     * operator for nullability check. Results in SQL my_column IS NULL
+     */
     fun isNull(): W = createIsNullCondition("is null")
 
     /**
      * operator for column-to-column condition: Results in SQL: column1 = column2
      */
-
     fun eq(column: Column<I>): W = createColumnCondition(column, "=")
 
     /**

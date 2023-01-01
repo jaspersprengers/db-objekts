@@ -10,7 +10,6 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 import java.time.LocalDate
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 class UpdateStatementComponentTest {
 
     val e = Employee
@@ -27,16 +26,7 @@ class UpdateStatementComponentTest {
     }
 
     @Test
-    fun `verify null and default values`() {
-        tm { tr ->
-            val id = tr.insert(e).mandatoryColumns("Jack", 3000.5, LocalDate.of(1980, 1, 1)).execute()
-            assertNull(tr.select(h.name.nullable).from(Employee.leftJoin(Hobby)).where(e.id.eq(id)).first())
-            assertNull(tr.select(e.children).where(e.id.eq(id)).first())
-        }
-    }
-
-    @Test
-    fun `update name for existing`() {
+    fun `update all fields in employee record`() {
         tm { tr ->
             tr.insert(e).name("Howard").salary(50.9).dateOfBirth(LocalDate.of(1970, 3, 3)).married(false).execute()
 
@@ -99,7 +89,7 @@ class UpdateStatementComponentTest {
     }
 
     @Test
-    fun `test entity-based update`() {
+    fun `row-based update scenarios`() {
         tm { tr ->
             val hobby = HobbyRow("go", "the game of Go")
             tr.insert(hobby)

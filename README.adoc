@@ -348,13 +348,16 @@ We already met the `TransactionManager` briefly. It provides access to your data
 You only need a single `TransactionManager` for each `DataSource` per application, so it makes sense to create it centrally and make it available through dependency injection. Since a `TransactionManager` is stateless, there is no harm in assigning it to a singleton: different threads can use the same instance.
 
 ==== Creating a TransactionManager
-As you saw, the syntax is simple. You obtain a `TransactionManagerBuilder` instance through the static call to `TransactionManager.builder()`. This has two mandatory configuration methods, for the `CatalogDefinition` and the `DataSource`, respectively.
+As you saw, the syntax is simple. You obtain a `TransactionManagerBuilder` instance through the static call to `TransactionManager.builder()`. This has two configuration methods, for the `CatalogDefinition` and the `DataSource`, respectively.
 ```kotlin
 val transactionManager = TransactionManager.builder()
     .withCatalog(CatalogDefinition)
-    .withDataSource(someDataSource).build()
+    .withDataSource(someDataSource)
+    .build()
 ```
-There is a third and optional method if you want complete control over the way `Connection` objects are obtained from the `DataSource`: `withCustomConnectionProvider`. You can use it as follows:
+You must always supply a `DataSource`, obviously. The catalog is mandatory if you query with metadata objects, and optional if you only use native sql queries.
+
+There is a third, optional method if you want complete control over the way `Connection` objects are obtained from the `DataSource`: `withCustomConnectionProvider`. You can use it as follows:
 ```kotlin
    .withCustomConnectionProvider { ds: DataSource ->
                     val conn = ds.connection
