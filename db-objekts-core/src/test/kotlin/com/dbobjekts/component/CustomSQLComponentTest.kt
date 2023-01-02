@@ -51,8 +51,13 @@ class CustomSQLComponentTest {
         AcmeDB.createExampleCatalog(AcmeDB.transactionManager)
         val tm = AcmeDB.transactionManager
         tm({
-            val rows: List<Tuple2<Boolean, AddressType?>> = it.sql(
-                "select e.has_children,e.address_type from EMPLOYEE e"
+            val rows = it.sql(
+                """
+                        select e.children,home.kind,e.id
+                        from core.EMPLOYEE e 
+                            left join core.EMPLOYEE_ADDRESS home on home.EMPLOYEE_ID = e.ID 
+                            left join core.ADDRESS ha on ha.ID = home.ADDRESS_ID                            
+                    """.trimIndent()
             ).withResultTypes()
                 .custom(ColumnClasses.NUMBER_AS_BOOLEAN)
                 .customNil(NullableAddressTypeAsStringColumn::class.java)
