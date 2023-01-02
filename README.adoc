@@ -429,7 +429,7 @@ It's your own responsibility to make sure all the mandatory columns have non-nul
 
 NOTE: This you must know auto-generated primary keys. `EmployeeRow` has a non-null `id` field, which is auto-generated hence unavailable until after the `insert(...)` call. We __could__ define such numeric PKs as `Long?` or `Int?`, but that would mean ugly `!!` usage when the id is guaranteed never to be null. The compromise is to provide a default value of zero. You don't specify the ID in `EmployeeRow` yourself, and for the insert logic, it is ignored anyway.
 
-=== Basic select statements
+=== Selecting data
 Let's move on to select statements now. The pattern is `transaction.select( col1, col2, ... ).where( conditions ).[first[orNull]()|asList()]`.
 
 You start with listing the columns and tables you want to retrieve, the where clause and then retrieve a list of results. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/SelectStatementComponentTest.kt[SelectStatementComponentTest]
@@ -488,7 +488,7 @@ Note that these constraints are executed server-side, as they are part of the SQ
   tr.select(e.name).orderDesc(e.salary).orderAsc(e.name).limit(10).asList()
 ```
 
-=== Outer joins and more customization
+=== Outer joins
 Recall the previous query `tm.select(Employee.name, Hobby.name)`, which does an inner join and only returns results where a `hobby` record is linked to an `employee`. If we want all employee records, what we need is a left outer join. There are two basic options.
 ```
 tr.select(Employee.name, Hobby.name).useOuterJoins()
@@ -538,6 +538,9 @@ You can chain conditions using `and` or `or` and you can even build nested condi
 ```
 
 If you have no conditions to constrain your selection you can omit the where clause: `tr.select(Book).asList()`
+
+==== Selecting with aggregates
+This feature is planned for the 0.3.0-alpha release. See the  <<Status and roadmap>> for details.
 
 === Updating
 The `update(..)` method, like the `insert(..)`, takes a table and returns an `*UpdateBuilder`. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/UpdateStatementComponentTest.kt[UpdateStatementComponentTest]
@@ -859,3 +862,15 @@ This is the very first alpha release. The API may change slightly, so it is not 
 ** Addition of PostgreSQL and MySQL as vendor types
 ** Rigorous integration tests on dockerized images of all database vendors as part of the build
 ** No more API changes are to be expected.
+
+==== 0.3.0-alpha
+* Support for aggregates in select clauses: sum(), avg(), count(), which will look like:
+```kotlin
+    // show the average salary of employees grouped by town
+    tr.select(Employee.salary.average, Address.town).asList()
+    // show all employee names who have more than two certificates
+    tr.select(Employee.name, Certificate.id.sum).where(Certificate.id.sum.gt(2))
+```
+Each numeric column can be used with a `count`, `min`, `max`, `sum` and `avg` extension, which turns the normal select query in an aggregate one.
+
+The API will only cover common cases, where grouping is done over all selected columns. A `having` clause can be expressed in the `where()` call using normal syntax by referring to the aggregated column.
