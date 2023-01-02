@@ -10,7 +10,14 @@ import java.sql.Types
  *
  * @param name    The column name in the corresponding database table
  */
-class DoubleColumn(table: AnyTable, name: String) : NonNullableColumn<Double>(name, table, Double::class.java){
+class DoubleColumn(table: AnyTable, name: String, override val aggregateType: AggregateType?) :
+    NonNullableColumn<Double>(name, table, Double::class.java), AggregateColumn{
+
+    constructor(table: AnyTable, name: String) : this(table, name, null)
+    fun sum() = DoubleColumn(table, nameInTable, AggregateType.SUM)
+
+    override fun forSelect() = write(this)
+
     override val nullable: NullableColumn<Double?> = NullableDoubleColumn(table, name)
     override fun getValue(position: Int, resultSet: ResultSet): Double = resultSet.getDouble(position)
 

@@ -10,7 +10,6 @@ open class SubClause(
     var isRoot: Boolean = false
 ) : WhereClauseComponent, HasWhereClauseComponents {
 
-    private var vendorOpt: Vendor? = null
     private val buffer = mutableListOf<WhereClauseComponent>()
 
     override fun elements(): List<WhereClauseComponent> = buffer.toList()

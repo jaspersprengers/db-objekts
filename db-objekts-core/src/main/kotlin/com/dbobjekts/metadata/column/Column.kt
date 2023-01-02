@@ -51,6 +51,11 @@ abstract class Column<I>(
 
     internal fun aliasDotName(): String = table.alias() + "." + nameInTable
 
+    /**
+     * to be overridden by aggregate variations, which will become something like avg(e.salary)
+     */
+    open internal fun forSelect(): String = aliasDotName()
+
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is Column<*>) return false

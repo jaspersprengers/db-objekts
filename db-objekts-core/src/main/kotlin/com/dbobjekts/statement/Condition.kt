@@ -11,7 +11,7 @@ data class Condition<I, W : WhereClauseComponent>(
     val parent: W,
     val column: Column<I>,
     override val joinType: ConditionJoinType = And,
-    private var symbol: String? = null,
+    internal var symbol: String? = null,
      var values: List<I>? = null,
      var columnCondition: Column<I>? = null
 ) : WhereClauseComponent, ConditionFactory<I, W> {

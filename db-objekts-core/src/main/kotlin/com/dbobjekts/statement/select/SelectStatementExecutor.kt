@@ -2,18 +2,19 @@ package com.dbobjekts.statement.select
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.jdbc.ConnectionAdapter
-import com.dbobjekts.metadata.Table
-import com.dbobjekts.metadata.joins.TableJoinChain
-import com.dbobjekts.metadata.TableOrJoin
-import com.dbobjekts.metadata.column.Column
-import com.dbobjekts.statement.ColumnInResultRow
 import com.dbobjekts.api.ResultRow
 import com.dbobjekts.api.Semaphore
 import com.dbobjekts.api.exception.StatementBuilderException
+import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Selectable
+import com.dbobjekts.metadata.TableOrJoin
+import com.dbobjekts.metadata.column.Column
+import com.dbobjekts.metadata.column.HavingClause
+import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.ColumnInResultRow
+import com.dbobjekts.statement.Condition
+import com.dbobjekts.statement.SqlParameter
 import com.dbobjekts.statement.StatementBase
-import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
 
 class SelectStatementExecutor<T, RSB : ResultRow<T>>(
@@ -26,6 +27,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
     override val statementType = "select"
     internal val columns: List<AnyColumn>
     private var useOuterJoins = false
+    private var havingClause: HavingClause<*>? = null
 
     init {
         selectResultSet.selectables = selectables
@@ -170,12 +172,21 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         )
     }
 
+    fun having(havingClause: HavingClause<*>): SelectStatementExecutor<T, RSB> {
+        this.havingClause = havingClause
+        return this
+    }
+
     private fun execute(): RSB {
         val sql = toSQL()
-        val params = getWhereClause().getParameters()
+        val params: List<SqlParameter<*>> = getWhereClause().getParameters()
+        val merged: List<SqlParameter<*>> = havingClause?.let {
+            val max = if (params.isEmpty() ) 0 else params.map { it.oneBasedPosition }.max()
+            params + it.sqlParameter(max + 1)
+        } ?: params
         return connection.prepareAndExecuteForSelect<RSB>(
             sql,
-            params,
+            merged,
             columnsToFetch(),
             selectResultSet
         )
@@ -188,6 +199,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         builder.withJoinChain(buildJoinChain(useOuterJoins))
             .withOrderByClause(orderByClauses.toList())
             .withColumnsToSelect(columnsToFetch())
+            .withHavingClause(havingClause?.symbol)
             .build()
         limitRows?.let { builder.withLimitClause(limitRows!!, { r: Int -> connection.vendorSpecificProperties.getLimitClause(r) }) }
         return builder.build()

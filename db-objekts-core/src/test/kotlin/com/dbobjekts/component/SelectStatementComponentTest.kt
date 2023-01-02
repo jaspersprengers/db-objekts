@@ -1,6 +1,9 @@
 package com.dbobjekts.component
 
+import com.dbobjekts.metadata.column.Aggregate
+import com.dbobjekts.statement.SQLOptions
 import com.dbobjekts.statement.select.SelectStatementExecutor
+import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
@@ -24,7 +27,7 @@ class SelectStatementComponentTest {
 
 
         val tm = AcmeDB.transactionManager
-        
+
         @BeforeAll
         @JvmStatic
         fun setup() {
@@ -34,8 +37,8 @@ class SelectStatementComponentTest {
 
     @Test
     fun `verify ranges`() {
-        assertEquals(7, tm { it.select(e.salary).where(e.salary.notIn(30000.0,31000.0,32000.0)).asList().size })
-        assertEquals(3, tm { it.select(e.salary).where(e.salary.within(30000.0,31000.0,32000.0)).asList().size })
+        assertEquals(7, tm { it.select(e.salary).where(e.salary.notIn(30000.0, 31000.0, 32000.0)).asList().size })
+        assertEquals(3, tm { it.select(e.salary).where(e.salary.within(30000.0, 31000.0, 32000.0)).asList().size })
         assertEquals(4, tm { it.select(e.salary).where(e.salary.gt(35000.0)).asList().size })
         assertEquals(5, tm { it.select(e.salary).where(e.salary.ge(35000.0)).asList().size })
         assertEquals(4, tm { it.select(e.salary).where(e.salary.lt(34000.0)).asList().size })
@@ -48,13 +51,25 @@ class SelectStatementComponentTest {
     }
 
     @Test
-    fun `select all`(){
+    fun `select all`() {
         AcmeDB.newTransaction { tr ->
-            tr.select(Employee, Address.street, EmployeeAddress.kind, Department.name, Hobby.name.nullable, Certificate.name.nullable).useOuterJoins().asList().forEach {
-                (emp,street,addType, dept,hobby,cert) ->
+            tr.select(Employee, Address.street, EmployeeAddress.kind, Department.name, Hobby.name.nullable, Certificate.name.nullable)
+                .useOuterJoins().asList().forEach { (emp, street, addType, dept, hobby, cert) ->
                 println("${emp.id}\t${emp.name}\t${emp.salary}\t${emp.married}\t${emp.children}\t${emp.dateOfBirth}\t$hobby\t$street\t$addType\t$dept\t$cert")
             }
         }
+    }
+
+    @Test
+    fun `select sum of people with hobby`() {
+        tm({
+            it.select(e.salary.sum(), h.name)
+                .orderDesc(h.name)
+                .having(Aggregate.gt(70_000))
+                .asList().forEach {
+                println(it)
+            }
+        })
     }
 
     @Test
