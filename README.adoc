@@ -809,7 +809,7 @@ override fun setValue(position: Int, statement: PreparedStatement, value: String
 ```
 
 === Security concerns
-Much sensitive data flows through a database library like db-Objekts, so we take security seriously, and so should you. The following design decisions and principles are in place:
+Much sensitive data flows through a database library like db-Objekts, so we take security seriously. And so should you! The following design decisions and principles are in place:
 
 * db-Objekts never logs concrete data that is read or written to the db tables. It keeps such data in-memory for debugging purposes in an [ExecutedStatementInfo] data class only for the duration of a single `Transaction`, after which it is cleared.
 * All generated statements use placeholder `?` syntax to guard against SQL injection attacks. You should still be careful to sanitise end-user data before you pass them as parts of a query, like in `tr.select(Employee).where(e.name.eq(someValueFromRestCall))`

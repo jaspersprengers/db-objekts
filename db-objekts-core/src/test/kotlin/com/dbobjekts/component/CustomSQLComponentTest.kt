@@ -1,5 +1,10 @@
 package com.dbobjekts.component
 
+import com.dbobjekts.metadata.ColumnFactory
+import com.dbobjekts.metadata.column.NonNullableColumn
+import com.dbobjekts.testdb.AddressType
+import com.dbobjekts.testdb.AddressTypeAsStringColumn
+import com.dbobjekts.testdb.NullableAddressTypeAsStringColumn
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
@@ -13,7 +18,6 @@ class CustomSQLComponentTest {
         AcmeDB.createExampleCatalog(AcmeDB.transactionManager)
         val tm = AcmeDB.transactionManager
         tm({
-            LocalDate.of(1990, 12, 5)
             val rows = it.sql(
                 """
                         select e.id,e.name,e.SALARY,e.MARRIED,e.CHILDREN,
@@ -37,5 +41,26 @@ class CustomSQLComponentTest {
         })
     }
 
+
+    @Test
+    fun `test custom`() {
+        AcmeDB.createExampleCatalog(AcmeDB.transactionManager)
+        val tm = AcmeDB.transactionManager
+        tm({
+            val rows = it.sql(
+                """
+                        select home.kind,e.id
+                        from core.EMPLOYEE e 
+                            left join core.EMPLOYEE_ADDRESS home on home.EMPLOYEE_ID = e.ID 
+                            left join core.ADDRESS ha on ha.ID = home.ADDRESS_ID                            
+                    """.trimIndent()
+            ).withResultTypes().customNil(NullableAddressTypeAsStringColumn::class.java).int()
+                .asList()
+            rows.forEach { t ->
+                println("${t.v1}\t${t.v2}")
+            }
+            assertThat(rows).hasSize(20)
+        })
+    }
 
 }

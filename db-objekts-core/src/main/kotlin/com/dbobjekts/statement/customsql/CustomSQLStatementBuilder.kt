@@ -4,6 +4,8 @@ import com.dbobjekts.api.*
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.metadata.column.Column
+import com.dbobjekts.metadata.column.NonNullableColumn
+import com.dbobjekts.metadata.column.NullableColumn
 import com.dbobjekts.util.StatementLogger
 import java.math.BigDecimal
 import java.sql.Blob
@@ -28,6 +30,8 @@ class CustomSQLSelectStatementBuilder(
     private val sql: String,
     private val args: List<Any>
 ) {
+    fun <R, T : NonNullableColumn<R>> custom(clz: Class<T>): Returns1<R> = Returns1(ColumnFactory.forClass(clz), semaphore, conn, sql, args)
+    fun <R, T : NullableColumn<R>> customNil(clz: Class<T>): Returns1<R> = Returns1(ColumnFactory.forClassAsNullable(clz), semaphore, conn, sql, args)
     fun string(): Returns1<String> = Returns1(ColumnFactory.VARCHAR, semaphore, conn, sql, args)
     fun stringNil(): Returns1<String?> = Returns1(ColumnFactory.VARCHAR_NIL, semaphore, conn, sql, args)
     fun long(): Returns1<Long> = Returns1(ColumnFactory.LONG, semaphore, conn, sql, args)
