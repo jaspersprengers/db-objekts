@@ -49,7 +49,7 @@ class H2DataTypeMapper : VendorDefaultColumnTypeMapper {
             //special types
             col == "UUID" -> if (nullable) UUID_NIL else UUID
             col.startsWith("INTERVAL") -> if (nullable) INTERVAL_NIL else INTERVAL
-            //col.matches(objectColumnPattern) ->  Columns.
+            //col.matches(objectColumnPattern) ->  ColumnClasses.
 
             col.contains("GEOMETRY") -> ColumnFactory.varcharColumn(nullable)
 

@@ -12,7 +12,7 @@ import java.sql.PreparedStatement
 import java.sql.ResultSet
 
 /**
- * Base of objects representing the column of a database table. Columns are associated with an sqlType indicating to the JDBC driver how to map the database type to a Kotlin type.
+ * Base of objects representing the column of a database table. ColumnClasses are associated with an sqlType indicating to the JDBC driver how to map the database type to a Kotlin type.
  * The correct sqlType is particularly relevant when setting null values.
  *
  * @param nameInTable    the column name in the corresponding database table

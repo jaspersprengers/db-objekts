@@ -1,7 +1,11 @@
 package com.dbobjekts.component
 
+import ColumnClasses
+import com.dbobjekts.api.Tuple2
+import com.dbobjekts.api.Tuple3
 import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.metadata.column.NonNullableColumn
+import com.dbobjekts.metadata.column.NumberAsBooleanColumn
 import com.dbobjekts.testdb.AddressType
 import com.dbobjekts.testdb.AddressTypeAsStringColumn
 import com.dbobjekts.testdb.NullableAddressTypeAsStringColumn
@@ -47,14 +51,11 @@ class CustomSQLComponentTest {
         AcmeDB.createExampleCatalog(AcmeDB.transactionManager)
         val tm = AcmeDB.transactionManager
         tm({
-            val rows = it.sql(
-                """
-                        select home.kind,e.id
-                        from core.EMPLOYEE e 
-                            left join core.EMPLOYEE_ADDRESS home on home.EMPLOYEE_ID = e.ID 
-                            left join core.ADDRESS ha on ha.ID = home.ADDRESS_ID                            
-                    """.trimIndent()
-            ).withResultTypes().customNil(NullableAddressTypeAsStringColumn::class.java).int()
+            val rows: List<Tuple2<Boolean, AddressType?>> = it.sql(
+                "select e.has_children,e.address_type from EMPLOYEE e"
+            ).withResultTypes()
+                .custom(ColumnClasses.NUMBER_AS_BOOLEAN)
+                .customNil(NullableAddressTypeAsStringColumn::class.java)
                 .asList()
             rows.forEach { t ->
                 println("${t.v1}\t${t.v2}")

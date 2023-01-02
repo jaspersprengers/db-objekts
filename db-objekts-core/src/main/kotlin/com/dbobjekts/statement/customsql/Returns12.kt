@@ -5,6 +5,8 @@
   import com.dbobjekts.jdbc.ConnectionAdapter
   import com.dbobjekts.metadata.ColumnFactory
   import com.dbobjekts.metadata.column.Column
+  import com.dbobjekts.metadata.column.NonNullableColumn
+  import com.dbobjekts.metadata.column.NullableColumn
   import java.math.BigDecimal
   import java.sql.Blob
   import java.sql.Clob
@@ -20,6 +22,19 @@ class Returns12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
     private val sql: String,
     private val args: List<Any>
 ) {
+
+    /**
+     * Adds a custom non-nullable Column type as the next column in the result row.
+     * @param clz a subclass of NonNullableColumn<*>             
+     */
+    fun <R, T : NonNullableColumn<R>> custom(clz: Class<T>): Returns13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R> = Returns13(column1, column2, column3, column4, column5, column6, column7, column8, column9, column10, column11, column12, ColumnFactory.forClass(clz), semaphore, conn, sql, args)
+    
+    /**
+     * Adds a custom nullable Column type as the next column in the result row.
+     * @param clz a subclass of NullableColumn<*>             
+     */
+    fun <R, T : NullableColumn<R>> customNil(clz: Class<T>): Returns13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, R> = Returns13(column1, column2, column3, column4, column5, column6, column7, column8, column9, column10, column11, column12, ColumnFactory.forClassAsNullable(clz), semaphore, conn, sql, args)
+
     /**
      * Adds a String type as the next column in the result row
      */

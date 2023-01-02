@@ -586,11 +586,30 @@ val (id, name, salary, married, children, hobby) =
         .first()
 ```
 
-The `sql` method on `Transaction` works the same as regular select statements when it comes to retrieving parameterized tuples. But instead of providing that information through a list of Columns, you do it in a call to `withResultTypes`.
+The `sql` method on `Transaction` works the same as regular select statements when it comes to retrieving parameterized tuples. But instead of providing that information through a list of ColumnClasses, you do it in a call to `withResultTypes`.
 
 This returns a builder with methods for each available standard SQL type in a nullable and non-nullable flavour. String together all the methods you need, call `first[orNull]()`, or `asList()`, and the output of the custom query will be returned in a type-safe tuple.
 
 image::custom_sql.png[autocomplete_update, 600]
+
+But wait, there are more goodies. Wouldn't it be great if you could employ the same custom column types that you created for your metadata-based queries in native SQL? You can, with the `custom(..)` builder method.
+
+This method comes in the same nullable and non-nullable flavors and takes a reference to the appropriate Column class. Suppose the following query selects two columns which are stored as TINYINT(1) used as a Boolean, and VARCHAR(10) nullable, respectively. We want to read them out as Boolean and our own AddressType.
+
+```kotlin
+val rows: List<Tuple2<Boolean, AddressType?>> = it.sql(
+    "select e.has_children,e.address_type from EMPLOYEE e"
+).withResultTypes()
+    .custom(NumberAsBooleanColumn::class.java)
+    .customNil(NullableAddressTypeAsStringColumn::class.java)
+    .asList()
+```
+
+Static objects `com.dbobjekts.metadata.column.[Nil]ColumnClasses` gives a handy overview, so you could also write:
+```kotlin
+.custom(ColumnClasses.NUMBER_AS_BOOLEAN)
+```
+The `custom` and `customNil` methods take a `NonNullableColumn` and `NullableColumn` reference, respectively. You can't go wrong there, as mismatches won't compile.
 
 == Advanced topics
 

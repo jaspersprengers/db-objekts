@@ -73,6 +73,19 @@ class Returns1<T1>(
     private val sql: String,
     private val args: List<Any>
 ) {
+
+    /**
+     * Adds a custom non-nullable Column type as the next column in the result row.
+     * @param clz a subclass of NonNullableColumn<*>
+     */
+    fun <R, T : NonNullableColumn<R>> custom(clz: Class<T>): Returns2<T1, R> = Returns2(column1, ColumnFactory.forClass(clz), semaphore, conn, sql, args)
+
+    /**
+     * Adds a custom nullable Column type as the next column in the result row.
+     * @param clz a subclass of NullableColumn<*>
+     */
+    fun <R, T : NullableColumn<R>> customNil(clz: Class<T>): Returns2<T1, R> = Returns2(column1, ColumnFactory.forClassAsNullable(clz), semaphore, conn, sql, args)
+
     /**
      * Adds a String type as the next column in the result row
      */

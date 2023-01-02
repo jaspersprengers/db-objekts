@@ -5,6 +5,8 @@
   import com.dbobjekts.jdbc.ConnectionAdapter
   import com.dbobjekts.metadata.ColumnFactory
   import com.dbobjekts.metadata.column.Column
+  import com.dbobjekts.metadata.column.NonNullableColumn
+  import com.dbobjekts.metadata.column.NullableColumn
   import java.math.BigDecimal
   import java.sql.Blob
   import java.sql.Clob
