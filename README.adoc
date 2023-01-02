@@ -23,12 +23,20 @@ It exploits the power and convenience of your IDE's auto-complete to the full.
 
 image::autocomplete.png[autocomplete, 600]
 
-=== So, is this going to make ORM obsolete?
-The short answer is no.
+=== Comparison to other technologies and frameworks
+
+So, is this going to kill Hibernate and make ORM obsolete? The short answer is no.
 
 db-Objekts is quite different from object relational mapping (ORM) frameworks and serves a different use case. ORMs work with stateful entities that abstract away tables and foreign keys, but they are only easy when your needs are simple. They work fine at the level of individual entities, but performance at scale is hard. They are neither lightweight nor easy to master in-depth.
 
-db-Objekts is deliberately limited in its capabilities. It does not emulate all that is possible in native SQL or Hibernate and encourages you to use it alongside such tools, depending on the individual query requirements.
+There are other DSL alternatives for database queries and since they all target similar use cases, the similarities will __seem__ obvious at first. Maybe you think framework X already does the exact same, or has more features. It's important to stress the design decisions that drove this project. I believe those details matter.
+
+* All metadata objects are auto-generated from the db. No manual, repetitive work is involved.
+* All CRUD operations follow the same fluent syntax. All you need to build a query is suggested by your IDE's autocomplete.
+* Type- and null-safety at the column level (see the above screenshot).
+* Gentle learning curve when your needs are simple, and highly customizable if you want it.
+
+In short, db-Objekts favours usability over everything and does not aim to emulate in Kotlin all that you can do in native SQL.
 
 == A bird's eye view of features
 Let's start with an overview of feature. (https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/AcmeCatalogCodeGenComponentTest.kt[full source code])
