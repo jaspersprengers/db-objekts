@@ -5,6 +5,7 @@ import com.dbobjekts.testdb.acme.core.Address
 import com.dbobjekts.testdb.acme.core.Department
 import com.dbobjekts.testdb.acme.core.Employee
 import com.dbobjekts.testdb.acme.core.EmployeeDepartment
+import com.dbobjekts.testdb.acme.hr.Certificate
 import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
@@ -45,6 +46,8 @@ class SelectAggregatesComponentTest {
         }
     }
 
+    //count operations
+
     @Test
     fun `count distinct number of children`() {
         tm {
@@ -55,32 +58,50 @@ class SelectAggregatesComponentTest {
     }
 
     @Test
-    fun `count employees per department`() {
-        val highest = tm {
-            it.select(ea.departmentId.count(), Department.name).orderDesc(ea.departmentId).first()
+    fun `count certificates per person`() {
+        tm {
+            val rows = it.select(e.name, Certificate.name.count()).having(Aggregate.gt(0))
+                .orderDesc(Certificate.name)
+                .orderAsc(e.name).asList()
+            assertThat(rows[0].v1).isEqualTo("Alice")
+            assertThat(rows[0].v2).isEqualTo(2)
+            assertThat(rows[1].v1).isEqualTo("Bob")
+            assertThat(rows[1].v2).isEqualTo(1)
+            assertThat(rows[2].v1).isEqualTo("Charlie")
+            assertThat(rows[2].v2).isEqualTo(1)
         }
-        assertThat(highest.v1).isEqualTo(5)
-        assertThat(highest.v2).isEqualTo("Information Technology")
+    }
+
+    @Test
+    fun `count employees per department`() {
+        tm {
+            val highest = it.select(ea.departmentId.count(), Department.name).orderDesc(ea.departmentId).first()
+            assertThat(highest.v1).isEqualTo(5)
+            assertThat(highest.v2).isEqualTo("Information Technology")
+        }
     }
 
     @Test
     fun `get department with more than 2 and less than 5 employees `() {
-        val highest = tm {
-            it.select(ea.departmentId.count(), Department.name).having(Aggregate.gt(2).and().lt(5)).first()
+        tm {
+            val highest = it.select(ea.departmentId.count(), Department.name)
+                .having(Aggregate.gt(2).and().lt(5)).first()
+            assertThat(highest.v1).isEqualTo(3)
+            assertThat(highest.v2).isEqualTo("Human Resources")
         }
-        assertThat(highest.v1).isEqualTo(3)
-        assertThat(highest.v2).isEqualTo("Human Resources")
     }
 
     //DISTINCT queries
     @Test
-    fun `get distinct number of children`() {
+    fun `get distinct number of children and hobbies`() {
         tm { tr ->
             val kiddos = tr.select(e.children.distinct()).asList()
             assertThat(kiddos).containsExactlyInAnyOrder(0, 1, 2, 3, 5)
 
             val hobbies = tr.select(e.hobbyId.distinct()).where(e.hobbyId.isNotNull()).asList()
             assertThat(hobbies).containsExactlyInAnyOrder("c", "p", "f")
+
+            Assertions.assertThatThrownBy { tr.select(e.name.distinct()).having(Aggregate.gt(2)).asList() }
         }
 
     }
@@ -88,40 +109,34 @@ class SelectAggregatesComponentTest {
     //MAX operations
     @Test
     fun `get highest salary`() {
-        val highest = tm {
-            it.select(e.salary.max()).first()
-        }
-        assertThat(highest).isEqualTo(39000.0)
+        tm { assertThat(it.select(e.salary.max()).first()).isEqualTo(39000.0) }
     }
-
 
     @Test
-    fun `test order by clause by aggregate column`() {
-        val list = tm {
-            it.select(e.children.max(), Department.name).orderDesc(e.children).asList()
+    fun `Which department has the employee with the most number of children`() {
+        tm {
+            val list = it.select(e.children.max(), Department.name).orderDesc(e.children).asList()
+            assertThat(list).hasSize(3)
+            val (kiddos, name) = list[0]
+            assertThat(name).isEqualTo("Information Technology")
+            assertThat(kiddos).isEqualTo(5)
         }
-        assertThat(list).hasSize(3)
-        val (kiddos, name) = list[0]
-        assertThat(name).isEqualTo("Information Technology")
-        assertThat(kiddos).isEqualTo(5)
     }
 
+    //MIN operations
     @Test
     fun `get lowest salary`() {
-        val lowest = tm {
-            it.select(e.salary.min()).first()
-        }
-        assertThat(lowest).isEqualTo(30000.0)
+        tm { assertThat(it.select(e.salary.min()).first()).isEqualTo(30000.0) }
+        tm { assertThat(it.select(e.children.min(), Department.name).orderAsc(e.children).first().v2).isEqualTo("Human Resources") }
     }
 
+    //Average operations
     @Test
     fun `get average salary`() {
-        val average = tm {
-            it.select(e.salary.avg()).first()
-        }
-        assertThat(average).isEqualTo(34500.0)
+        tm { assertThat(it.select(e.salary.avg()).first()).isEqualTo(34500.0) }
     }
 
+    //SUM operations
     @Test
     fun `sum of salaries by hobby name`() {
         tm({
@@ -146,10 +161,5 @@ class SelectAggregatesComponentTest {
         })
     }
 
-    @Test
-    fun `count number of certificates per person`() {
-        // aggregate over Long, Int, Double, Float (later add Byte, Short, BigDecimal)
-        // use MIN, Max, sum, avg
-    }
 
 }

@@ -134,6 +134,7 @@ object AcmeDB {
             tr.execute("insert into core.EMPLOYEE_ADDRESS (EMPLOYEE_ID, ADDRESS_ID, KIND) values ( 10, 5 ,'HOME')")
 
             tr.execute("insert into hr.CERTIFICATE (NAME, EMPLOYEE_ID) values ('PSM1', 6)")
+            tr.execute("insert into hr.CERTIFICATE (NAME, EMPLOYEE_ID) values ('PSM2', 6)")
             tr.execute("insert into hr.CERTIFICATE (NAME, EMPLOYEE_ID) values ('PSM1', 8)")
             tr.execute("insert into hr.CERTIFICATE (NAME, EMPLOYEE_ID) values ('Prince 2', 2)")
 
