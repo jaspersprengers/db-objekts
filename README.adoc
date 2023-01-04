@@ -540,7 +540,44 @@ You can chain conditions using `and` or `or` and you can even build nested condi
 If you have no conditions to constrain your selection you can omit the where clause: `tr.select(Book).asList()`
 
 ==== Selecting with aggregates
-This feature is planned for the 0.3.0-alpha release. See the  <<Status and roadmap>> for details.
+db-Objekts supports standard SQL aggregate functions COUNT(), SUM(), AVG(), MIN(), MAX(), DISTINCT() and COUNT DISTINCT(). To turn a normal select query into an aggregated one you designate one column in the `select()` call as the aggregate by calling the appropriate method.
+
+See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/SelectAggregatesComponentTest.kt[SelectAggregatesComponentTest]
+
+```kotlin
+// order departments by their number of employees
+it.select(EmployeeDepartment.departmentId.count(), Department.name).orderDesc(ed.departmentId).first()
+
+it.select(e.children.countDistinct()).asList()// returns a list of one with value 5
+
+// who is the highest earner?
+it.select(e.salary.max()
+
+// get the distinct number of children
+val kiddos = tr.select(e.children.distinct()).asList()// returns [0,1,2,3,5] for our test data set
+```
+
+The ground rules:
+
+* Every column supports `count()`, `countDistinct()` and `distinct()`, but only numeric columns support `sum()`, `min()`, `max()`, `avg()`
+* The four numeric aggregators return either a `Long` or `Double`, depending on whether they operate on floating-point or integer column type.
+* Only one column can be designated as an aggregator.
+* A `GROUP BY` clause is automatically created over all the non-aggregated columns in the query. You have no further control over this.
+* To include the aggregated column in the order by clause, refer to it by its original column reference (see above example)
+
+===== The having clause
+To put constraints on the values in the aggregated column, you need to supply an optional `having()` call, which creates a `HAVING` clause in the resulting SQL.
+```kotlin
+  it.select(e.name, Certificate.name.count()).having(Aggregate.gt(0).and().lt(3))
+```
+This selects the names of employees who have one or two certificates. db-Objekts supports only the simple use case of restricting a numeric aggregation result. Hence, the options compared to a regular where clause are fewer.
+
+* You refer to the singleton `Aggregate` object to build the condition chain. You can only restrict the aggregated result, and it has to be numeric.
+* Only operators `eq`, `ne`, `lt`, `le`, `gt` and `ge` are supported.
+* You use `and()` an `or()` to chain conditions, but since nested conditions are not supported, it makes no sense to mix them.
+
+===== Not all is possible
+In SQL there are more possibilities with aggregate queries (some of them vendor-specific) than are supported by db-Objekts. As with everything else in this library, it is a conscious design decision to balance usability and complexity. You can always resort to creating a native SQL query if the default behavior doesn't cut it.
 
 === Updating
 The `update(..)` method, like the `insert(..)`, takes a table and returns an `*UpdateBuilder`. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/UpdateStatementComponentTest.kt[UpdateStatementComponentTest]
@@ -862,15 +899,3 @@ This is the very first alpha release. The API may change slightly, so it is not 
 ** Addition of PostgreSQL and MySQL as vendor types
 ** Rigorous integration tests on dockerized images of all database vendors as part of the build
 ** No more API changes are to be expected.
-
-==== 0.3.0-alpha
-* Support for aggregates in select clauses: sum(), avg(), count(), which will look like:
-```kotlin
-    // show the average salary of employees grouped by town
-    tr.select(Employee.salary.average, Address.town).asList()
-    // show all employee names who have more than two certificates
-    tr.select(Employee.name, Certificate.id.sum).where(Certificate.id.sum.gt(2))
-```
-Each numeric column can be used with a `count`, `min`, `max`, `sum` and `avg` extension, which turns the normal select query in an aggregate one.
-
-The API will only cover common cases, where grouping is done over all selected columns. A `having` clause can be expressed in the `where()` call using normal syntax by referring to the aggregated column.

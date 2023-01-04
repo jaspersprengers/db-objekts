@@ -19,7 +19,7 @@ class SelectAggregatesComponentTest {
 
         val e = Employee
         val a = Address
-        val ea = EmployeeDepartment
+        val ed = EmployeeDepartment
         val h = Hobby
         val tm = AcmeDB.transactionManager
 
@@ -60,7 +60,7 @@ class SelectAggregatesComponentTest {
     @Test
     fun `count certificates per person`() {
         tm {
-            val rows = it.select(e.name, Certificate.name.count()).having(Aggregate.gt(0))
+            val rows = it.select(e.name, Certificate.name.count()).having(Aggregate.gt(0).and().lt(3))
                 .orderDesc(Certificate.name)
                 .orderAsc(e.name).asList()
             assertThat(rows[0].v1).isEqualTo("Alice")
@@ -75,7 +75,7 @@ class SelectAggregatesComponentTest {
     @Test
     fun `count employees per department`() {
         tm {
-            val highest = it.select(ea.departmentId.count(), Department.name).orderDesc(ea.departmentId).first()
+            val highest = it.select(ed.departmentId.count(), Department.name).orderDesc(ed.departmentId).first()
             assertThat(highest.v1).isEqualTo(5)
             assertThat(highest.v2).isEqualTo("Information Technology")
         }
@@ -84,7 +84,7 @@ class SelectAggregatesComponentTest {
     @Test
     fun `get department with more than 2 and less than 5 employees `() {
         tm {
-            val highest = it.select(ea.departmentId.count(), Department.name)
+            val highest = it.select(ed.departmentId.count(), Department.name)
                 .having(Aggregate.gt(2).and().lt(5)).first()
             assertThat(highest.v1).isEqualTo(3)
             assertThat(highest.v2).isEqualTo("Human Resources")
