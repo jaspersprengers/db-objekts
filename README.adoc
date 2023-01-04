@@ -11,12 +11,18 @@ db-Objekts is a Kotlin library to build relational database queries. It uses gen
 
 In short, db-Objekts lets you do things like this:
 ```kotlin
-tr.select(Employee, Address, EmployeeAddress.kind, Country.name)
+transaction.select(Employee, Address, EmployeeAddress.kind, Country.name)
                     .where(Employee.id.eq(empId)).asList().forEach {
                         (emp, add, addType, country) ->
                         println("${emp.name}'s $addType address is ${add.street} ${add.postcode}, $country")
                         //Example: John's HOME address is Zuidhoek 80 3082TR, Nederland
                     }
+```
+... or get the names of all employees who have more than one certificate:
+```kotlin
+transaction.select(Employee.name, Certificate.name.count())
+    .having(Aggregate.gt(0))
+    .asList()
 ```
 
 It exploits the power and convenience of your IDE's auto-complete to the full.
@@ -29,14 +35,14 @@ So, is this going to kill Hibernate and make ORM obsolete? The short answer is n
 
 db-Objekts is quite different from object relational mapping (ORM) frameworks and serves a different use case. ORMs work with stateful entities that abstract away tables and foreign keys, but they are only easy when your needs are simple. They work fine at the level of individual entities, but performance at scale is hard. They are neither lightweight nor easy to master in-depth.
 
-There are other DSL alternatives for database queries and since they all target similar use cases, the similarities will __seem__ obvious at first. Maybe you think framework X already does the exact same, or has more features. It's important to stress the design decisions that drove this project. I believe those details matter.
+There are other DSL alternatives for database queries and since they all target similar use cases, the similarities __seem__ obvious at first glance. Maybe you think framework X already does the exact same, or has more features. I want to stress the design decisions that drove this project and I believe those details matter.
 
-* All metadata objects are auto-generated from the db. No manual, repetitive work is involved.
 * All CRUD operations follow the same fluent syntax. All you need to build a query is suggested by your IDE's autocomplete.
-* Type- and null-safety at the column level (see the above screenshot).
+* Metadata objects are auto-generated from the db. No manual, repetitive work is involved.
+* Made for Kotlin: type- and null-safety at the column level (see the above screenshot).
 * Gentle learning curve when your needs are simple, and highly customizable if you want it.
 
-In short, db-Objekts favours usability over everything and does not aim to emulate in Kotlin all that you can do in native SQL.
+In striking a balance between feature-completeness and usability, db-Objekts favours the latter. It does not aim to emulate all you can achieve in native SQL, although native queries are supported and facilitated.
 
 == A bird's eye view of features
 Let's start with an overview of feature. (https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/AcmeCatalogCodeGenComponentTest.kt[full source code])

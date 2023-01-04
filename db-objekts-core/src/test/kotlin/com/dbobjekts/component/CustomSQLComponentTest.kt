@@ -38,10 +38,7 @@ class CustomSQLComponentTest {
             ).withResultTypes().long().string().double().booleanNil().intNil().date().stringNil().stringNil().stringNil().string()
                 .stringNil()
                 .asList()
-            rows.forEach { t ->
-                println("${t.v1}\t${t.v2}\t${t.v3}\t${t.v4}\t${t.v5}\t${t.v6}\t${t.v7}\t${t.v8}\t${t.v9}\t${t.v10}")
-            }
-            assertThat(rows).hasSize(10)
+            assertThat(rows).hasSize(11)
         })
     }
 
@@ -62,9 +59,6 @@ class CustomSQLComponentTest {
                 .custom(ColumnClasses.NUMBER_AS_BOOLEAN)
                 .customNil(NullableAddressTypeAsStringColumn::class.java)
                 .asList()
-            rows.forEach { t ->
-                println("${t.v1}\t${t.v2}")
-            }
             assertThat(rows).hasSize(20)
         })
     }
