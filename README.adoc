@@ -18,14 +18,14 @@ transaction.select(Employee, Address, EmployeeAddress.kind, Country.name)
                         //Example: John's HOME address is Zuidhoek 80 3082TR, Nederland
                     }
 ```
-... or get the names of all employees who have more than one certificate:
+Or get the names of all employees who have more than one certificate:
 ```kotlin
 transaction.select(Employee.name, Certificate.name.count())
     .having(Aggregate.gt(0))
     .asList()
 ```
 
-It exploits the power and convenience of your IDE's auto-complete to the full.
+db-Objekts exploits all the power and convenience of your IDE's auto-complete to the max.
 
 image::autocomplete.png[autocomplete, 600]
 
@@ -895,13 +895,13 @@ This is the very first alpha release. The API may change slightly, so it is not 
 
 === Roadmap
 
-* From Januari 2023 a number of alpha releases will cover the following
+* The alpha releases will cover the following:
 **  Close to 100% unit test coverage
 ** Full coverage for all column types in the H2 database, used for testing
 ** Improving and cleaning up source code documentation and user docs
 ** Minor alterations the API with regard to method names and possible refactoring of packages
 
-* The beta release planned for spring 2023 will cover:
+* The first beta release is planned for early 2023. These will cover:
 ** Addition of PostgreSQL and MySQL as vendor types
 ** Rigorous integration tests on dockerized images of all database vendors as part of the build
 ** No more API changes are to be expected.

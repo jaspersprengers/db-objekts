@@ -47,7 +47,6 @@ class SelectAggregatesComponentTest {
     }
 
     //count operations
-
     @Test
     fun `count distinct number of children`() {
         tm {
