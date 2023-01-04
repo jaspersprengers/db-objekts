@@ -13,20 +13,32 @@ import javax.sql.rowset.serial.SerialBlob
  *
  * @param name The column name in the corresponding database table
  */
-class BlobColumn(table: AnyTable, name: String) : NonNullableColumn<Blob>(name, table, Blob::class.java){
+class BlobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+    NonNullableColumn<Blob>(name, table, Blob::class.java, aggregateType) {
+
+    constructor(table: AnyTable, name: String) : this(table, name, null)
+
+    override fun distinct() = BlobColumn(table, nameInTable, AggregateType.DISTINCT)
     override val nullable: NullableColumn<Blob?> = NullableBlobColumn(table, name)
     override fun getValue(position: Int, resultSet: ResultSet): Blob? = resultSet.getBlob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Blob) =
         statement.setBlob(position, value)
+
     companion object {
         fun ofString(value: String, charset: Charset = Charset.defaultCharset()) =
             SerialBlob(value.toByteArray(charset))
+
         fun serialize(blob: Blob) =
             String(blob.binaryStream.readAllBytes())
     }
 }
 
-class NullableBlobColumn(table: AnyTable, name: String) : NullableColumn<Blob?>(name, table, Types.BLOB, Blob::class.java){
+class NullableBlobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+    NullableColumn<Blob?>(name, table, Types.BLOB, Blob::class.java, aggregateType) {
+    constructor(table: AnyTable, name: String) : this(table, name, null)
+
+    override fun distinct() = NullableBlobColumn(table, nameInTable, AggregateType.DISTINCT)
+
     override fun getValue(position: Int, resultSet: ResultSet): Blob? = resultSet.getBlob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Blob?) =
         statement.setBlob(position, value)

@@ -13,16 +13,26 @@ import java.time.LocalTime
  *
  * @param name The column name in the corresponding database table
  */
-class TimeStampColumn(table: AnyTable, name: String) : NonNullableColumn<Instant>(name, table, Instant::class.java){
+class TimeStampColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+    NonNullableColumn<Instant>(name, table, Instant::class.java, aggregateType) {
+    constructor(table: AnyTable, name: String) : this(table, name, null)
+
+    override fun distinct() = TimeStampColumn(table, nameInTable, AggregateType.DISTINCT)
+
     override val nullable: NullableColumn<Instant?> = NullableTimeStampColumn(table, name)
-    override fun getValue(position: Int, resultSet: ResultSet): Instant? = resultSet.getTimestamp(position)?.let {DateUtil.toInstant(it)}
+    override fun getValue(position: Int, resultSet: ResultSet): Instant? = resultSet.getTimestamp(position)?.let { DateUtil.toInstant(it) }
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Instant) =
         statement.setTimestamp(position, DateUtil.toSqlTimeStamp(value))
 }
 
-class NullableTimeStampColumn(table: AnyTable, name: String) : NullableColumn<Instant?>(name, table, Types.TIMESTAMP, Instant::class.java){
-    override fun getValue(position: Int, resultSet: ResultSet): Instant? =resultSet.getTimestamp(position)?.let {DateUtil.toInstant(it)}
+class NullableTimeStampColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+    NullableColumn<Instant?>(name, table, Types.TIMESTAMP, Instant::class.java, aggregateType) {
+    constructor(table: AnyTable, name: String) : this(table, name, null)
+
+    override fun distinct() = NullableTimeStampColumn(table, nameInTable, AggregateType.DISTINCT)
+
+    override fun getValue(position: Int, resultSet: ResultSet): Instant? = resultSet.getTimestamp(position)?.let { DateUtil.toInstant(it) }
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Instant?) =
         statement.setTimestamp(position, DateUtil.toSqlTimeStamp(value!!))

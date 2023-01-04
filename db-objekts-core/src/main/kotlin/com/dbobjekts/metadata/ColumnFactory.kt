@@ -4,8 +4,14 @@ import com.dbobjekts.api.exception.CodeGenerationException
 import com.dbobjekts.api.exception.StatementExecutionException
 import com.dbobjekts.metadata.column.*
 import java.lang.reflect.Constructor
+import java.math.BigDecimal
+import java.sql.Blob
+import java.sql.Clob
+import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 
 
@@ -79,24 +85,24 @@ object ColumnFactory {
     val FOREIGN_KEY_VARCHAR = ForeignKeyVarcharColumn(table, DUMMY, VARCHAR)
     val FOREIGN_KEY_VARCHAR_NIL = OptionalForeignKeyVarcharColumn(table, DUMMY, VARCHAR)
 
-    fun varcharColumn(nullable: Boolean = false) = if (nullable) VARCHAR_NIL else VARCHAR
-    fun longColumn(nullable: Boolean = false) = if (nullable) LONG_NIL else LONG
-    fun integerColumn(nullable: Boolean = false) = if (nullable) INTEGER_NIL else INTEGER
-    fun shortColumn(nullable: Boolean = false) = if (nullable) SHORT_NIL else SHORT
-    fun byteArrayColumn(nullable: Boolean = false) = if (nullable) BYTE_ARRAY_NIL else BYTE_ARRAY
-    fun blobColumn(nullable: Boolean = false) = if (nullable) BLOB_NIL else BLOB
-    fun clobColumn(nullable: Boolean = false) = if (nullable) CLOB_NIL else CLOB
-    fun byteColumn(nullable: Boolean = false) = if (nullable) BYTE_NIL else BYTE
-    fun booleanColumn(nullable: Boolean = false) = if (nullable) BOOLEAN_NIL else BOOLEAN
-    fun numberAsBooleanColumn(nullable: Boolean = false) = if (nullable) NUMBER_AS_BOOLEAN_NIL else NUMBER_AS_BOOLEAN
-    fun doubleColumn(nullable: Boolean = false) = if (nullable) DOUBLE_NIL else DOUBLE
-    fun floatColumn(nullable: Boolean = false) = if (nullable) FLOAT_NIL else FLOAT
-    fun bigDecimalColumn(nullable: Boolean = false) = if (nullable) BIGDECIMAL_NIL else BIGDECIMAL
-    fun dateColumn(nullable: Boolean = false) = if (nullable) DATE_NIL else DATE
-    fun dateTimeColumn(nullable: Boolean = false) = if (nullable) DATETIME_NIL else DATETIME
-    fun timeColumn(nullable: Boolean = false) = if (nullable) TIME_NIL else TIME
-    fun timeStampColumn(nullable: Boolean = false) = if (nullable) TIMESTAMP_NIL else TIMESTAMP
-    fun offsetDateTimeColumn(nullable: Boolean = false) = if (nullable) OFFSET_DATETIME_NIL else OFFSET_DATETIME
+    fun varcharColumn(nullable: Boolean = false): Column<out String?> = if (nullable) VARCHAR_NIL else VARCHAR
+    fun longColumn(nullable: Boolean = false): Column<out Long?> = if (nullable) LONG_NIL else LONG
+    fun integerColumn(nullable: Boolean = false): Column<out Int?> = if (nullable) INTEGER_NIL else INTEGER
+    fun shortColumn(nullable: Boolean = false): Column<out Short?> = if (nullable) SHORT_NIL else SHORT
+    fun byteArrayColumn(nullable: Boolean = false): Column<out ByteArray?> = if (nullable) BYTE_ARRAY_NIL else BYTE_ARRAY
+    fun blobColumn(nullable: Boolean = false): Column<out Blob?> = if (nullable) BLOB_NIL else BLOB
+    fun clobColumn(nullable: Boolean = false): Column<out Clob?> = if (nullable) CLOB_NIL else CLOB
+    fun byteColumn(nullable: Boolean = false): Column<out Byte?> = if (nullable) BYTE_NIL else BYTE
+    fun booleanColumn(nullable: Boolean = false): Column<out Boolean?> = if (nullable) BOOLEAN_NIL else BOOLEAN
+    fun numberAsBooleanColumn(nullable: Boolean = false): Column<out Boolean?> = if (nullable) NUMBER_AS_BOOLEAN_NIL else NUMBER_AS_BOOLEAN
+    fun doubleColumn(nullable: Boolean = false): Column<out Double?> = if (nullable) DOUBLE_NIL else DOUBLE
+    fun floatColumn(nullable: Boolean = false): Column<out Float?> = if (nullable) FLOAT_NIL else FLOAT
+    fun bigDecimalColumn(nullable: Boolean = false): Column<out BigDecimal?> = if (nullable) BIGDECIMAL_NIL else BIGDECIMAL
+    fun dateColumn(nullable: Boolean = false): Column<out LocalDate?> = if (nullable) DATE_NIL else DATE
+    fun dateTimeColumn(nullable: Boolean = false): Column<out LocalDateTime?> = if (nullable) DATETIME_NIL else DATETIME
+    fun timeColumn(nullable: Boolean = false): Column<out LocalTime?> = if (nullable) TIME_NIL else TIME
+    fun timeStampColumn(nullable: Boolean = false): Column<out Instant?> = if (nullable) TIMESTAMP_NIL else TIMESTAMP
+    fun offsetDateTimeColumn(nullable: Boolean = false): Column<out OffsetDateTime?> = if (nullable) OFFSET_DATETIME_NIL else OFFSET_DATETIME
 
     @Suppress("UNCHECKED_CAST")
     fun <C : NonNullableColumn<*>> forClass(clz: Class<C>): C =

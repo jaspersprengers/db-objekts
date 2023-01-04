@@ -10,14 +10,18 @@ import java.sql.Types
 abstract class NonNullableColumn<I>(
     name: String,
     table: AnyTable,
-    valueClass: Class<*>
-) : Column<I>(name, table, valueClass) {
+    valueClass: Class<*>,
+    aggregateType: AggregateType?
+) : Column<I>(name, table, valueClass, aggregateType) {
     abstract val nullable: NullableColumn<I?>
     override fun create(value: I?): ColumnAndValue<I> = NonNullableColumnAndValue(
         this, value ?: throw StatementExecutionException("Value cannot be null in non-null column")
     )
 
+    abstract fun distinct(): NonNullableColumn<I>
+
     fun of(value: I): ColumnAndValue<I> = create(value)
+
     override fun retrieveValue(
         position: Int,
         rs: ResultSet

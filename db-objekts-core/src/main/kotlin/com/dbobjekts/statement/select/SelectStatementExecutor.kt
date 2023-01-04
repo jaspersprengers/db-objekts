@@ -8,11 +8,10 @@ import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.metadata.TableOrJoin
-import com.dbobjekts.metadata.column.Column
-import com.dbobjekts.metadata.column.HavingClause
+import com.dbobjekts.metadata.column.*
+import com.dbobjekts.metadata.column.CanAggregate
 import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.ColumnInResultRow
-import com.dbobjekts.statement.Condition
 import com.dbobjekts.statement.SqlParameter
 import com.dbobjekts.statement.StatementBase
 import com.dbobjekts.statement.whereclause.SubClause
@@ -33,11 +32,14 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         selectResultSet.selectables = selectables
         columns = selectables.flatMap { it.columns }
         semaphore.claim("select")
-        columns.forEach { registerTable(it.table) }
+        columns.forEach {
+            //if (it.aggregateType != null && it.aggregateType != AggregateType.COUNT)
+            registerTable(it.table)
+        }
     }
 
     private var limitRows: Int? = null
-    private var orderByClauses = mutableListOf<OrderByClause<*>>()
+    private var orderByClauses = mutableListOf<OrderByClause>()
 
     /**
      * Used when you need fine-grained control over the table join syntax (outer joins), or when you are referring columns that do not
@@ -65,8 +67,10 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         return this
     }
 
-    private fun <C> addOrderByClause(column: Column<C>, ascending: Boolean) {
-        orderByClauses.add(OrderByClause<C>(column, ascending))
+    private fun addOrderByClause(column: AnyColumn, ascending: Boolean) {
+        val sameAsAggregate =
+            columns.filter { it is CanAggregate && it.aggregateType != null && it.tableDotName == column.tableDotName }.firstOrNull()
+        orderByClauses.add(OrderByClause(sameAsAggregate ?: column, ascending))
     }
 
     /**
@@ -173,6 +177,9 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
     }
 
     fun having(havingClause: HavingClause<*>): SelectStatementExecutor<T, RSB> {
+        if (!Aggregate.containsOneGroupByAggregate(columns)) {
+            throw StatementBuilderException("Use of the 'having' clause requires exactly one column to be designated as an aggregate with sum(), min(), max(), avg(), count() or distinct().")
+        }
         this.havingClause = havingClause
         return this
     }
@@ -181,8 +188,8 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         val sql = toSQL()
         val params: List<SqlParameter<*>> = getWhereClause().getParameters()
         val merged: List<SqlParameter<*>> = havingClause?.let {
-            val max = if (params.isEmpty() ) 0 else params.map { it.oneBasedPosition }.max()
-            params + it.sqlParameter(max + 1)
+            val max = if (params.isEmpty()) 0 else params.map { it.oneBasedPosition }.max()
+            params + it.parameters(max + 1)
         } ?: params
         return connection.prepareAndExecuteForSelect<RSB>(
             sql,
@@ -199,7 +206,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         builder.withJoinChain(buildJoinChain(useOuterJoins))
             .withOrderByClause(orderByClauses.toList())
             .withColumnsToSelect(columnsToFetch())
-            .withHavingClause(havingClause?.symbol)
+            .withHavingClause(havingClause?.toSQL())
             .build()
         limitRows?.let { builder.withLimitClause(limitRows!!, { r: Int -> connection.vendorSpecificProperties.getLimitClause(r) }) }
         return builder.build()

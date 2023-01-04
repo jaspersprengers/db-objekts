@@ -31,7 +31,7 @@ class H2DataTypeMapper : VendorDefaultColumnTypeMapper {
             //tiny integers and boolean as INT
             col == "BOOLEAN" -> ColumnFactory.booleanColumn(nullable)
             col == "TINYINT" -> ColumnFactory.byteColumn(nullable)
-            col == "SMALLINT" -> ColumnFactory.integerColumn(nullable)
+            col == "SMALLINT" ->ColumnFactory.integerColumn(nullable)
             col == "INTEGER" -> ColumnFactory.integerColumn(nullable)
             //large numbers and floats
             col == "BIGINT" -> ColumnFactory.longColumn(nullable)

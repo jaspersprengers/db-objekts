@@ -35,7 +35,7 @@ abstract class Table<I> (
 
     internal fun columnByName(column: String): AnyColumn? = columns.find { it.nameInTable.equals(column, true) }
 
-    internal fun alias(): String = ensureSchema().aliasForTable(this)
+    internal open fun alias(): String = ensureSchema().aliasForTable(this)
 
     internal fun schemaAndName(): String = "${ensureSchema().dottedName}$tableName"
 

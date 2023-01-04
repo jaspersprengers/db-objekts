@@ -1,11 +1,14 @@
 package com.dbobjekts.statement.select
 
-import com.dbobjekts.metadata.column.Column
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.metadata.column.Aggregate
 
-class OrderByClause<C>(val column: Column<C>, val ascending: Boolean) {
-    val columnName: String = column.nameInTable
+class OrderByClause(val column: AnyColumn, ascending: Boolean) {
 
     val direction: String = if (ascending) "ASC" else "DESC"
 
-    override fun toString(): String = "${column.table.alias()}.$columnName $direction"
+    override fun toString(): String {
+        val name = if (column.aggregateType != null) Aggregate.ALIAS else column.aliasDotName()
+        return "$name $direction"
+    }
 }

@@ -10,13 +10,12 @@ import java.sql.Types
  *
  * @param name    The column name in the corresponding database table
  */
-class DoubleColumn(table: AnyTable, name: String, override val aggregateType: AggregateType?) :
-    NonNullableColumn<Double>(name, table, Double::class.java), AggregateColumn{
+class DoubleColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+    NonNullableColumn<Double>(name, table, Double::class.java, aggregateType), AggregateDoubleColumn {
 
     constructor(table: AnyTable, name: String) : this(table, name, null)
-    fun sum() = DoubleColumn(table, nameInTable, AggregateType.SUM)
 
-    override fun forSelect() = write(this)
+    override fun distinct() = DoubleColumn(table, nameInTable, AggregateType.DISTINCT)
 
     override val nullable: NullableColumn<Double?> = NullableDoubleColumn(table, name)
     override fun getValue(position: Int, resultSet: ResultSet): Double = resultSet.getDouble(position)
@@ -26,7 +25,12 @@ class DoubleColumn(table: AnyTable, name: String, override val aggregateType: Ag
 
 }
 
-class NullableDoubleColumn(table: AnyTable, name: String) : NullableColumn<Double?>(name, table, Types.DOUBLE, Double::class.java){
+class NullableDoubleColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+    NullableColumn<Double?>(name, table, Types.DOUBLE, Double::class.java, aggregateType), AggregateDoubleColumn {
+    constructor(table: AnyTable, name: String) : this(table, name, null)
+
+    override fun distinct() = NullableDoubleColumn(table, nameInTable, AggregateType.DISTINCT)
+
     override fun getValue(position: Int, resultSet: ResultSet): Double? = resultSet.getDouble(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Double?) =

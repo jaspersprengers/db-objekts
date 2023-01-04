@@ -10,7 +10,12 @@ import java.sql.Types
  *
  * @param name    The column name in the corresponding database table
  */
-class FloatColumn(table: AnyTable, name: String) : NonNullableColumn<Float>(name, table, Float::class.java){
+class FloatColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+    NonNullableColumn<Float>(name, table, Float::class.java, aggregateType) {
+    constructor(table: AnyTable, name: String) : this(table, name, null)
+
+    override fun distinct() = FloatColumn(table, nameInTable, AggregateType.DISTINCT)
+
     override val nullable: NullableColumn<Float?> = NullableFloatColumn(table, name)
     override fun getValue(position: Int, resultSet: ResultSet): Float = resultSet.getFloat(position)
 
@@ -18,7 +23,12 @@ class FloatColumn(table: AnyTable, name: String) : NonNullableColumn<Float>(name
         statement.setFloat(position, value)
 }
 
-class NullableFloatColumn(table: AnyTable, name: String) : NullableColumn<Float?>(name, table, Types.FLOAT, Float::class.java){
+class NullableFloatColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+    NullableColumn<Float?>(name, table, Types.FLOAT, Float::class.java, aggregateType) {
+    constructor(table: AnyTable, name: String) : this(table, name, null)
+
+    override fun distinct() = NullableFloatColumn(table, nameInTable, AggregateType.DISTINCT)
+
     override fun getValue(position: Int, resultSet: ResultSet): Float? = resultSet.getFloat(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Float?) =

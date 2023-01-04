@@ -1,9 +1,6 @@
 package com.dbobjekts.component
 
-import com.dbobjekts.metadata.column.Aggregate
-import com.dbobjekts.statement.SQLOptions
 import com.dbobjekts.statement.select.SelectStatementExecutor
-import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
@@ -11,7 +8,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
 import com.dbobjekts.testdb.acme.core.*
 import com.dbobjekts.testdb.acme.hr.Certificate
 import org.junit.jupiter.api.Order
@@ -58,18 +54,6 @@ class SelectStatementComponentTest {
                 println("${emp.id}\t${emp.name}\t${emp.salary}\t${emp.married}\t${emp.children}\t${emp.dateOfBirth}\t$hobby\t$street\t$addType\t$dept\t$cert")
             }
         }
-    }
-
-    @Test
-    fun `select sum of people with hobby`() {
-        tm({
-            it.select(e.salary.sum(), h.name)
-                .orderDesc(h.name)
-                .having(Aggregate.gt(70_000))
-                .asList().forEach {
-                println(it)
-            }
-        })
     }
 
     @Test

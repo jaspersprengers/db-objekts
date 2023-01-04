@@ -1,14 +1,18 @@
 package com.dbobjekts.metadata.column
 
-import com.dbobjekts.api.AnyColumn
 
-
-enum class AggregateType {
-    AVG, SUM, MIN, MAX, COUNT;
+enum class AggregateType(val usesGroupBy: Boolean) {
+    AVG(true), SUM(true), MIN(true), MAX(true), COUNT(true),
+    DISTINCT(false) {
+        override fun forColumn(aliasDotName: String): String = "DISTINCT ${aliasDotName} as ${Aggregate.ALIAS}"
+    },
+    COUNT_DISTINCT(true) {
+        override fun forColumn(aliasDotName: String): String = "COUNT(DISTINCT ${aliasDotName}) as ${Aggregate.ALIAS}"
+    };
 
     /**
      * @return E.g. SUM(e.id) as AGGR
      */
-    fun forColumn(c: AnyColumn): String = "$name(${c.aliasDotName()}) as ${Aggregate.ALIAS}"
+    open fun forColumn(aliasDotName: String): String = "$name(${aliasDotName}) as ${Aggregate.ALIAS}"
 
 }

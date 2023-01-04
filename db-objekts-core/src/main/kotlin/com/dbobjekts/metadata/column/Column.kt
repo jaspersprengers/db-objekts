@@ -1,9 +1,9 @@
 package com.dbobjekts.metadata.column
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.exception.DBObjektsException
+import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.statement.And
 import com.dbobjekts.statement.whereclause.ConditionFactory
 import com.dbobjekts.statement.whereclause.SubClause
@@ -21,7 +21,8 @@ import java.sql.ResultSet
 abstract class Column<I>(
     val nameInTable: String,
     val table: AnyTable,
-    internal val valueClass: Class<*>
+    internal val valueClass: Class<*>,
+    val aggregateType: AggregateType?
 ) : ConditionFactory<I, SubClause>, Selectable<I> {
     init {
         if (!ValidateDBObjectName(nameInTable))
@@ -49,12 +50,13 @@ abstract class Column<I>(
 
     internal val tableDotName: String = table.tableName.value + "." + nameInTable
 
+    fun count(): LongColumn = LongColumn(table, nameInTable, AggregateType.COUNT)
+
+    fun countDistinct(): LongColumn = LongColumn(table, nameInTable, AggregateType.COUNT_DISTINCT)
+
     internal fun aliasDotName(): String = table.alias() + "." + nameInTable
 
-    /**
-     * to be overridden by aggregate variations, which will become something like avg(e.salary)
-     */
-    open internal fun forSelect(): String = aliasDotName()
+    internal fun forSelect(): String =  aggregateType?.forColumn(aliasDotName()) ?: aliasDotName()
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

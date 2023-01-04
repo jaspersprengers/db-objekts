@@ -10,7 +10,12 @@ import java.sql.Types
  *
  * @param name    The column name in the corresponding database table
  */
-class BooleanColumn(table: AnyTable, name: String) : NonNullableColumn<Boolean>(name, table, Boolean::class.java) {
+class BooleanColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+    NonNullableColumn<Boolean>(name, table, Boolean::class.java, aggregateType) {
+    constructor(table: AnyTable, name: String) : this(table, name, null)
+
+    override fun distinct() = BooleanColumn(table, nameInTable, AggregateType.DISTINCT)
+
     override val nullable: NullableColumn<Boolean?> = NullableBooleanColumn(table, name)
     override fun getValue(position: Int, resultSet: ResultSet): Boolean = resultSet.getBoolean(position)
 
@@ -18,14 +23,24 @@ class BooleanColumn(table: AnyTable, name: String) : NonNullableColumn<Boolean>(
         statement.setBoolean(position, value)
 }
 
-class NullableBooleanColumn(table: AnyTable, name: String) : NullableColumn<Boolean?>(name, table, Types.BOOLEAN, Boolean::class.java) {
+class NullableBooleanColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+    NullableColumn<Boolean?>(name, table, Types.BOOLEAN, Boolean::class.java, aggregateType) {
+    constructor(table: AnyTable, name: String) : this(table, name, null)
+
+    override fun distinct() = NullableBooleanColumn(table, nameInTable, AggregateType.DISTINCT)
+
     override fun getValue(position: Int, resultSet: ResultSet): Boolean? = resultSet.getBoolean(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Boolean?) =
         statement.setBoolean(position, value as Boolean)
 }
 
-class NumberAsBooleanColumn(table: AnyTable, name: String) : NonNullableColumn<Boolean>(name, table, Boolean::class.java) {
+class NumberAsBooleanColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+    NonNullableColumn<Boolean>(name, table, Boolean::class.java, aggregateType) {
+    constructor(table: AnyTable, name: String) : this(table, name, null)
+
+    override fun distinct() = NumberAsBooleanColumn(table, nameInTable, AggregateType.DISTINCT)
+
     override val nullable: NullableColumn<Boolean?> = NullableNumberAsBooleanColumn(table, name)
     override fun getValue(position: Int, resultSet: ResultSet): Boolean = resultSet.getInt(position) == 1
 
@@ -33,8 +48,12 @@ class NumberAsBooleanColumn(table: AnyTable, name: String) : NonNullableColumn<B
         statement.setInt(position, if (value) 1 else 0)
 }
 
-class NullableNumberAsBooleanColumn(table: AnyTable, name: String) :
-    NullableColumn<Boolean?>(name, table, Types.INTEGER, Boolean::class.java) {
+class NullableNumberAsBooleanColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+    NullableColumn<Boolean?>(name, table, Types.INTEGER, Boolean::class.java, aggregateType) {
+    constructor(table: AnyTable, name: String) : this(table, name, null)
+
+    override fun distinct() = NullableNumberAsBooleanColumn(table, nameInTable, AggregateType.DISTINCT)
+
     override fun getValue(position: Int, resultSet: ResultSet): Boolean? = resultSet.getInt(position) == 1
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Boolean?) =

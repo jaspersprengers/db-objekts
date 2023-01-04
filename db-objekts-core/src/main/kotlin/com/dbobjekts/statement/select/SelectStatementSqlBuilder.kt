@@ -1,7 +1,7 @@
 package com.dbobjekts.statement.select
 
-import com.dbobjekts.metadata.column.Aggregate
-import com.dbobjekts.metadata.column.AggregateColumn
+import com.dbobjekts.api.exception.StatementBuilderException
+import com.dbobjekts.metadata.column.CanAggregate
 import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.ColumnInResultRow
 import com.dbobjekts.statement.SQLOptions
@@ -11,7 +11,7 @@ import com.dbobjekts.util.StringUtil
 class SelectStatementSqlBuilder {
 
     var whereClause: WhereClause? = null
-    var orderByClauses: List<OrderByClause<*>> = listOf()
+    var orderByClauses: List<OrderByClause> = listOf()
     var columnsToFetch: List<ColumnInResultRow> = listOf()
     var limitBy: Int = 0
     var limitFunction: ((Int) -> String)? = null
@@ -29,7 +29,7 @@ class SelectStatementSqlBuilder {
         return this
     }
 
-    fun withOrderByClause(obClauses: List<OrderByClause<*>>): SelectStatementSqlBuilder {
+    fun withOrderByClause(obClauses: List<OrderByClause>): SelectStatementSqlBuilder {
         this.orderByClauses = obClauses
         return this
     }
@@ -50,8 +50,6 @@ class SelectStatementSqlBuilder {
         return this
     }
 
-    private fun isAggregate(): Boolean = columnsToFetch.any { it.column is AggregateColumn }
-
     protected fun whereClauseSql(): String = whereClause?.build(SQLOptions(includeAlias = true)) ?: ""
 
     protected fun orderBySql(): String = if (orderByClauses.isNotEmpty()) ("ORDER BY " + StringUtil.joinBy(orderByClauses, ",")) else ""
@@ -59,14 +57,13 @@ class SelectStatementSqlBuilder {
     protected fun columnsToSelect(): String = StringUtil.joinBy(columnsToFetch, { it.column.forSelect() }, ",")
 
     protected fun groupBySql(): String {
-        val groupByCols = columnsToFetch.filterNot { it.column is AggregateColumn && it.column.aggregateType != null }
-        return if (isAggregate())
-            "group by " + StringUtil.joinBy(groupByCols, { it.column.aliasDotName() }, ",")
-        else ""
-    }
-
-    protected fun havingSql(): String {
-        return havingCondition?.let { Aggregate.havingClause(it) } ?: ""
+        val (aggregates, nonAggregates) = columnsToFetch.partition { it.column.aggregateType?.usesGroupBy ?: false  }
+        if (aggregates.size > 1) {
+            throw StatementBuilderException("You can only use one aggregation type (sum/min/max/avg/count) in a select query, but you used ${aggregates.size}")
+        }
+        return if (aggregates.isNotEmpty() && !nonAggregates.isEmpty()) {
+            "group by " + StringUtil.joinBy(nonAggregates, { it.column.aliasDotName() }, ",")
+        } else ""
     }
 
     protected fun limitClause(): String = limitFunction?.invoke(limitBy) ?: ""
@@ -80,7 +77,7 @@ class SelectStatementSqlBuilder {
                 joinChain.toSQL(),
                 whereClauseSql(),
                 groupBySql(),
-                havingSql(),
+                havingCondition ?: "",
                 orderBySql(),
                 limitClause()
             )

@@ -9,9 +9,12 @@ abstract class NullableColumn<I>(
     name: String = "dummy",
     table: AnyTable = DefaultTable,
     val sqlType: Int,
-    valueClass: Class<*>
-) : Column<I>(name, table, valueClass) {
+    valueClass: Class<*>,
+    aggregateType: AggregateType?
+) : Column<I>(name, table, valueClass, aggregateType) {
     override fun create(value: I?): ColumnAndValue<I> = NullableColumnAndValue(this, value)
+
+    abstract fun distinct(): NullableColumn<I>
 
     internal fun setNull(): ColumnAndValue<I> = NullableColumnAndValue(this, null)
 

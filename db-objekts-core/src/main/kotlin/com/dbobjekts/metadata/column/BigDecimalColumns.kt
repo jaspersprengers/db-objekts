@@ -11,7 +11,11 @@ import java.sql.Types
  *
  * @param name    The column name in the corresponding database table
  */
-class BigDecimalColumn(table: AnyTable, name: String) : NonNullableColumn<BigDecimal>(name, table, BigDecimal::class.java){
+class BigDecimalColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+    NonNullableColumn<BigDecimal>(name, table, BigDecimal::class.java, aggregateType) {
+    constructor(table: AnyTable, name: String) : this(table, name, null)
+
+    override fun distinct() = BigDecimalColumn(table, nameInTable, AggregateType.DISTINCT)
     override val nullable: NullableColumn<BigDecimal?> = NullableBigDecimalColumn(table, name)
     override fun getValue(position: Int, resultSet: ResultSet): BigDecimal = resultSet.getBigDecimal(position)
 
@@ -20,7 +24,11 @@ class BigDecimalColumn(table: AnyTable, name: String) : NonNullableColumn<BigDec
 
 }
 
-class NullableBigDecimalColumn(table: AnyTable, name: String) : NullableColumn<BigDecimal?>(name, table, Types.NUMERIC, BigDecimal::class.java){
+class NullableBigDecimalColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+    NullableColumn<BigDecimal?>(name, table, Types.NUMERIC, BigDecimal::class.java, aggregateType) {
+    constructor(table: AnyTable, name: String) : this(table, name, null)
+
+    override fun distinct() = NullableBigDecimalColumn(table, nameInTable, AggregateType.DISTINCT)
     override fun getValue(position: Int, resultSet: ResultSet): BigDecimal? = resultSet.getBigDecimal(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: BigDecimal?) =
