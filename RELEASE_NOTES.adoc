@@ -15,3 +15,11 @@ First alpha release
 * Introducing stateful and immutable row objects for CRUD operations
 * Use DbObjektsException and subclasses instead of generic IllegalStateException
 * Documentation and component tests
+
+== 0.2.2-alpha
+* Support for custom column types in native sql queries
+
+== 0.3.0-alpha
+* Support for aggregate select queries: `avg()`, `sum()`, `count[Distinct]()`, `min()`, `max()`
+* Support for `distinct()` in select queries
+* An optional `having()` clause to constrain results in aggregate select statements.
