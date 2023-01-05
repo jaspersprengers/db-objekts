@@ -13,7 +13,7 @@ data class Condition<I, W : WhereClauseComponent>(
     internal var symbol: String? = null,
      var values: List<I>? = null,
      var columnCondition: Column<I>? = null
-) : WhereClauseComponent {
+) : WhereClauseComponent() {
 
     private fun getParameterCharactersForValues(): String =
         if (values == null) "" else (if (values!!.size == 1) "?" else "(${values!!.map { "?" }.joinToString(",")})")

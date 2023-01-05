@@ -8,7 +8,7 @@ import com.dbobjekts.vendors.Vendor
 open class SubClause(
     override var joinType: ConditionJoinType = And,
     internal var isRoot: Boolean = false
-) : WhereClauseComponent{
+) : WhereClauseComponent() {
 
     private val buffer = mutableListOf<WhereClauseComponent>()
 

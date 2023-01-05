@@ -712,6 +712,10 @@ Notice that `getValue` must always return a nullable result, also for `NonNullab
 
 The JDBC getter and setter methods cover all the Java primitives, including dates, string, blobs and other esoteric types. For each of these there is a suitable implementation in `com.dbobjekts.metadata.column`, with a companion `Nullable*Column`.
 
+==== Platform column types
+
+This section lists all the column types available in db-Objekts.
+
 For numeric types we have, from small to large
 |===
 |Column class  |value class
@@ -768,25 +772,34 @@ Byte arrays and large objects:
 
 |===
 
-Date and time columns
+Date and time columns. All except `LegacyDateColumn` convert from/to `java.sql.Date` to the appropriate `java.time.*` classes.
 
 |===
-|Column class  |value class
+|Column class  |value class|comment
+
+|LegacyDateColumn
+|java.sql.Date
+|Processes standard JDBC java.sql.Date without conversion
 
 |DateColumn
 |java.time.LocalDate
+|
 
 |DateTimeColumn
-|LocalDateTime
+|java.time.LocalDateTime
+|
 
 |OffsetDateTimeColumn
 |java.time.OffsetDateTime
+|
 
 |TimeColumn
 |java.time.Time
+|
 
 |TimeStampColumn
 |java.time.Instant
+|
 
 |===
 

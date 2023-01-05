@@ -17,7 +17,7 @@ import java.lang.IllegalStateException
  */
 abstract class Table<I> (
     internal val dbName: String
-) : TableOrJoin, SerializableToSQL, Selectable<I> {
+) : TableOrJoin, Selectable<I> {
 
     override abstract val columns: List<AnyColumn>
 
@@ -75,7 +75,7 @@ abstract class Table<I> (
      * ```
      * Will produce sql like the following:
      * ```sql
-     *  employee e left join hobby h on e.hobby_id = h.id
+     *  select(..).from(employee e left join hobby h on e.hobby_id = h.id)
      * ```
      */
     fun leftJoin(table: AnyTable): TableJoinChain =
@@ -84,7 +84,7 @@ abstract class Table<I> (
     /**
      * Creates a right outer join with the table provided. Example:
      * ```kotlin
-     *  Employee.rightJoin(Hobby)
+     *  select(..).from(Employee.rightJoin(Hobby))
      * ```
      * Will produce sql like the following:
      * ```sql
@@ -97,7 +97,7 @@ abstract class Table<I> (
     /**
      * Creates an inner join with the table provided. Example:
      * ```kotlin
-     *  Employee.rightJoin(Hobby)
+     *  select(..).from(Employee.rightJoin(Hobby))
      * ```
      * Will produce sql like the following:
      * ```sql
@@ -110,7 +110,7 @@ abstract class Table<I> (
     /**
      * @return the schema and table, e.g. hr.certificate
      */
-    override fun toSQL(): String = "${schema.dottedName}$tableName ${alias()}"
+    internal fun toSQL(): String = "${schema.dottedName}$tableName ${alias()}"
 
     override fun toString(): String = toSQL()
 

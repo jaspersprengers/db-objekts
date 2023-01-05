@@ -163,7 +163,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         CustomSQLStatementBuilder(semaphore, connection, sql, args.toList(), statementLog = connection.statementLog)
 
     /**
-     * Starts a select statement that expects a single column. Example:
+     * Starts a select statement that expects a single column or table. Example:
      * ```kotlin
      *  transaction.select(Book.title).asList()
      * ```
@@ -172,13 +172,13 @@ class Transaction(internal val connection: ConnectionAdapter) {
         SelectStatementExecutor(semaphore, connection, listOf(column1), ResultRow1<I1>())
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2> select(c1: Selectable<T1>, c2: Selectable<T2>): SelectStatementExecutor<Tuple2<T1, T2>, ResultRow2<T1, T2>> =
         SelectStatementExecutor(semaphore, connection, listOf(c1, c2), ResultRow2<T1, T2>())
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3> select(
         c1: Selectable<T1>,
@@ -188,7 +188,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         SelectStatementExecutor(semaphore, connection, listOf(c1, c2, c3), ResultRow3<T1, T2, T3>())
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4> select(
         c1: Selectable<T1>,
@@ -199,7 +199,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         SelectStatementExecutor(semaphore, connection, listOf(c1, c2, c3, c4), ResultRow4<T1, T2, T3, T4>())
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5> select(
         c1: Selectable<T1>,
@@ -211,7 +211,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         SelectStatementExecutor(semaphore, connection, listOf(c1, c2, c3, c4, c5), ResultRow5<T1, T2, T3, T4, T5>())
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6> select(
         c1: Selectable<T1>,
@@ -224,7 +224,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         SelectStatementExecutor(semaphore, connection, listOf(c1, c2, c3, c4, c5, c6), ResultRow6<T1, T2, T3, T4, T5, T6>())
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7> select(
         c1: Selectable<T1>,
@@ -238,7 +238,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         SelectStatementExecutor(semaphore, connection, listOf(c1, c2, c3, c4, c5, c6, c7), ResultRow7<T1, T2, T3, T4, T5, T6, T7>())
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8> select(
         c1: Selectable<T1>,
@@ -253,7 +253,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         SelectStatementExecutor(semaphore, connection, listOf(c1, c2, c3, c4, c5, c6, c7, c8), ResultRow8<T1, T2, T3, T4, T5, T6, T7, T8>())
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9> select(
         c1: Selectable<T1>,
@@ -274,7 +274,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         )
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> select(
         c1: Selectable<T1>,
@@ -296,7 +296,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         )
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> select(
         c1: Selectable<T1>,
@@ -319,7 +319,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         )
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> select(
         c1: Selectable<T1>,
@@ -343,7 +343,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         )
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> select(
         c1: Selectable<T1>,
@@ -368,7 +368,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         )
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> select(
         c1: Selectable<T1>,
@@ -394,7 +394,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         )
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> select(
         c1: Selectable<T1>,
@@ -421,7 +421,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         )
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> select(
         c1: Selectable<T1>,
@@ -449,7 +449,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         )
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> select(
         c1: Selectable<T1>,
@@ -478,7 +478,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         )
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18> select(
         c1: Selectable<T1>,
@@ -508,7 +508,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         )
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19> select(
         c1: Selectable<T1>,
@@ -539,7 +539,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         )
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20> select(
         c1: Selectable<T1>,
@@ -571,7 +571,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         )
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21> select(
         c1: Selectable<T1>,
@@ -604,7 +604,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         )
 
     /**
-     * Creates a parameterized select statement for 1 to 22 [Column] references, returning type-safe results when the results are fetched
+     * Creates a parameterized select statement for 1 to 22 column or table references, returning type-safe results when the results are fetched
      */
     fun <T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22> select(
         c1: Selectable<T1>,

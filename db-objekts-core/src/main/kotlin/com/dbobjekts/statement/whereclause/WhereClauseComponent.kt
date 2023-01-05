@@ -7,13 +7,13 @@ import com.dbobjekts.statement.SQLOptions
  * Either a Condition (name eq "John") or a Subclause (age > 18 and married eq false)
  * ClauseElements can be nested to form a complex whereclause, e.g. where age > 18 or (age < 18 and married eq false)
  */
-interface WhereClauseComponent {
+abstract class WhereClauseComponent {
 
-    val joinType: ConditionJoinType
+    internal abstract val joinType: ConditionJoinType
 
-    val keyword: String
+    internal abstract val keyword: String
 
-    fun getChildren(): List<WhereClauseComponent>
+    internal abstract fun getChildren(): List<WhereClauseComponent>
 
-    fun toSQL(options: SQLOptions): String
+    internal abstract fun toSQL(options: SQLOptions): String
 }

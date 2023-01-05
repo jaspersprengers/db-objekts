@@ -30,7 +30,7 @@ abstract class InsertBuilderBase() {
 
     /**
      * Executes the insert statement and persists a new row to the table.
-     * @return the primary key of the new row if they are auto-generated. Otherwise, returns the result of the underlying PreparedStatement#executeUpdate call
+     * @return the primary key of the new row if it is auto-generated. Otherwise, it returns the result of the underlying [java.sql.PreparedStatement.execute] call
      */
     fun execute(): Long = InsertStatementExecutor(semaphore, connection, ct.data.toList(), connection.vendor.properties).execute()
         .also { connection.statementLog.logResult(it) }

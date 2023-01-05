@@ -1,5 +1,4 @@
 package com.dbobjekts.metadata
 
 
-interface TableOrJoin {
-}
+interface TableOrJoin
