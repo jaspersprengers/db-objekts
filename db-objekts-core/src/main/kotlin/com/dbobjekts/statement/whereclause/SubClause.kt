@@ -7,12 +7,12 @@ import com.dbobjekts.vendors.Vendor
 
 open class SubClause(
     override var joinType: ConditionJoinType = And,
-    var isRoot: Boolean = false
-) : WhereClauseComponent, HasWhereClauseComponents {
+    internal var isRoot: Boolean = false
+) : WhereClauseComponent{
 
     private val buffer = mutableListOf<WhereClauseComponent>()
 
-    override fun elements(): List<WhereClauseComponent> = buffer.toList()
+    internal fun elements(): List<WhereClauseComponent> = buffer.toList()
 
     /**
      * Adds a nested AND condition to the where clause. Example:
@@ -99,5 +99,5 @@ open class SubClause(
         return "$prefix($str)"
     }
 
-    override val clause: SubClause = this
+    private val clause: SubClause = this
 }

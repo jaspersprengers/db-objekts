@@ -8,7 +8,7 @@ import java.sql.ResultSet
 abstract class NullableColumn<I>(
     name: String = "dummy",
     table: AnyTable = DefaultTable,
-    val sqlType: Int,
+    internal val sqlType: Int,
     valueClass: Class<*>,
     aggregateType: AggregateType?
 ) : Column<I>(name, table, valueClass, aggregateType) {

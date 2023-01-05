@@ -9,7 +9,6 @@ import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.metadata.TableOrJoin
 import com.dbobjekts.metadata.column.*
-import com.dbobjekts.metadata.column.CanAggregate
 import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.ColumnInResultRow
 import com.dbobjekts.statement.SqlParameter
@@ -69,7 +68,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
 
     private fun addOrderByClause(column: AnyColumn, ascending: Boolean) {
         val sameAsAggregate =
-            columns.filter { it is CanAggregate && it.aggregateType != null && it.tableDotName == column.tableDotName }.firstOrNull()
+            columns.filter { it.aggregateType != null && it.tableDotName == column.tableDotName }.firstOrNull()
         orderByClauses.add(OrderByClause(sameAsAggregate ?: column, ascending))
     }
 

@@ -11,6 +11,6 @@ typealias AnyTable = Table<*>
 typealias AnySelectable = Selectable<*>
 typealias AnySqlParameter = SqlParameter<*>
 typealias AnyColumn = Column<*>
-typealias AnyForeignKey = IsForeignKey<*, *>
+//typealias AnyForeignKey = IsForeignKey<*, *>
 typealias AnyColumnAndValue = ColumnAndValue<*>
 typealias AnyCondition = Condition<*, *>

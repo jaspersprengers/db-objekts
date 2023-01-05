@@ -3,6 +3,7 @@ package com.dbobjekts.metadata
 import com.dbobjekts.api.*
 import com.dbobjekts.api.exception.CodeGenerationException
 import com.dbobjekts.api.exception.DBObjektsException
+import com.dbobjekts.metadata.column.IsForeignKey
 import com.dbobjekts.metadata.column.IsPrimaryKey
 import com.dbobjekts.metadata.joins.JoinFactory
 import com.dbobjekts.metadata.joins.TableJoinChain
@@ -29,9 +30,9 @@ abstract class Table<I> (
             throw DBObjektsException("Not a valid table name: " + tableName)
     }
 
-    internal val foreignKeys: List<AnyForeignKey> by lazy { columns.filter { it is AnyForeignKey }.map { it as AnyForeignKey } }
+    internal val foreignKeys: List<IsForeignKey<*, *>> by lazy { columns.filter { it is IsForeignKey<*, *> }.map { it as IsForeignKey<*, *> } }
 
-    internal fun getForeignKeyToParent(parent: AnyTable): AnyForeignKey? = foreignKeys.find { it.parentColumn.table == parent }
+    internal fun getForeignKeyToParent(parent: AnyTable): IsForeignKey<*, *>? = foreignKeys.find { it.parentColumn.table == parent }
 
     internal fun columnByName(column: String): AnyColumn? = columns.find { it.nameInTable.equals(column, true) }
 

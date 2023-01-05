@@ -1,10 +1,11 @@
 package com.dbobjekts.metadata.joins
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyForeignKey
+import com.dbobjekts.metadata.column.IsForeignKey
 
-class ForeignKeyJoin(val parentColumn: AnyColumn,
-                     val foreignKey: AnyForeignKey) {
+internal class ForeignKeyJoin(val parentColumn: AnyColumn,
+                     val foreignKey: IsForeignKey<*, *>
+) {
 
   override fun toString(): String = "joining ${parentColumn.aliasDotName()} on ${foreignKey}"
 

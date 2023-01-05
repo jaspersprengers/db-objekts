@@ -1,7 +1,6 @@
 package com.dbobjekts.statement.select
 
 import com.dbobjekts.api.exception.StatementBuilderException
-import com.dbobjekts.metadata.column.CanAggregate
 import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.ColumnInResultRow
 import com.dbobjekts.statement.SQLOptions

@@ -11,12 +11,15 @@ import java.sql.Types
  * @param name    The column name in the corresponding database table
  */
 class DoubleColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NonNullableColumn<Double>(name, table, Double::class.java, aggregateType), AggregateDoubleColumn {
+    NonNullableColumn<Double>(name, table, Double::class.java, aggregateType) {
 
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
     override fun distinct() = DoubleColumn(table, nameInTable, AggregateType.DISTINCT)
-
+    fun sum() = DoubleColumn(table, nameInTable, AggregateType.SUM)
+    fun avg() = DoubleColumn(table, nameInTable, AggregateType.AVG)
+    fun min() = DoubleColumn(table, nameInTable, AggregateType.MIN)
+    fun max() = DoubleColumn(table, nameInTable, AggregateType.MAX)
     override val nullable: NullableColumn<Double?> = NullableDoubleColumn(table, name)
     override fun getValue(position: Int, resultSet: ResultSet): Double = resultSet.getDouble(position)
 
@@ -26,11 +29,14 @@ class DoubleColumn(table: AnyTable, name: String, aggregateType: AggregateType?)
 }
 
 class NullableDoubleColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NullableColumn<Double?>(name, table, Types.DOUBLE, Double::class.java, aggregateType), AggregateDoubleColumn {
+    NullableColumn<Double?>(name, table, Types.DOUBLE, Double::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
     override fun distinct() = NullableDoubleColumn(table, nameInTable, AggregateType.DISTINCT)
-
+    fun sum() = DoubleColumn(table, nameInTable, AggregateType.SUM)
+    fun avg() = DoubleColumn(table, nameInTable, AggregateType.AVG)
+    fun min() = DoubleColumn(table, nameInTable, AggregateType.MIN)
+    fun max() = DoubleColumn(table, nameInTable, AggregateType.MAX)
     override fun getValue(position: Int, resultSet: ResultSet): Double? = resultSet.getDouble(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Double?) =

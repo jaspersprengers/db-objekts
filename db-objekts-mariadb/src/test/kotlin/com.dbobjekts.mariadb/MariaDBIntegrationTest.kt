@@ -284,6 +284,7 @@ class MariaDBIntegrationTest {
     fun test_enumCol() {
         tm {
             val value = "MAYBE"
+            //AllTypesNil.enumCol.createSubClause()
             it.insert(AllTypesNil).enumCol(value).execute()
             val retrieved = it.select(AllTypesNil.enumCol).where(AllTypesNil.enumCol.eq(value)).first()!!
            assertThat(retrieved).isEqualTo(value)

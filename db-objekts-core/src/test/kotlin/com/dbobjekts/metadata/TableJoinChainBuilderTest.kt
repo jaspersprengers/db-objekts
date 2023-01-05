@@ -31,7 +31,7 @@ class TableJoinChainBuilderTest {
     @Test
     fun `find Join`() {
         val join = defaultBuilder.findJoin(Pair(Address, Country))!!
-        assertEquals("COUNTRY_ID", join.foreignKey.nameInTable)
+        assertEquals("COUNTRY_ID", join.foreignKey.column.nameInTable)
     }
 
     @Test
