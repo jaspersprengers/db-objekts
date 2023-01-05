@@ -1,7 +1,6 @@
 package com.dbobjekts.vendors.h2
 
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.NullableColumn
 import com.dbobjekts.metadata.column.NullableObjectColumn
 import com.dbobjekts.metadata.column.ObjectColumn

@@ -1,13 +1,14 @@
-:toc:
+= Developer documentation for db-Objekts
+:toc: left
 
-= Introduction
+== Preliminaries
 :imagesdir: ./docs
 
 NOTE: db-Objekts is currently in alpha. The API is subject to change and not ready for production. At present it only supports H2 and MariaDB.
-A beta is planned for early 2023 and hopefully a first stable release later that year. This will at least support MySQL, PostgreSQL and Oracle. See xref:_status_and_roadmap[for the planning]
+A beta is planned for early 2023 and hopefully a first stable release later that year. This will at least support MySQL, PostgreSQL and Oracle. See xref:roadmap[for the planning]
 
-== Fluent, type-safe, lightweight and opinionated
-db-Objekts is a Kotlin library to build relational database queries. It uses generated Kotlin metadata objects that represent the tables, columns and foreign keys. Its DSL lets you write type-safe and fluent queries while db-Objekts takes care of join syntax and type conversions. The project was conceived and built by https://jaspersprengers.eu[Jasper Sprengers]. I am a software developer living in the Netherlands.
+== db-Objekts in a nutshell
+db-Objekts is a Kotlin library to build relational database queries. It uses generated metadata objects that represent the tables, columns and foreign keys. Its DSL lets you write type-safe and fluent queries while the engine takes care of join syntax and type conversions. The project was conceived by https://jaspersprengers.eu[Jasper Sprengers]. I am a software developer living in the Netherlands.
 
 In short, db-Objekts lets you do things like this:
 ```kotlin
@@ -29,25 +30,23 @@ db-Objekts exploits all the power and convenience of your IDE's auto-complete to
 
 image::autocomplete.png[autocomplete, 600]
 
-=== Comparison to other technologies and frameworks
+=== Comparison to other frameworks
 
-So, is this going to kill Hibernate and make ORM obsolete? The short answer is no.
+So, how is this different from other offerings, notably ORM?
 
-db-Objekts is quite different from object relational mapping (ORM) frameworks and serves a different use case. ORMs work with stateful entities that abstract away tables and foreign keys, but they are only easy when your needs are simple. They work fine at the level of individual entities, but performance at scale is hard. They are neither lightweight nor easy to master in-depth.
+db-Objekts is quite different from object relational mapping (ORM) frameworks and serves a different use case. ORMs work with stateful entities that abstract away tables and foreign keys. They work fine at the level of individual entities, but performance at scale is hard. They are neither lightweight nor easy to master in-depth.
 
-There are other DSL alternatives for database queries and since they all target similar use cases, the similarities __seem__ obvious at first glance. Maybe you think framework X already does the exact same, or has more features. I want to stress the design decisions that drove this project and I believe those details matter.
+There are other DSL alternatives for database queries. They all target similar use cases, so the similarities __seem__ obvious at first glance. I want to stress the design decisions that drove this project because I believe the details matter.
 
-* All CRUD operations follow the same fluent syntax. All you need to build a query is suggested by your IDE's autocomplete.
-* Metadata objects are auto-generated from the db. No manual, repetitive work is involved.
-* Made for Kotlin: type- and null-safety at the column level (see the above screenshot).
+* CRUD queries follow the same fluent syntax and your IDE's autocomplete helps you all the way.
+* Metadata objects are xref:code-generation[auto-generated] from the db. No manual maintenance is required.
+* Made for Kotlin: all query parameters and results are type-safe _and_ null-safe. In the world of databases, null is significant.
 * Gentle learning curve when your needs are simple, and highly customizable if you want it.
 
-In striking a balance between feature-completeness and usability, db-Objekts favours the latter. It does not aim to emulate all you can achieve in native SQL, although native queries are supported and facilitated.
+In striking a balance between feature-completeness and usability however, db-Objekts favours the latter. It does not try to emulate all you can achieve in native SQL, although it facilitates xref:queries-customsql[native queries] as well.
 
 == A bird's eye view of features
-Let's start with an overview of feature. (https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/AcmeCatalogCodeGenComponentTest.kt[full source code])
-
-We have a simple in-memory H2 database that models a lending library with five tables
+Let's start with a feature overview. We have a simple in-memory H2 database that models a lending library with five tables:
 
 image::datamodel.png[datamodel,600]
 
@@ -62,9 +61,9 @@ generator.outputConfigurer()
 generator.generateSourceFiles()
 ```
 
-This is a bare-bones setup that has produced a package `com.acme.dbobjekts` in the `gen` source folder. We now have `Book`, `Author`, `Loan`,`Item` and `Member` source files that correspond to the tables. Tying the schema(s) and tables together is also a `CatalogDefinition` object.
+This bare-bones setup produces a package `com.acme.dbobjekts` in the `gen` source folder. We now have `Book`, `Author`, `Loan`,`Item` and `Member` source files, which correspond to the tables. Tying the schema(s) and tables together is also a `CatalogDefinition` object.
 
-Per application you also configure a `TransactionManager`, which takes a `javax.sql.DataSource` and the  `CatalogDefinition` that was just generated. An in-memory H2 db works great for testing.
+Per application, you also configure a `TransactionManager`, which takes a `javax.sql.DataSource` and the  `CatalogDefinition` that was just generated. We use an in-memory H2 database.
 
 ```kotlin
 val dataSource = HikariDataSourceFactory.create("jdbc:h2:mem:test","sa",null)
@@ -72,7 +71,7 @@ val transactionManager = TransactionManager.builder()
     .withCatalog(CatalogDefinition)
     .withDataSource(dataSource).build()
 ```
-The `TransactionManager` hands out `Transaction` instances, which wrap a short-lived `javax.sql.Connection`. You use the following syntax:
+The `TransactionManager` hands out `Transaction` instances. These wrap a short-lived `javax.sql.Connection`. You use the following syntax to get a Transaction reference.
 ```kotlin
 val resultOfQuery = tm.newTransaction { tr->
     //execute your query/queries here
@@ -86,13 +85,14 @@ The signature of newTransaction is `fun <T> newTransaction(function: (Transactio
 val books: List<String> = tm { it.select(Book.isbn).asList() }
 ```
 
-That was our first query. Now let's add an author, book title and member.
+That was your first query! Now let's add an author, book title and member.
 
 ```kotlin
+// Author has an auto-generated primary key, which is returned by execute()
 val orwell: Long = tr.insert(Author)
     .mandatoryColumns("George Orwell").execute()
 
-// the primary key of the book table is not auto-generated. In this case execute() returns 1.
+// The book table id is not auto-generated. In this case execute() returns 1.
 tr.insert(Book)
     .mandatoryColumns("ISBN-1984", "Nineteen-eighty Four", orwell, LocalDate.of(1948,1,1))
     .execute()
@@ -101,7 +101,8 @@ val john = tr.insert(Member)
     .mandatoryColumns("John").execute()
 ```
 
-The `mandatoryColumns(..)` call is a convenience method to make sure you provide a value for all the non-null columns. When the table in question has an auto-generated id, it is returned as a `Long`.
+* The `mandatoryColumns(..)` call is a convenience method generated to supply values for all non-nullable columns. All columns are available as distinct setter methods on the builder.
+* When the table in question has an auto-generated id, it is returned as a `Long`.
 
 Let's update the George Orwell record with a bio. Notice the use of the where clause. Common sql operator symbols (=,<,>,!=) have textual counterparts `eq`, `lt`, `ne` etc,
 
@@ -172,6 +173,7 @@ There is much, much more to explore in the following sections, so let's dig in!
 
 == Getting started
 
+[#installation]
 === Installation and configuration
 You can get the latest release from https://mvnrepository.com/search?q=com.db-objekts[Maven central]
 
@@ -213,6 +215,7 @@ class DataService(val transactionManager: TransactionManager) {
 }
 ```
 
+[#code-generation]
 === Generating metadata objects
 Some clarification is in order before we dive into the details of code generation.
 
@@ -285,7 +288,7 @@ db-Objekts tries you custom mappings in order of registration to find a match, a
 
 
 ==== Overriding a column by sql type
-Here's how to override the default mapping of `TINYINT` to a numeric type and instead use Boolean.
+Here's how to override the default mapping of `TINYINT` to a numeric type and use a Boolean instead.
 
 `setColumnTypeForJDBCType` takes the SQL type and the class of the appropriate Column. `com.dbobjekts.metadata.columnNumberAsBoolean` takes care of converting an Int to Boolean and back.
 ```kotlin
@@ -296,11 +299,11 @@ generator.configureColumnTypeMapping()
 ==== Overriding a column by name or pattern
 db-Objekts lets you write you own Column implementations. This can be useful to:
 
-* Use a business enum instead of an integer or character value, e.g. the `AddressTypeAsStringColumn` which maps to the `AddressType` enum
+* Use a business enum instead of an integer or character value, e.g. an `AddressTypeAsStringColumn` to map to your custom `AddressType` enum.
 * Add extra validation or formatting to a column, e.g. a `DutchPostCodeColumn`.
-* Cover up poor database design decision, for example a CHAR column which is abused as a Boolean with Ja/Nein.
+* Cover up poor database design decision, for example a CHAR column which is treated as a Boolean with Yes/No and inconsistent lower/upper case in the values.
 
-See the xref:_creating_custom_column_types[advanced section] for details.
+See the xref:custom-column-types[advanced section] for details.
 
 ```kotlin
 generator.configureColumnTypeMapping()
@@ -359,8 +362,8 @@ Or would you rather fix it in production?
 
 == Querying
 The next section will be all about writing queries. For that, you need a reference to a `TransactionManager`.
-
-=== The TransactionManager and Transaction
+[#transactionmanager]
+=== Transactions and their manager
 We already met the `TransactionManager` briefly. It provides access to your database and contains a `javax.sql.DataSource`. A datasource manages connections to the db-server, logging in, pooling and supplying short-lived `javax.sql.Connection` objects to execute the low-level JDBC calls. All these details are hidden from view. Live connections are represented by a `Transaction`. This is the object on which you create the queries.
 
 You only need a single `TransactionManager` for each `DataSource` per application, so it makes sense to create it centrally and make it available through dependency injection. Since a `TransactionManager` is stateless, there is no harm in assigning it to a singleton: different threads can use the same instance.
@@ -385,7 +388,7 @@ There is a third, optional method if you want complete control over the way `Con
 ```
 In this example you override the default setting for autocommit, which is usually configured at the level of the DataSource.
 
-==== The Transaction lifecycle
+==== Transaction lifecycle
 Every query against db-Objekts is executed through a call to `TransactionManager.newTransaction` or its shortcut `invoke` method. This takes a lambda that receives a fresh `Transaction` object. In the body of the lambda you execute one or more queries and return a result. The `TransactionManager` then commits the underlying `Connection` and returns the result that was returned by the lambda.
 ```kotlin
 val verboseForm: List<BookRow> = tm.newTransaction { tr: Transaction -> tr.select(Book).asList() }
@@ -402,6 +405,7 @@ For the next examples we have a more meaty test database which has tables spread
 
 image:acme-datamodel.png[]]
 
+[#queries-insert]
 === Inserting data
 The `insert(..)` method takes a `Table` implementation and returns a corresponding builder instance on which to set values. https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/InsertStatementComponentTest.kt[InsertStatementComponentTest]
 
@@ -435,6 +439,7 @@ It's your own responsibility to make sure all the mandatory columns have non-nul
 
 NOTE: This you must know auto-generated primary keys. `EmployeeRow` has a non-null `id` field, which is auto-generated hence unavailable until after the `insert(...)` call. We __could__ define such numeric PKs as `Long?` or `Int?`, but that would mean ugly `!!` usage when the id is guaranteed never to be null. The compromise is to provide a default value of zero. You don't specify the ID in `EmployeeRow` yourself, and for the insert logic, it is ignored anyway.
 
+[#queries-select]
 === Selecting data
 Let's move on to select statements now. The pattern is `transaction.select( col1, col2, ... ).where( conditions ).[first[orNull]()|asList()]`.
 
@@ -458,7 +463,7 @@ The `Employee` and `Address` tables are linked via the `EmployeeAddress` table i
 We can select from the `Employee` table with a constraint on the `Address` table, without specifying the join! This mechanism saves you a lot of typing, but comes with limitations:
 
 * There must be an explicit foreign-key relationship between the tables used in your statement, or there must be a many-to-many join table that links two tables referred in your query, like in the above example.
-* By default, joins are inner joins. Using outer joins is possible, but comes with some caveats, so it has a xref:_outer_joins_and_more_customization[dedicated section].
+* By default, joins are inner joins. Using outer joins is possible, but comes with some caveats, so it has a xref:outerjoins[dedicated section].
 
 In a call like `select(Employee.name, Country.name)` db-Objekts cannot figure out that it needs `address` and `employee_address`. In that case you need to specify the joins manually. Call the `from(SomeTable)` method with the driving table of your selection, and add the tables to joined as follows:
 
@@ -493,7 +498,7 @@ Note that these constraints are executed server-side, as they are part of the SQ
 ```kotlin
   tr.select(e.name).orderDesc(e.salary).orderAsc(e.name).limit(10).asList()
 ```
-
+[#outerjoins]
 === Outer joins
 Recall the previous query `tm.select(Employee.name, Hobby.name)`, which does an inner join and only returns results where a `hobby` record is linked to an `employee`. If we want all employee records, what we need is a left outer join. There are two basic options.
 ```
@@ -545,6 +550,7 @@ You can chain conditions using `and` or `or` and you can even build nested condi
 
 If you have no conditions to constrain your selection you can omit the where clause: `tr.select(Book).asList()`
 
+[#aggregates]
 ==== Selecting with aggregates
 db-Objekts supports standard SQL aggregate functions COUNT(), SUM(), AVG(), MIN(), MAX(), DISTINCT() and COUNT DISTINCT(). To turn a normal select query into an aggregated one you designate one column in the `select()` call as the aggregate by calling the appropriate method.
 
@@ -585,6 +591,7 @@ This selects the names of employees who have one or two certificates. db-Objekts
 ===== Not all is possible
 In SQL there are more possibilities with aggregate queries (some of them vendor-specific) than are supported by db-Objekts. As with everything else in this library, it is a conscious design decision to balance usability and complexity. You can always resort to creating a native SQL query if the default behavior doesn't cut it.
 
+[#queries-update]
 === Updating
 The `update(..)` method, like the `insert(..)`, takes a table and returns an `*UpdateBuilder`. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/UpdateStatementComponentTest.kt[UpdateStatementComponentTest]
 
@@ -608,6 +615,7 @@ tr.update(retrieved.copy(salary = retrieved.salary + 100))
 ```
 The row data object retrieved is immutable, so we need to make a copy with an updated salary field. Note that data rows in db-Objekts are very different from managed entities in ORM.
 
+[#queries-delete]
 === Deleting
 The statement to delete rows has the fewest options. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/DeleteStatementComponentTest.kt[DeleteStatementComponentTest]
 ```kotlin
@@ -616,7 +624,7 @@ tr.deleteFrom(Employee).where(Employee.id.eq(id))
 * The `deleteFrom` method takes a single table or a join (not all vendors supports it). `tm { it.deleteFrom(e.innerJoin(Hobby)).where(h.name.eq("chess")) }`
 * The call to `where(...)` is always mandatory. If you want to delete all rows, use the no-arg version: `tr.deleteFrom(Employee).where()`
 
-
+[#queries-customsql]
 === Custom sql queries
 db-Objekts does not set out to cover all your select, insert, update and delete query needs. That is a deliberate design decision. It aims to make mundane queries more pleasant and safe, but recognizes that sometimes native SQL makes more sense. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/CustomSQLComponentTest.kt[CustomSQLComponentTest]
 
@@ -667,6 +675,7 @@ The `custom` and `customNil` methods take a `NonNullableColumn` and `NullableCol
 
 == Advanced topics
 
+[#metadata-model]
 === The db-Objekts metadata model
 db-Objekts creates three main types  of metadata that correspond to the database schema:
 
@@ -695,6 +704,7 @@ object Book:Table("BOOK"){
 ```
 All that is needed to create queries is expressed in the column types: how to create primary keys (auto generated, with a sequence, or manually), whether a type is nullable, and the parent table/column for primary keys.
 
+[#custom-column-types]
 === Creating custom column types
 The power of db-Objekts is that you can fully customize the way values are read from and written to the database. For this we need to dig deeper in the `Column` hierarchy.
 
@@ -712,6 +722,7 @@ Notice that `getValue` must always return a nullable result, also for `NonNullab
 
 The JDBC getter and setter methods cover all the Java primitives, including dates, string, blobs and other esoteric types. For each of these there is a suitable implementation in `com.dbobjekts.metadata.column`, with a companion `Nullable*Column`.
 
+[#platform-column-types]
 ==== Platform column types
 
 This section lists all the column types available in db-Objekts.
@@ -893,7 +904,7 @@ override fun setValue(position: Int, statement: PreparedStatement, value: String
     }
 }
 ```
-
+[#security]
 === Security concerns
 Much sensitive data flows through a database library like db-Objekts, so we take security seriously. And so should you! The following design decisions and principles are in place:
 
@@ -906,6 +917,7 @@ db-Objekts has been a long time in the making. I started it in Scala, but switch
 
 This is the very first alpha release. The API may change slightly, so it is not yet ready for a beta release and you should not use it in production yet. While I'm confident and proud of my work, more rigorous testing is needed.
 
+[#roadmap]
 === Roadmap
 
 * The alpha releases will cover the following:
