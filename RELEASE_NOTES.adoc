@@ -25,3 +25,7 @@ First alpha release
 * An optional `having()` clause to constrain results in aggregate select statements.
 
 == 0.3.1-alpha
+* Refactoring to reduce visibility of platform-internal properties and methods in the public API. In cases where this is not possible, it is clearly marked in Dokka comments.
+* New `LegacyDateColumn` to handle java.sql.Date without conversion to/from java.time API.
+* Various test enhancements
+* Overall documentation improvements
