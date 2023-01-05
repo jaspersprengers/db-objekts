@@ -1,5 +1,3 @@
 package com.dbobjekts.codegen.datatypemapper
 
-
-interface VendorDefaultColumnTypeMapper : ColumnTypeMapper {
-}
+interface VendorDefaultColumnTypeMapper : ColumnTypeMapper

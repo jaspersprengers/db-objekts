@@ -4,7 +4,7 @@ import com.dbobjekts.util.StringUtil
 import java.io.File
 import java.util.regex.Pattern
 
-interface DBObjectName {
+internal interface DBObjectName {
     fun capitalCamelCase(): String
     fun lowerCamelCase(): String
 }

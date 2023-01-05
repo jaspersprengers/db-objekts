@@ -3,7 +3,7 @@ package com.dbobjekts.codegen.metadata
 import com.dbobjekts.api.PackageName
 import com.dbobjekts.util.StringUtil
 
-interface DBObjectDefinition {
+internal interface DBObjectDefinition {
 
     val packageName: PackageName
 

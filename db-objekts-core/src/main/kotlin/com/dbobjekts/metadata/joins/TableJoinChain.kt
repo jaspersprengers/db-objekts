@@ -4,11 +4,9 @@ import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.TableOrJoin
-import com.dbobjekts.metadata.SerializableToSQL
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.util.StringUtil
 
-class TableJoinChain(val table: AnyTable) : TableOrJoin, Cloneable, SerializableToSQL {
+class TableJoinChain(val table: AnyTable) : TableOrJoin, Cloneable {
 
     private val joins: MutableList<JoinBase> = mutableListOf()
 
@@ -77,6 +75,6 @@ class TableJoinChain(val table: AnyTable) : TableOrJoin, Cloneable, Serializable
 
     private fun createInnerJoin(tuple: Pair<AnyColumn, AnyColumn>) = InnerJoin(tuple.first, tuple.second)
 
-    override fun toSQL(): String = StringUtil.concat(listOf(table.toSQL(), JoinFactory.toSQL(joins.toList())))
+    fun toSQL(): String = StringUtil.concat(listOf(table.toSQL(), JoinFactory.toSQL(joins.toList())))
 
 }

@@ -1,5 +1,5 @@
 package com.dbobjekts.codegen.metadata
 
-interface DBGeneratedPrimaryKey
+internal interface DBGeneratedPrimaryKey
 
 

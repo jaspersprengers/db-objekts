@@ -17,25 +17,17 @@ interface HasUpdateBuilder<U : UpdateBuilderBase, I : InsertBuilderBase> {
 
 }
 
-interface ColumnForWriteMapContainer<T> {
 
-    fun <C> put(col: Column<C>, value: C?): T
-
-    fun columnsForWrite(): List<AnyColumnAndValue>
-}
-
-class ColumnForWriteMapContainerImpl<T>(val builder: T) : ColumnForWriteMapContainer<T> {
+class ColumnForWriteMapContainerImpl<T>(val builder: T) {
     val data: HashSet<AnyColumnAndValue> = linkedSetOf<AnyColumnAndValue>()
 
-    override fun <C> put(col: Column<C>, value: C?): T {
+    fun <C> put(col: Column<C>, value: C?): T {
         if (value == null)
             data.add(NullableColumnAndValue(col, null))
         else
             data.add(col.create(value))
         return builder
     }
-
-    override fun columnsForWrite(): List<AnyColumnAndValue> = data.toList()
 }
 
 abstract class UpdateBuilderBase(
