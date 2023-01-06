@@ -22,13 +22,14 @@ import java.time.LocalTime
 import javax.sql.DataSource
 import com.dbobjekts.mariadb.testdb.Aliases.e
 import com.dbobjekts.mariadb.testdb.Aliases.h
+import com.dbobjekts.util.HikariDataSourceFactory
 
-@Testcontainers
+//@Testcontainers
 class MariaDBIntegrationTest {
 
     companion object {
 
-        @Container
+        //@Container
         val container: MariaDBWrapper = MariaDBWrapper("10.10", listOf("acme.sql"))
         lateinit var dataSource: DataSource
         lateinit var tm: TransactionManager
@@ -36,13 +37,19 @@ class MariaDBIntegrationTest {
         @JvmStatic
         @BeforeAll
         fun beforeAll() {
-            dataSource = container.createDataSource()
+            //dataSource = container.createDataSource()
+            dataSource = HikariDataSourceFactory
+                .create(
+                    url = "jdbc:mariadb://localhost:3306/test",
+                    username = "root",
+                    password = "test",
+                    driver = "org.mariadb.jdbc.Driver"
+                )
             tm = TransactionManager.builder()
                 .withDataSource(dataSource)
                 .withCatalog(CatalogDefinition)
                 .build()
         }
-
     }
 
     @Test
@@ -55,7 +62,7 @@ class MariaDBIntegrationTest {
         .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff = gen.differencesWithCatalog(CatalogDefinition)
         assertThat(diff).isEmpty()
-        gen.generateSourceFiles()
+        //gen.generateSourceFiles()
     }
 
     @Test
