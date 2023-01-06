@@ -16,7 +16,7 @@ interface IntegerNumericColumn : NumericColumn {
 }
 
 /**
- * Implemented by Float, Double and BigDecimal Column types
+ * Implemented by Float, Double and Column types. BigDecimal does not implement this interface, because returning a Double would mean loss of precision.
  */
 interface FloatingPointNumericColumn : NumericColumn {
     fun sum(): DoubleColumn
