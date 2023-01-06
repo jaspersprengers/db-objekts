@@ -9,3 +9,4 @@ integration/build
 **/pom.xml.releaseBackup
 **/pom.xml.tag
 /release.properties
+db-objekts-core/src/test/kotlin/com/dbobjekts/fixture/ClassGenerator.kt
