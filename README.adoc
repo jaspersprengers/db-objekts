@@ -10,7 +10,7 @@ NOTE: db-Objekts is currently in alpha. The API is subject to change and not rea
 A beta is planned for early 2023 and hopefully a first stable release later that year. This will at least support MySQL, PostgreSQL and Oracle. xref:roadmap[Roadmap]
 
 == db-Objekts in a nutshell
-db-Objekts is a Kotlin library to build relational database queries. It uses generated metadata objects that represent the tables, columns and foreign keys. Its DSL lets you write type-safe and fluent queries while the engine takes care of join syntax and type conversions. The project was conceived by https://jaspersprengers.eu[Jasper Sprengers]. I am a software developer living in the Netherlands.
+db-Objekts is a Kotlin library to query relational databases. It uses generated metadata objects that represent the tables, columns and foreign keys. Its DSL produces type-safe and fluent queries while the engine takes care of join syntax and type conversions. The project was conceived by https://jaspersprengers.eu[Jasper Sprengers]. I am a software developer living in the Netherlands.
 
 In short, db-Objekts lets you do things like this:
 ```kotlin
@@ -34,9 +34,9 @@ image::autocomplete.png[autocomplete, 600]
 
 === Comparison to other frameworks
 
-So, how is this different from other offerings, notably ORM?
+So, how is this different from other offerings, notably Object relational mapping (ORM)?
 
-db-Objekts is quite different from object relational mapping (ORM) frameworks and serves a different use case. ORMs work with stateful entities that abstract away tables and foreign keys. They work fine at the level of individual entities, but performance at scale is hard. They are neither lightweight nor easy to master in-depth.
+To begin with, db-Objekts serves different use cases. ORMs work with stateful entities that abstract away tables and foreign keys. They work fine at the level of individual entities, but performance at scale is hard. They are neither lightweight nor easy to master in-depth. Each query in db-Objekts always results in a single SQL statement. It is more transparent and predictable in that regard.
 
 There are other DSL alternatives for database queries. They all target similar use cases, so the similarities __seem__ obvious at first glance. I want to stress the design decisions that drove this project because I believe the details matter.
 
@@ -45,7 +45,7 @@ There are other DSL alternatives for database queries. They all target similar u
 * Made for Kotlin: all query parameters and results are type-safe _and_ null-safe. In the world of databases, null is significant.
 * Gentle learning curve when your needs are simple, and highly customizable if you want it.
 
-In striking a balance between feature-completeness and usability however, db-Objekts favours the latter. It does not try to emulate all you can achieve in native SQL, although it facilitates xref:queries-customsql[native queries] as well.
+In striking a balance between feature-completeness and usability however, db-Objekts favours the latter. It tries to cover 80% of query needs with 20% of the complexity. It does not emulate all you can do in native SQL, although it facilitates xref:queries-customsql[native queries] as well.
 
 == A bird's eye view of features
 Let's start with a feature overview. We have a simple in-memory H2 database that models a lending library with five tables:
