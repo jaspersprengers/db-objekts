@@ -1,11 +1,13 @@
-= Developer documentation for db-Objekts
+:imagesdir: ./docs
 :toc: left
+image::logo.png[logo, 600]
+
+= Fluent, type-safe query DSL for Kotlin
 
 == Preliminaries
-:imagesdir: ./docs
 
 NOTE: db-Objekts is currently in alpha. The API is subject to change and not ready for production. At present it only supports H2 and MariaDB.
-A beta is planned for early 2023 and hopefully a first stable release later that year. This will at least support MySQL, PostgreSQL and Oracle. See xref:roadmap[for the planning]
+A beta is planned for early 2023 and hopefully a first stable release later that year. This will at least support MySQL, PostgreSQL and Oracle. xref:roadmap[Roadmap]
 
 == db-Objekts in a nutshell
 db-Objekts is a Kotlin library to build relational database queries. It uses generated metadata objects that represent the tables, columns and foreign keys. Its DSL lets you write type-safe and fluent queries while the engine takes care of join syntax and type conversions. The project was conceived by https://jaspersprengers.eu[Jasper Sprengers]. I am a software developer living in the Netherlands.
@@ -22,11 +24,11 @@ transaction.select(Employee, Address, EmployeeAddress.kind, Country.name)
 Or get the names of all employees who have more than one certificate:
 ```kotlin
 transaction.select(Employee.name, Certificate.name.count())
-    .having(Aggregate.gt(0))
+    .having(Aggregate.gt(1))
     .asList()
 ```
 
-db-Objekts exploits all the power and convenience of your IDE's auto-complete to the max.
+db-Objekts utilizes the power and convenience of your IDE's auto-complete as much as possible.
 
 image::autocomplete.png[autocomplete, 600]
 
@@ -177,7 +179,7 @@ There is much, much more to explore in the following sections, so let's dig in!
 === Installation and configuration
 You can get the latest release from https://mvnrepository.com/search?q=com.db-objekts[Maven central]
 
-The following https://github.com/jaspersprengers/db-objekts-demo[stand-alone github project] contains the examples from this section and is a good starting point to get you going.
+The sub-module `db-objekts-spring-demo` contains the examples from this section and is a good starting point to get you going.
 
 The main jar is `com.db-objekts:db-objekts-core`, and you also need a vendor-specific implementation. Since the latter depends on core, you need only add the vendor-specific dependency to your maven or gradle file.
 ```xml
@@ -465,6 +467,9 @@ We can select from the `Employee` table with a constraint on the `Address` table
 * There must be an explicit foreign-key relationship between the tables used in your statement, or there must be a many-to-many join table that links two tables referred in your query, like in the above example.
 * By default, joins are inner joins. Using outer joins is possible, but comes with some caveats, so it has a xref:outerjoins[dedicated section].
 
+
+NOTE: How can db-Objekts figure out the parameterized Tuple* return type from the arguments to `select()`, you wonder? By having 22 overloaded versions of `select()`. Since you can also retrieve an entire table row as a single `Selectable`, that should be more than enough. The number 22 is inspired by Scala, which supports built-in Tuples up to that number.
+
 In a call like `select(Employee.name, Country.name)` db-Objekts cannot figure out that it needs `address` and `employee_address`. In that case you need to specify the joins manually. Call the `from(SomeTable)` method with the driving table of your selection, and add the tables to joined as follows:
 
 ```kotlin
@@ -498,6 +503,8 @@ Note that these constraints are executed server-side, as they are part of the SQ
 ```kotlin
   tr.select(e.name).orderDesc(e.salary).orderAsc(e.name).limit(10).asList()
 ```
+
+
 [#outerjoins]
 === Outer joins
 Recall the previous query `tm.select(Employee.name, Hobby.name)`, which does an inner join and only returns results where a `hobby` record is linked to an `employee`. If we want all employee records, what we need is a left outer join. There are two basic options.

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import com.dbobjekts.testdb.acme.core.*
 import com.dbobjekts.testdb.acme.hr.Certificate
+import com.dbobjekts.testdb.acme.library.Book
 import org.junit.jupiter.api.Order
 
 class SelectStatementComponentTest {
@@ -205,8 +206,8 @@ class SelectStatementComponentTest {
 
     @Test
     fun `Order by clause`() {
-        tm({ s ->
-            val alice = s.select(e.name).where(e.id.gt(5)).orderAsc(e.name).first()
+        tm({ tr ->
+            val alice = tr.select(e.name).where(e.id.gt(5)).orderAsc(e.name).first()
             assertThat(alice).isEqualTo("Alice")
         })
     }
@@ -225,8 +226,6 @@ class SelectStatementComponentTest {
             s.select(e.name).where(e.id.gt(5)).limit(3).first()
         })
     }
-
-
 
 
 }

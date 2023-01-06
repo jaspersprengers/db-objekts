@@ -8,7 +8,6 @@ import java.nio.file.Paths
 
 class ClassGenerator {
 
-
     @Test
     fun print_test_methods() {
         val cols = listOf(

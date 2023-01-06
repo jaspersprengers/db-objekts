@@ -29,6 +29,7 @@ First alpha release
 * General code cleanup. Removed some redundant interfaces.
 * Various test enhancements
 * Overall documentation improvements
+* Added db-objekts-spring-demo project
 
 === functionality
 * New `LegacyDateColumn` to handle java.sql.Date without conversion to/from java.time API.
