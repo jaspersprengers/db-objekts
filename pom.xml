@@ -13,6 +13,7 @@
         <module>db-objekts-core</module>
         <module>db-objekts-mariadb</module>
         <module>db-objekts-spring-demo</module>
+        <module>db-objekts-mysql</module>
     </modules>
 
     <parent>
@@ -27,7 +28,7 @@
         <kotlin.version>1.7.22</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
         <logback.version>1.4.5</logback.version>
-        <testcontainers.version>1.16.2</testcontainers.version>
+        <testcontainers.version>1.17.6</testcontainers.version>
     </properties>
 
     <scm>
@@ -128,6 +129,12 @@
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>mariadb</artifactId>
+                <version>${testcontainers.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.testcontainers</groupId>
+                <artifactId>mysql</artifactId>
                 <version>${testcontainers.version}</version>
                 <scope>test</scope>
             </dependency>

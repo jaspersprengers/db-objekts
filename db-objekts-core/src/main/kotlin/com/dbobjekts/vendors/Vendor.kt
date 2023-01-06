@@ -17,7 +17,8 @@ enum class Vendors(
     val requiredMajorVersion: Int
 ) {
     H2("com.dbobjekts.vendors.h2.H2Vendor", 2),
-    MARIADB("com.dbobjekts.vendors.mariadb.MariaDBVendor", 10);
+    MARIADB("com.dbobjekts.vendors.mariadb.MariaDBVendor", 10),
+    MYSQL("com.dbobjekts.vendors.mysql.MysqlVendor", 8);
 
     private fun validateVersion(actualVersionOfDataSource: Int): Vendors {
         if (requiredMajorVersion < actualVersionOfDataSource)
