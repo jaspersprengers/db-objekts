@@ -1,15 +1,15 @@
 package com.dbobjekts.mariadbdemo
 
 import com.dbobjekts.api.TransactionManager
-import com.dbobjekts.mariadb.testdb.core.Employee
 import org.springframework.stereotype.Service
+import com.dbobjekts.mariadb.testdb.core.Employee
 
 @Service
 class DataService(val transactionManager: TransactionManager) {
 
     fun insertBasicEmployeeData(name: String, married: Boolean): EmployeeEntity {
         return transactionManager {
-            val id = it.insert(Employee).mandatoryColumns(name, married).execute()
+            val id = it.insert(Employee).execute()
             EmployeeEntity(id, name)
         }
     }
