@@ -33,3 +33,8 @@ First alpha release
 
 === functionality
 * New `LegacyDateColumn` to handle java.sql.Date without conversion to/from java.time API.
+
+== 0.3.2-alpha
+* Aggregate functions in `BigDecimalColumn` return `BigDecimal`. Long or Double values means possible loss of range and precision.
+* Added sample schema `nations.sql` to mariadb module for component testing.
+* Manual commit and rollback checks for auto-commit mode.

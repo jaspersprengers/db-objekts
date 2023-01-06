@@ -486,6 +486,14 @@ The table provided in the `innerJoin()` must have an explicit foreign key relati
 
 `asList` always return a (potentially empty) list of results. If one row is all you need, you can invoke `first()` or the safer option `firstOrNull()`, since the former will throw if the resultset was empty.
 
+As long as there is an explicit foreign key relationship between parent and child, there is no limit to the number of tables you can involve in the join chain. Consider this example from `MariaDBNationsIntegrationTest`, which needs two intermediate tables to join up the target column
+
+```kotlin
+tr.select(Continents.name, CountryStats.population.sum())
+    .from(CountryStats.innerJoin(Countries).innerJoin(Regions).innerJoin(Continents))
+    .asList()
+```
+
 When you execute a select statement, db-Objekts pulls all results into a list structure, which add to the JVM heap. This may not be what you want.
 The `forEachRow()` call lets you inspect the Resultset row by row through a custom predicate so you can decide how to handle them and even abort further retrieval, which means reduced traffic from the RDBMS to your application.
 ```kotlin
