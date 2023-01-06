@@ -35,12 +35,12 @@ data class ConnectionAdapter(
     }
 
     fun commit() {
-        if (!jdbcConnection.isClosed)
+        if (!jdbcConnection.autoCommit && !jdbcConnection.isClosed)
             jdbcConnection.commit()
     }
 
     fun rollback() {
-        if (!jdbcConnection.isClosed)
+        if (!jdbcConnection.autoCommit && !jdbcConnection.isClosed)
             jdbcConnection.rollback()
     }
 
