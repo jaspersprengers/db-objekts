@@ -30,5 +30,5 @@ First alpha release
 * Various test enhancements
 * Overall documentation improvements
 
-==== functionality
+=== functionality
 * New `LegacyDateColumn` to handle java.sql.Date without conversion to/from java.time API.

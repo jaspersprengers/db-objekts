@@ -7,8 +7,13 @@ import java.sql.Types
 
 
 open class ByteColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NonNullableColumn<Byte>(name, table, Byte::class.java, aggregateType) {
+    NonNullableColumn<Byte>(name, table, Byte::class.java, aggregateType), IntegerNumericColumn {
     constructor(table: AnyTable, name: String) : this(table, name, null)
+
+    override fun sum() = LongColumn(table, nameInTable, AggregateType.SUM)
+    override fun avg() = DoubleColumn(table, nameInTable, AggregateType.AVG)
+    override fun min() = LongColumn(table, nameInTable, AggregateType.MIN)
+    override fun max() = LongColumn(table, nameInTable, AggregateType.MAX)
 
     override fun distinct() = ByteColumn(table, nameInTable, AggregateType.DISTINCT)
 
@@ -18,8 +23,13 @@ open class ByteColumn(table: AnyTable, name: String, aggregateType: AggregateTyp
 }
 
 open class NullableByteColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NullableColumn<Byte?>(name, table, Types.TINYINT, Byte::class.java, aggregateType) {
+    NullableColumn<Byte?>(name, table, Types.TINYINT, Byte::class.java, aggregateType), IntegerNumericColumn {
     constructor(table: AnyTable, name: String) : this(table, name, null)
+
+    override fun sum() = LongColumn(table, nameInTable, AggregateType.SUM)
+    override fun avg() = DoubleColumn(table, nameInTable, AggregateType.AVG)
+    override fun min() = LongColumn(table, nameInTable, AggregateType.MIN)
+    override fun max() = LongColumn(table, nameInTable, AggregateType.MAX)
 
     override fun distinct() = NullableByteColumn(table, nameInTable, AggregateType.DISTINCT)
 

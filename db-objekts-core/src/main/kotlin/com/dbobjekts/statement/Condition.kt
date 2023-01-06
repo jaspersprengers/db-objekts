@@ -1,6 +1,5 @@
 package com.dbobjekts.statement
 
-import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.statement.whereclause.WhereClauseComponent
@@ -11,8 +10,7 @@ data class Condition<I, W : WhereClauseComponent>(
     val column: Column<I>,
     override val joinType: ConditionJoinType = And,
     internal var symbol: String? = null,
-     var values: List<I>? = null,
-     var columnCondition: Column<I>? = null
+     var values: List<I>? = null
 ) : WhereClauseComponent() {
 
     private fun getParameterCharactersForValues(): String =
@@ -32,11 +30,6 @@ data class Condition<I, W : WhereClauseComponent>(
     fun isNull(): W = createIsNullCondition("is null")
 
     /**
-     * operator for column-to-column condition: Results in SQL: column1 = column2
-     */
-    fun eq(column: Column<I>): W = createColumnCondition(column, "=")
-
-    /**
      * Not-equals comparison operator. Results in SQL: my_column <> ?
      *
      * @param value a non-null value
@@ -46,19 +39,9 @@ data class Condition<I, W : WhereClauseComponent>(
     fun isNotNull(): W = createIsNullCondition("is not null")
 
     /**
-     * operator for column-to-column condition: Results in SQL: column1 <> column2
-     */
-    fun ne(column: Column<I>): W = createColumnCondition(column, "<>")
-
-    /**
      * Less-than comparison operator. Results in SQL: my_column < ?
      */
     fun lt(value: I): W = createSimpleCondition(value, "<")
-
-    /**
-     * Less-than comparison operator. Results in SQL: my_column1 < my_column2
-     */
-    fun lt(column: Column<I>): W = createColumnCondition(column, "<")
 
     /**
      * Less than or equal comparison operator. Results in SQL: my_column <= ?
@@ -66,19 +49,9 @@ data class Condition<I, W : WhereClauseComponent>(
     fun le(value: I): W = createSimpleCondition(value, "<=")
 
     /**
-     * Less than or equal comparison operator. Results in SQL: my_column1 <= my_column2
-     */
-    fun le(column: Column<I>): W = createColumnCondition(column, "<=")
-
-    /**
      * Greater-than comparison operator. Results in SQL: my_column1 > ?
      */
     fun gt(value: I): W = createSimpleCondition(value, ">")
-
-    /**
-     * Greater than comparison operator. Results in SQL: my_column1 > my_column2
-     */
-    fun gt(column: Column<I>): W = createColumnCondition(column, ">")
 
     /**
      * Greater than or equal comparison operator. Results in SQL: my_column1 >= ?
@@ -86,24 +59,14 @@ data class Condition<I, W : WhereClauseComponent>(
     fun ge(value: I): W = createSimpleCondition(value, ">=")
 
     /**
-     * Greater than or equal comparison operator. Results in SQL: my_column1 >= my_column2
-     */
-    fun ge(column: Column<I>): W = createColumnCondition(column, ">=")
-
-    /**
      * IN operator. Results in SQL: my_column1 IN (1,3,5)
      */
     fun `in`(vararg values: I): W = createInCondition("IN", values.toList())
 
     /**
-     * IN operator. Identical to in and isIn. Results in SQL: my_column1 IN (1,3,5)
+     * IN operator. Results in SQL: my_column1 IN (1,3,5)
      */
     fun within(vararg values: I): W = createInCondition("IN", values.toList())
-
-    /**
-     * IN operator. Identical to in and within. Results in SQL: my_column1 IN (1,3,5)
-     */
-    fun isIn(vararg values: I): W = createInCondition("IN", values.toList())
 
     /**
      * NOT IN operator. Results in SQL: my_column1 NOT IN (1,3,5)
@@ -126,29 +89,23 @@ data class Condition<I, W : WhereClauseComponent>(
     fun contains(value: String): W = createLikeCondition("%" + value + "%", "like")
 
     private fun createSimpleCondition(value: I, sql: String): W =
-        createSubClause(sql, listOf(value), null)
+        createSubClause(sql, listOf(value))
 
 
     private fun createInCondition(sql: String, values: List<I>): W =
-        createSubClause(sql, values, null)
+        createSubClause(sql, values)
 
 
     private fun createIsNullCondition(sql: String): W =
-        createSubClause(sql, null, null)
-
-
-    private fun createColumnCondition(col: Column<I>, sql: String): W =
-        createSubClause(sql, null, col)
-
+        createSubClause(sql, null)
 
     @Suppress("UNCHECKED_CAST")
     private fun createLikeCondition(v: String, sql: String): W =
-        createSubClause(sql, listOf(v as I), null)
+        createSubClause(sql, listOf(v as I))
 
     private fun createSubClause(
         symbol: String,
-        values: List<I>?,
-        secondColumn: Column<I>?
+        values: List<I>?
     ): W {
         this.symbol = symbol
         this.values = values
@@ -163,16 +120,11 @@ data class Condition<I, W : WhereClauseComponent>(
 
         fun columnComponent(): String = if (options.includeAlias) column.aliasDotName() else column.nameInTable
 
-        fun getOptionalAlias(col: AnyColumn) = "${col.table.alias()}.${col.nameInTable}"
-
-        val rightOperand: String =
-            if (columnCondition != null) getOptionalAlias(columnCondition!!) else getParameterCharactersForValues()
-
         return StringUtil.concat(
             listOf(
                 columnComponent(),
                 symbol ?: throw StatementBuilderException("This Condition is not finished"),
-                rightOperand
+                getParameterCharactersForValues()
             )
         )
     }

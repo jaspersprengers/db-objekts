@@ -34,35 +34,32 @@ abstract class Column<I>(
 
     fun countDistinct(): LongColumn = LongColumn(table, nameInTable, AggregateType.COUNT_DISTINCT)
 
-
     /**
      * operator for equality condition. Results in SQL: my_column = ?
      */
-    fun eq(value: I): SubClause= if (value == null) throw StatementBuilderException("Cannot supply null argument. Use isNull()") else createSimpleCondition(value, "=")
+    fun eq(value: I): SubClause =
+        if (value == null) throw StatementBuilderException("Cannot supply null argument for condition. Use isNull()") else createSimpleCondition(
+            value,
+            "="
+        )
 
     /**
      * operator for nullability check. Results in SQL my_column IS NULL
      */
-    fun isNull(): SubClause= createIsNullCondition("is null")
-
-    /**
-     * operator for column-to-column condition: Results in SQL: column1 = column2
-     */
-    fun eq(column: Column<I>): SubClause= createColumnCondition(column, "=")
+    fun isNull(): SubClause = createIsNullCondition("is null")
 
     /**
      * Not-equals comparison operator. Results in SQL: my_column <> ?
      *
      * @param value a non-null value
      */
-    fun ne(value: I): SubClause= if (value == null) throw StatementBuilderException("Cannot supply null argument. Use isNotNull()") else createSimpleCondition(value, "<>")
+    fun ne(value: I): SubClause =
+        if (value == null) throw StatementBuilderException("Cannot supply null argument. Use isNotNull()") else createSimpleCondition(
+            value,
+            "<>"
+        )
 
-    fun isNotNull(): SubClause= createIsNullCondition("is not null")
-
-    /**
-     * operator for column-to-column condition: Results in SQL: column1 <> column2
-     */
-    fun ne(column: Column<I>): SubClause= createColumnCondition(column, "<>")
+    fun isNotNull(): SubClause = createIsNullCondition("is not null")
 
     /**
      * Less-than comparison operator. Results in SQL: my_column < ?
@@ -70,19 +67,9 @@ abstract class Column<I>(
     fun lt(value: I): SubClause= createSimpleCondition(value, "<")
 
     /**
-     * Less-than comparison operator. Results in SQL: my_column1 < my_column2
-     */
-    fun lt(column: Column<I>): SubClause= createColumnCondition(column, "<")
-
-    /**
      * Less than or equal comparison operator. Results in SQL: my_column <= ?
      */
     fun le(value: I): SubClause= createSimpleCondition(value, "<=")
-
-    /**
-     * Less than or equal comparison operator. Results in SQL: my_column1 <= my_column2
-     */
-    fun le(column: Column<I>): SubClause= createColumnCondition(column, "<=")
 
     /**
      * Greater-than comparison operator. Results in SQL: my_column1 > ?
@@ -90,85 +77,60 @@ abstract class Column<I>(
     fun gt(value: I): SubClause= createSimpleCondition(value, ">")
 
     /**
-     * Greater than comparison operator. Results in SQL: my_column1 > my_column2
-     */
-    fun gt(column: Column<I>): SubClause= createColumnCondition(column, ">")
-
-    /**
      * Greater than or equal comparison operator. Results in SQL: my_column1 >= ?
      */
     fun ge(value: I): SubClause= createSimpleCondition(value, ">=")
 
     /**
-     * Greater than or equal comparison operator. Results in SQL: my_column1 >= my_column2
+     * IN operator. Results in SQL: my_column1 IN (1,3,5)
      */
-    fun ge(column: Column<I>): SubClause= createColumnCondition(column, ">=")
+    fun `in`(vararg values: I): SubClause = createInCondition("IN", values.toList())
 
     /**
      * IN operator. Results in SQL: my_column1 IN (1,3,5)
      */
-    fun `in`(vararg values: I): SubClause= createInCondition("IN", values.toList())
-
-    /**
-     * IN operator. Identical to in and isIn. Results in SQL: my_column1 IN (1,3,5)
-     */
-    fun within(vararg values: I): SubClause= createInCondition("IN", values.toList())
-
-    /**
-     * IN operator. Identical to in and within. Results in SQL: my_column1 IN (1,3,5)
-     */
-    fun isIn(vararg values: I): SubClause= createInCondition("IN", values.toList())
+    fun within(vararg values: I): SubClause = createInCondition("IN", values.toList())
 
     /**
      * NOT IN operator. Results in SQL: my_column1 NOT IN (1,3,5)
      */
-    fun notIn(vararg values: I): SubClause= createInCondition("NOT IN", values.toList())
+    fun notIn(vararg values: I): SubClause = createInCondition("NOT IN", values.toList())
 
     /**
      * LIKE operator to find matches beginning with a string value. Results in SQL: my_column1 like ? and parameter ''john%''
      */
-    fun startsWith(value: String): SubClause= createLikeCondition(value + "%", "like")
+    fun startsWith(value: String): SubClause = createLikeCondition(value + "%", "like")
 
     /**
      * LIKE operator to find matches ending in a string value. Results in SQL: my_column1 like ? and parameter ''%john''
      */
-    fun endsWith(value: String): SubClause= createLikeCondition("%" + value, "like")
+    fun endsWith(value: String): SubClause = createLikeCondition("%" + value, "like")
 
     /**
      * LIKE operator to find records containing a certain value. Results in SQL: my_column1 like ? and parameter ''%john%''
      */
-    fun contains(value: String): SubClause= createLikeCondition("%" + value + "%", "like")
+    fun contains(value: String): SubClause = createLikeCondition("%" + value + "%", "like")
 
-    private fun createSimpleCondition(value: I, sql: String): SubClause=
-        createSubClause(sql, listOf(value), null)
-
-
-    private fun createInCondition(sql: String, values: List<I>): SubClause=
-        createSubClause(sql, values, null)
+    private fun createSimpleCondition(value: I, sql: String): SubClause =
+        createSubClause(sql, listOf(value))
 
 
-    private fun createIsNullCondition(sql: String): SubClause=
-        createSubClause(sql, null, null)
+    private fun createInCondition(sql: String, values: List<I>): SubClause =
+        createSubClause(sql, values)
 
 
-    private fun createColumnCondition(col: Column<I>, sql: String): SubClause=
-        createSubClause(sql, null, col)
-
+    private fun createIsNullCondition(sql: String): SubClause =
+        createSubClause(sql, null)
 
     @Suppress("UNCHECKED_CAST")
-    private fun createLikeCondition(v: String, sql: String): SubClause=
-        createSubClause(sql, listOf(v as I), null)
-
-    //fun createSubClause(symbol: String, values: List<I>?, secondColumn: Column<I>?): W
-
-
-
+    private fun createLikeCondition(v: String, sql: String): SubClause =
+        createSubClause(sql, listOf(v as I))
 
     internal abstract fun create(value: I?): ColumnAndValue<I>
 
-    private fun createSubClause(symbol: String, values: List<I>?, secondColumn: Column<I>?): SubClause {
+    private fun createSubClause(symbol: String, values: List<I>?): SubClause {
         val clause = SubClause()
-        clause.addCondition(this, And, symbol, values, secondColumn)
+        clause.addCondition(this, And, symbol, values)
         return clause
     }
 

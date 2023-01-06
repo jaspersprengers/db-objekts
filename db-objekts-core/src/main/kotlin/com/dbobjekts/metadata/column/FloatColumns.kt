@@ -11,10 +11,15 @@ import java.sql.Types
  * @param name    The column name in the corresponding database table
  */
 class FloatColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NonNullableColumn<Float>(name, table, Float::class.java, aggregateType) {
+    NonNullableColumn<Float>(name, table, Float::class.java, aggregateType), FloatingPointNumericColumn {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
     override fun distinct() = FloatColumn(table, nameInTable, AggregateType.DISTINCT)
+
+    override fun sum() = DoubleColumn(table, nameInTable, AggregateType.SUM)
+    override fun avg() = DoubleColumn(table, nameInTable, AggregateType.AVG)
+    override fun min() = DoubleColumn(table, nameInTable, AggregateType.MIN)
+    override fun max() = DoubleColumn(table, nameInTable, AggregateType.MAX)
 
     override val nullable: NullableColumn<Float?> = NullableFloatColumn(table, name)
     override fun getValue(position: Int, resultSet: ResultSet): Float = resultSet.getFloat(position)
@@ -24,10 +29,15 @@ class FloatColumn(table: AnyTable, name: String, aggregateType: AggregateType?) 
 }
 
 class NullableFloatColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NullableColumn<Float?>(name, table, Types.FLOAT, Float::class.java, aggregateType) {
+    NullableColumn<Float?>(name, table, Types.FLOAT, Float::class.java, aggregateType), FloatingPointNumericColumn {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
     override fun distinct() = NullableFloatColumn(table, nameInTable, AggregateType.DISTINCT)
+
+    override fun sum() = DoubleColumn(table, nameInTable, AggregateType.SUM)
+    override fun avg() = DoubleColumn(table, nameInTable, AggregateType.AVG)
+    override fun min() = DoubleColumn(table, nameInTable, AggregateType.MIN)
+    override fun max() = DoubleColumn(table, nameInTable, AggregateType.MAX)
 
     override fun getValue(position: Int, resultSet: ResultSet): Float? = resultSet.getFloat(position)
 

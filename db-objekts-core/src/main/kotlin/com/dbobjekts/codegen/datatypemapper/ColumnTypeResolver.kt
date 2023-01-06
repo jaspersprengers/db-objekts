@@ -61,7 +61,7 @@ class ColumnTypeResolver(
             is NullableLongColumn -> ColumnFactory.FOREIGN_KEY_LONG_NIL
             is VarcharColumn -> ColumnFactory.FOREIGN_KEY_VARCHAR
             is NullableVarcharColumn -> ColumnFactory.FOREIGN_KEY_VARCHAR_NIL
-            else -> throw CodeGenerationException("Column type ${column.javaClass.simpleName} cannot be used as a foreign key. It has to be of numeric of character type")
+            else -> throw CodeGenerationException("Column type ${column.javaClass.simpleName} cannot be used as a foreign key. It has to be Int, Long or String type")
         }
     }
 

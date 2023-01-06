@@ -43,16 +43,18 @@ class SelectStatementComponentTest {
 
         assertEquals(39000.0, tm { it.select(e.salary).orderDesc(e.salary).first() })
         assertEquals(30000.0, tm { it.select(e.salary).orderAsc(e.salary).first() })
-
     }
 
+
     @Test
-    fun `select all`() {
-        AcmeDB.newTransaction { tr ->
-            tr.select(Employee, Address.street, EmployeeAddress.kind, Department.name, Hobby.name.nullable, Certificate.name.nullable)
-                .useOuterJoins().asList().forEach { (emp, street, addType, dept, hobby, cert) ->
-                println("${emp.id}\t${emp.name}\t${emp.salary}\t${emp.married}\t${emp.children}\t${emp.dateOfBirth}\t$hobby\t$street\t$addType\t$dept\t$cert")
+    fun `test LIKE conditions on strings`() {
+        tm { tr ->
+            fun checkCount(result: SelectStatementExecutor<*, *>, size: Int) {
+                assertEquals(size, result.asList().size)
             }
+            checkCount(tr.select(e.id).where(e.name.startsWith("Gi")), 1)
+            checkCount(tr.select(e.id).where(e.name.contains("d")), 2)
+            checkCount(tr.select(e.id).where(e.name.endsWith("e")), 4)
         }
     }
 
@@ -63,15 +65,6 @@ class SelectStatementComponentTest {
                 it.select(Employee, h.name).where(e.name.eq("Eve")).first()
             assertThat(hobby).isEqualTo("Chess")
             assertThat(employee.name).isEqualTo("Eve")
-        })
-    }
-
-    @Test
-    fun `use nullable counterpart`() {
-        tm({
-            val (name, hobby) =
-                it.select(e.name, h.name.nullable).where(e.name.eq("Bob")).useOuterJoins().first()
-            assertThat(hobby).isNull()
         })
     }
 
@@ -140,6 +133,18 @@ class SelectStatementComponentTest {
         })
     }
 
+
+    // test with outer joins and explicit join chains
+
+    @Test
+    fun `use nullable counterpart`() {
+        tm({
+            val (name, hobby) =
+                it.select(e.name, h.name.nullable).where(e.name.eq("Bob")).useOuterJoins().first()
+            assertThat(hobby).isNull()
+        })
+    }
+
     @Test
     fun `test inner join for person based on country`() {
         tm({ s ->
@@ -164,6 +169,16 @@ class SelectStatementComponentTest {
     }
 
     @Test
+    fun `join all tables in outer join`() {
+        AcmeDB.newTransaction { tr ->
+            tr.select(Employee, Address.street, EmployeeAddress.kind, Department.name, Hobby.name.nullable, Certificate.name.nullable)
+                .useOuterJoins().asList().forEach { (emp, street, addType, dept, hobby, cert) ->
+                    println("${emp.id}\t${emp.name}\t${emp.salary}\t${emp.married}\t${emp.children}\t${emp.dateOfBirth}\t$hobby\t$street\t$addType\t$dept\t$cert")
+                }
+        }
+    }
+
+    @Test
     fun `test select the same column twice as a list is OK`() {
         val result =
             tm({ s -> s.select(e.name, e.name).where(e.name.eq("Eve")).first() })
@@ -180,6 +195,7 @@ class SelectStatementComponentTest {
         assertEquals("Jasper", result)
     }
 
+    //Test limit and order by
     @Test
     fun `limit clause with invalid value returns one`() {
         tm({ s ->
@@ -211,22 +227,6 @@ class SelectStatementComponentTest {
     }
 
 
-    @Test
-    @Order(11)
-    fun `test LIKE conditions on strings`() {
-        tm { tr ->
-
-            fun checkCount(result: SelectStatementExecutor<*, *>, size: Int) {
-                assertEquals(size, result.asList().size)
-            }
-
-            checkCount(tr.select(e.id).where(e.name.startsWith("Gi")), 1)
-
-            checkCount(tr.select(e.id).where(e.name.contains("d")), 2)
-
-            checkCount(tr.select(e.id).where(e.name.endsWith("e")), 4)
-        }
-    }
 
 
 }

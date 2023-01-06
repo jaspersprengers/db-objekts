@@ -77,9 +77,8 @@ open class SubClause(
         column: Column<C>,
         joinType: ConditionJoinType = And,
         symbol: String,
-        values: List<C>?,
-    col: Column<C>?): Condition<C, SubClause>  {
-        val condition = Condition<C, SubClause>(this, column, joinType, symbol, values, col)
+        values: List<C>?): Condition<C, SubClause>  {
+        val condition = Condition<C, SubClause>(this, column, joinType, symbol, values)
         buffer.add(condition)
         return condition
     }

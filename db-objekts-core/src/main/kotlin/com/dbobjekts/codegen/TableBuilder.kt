@@ -3,11 +3,9 @@ package com.dbobjekts.codegen
 import com.dbobjekts.api.PackageName
 import com.dbobjekts.api.SchemaName
 import com.dbobjekts.api.TableName
-import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.codegen.datatypemapper.ColumnTypeResolver
 import com.dbobjekts.codegen.metadata.*
-import com.dbobjekts.codegen.parsers.ParserConfig
 import org.slf4j.LoggerFactory
 
 /**
@@ -18,7 +16,7 @@ internal class TableBuilder(
     val schema: SchemaName,
     val tableName: TableName,
     val foreignKeyManager: ForeignKeyManager,
-    val sqlMapper: ColumnTypeResolver
+    val columnTypeResolver: ColumnTypeResolver
 ) {
     private val log = LoggerFactory.getLogger(TableBuilder::class.java)
     var alias: String = tableName.value
@@ -26,7 +24,7 @@ internal class TableBuilder(
 
     fun getForeignKeyDefinition(columnMetaData: ColumnMetaData): DBForeignKeyDefinition? =
         foreignKeyManager.findForeignKey(schema, tableName, columnMetaData.columnName)?.let {
-            val foreignKey = sqlMapper.getForeignKeyColumnForType(schema, tableName, columnMetaData)
+            val foreignKey = columnTypeResolver.getForeignKeyColumnForType(schema, tableName, columnMetaData)
             DBForeignKeyDefinition(
                 schema = schema,
                 table = tableName,
@@ -49,17 +47,17 @@ internal class TableBuilder(
                     schema = schema,
                     table = tableName,
                     columnName = props.columnName,
-                    columnType = sqlMapper.mapAutoIncrementColumn(columnMappingProperties),
+                    columnType = columnTypeResolver.mapAutoIncrementColumn(columnMappingProperties),
                     comment = props.remarks
                 )
             } else {
-                val defaultType = sqlMapper.getDefaultMapping(columnMappingProperties)
-                sqlMapper.findSequence(columnMappingProperties)?.let {sequence ->
+                val defaultType = columnTypeResolver.getDefaultMapping(columnMappingProperties)
+                columnTypeResolver.findSequence(columnMappingProperties)?.let { sequence ->
                     DBSequenceKeyDefinition(
                         schema = schema,
                         table = tableName,
                         name = props.columnName,
-                        columnType = sqlMapper.determineSequenceColumn(defaultType),
+                        columnType = columnTypeResolver.determineSequenceColumn(defaultType),
                         sequence = sequence,
                         comment = props.remarks
                     )
@@ -81,7 +79,7 @@ internal class TableBuilder(
             } ?: getForeignKeyDefinition(props)?.let { fk ->
                 log.debug("Adding foreign key for ${fk.tableName}.${fk.columnName}")
                 addColumn(fk)
-            } ?: sqlMapper.mapDataType(ColumnMappingProperties.fromMetaData(schema, table, props)).let { colType ->
+            } ?: columnTypeResolver.mapDataType(ColumnMappingProperties.fromMetaData(schema, table, props)).let { colType ->
                 val column = DBColumnDefinition(schema, tableName, props.columnName, colType, props.isPrimaryKey, props.remarks)
                 addColumn(column)
             }
