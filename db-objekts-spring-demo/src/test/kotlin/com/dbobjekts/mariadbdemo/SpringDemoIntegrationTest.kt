@@ -16,15 +16,19 @@ import javax.sql.DataSource
 
 @SpringBootTest
 @Testcontainers
-class MariadbComponentTest {
+class SpringDemoIntegrationTest {
 
     companion object {
         @Container
         val container: MariaDBWrapper = MariaDBWrapper("10.10", listOf("acme.sql"))
 
+        /**
+         * The host port on which the dockerized db is available is not known until after container is live.
+         * This Spring mechanism allows us to inject the correct jdbc URl into the context
+         */
         @JvmStatic
         @DynamicPropertySource
-        fun mysqlProperties(registry: DynamicPropertyRegistry) {
+        fun updateDbProperties(registry: DynamicPropertyRegistry) {
             registry.add("spring.datasource.url") {
                 String.format(
                     "jdbc:mariadb://localhost:%d/test",
@@ -49,8 +53,7 @@ class MariadbComponentTest {
             .basePackageForSources("com.dbobjekts.mariadb.testdb")
             .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff = gen.differencesWithCatalog(CatalogDefinition)
-        //assertThat(diff).isEmpty()
-        gen.generateSourceFiles()
+        assertThat(diff).isEmpty()
     }
 
     @Test
