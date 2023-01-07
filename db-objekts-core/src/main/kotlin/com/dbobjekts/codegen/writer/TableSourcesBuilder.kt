@@ -30,20 +30,12 @@ class TableSourcesBuilder(
             "${basePackage.createSubPackageForSchema(fk.parentSchema)}.${fk.parentTable.capitalCamelCase()}\n"
         }.distinct()
 
-    /**
-     *
-     */
-/*    private fun generateFieldComment(column: DBColumnDefinition): TableSourcesBuilder {
-        return this
-    }*/
-
-
     fun build(): String {
         val detailedSourceBuilder = TableDetailsSourceBuilder(model)
         strBuilder.append("package ${model.packageName}\n\n")
 
         fun generateField(column: DBColumnDefinition) {
-            val fk = if ( column is DBForeignKeyDefinition){
+            val fk = if (column is DBForeignKeyDefinition) {
                 "\n     *\n     * Foreign key to ${column.parentSchema.value}.${column.parentTable.value}.${column.parentColumn.value}"
             } else ""
             strBuilder.appendLine("    /**\n     * Represents db column ${column.schemaName.value}.${column.tableName.value}.${column.columnName}$fk\n     */")

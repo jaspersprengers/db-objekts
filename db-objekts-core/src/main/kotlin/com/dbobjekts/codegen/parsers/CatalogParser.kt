@@ -11,9 +11,11 @@ import com.dbobjekts.metadata.TableAliasesBuilder
 import org.slf4j.LoggerFactory
 
 
-class CatalogParser(private val parserConfig: ParserConfig,
-                    private val transactionManager: TransactionManager,
-                    private val metaDataExtractor: VendorSpecificMetaDataExtractor) {
+class CatalogParser(
+    private val parserConfig: ParserConfig,
+    private val transactionManager: TransactionManager,
+    private val metaDataExtractor: VendorSpecificMetaDataExtractor
+) {
 
     private val log = LoggerFactory.getLogger(CatalogParser::class.java)
 
@@ -21,15 +23,13 @@ class CatalogParser(private val parserConfig: ParserConfig,
         createTableMetaData(parserConfig)
     }
     private val basePackage: PackageName = parserConfig.basePackage
-    private val columnTypeResolver: ColumnTypeResolver
 
-    init {
-        columnTypeResolver = ColumnTypeResolver(
-            parserConfig.vendor.defaultMapper,
-            parserConfig.customColumnMappers,
-            parserConfig.sequenceMappers
-        )
-    }
+    private val columnTypeResolver: ColumnTypeResolver = ColumnTypeResolver(
+        parserConfig.vendor.defaultMapper,
+        parserConfig.customColumnMappers,
+        parserConfig.sequenceMappers
+    )
+
 
     fun createTableMetaData(conf: ParserConfig): List<TableMetaData> {
         val fkMetadata = metaDataExtractor.extractForeignKeyMetaDataFromDB(transactionManager)
@@ -38,7 +38,7 @@ class CatalogParser(private val parserConfig: ParserConfig,
 
         val includedSchemas = metaData.filterNot { md -> conf.exclusionConfigurer.schemaIsExcluded(md.schema) }
 
-        val perSchema = includedSchemas.groupBy({ it.schema })
+        val perSchema: Map<String, List<TableMetaDataRow>> = includedSchemas.groupBy({ it.schema })
         return perSchema.flatMap({ (schema, rows) ->
             parseTableMetaDataForSchema(schema, foreignKeyProperties, rows)
         })
@@ -81,7 +81,6 @@ class CatalogParser(private val parserConfig: ParserConfig,
     }
 
     fun parseCatalog(): DBCatalogDefinition {
-        log.info("Changelog files contain metadata on ${tableMetaData.size} tables.")
         val tableDefinitions = createTableDefinitions(basePackage, tableMetaData)
         val schemas: List<DBSchemaDefinition> = tableDefinitions
             .groupBy { it.schema.value }
@@ -103,29 +102,29 @@ class CatalogParser(private val parserConfig: ParserConfig,
             val errstr = missing.map { "Column ${it.first} refers to ${it.second}." }
             throw CodeGenerationException(
                 """One or more tables have a foreign key reference to a table or column that has been excluded.
-                   |Code generation has been aborted, because the generated code cannot compile.
-                   |Either relax your exclusion criteria, or exclude these tables too.
-                   |Error report:
-                   |${errstr.joinToString("\n")}"""
+                   Code generation has been aborted, because the generated code cannot compile.
+                   Either relax your exclusion criteria, or exclude these tables too.
+                   Error report:
+                   ${errstr.joinToString("\n")}""".trimIndent()
             )
         } else catalog
     }
 
     fun createTableDefinitions(basePackage: PackageName, tableMetaData: List<TableMetaData>): List<DBTableDefinition> {
         val keyManager = ForeignKeyManager(tableMetaData)
-        val tableBuilders: List<TableBuilder> = tableMetaData.map({ tableMd ->
-            val packageForSchema = basePackage.createSubPackageForSchema(tableMd.schema)
-            val tableBuilder = TableBuilder(packageForSchema, tableMd.schema, tableMd.tableName, keyManager, columnTypeResolver)
+        val tableBuilders: List<TableBuilder> = tableMetaData.map({ table ->
+            val packageForSchema = basePackage.createSubPackageForSchema(table.schema)
+            val tableBuilder = TableBuilder(packageForSchema, table.schema, table.tableName, keyManager, columnTypeResolver)
 
             //exclude the columns explicitly marked
-            val allowedColumns = tableMd.columns.filterNot {
-                parserConfig.exclusionConfigurer.columnIsExcluded(tableMd, it)
+            val allowedColumns = table.columns.filterNot {
+                parserConfig.exclusionConfigurer.columnIsExcluded(table, it)
             }
 
-            tableBuilder.withColumns(tableMd.schema, tableMd.tableName, allowedColumns)
+            tableBuilder.withColumns(table.schema, table.tableName, allowedColumns)
         })
         if (tableBuilders.isEmpty()) {
-            log.warn("Found no tables in schema!")
+            log.warn("Found no eligible tables in catalog.")
         }
         val aliasesBuilder = TableAliasesBuilder()
         tableBuilders.groupBy { it.schema }

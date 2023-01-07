@@ -30,6 +30,15 @@ class ColumnForWriteMapContainerImpl<T>(val builder: T) {
     }
 }
 
+/**
+ * A concrete `UpdateBuilderBase` is auto-generated for each table and provides setter methods for each column to supply the values that need to be updated.
+ *
+ * It is the class returned by the call to `update()` in the following example.
+ *
+ * ```kotlin
+ * tr.update(e).children(2).married(true).where(e.name.eq("Janet"))
+ * ```
+ */
 abstract class UpdateBuilderBase(
     internal val table: AnyTable) {
     private val ct = ColumnForWriteMapContainerImpl(this)

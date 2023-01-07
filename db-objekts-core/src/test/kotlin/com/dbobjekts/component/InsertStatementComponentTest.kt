@@ -47,7 +47,6 @@ class InsertStatementComponentTest {
                 hobbyId = "c"
             )
             val johnsId = tr.insert(row)
-
             val addressId = tr.insert(AddressRow(street = "Zuidhoek", postcode = "5591HA", countryId = "nl"))
             tr.insert(EmployeeAddressRow(johnsId, addressId, AddressType.HOME))
 
