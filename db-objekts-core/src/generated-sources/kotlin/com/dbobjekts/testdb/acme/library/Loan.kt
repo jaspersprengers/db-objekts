@@ -9,10 +9,34 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
+
+/**           
+ * Metadata object for db table LOAN.
+ *
+ * Primary key: dateLoaned
+ *
+ * Foreign keys: [LIBRARY.LOAN.ITEM_ID to LIBRARY.ITEM.ID, LIBRARY.LOAN.MEMBER_ID to LIBRARY.MEMBER.ID] 
+ */
 object Loan:Table<LoanRow>("LOAN"), HasUpdateBuilder<LoanUpdateBuilder, LoanInsertBuilder> {
+    /**
+     * Represents db column LIBRARY.LOAN.ITEM_ID
+     *
+     * Foreign key to LIBRARY.ITEM.ID
+     */
     val itemId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "ITEM_ID", Item.id)
+    /**
+     * Represents db column LIBRARY.LOAN.MEMBER_ID
+     *
+     * Foreign key to LIBRARY.MEMBER.ID
+     */
     val memberId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "MEMBER_ID", Member.id)
+    /**
+     * Represents db column LIBRARY.LOAN.DATE_LOANED
+     */
     val dateLoaned = com.dbobjekts.metadata.column.DateColumn(this, "DATE_LOANED")
+    /**
+     * Represents db column LIBRARY.LOAN.DATE_RETURNED
+     */
     val dateReturned = com.dbobjekts.metadata.column.NullableDateColumn(this, "DATE_RETURNED")
     override val columns: List<AnyColumn> = listOf(itemId,memberId,dateLoaned,dateReturned)
     override fun toValue(values: List<Any?>) = LoanRow(values[0] as Long,values[1] as Long,values[2] as java.time.LocalDate,values[3] as java.time.LocalDate?)
@@ -24,7 +48,10 @@ class LoanUpdateBuilder() : UpdateBuilderBase(Loan) {
     fun memberId(value: Long): LoanUpdateBuilder = put(Loan.memberId, value)
     fun dateLoaned(value: java.time.LocalDate): LoanUpdateBuilder = put(Loan.dateLoaned, value)
     fun dateReturned(value: java.time.LocalDate?): LoanUpdateBuilder = put(Loan.dateReturned, value)
-
+    
+    /**
+     * FOR INTERNAL USE ONLY
+     */
     override fun updateRow(rowData: TableRowData<*, *>): Long {
       rowData as LoanRow
       add(Loan.itemId, rowData.itemId)

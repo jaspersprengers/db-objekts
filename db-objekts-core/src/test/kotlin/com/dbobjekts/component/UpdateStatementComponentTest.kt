@@ -1,6 +1,6 @@
 package com.dbobjekts.component
 
-import com.dbobjekts.testdb.AddressType
+import com.dbobjekts.fixture.columns.AddressType
 import com.dbobjekts.testdb.acme.core.*
 import com.dbobjekts.testdb.acme.hr.Hobby
 import com.dbobjekts.testdb.acme.hr.HobbyRow

@@ -9,8 +9,22 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
+
+/**           
+ * Metadata object for db table HOBBY.
+ *
+ * Primary key: id
+ *
+ * Foreign keys: [] 
+ */
 object Hobby:Table<HobbyRow>("HOBBY"), HasUpdateBuilder<HobbyUpdateBuilder, HobbyInsertBuilder> {
+    /**
+     * Represents db column HR.HOBBY.ID
+     */
     val id = com.dbobjekts.metadata.column.VarcharColumn(this, "ID")
+    /**
+     * Represents db column HR.HOBBY.NAME
+     */
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     override val columns: List<AnyColumn> = listOf(id,name)
     override fun toValue(values: List<Any?>) = HobbyRow(values[0] as String,values[1] as String)
@@ -20,7 +34,10 @@ object Hobby:Table<HobbyRow>("HOBBY"), HasUpdateBuilder<HobbyUpdateBuilder, Hobb
 class HobbyUpdateBuilder() : UpdateBuilderBase(Hobby) {
     fun id(value: String): HobbyUpdateBuilder = put(Hobby.id, value)
     fun name(value: String): HobbyUpdateBuilder = put(Hobby.name, value)
-
+    
+    /**
+     * FOR INTERNAL USE ONLY
+     */
     override fun updateRow(rowData: TableRowData<*, *>): Long {
       rowData as HobbyRow
       add(Hobby.id, rowData.id)

@@ -11,13 +11,44 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
 import com.dbobjekts.testdb.acme.hr.Hobby
 
 
+
+/**           
+ * Metadata object for db table EMPLOYEE.
+ *
+ * Primary key: id
+ *
+ * Foreign keys: [CORE.EMPLOYEE.HOBBY_ID to HR.HOBBY.ID] 
+ */
 object Employee:Table<EmployeeRow>("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, EmployeeInsertBuilder> {
+    /**
+     * Represents db column CORE.EMPLOYEE.ID
+     */
     val id = com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "ID", "EMPLOYEE_SEQ")
+    /**
+     * Represents db column CORE.EMPLOYEE.NAME
+     */
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
+    /**
+     * Represents db column CORE.EMPLOYEE.SALARY
+     */
     val salary = com.dbobjekts.metadata.column.DoubleColumn(this, "SALARY")
+    /**
+     * Represents db column CORE.EMPLOYEE.MARRIED
+     */
     val married = com.dbobjekts.metadata.column.NullableBooleanColumn(this, "MARRIED")
+    /**
+     * Represents db column CORE.EMPLOYEE.DATE_OF_BIRTH
+     */
     val dateOfBirth = com.dbobjekts.metadata.column.DateColumn(this, "DATE_OF_BIRTH")
+    /**
+     * Represents db column CORE.EMPLOYEE.CHILDREN
+     */
     val children = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "CHILDREN")
+    /**
+     * Represents db column CORE.EMPLOYEE.HOBBY_ID
+     *
+     * Foreign key to HR.HOBBY.ID
+     */
     val hobbyId = com.dbobjekts.metadata.column.OptionalForeignKeyVarcharColumn(this, "HOBBY_ID", Hobby.id)
     override val columns: List<AnyColumn> = listOf(id,name,salary,married,dateOfBirth,children,hobbyId)
     override fun toValue(values: List<Any?>) = EmployeeRow(values[0] as Long,values[1] as String,values[2] as Double,values[3] as Boolean?,values[4] as java.time.LocalDate,values[5] as Int?,values[6] as String?)
@@ -31,7 +62,10 @@ class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
     fun dateOfBirth(value: java.time.LocalDate): EmployeeUpdateBuilder = put(Employee.dateOfBirth, value)
     fun children(value: Int?): EmployeeUpdateBuilder = put(Employee.children, value)
     fun hobbyId(value: String?): EmployeeUpdateBuilder = put(Employee.hobbyId, value)
-
+    
+    /**
+     * FOR INTERNAL USE ONLY
+     */
     override fun updateRow(rowData: TableRowData<*, *>): Long {
       rowData as EmployeeRow
       add(Employee.id, rowData.id)

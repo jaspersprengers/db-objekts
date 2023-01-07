@@ -1,8 +1,10 @@
-package com.dbobjekts.testdb
+package com.dbobjekts.fixture.columns
 
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.metadata.Table
-import com.dbobjekts.metadata.column.*
+import com.dbobjekts.metadata.column.EnumAsIntColumn
+import com.dbobjekts.metadata.column.EnumAsStringColumn
+import com.dbobjekts.metadata.column.NullableEnumAsIntColumn
+import com.dbobjekts.metadata.column.NullableEnumAsStringColumn
 import java.io.Serializable
 
 enum class AddressType : Serializable {

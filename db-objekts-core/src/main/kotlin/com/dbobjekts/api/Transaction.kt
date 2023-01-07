@@ -123,12 +123,16 @@ class Transaction(internal val connection: ConnectionAdapter) {
     fun transactionExecutionLog(): List<ExecutedStatementInfo> = connection.statementLog.transactionExecutionLog()
 
     /**
-     * Commits the underlying [java.sql.Connection]. Use with caution. There is usually little reason to invoke this manually, as it happens automatically when the [Transaction] goes out of scope.
+     * Commits the underlying [java.sql.Connection] when not running in auto-commit mode. Has no effect otherwise.
+     *
+     * Use with caution. There is usually little reason to invoke this manually, as it happens automatically when the [Transaction] goes out of scope.
      */
     fun commit() = connection.commit()
 
     /**
-     * Rolls back the underlying [java.sql.Connection]. This happens automatically when an exception is thrown, so there is usually no reason to do this manually.
+     * Rolls back the underlying [java.sql.Connection] when not running in auto-commit mode. Has no effect otherwise.
+     *
+     * This happens automatically when an exception is thrown, so there is usually no reason to do this manually.
      */
     fun rollback() = connection.rollback()
 

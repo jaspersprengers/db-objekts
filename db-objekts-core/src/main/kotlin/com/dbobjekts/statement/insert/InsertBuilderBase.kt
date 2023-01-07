@@ -26,7 +26,7 @@ abstract class InsertBuilderBase() {
         ct.put(col, value)
     }
 
-    abstract fun insertRow(tableRowData: TableRowData<*, *>): Long
+    abstract fun insertRow(rowData: TableRowData<*, *>): Long
 
     /**
      * Executes the insert statement and persists a new row to the table.

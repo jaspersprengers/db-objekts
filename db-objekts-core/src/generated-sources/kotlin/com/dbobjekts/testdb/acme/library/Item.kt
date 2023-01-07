@@ -9,9 +9,28 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
+
+/**           
+ * Metadata object for db table ITEM.
+ *
+ * Primary key: id
+ *
+ * Foreign keys: [LIBRARY.ITEM.ISBN to LIBRARY.BOOK.ISBN] 
+ */
 object Item:Table<ItemRow>("ITEM"), HasUpdateBuilder<ItemUpdateBuilder, ItemInsertBuilder> {
+    /**
+     * Represents db column LIBRARY.ITEM.ID
+     */
     val id = com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "ID", "ITEM_SEQ")
+    /**
+     * Represents db column LIBRARY.ITEM.ISBN
+     *
+     * Foreign key to LIBRARY.BOOK.ISBN
+     */
     val isbn = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "ISBN", Book.isbn)
+    /**
+     * Represents db column LIBRARY.ITEM.DATE_ACQUIRED
+     */
     val dateAcquired = com.dbobjekts.metadata.column.DateColumn(this, "DATE_ACQUIRED")
     override val columns: List<AnyColumn> = listOf(id,isbn,dateAcquired)
     override fun toValue(values: List<Any?>) = ItemRow(values[0] as Long,values[1] as String,values[2] as java.time.LocalDate)
@@ -21,7 +40,10 @@ object Item:Table<ItemRow>("ITEM"), HasUpdateBuilder<ItemUpdateBuilder, ItemInse
 class ItemUpdateBuilder() : UpdateBuilderBase(Item) {
     fun isbn(value: String): ItemUpdateBuilder = put(Item.isbn, value)
     fun dateAcquired(value: java.time.LocalDate): ItemUpdateBuilder = put(Item.dateAcquired, value)
-
+    
+    /**
+     * FOR INTERNAL USE ONLY
+     */
     override fun updateRow(rowData: TableRowData<*, *>): Long {
       rowData as ItemRow
       add(Item.id, rowData.id)

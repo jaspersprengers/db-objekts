@@ -9,8 +9,22 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
+
+/**           
+ * Metadata object for db table COUNTRY.
+ *
+ * Primary key: id
+ *
+ * Foreign keys: [] 
+ */
 object Country:Table<CountryRow>("COUNTRY"), HasUpdateBuilder<CountryUpdateBuilder, CountryInsertBuilder> {
+    /**
+     * Represents db column CORE.COUNTRY.ID
+     */
     val id = com.dbobjekts.metadata.column.VarcharColumn(this, "ID")
+    /**
+     * Represents db column CORE.COUNTRY.NAME
+     */
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     override val columns: List<AnyColumn> = listOf(id,name)
     override fun toValue(values: List<Any?>) = CountryRow(values[0] as String,values[1] as String)
@@ -20,7 +34,10 @@ object Country:Table<CountryRow>("COUNTRY"), HasUpdateBuilder<CountryUpdateBuild
 class CountryUpdateBuilder() : UpdateBuilderBase(Country) {
     fun id(value: String): CountryUpdateBuilder = put(Country.id, value)
     fun name(value: String): CountryUpdateBuilder = put(Country.name, value)
-
+    
+    /**
+     * FOR INTERNAL USE ONLY
+     */
     override fun updateRow(rowData: TableRowData<*, *>): Long {
       rowData as CountryRow
       add(Country.id, rowData.id)

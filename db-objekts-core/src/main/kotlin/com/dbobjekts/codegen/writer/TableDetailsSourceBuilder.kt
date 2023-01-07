@@ -1,10 +1,8 @@
 package com.dbobjekts.codegen.writer
 
-import com.dbobjekts.codegen.metadata.DBColumnDefinition
-import com.dbobjekts.codegen.metadata.DBGeneratedPrimaryKey
-import com.dbobjekts.codegen.metadata.DBTableDefinition
-import com.dbobjekts.codegen.metadata.ReservedKeywords
 import com.dbobjekts.api.WriteQueryAccessors
+import com.dbobjekts.codegen.metadata.*
+import com.dbobjekts.codegen.metadata.DBGeneratedPrimaryKey
 import com.dbobjekts.metadata.column.NullableColumn
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
@@ -19,7 +17,7 @@ data class FieldData(
     val regularPK: Boolean
 )
 
-class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
+class TableDetailsSourceBuilder(val tableDefinition: DBTableDefinition) {
 
     private val tableName = tableDefinition.asClassName()
 
@@ -47,6 +45,21 @@ class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
         autoPrimaryKey = fields.filter { it.autoGenPK }.firstOrNull()
     }
 
+    fun sourceForTableComment(): String {
+        val fks =
+            tableDefinition.columns.filter { it is DBForeignKeyDefinition }.map { it as DBForeignKeyDefinition }
+                .map { "${it.schemaName.value}.${it.tableName.value}.${it.columnName.value} to ${it.parentSchema.value}.${it.parentTable.value}.${it.parentColumn.value}" }
+        return """
+            /**           
+             * Metadata object for db table ${tableDefinition.tableName}.
+             *
+             * Primary key: ${primaryKey?.field ?: "none"}
+             *
+             * Foreign keys: $fks 
+             */
+        """.trimIndent()
+    }
+
     fun sourceForToValue(): String {
         val elements = fields.mapIndexed { i, field ->
             "values[$i] as ${field.fieldType}"
@@ -57,6 +70,9 @@ class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
     fun sourceForUpdateRowMethod(): String {
         if (primaryKey == null)
             return """
+    /**
+     * Warning: this method will throw an Exception at runtime because the tables misses a single primary key. 
+     */
     override fun updateRow(rowData: TableRowData<*, *>): Long = 
       throw StatementBuilderException("Sorry, but you cannot use row-based updates for table ${tableName}. There must be exactly one column marked as primary key.")                
             """
@@ -65,7 +81,10 @@ class InsertMethodSourceBuilder(tableDefinition: DBTableDefinition) {
             "      add($tableName.${field.field}, rowData.${field.field})"
         }.joinToString("\n")
         val pkCol = primaryKey.field
-        val source = """
+        val source = """    
+    /**
+     * FOR INTERNAL USE ONLY
+     */
     override fun updateRow(rowData: TableRowData<*, *>): Long {
       rowData as ${tableName}Row
 $elements
@@ -77,7 +96,7 @@ $elements
 
     fun sourceForRowDataClass(): String {
         val elements = mutableListOf<String>()
-        if (autoPrimaryKey!=null)
+        if (autoPrimaryKey != null)
             elements += "val ${autoPrimaryKey.field}: ${autoPrimaryKey.fieldType} = 0"
 
         elements.addAll(allFieldsExceptAutoPK.map { f ->

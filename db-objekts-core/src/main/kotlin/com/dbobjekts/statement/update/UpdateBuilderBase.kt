@@ -46,7 +46,10 @@ abstract class UpdateBuilderBase(
         ct.put(col, value)
     }
 
-    abstract fun updateRow(tableRowData: TableRowData<*,*>): Long
+    /**
+     * FOR INTERNAL USE ONLY
+     */
+    abstract fun updateRow(rowData: TableRowData<*,*>): Long
 
     /**
      * Opens the whereclause for this update statement.

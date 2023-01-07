@@ -39,10 +39,14 @@ class TableSourcesBuilder(
 
 
     fun build(): String {
-        val updateMethodSourceBuilder = InsertMethodSourceBuilder(model)
+        val detailedSourceBuilder = TableDetailsSourceBuilder(model)
         strBuilder.append("package ${model.packageName}\n\n")
 
         fun generateField(column: DBColumnDefinition) {
+            val fk = if ( column is DBForeignKeyDefinition){
+                "\n     *\n     * Foreign key to ${column.parentSchema.value}.${column.parentTable.value}.${column.parentColumn.value}"
+            } else ""
+            strBuilder.appendLine("    /**\n     * Represents db column ${column.schemaName.value}.${column.tableName.value}.${column.columnName}$fk\n     */")
             strBuilder.appendLine("    val ${column.asFieldName()} = ${column.asFactoryMethod()}")
         }
 
@@ -65,22 +69,22 @@ class TableSourcesBuilder(
         classesToImport.forEach { importLineBuilder.add(it.canonicalName) }
 
         generateImportsForForeignKeys().forEach { importLineBuilder.add(it) }
-        strBuilder.append(importLineBuilder.build())
+        strBuilder.appendLine(importLineBuilder.build())
         strBuilder.appendLine()
         val tbl = model.asClassName()
+        strBuilder.appendLine(detailedSourceBuilder.sourceForTableComment())
         strBuilder.appendLine("""object $tbl:Table<${tbl}Row>("${model.tableName}"), $updateBuilderInterface<${tbl}UpdateBuilder, ${tbl}InsertBuilder> {""".trimMargin())
         model.columns.forEach {
-            //generateFieldComment(it)
+
             generateField(it)
         }
         val columnNames = model.columns.map { it.asFieldName() }.joinToString(",")
-
         strBuilder.appendLine("    override val columns: List<AnyColumn> = listOf($columnNames)")
-        strBuilder.appendLine(updateMethodSourceBuilder.sourceForToValue())
-        strBuilder.appendLine(updateMethodSourceBuilder.sourceForMetaDataVal())
+        strBuilder.appendLine(detailedSourceBuilder.sourceForToValue())
+        strBuilder.appendLine(detailedSourceBuilder.sourceForMetaDataVal())
         strBuilder.appendLine("}")
-        strBuilder.appendLine(updateMethodSourceBuilder.sourceForBuilderClasses())
-        strBuilder.appendLine(updateMethodSourceBuilder.sourceForRowDataClass())
+        strBuilder.appendLine(detailedSourceBuilder.sourceForBuilderClasses())
+        strBuilder.appendLine(detailedSourceBuilder.sourceForRowDataClass())
         return strBuilder.toString()
     }
 

@@ -1,19 +1,9 @@
 package com.dbobjekts.component
 
 import ColumnClasses
-import com.dbobjekts.api.Tuple2
-import com.dbobjekts.api.Tuple3
-import com.dbobjekts.metadata.ColumnFactory
-import com.dbobjekts.metadata.column.NonNullableColumn
-import com.dbobjekts.metadata.column.NumberAsBooleanColumn
-import com.dbobjekts.testdb.AddressType
-import com.dbobjekts.testdb.AddressTypeAsStringColumn
-import com.dbobjekts.testdb.NullableAddressTypeAsStringColumn
-import org.assertj.core.api.Assertions
+import com.dbobjekts.fixture.columns.NullableAddressTypeAsStringColumn
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import java.time.LocalDate
 
 class CustomSQLComponentTest {
 

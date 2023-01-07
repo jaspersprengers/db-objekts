@@ -9,10 +9,32 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
+
+/**           
+ * Metadata object for db table BOOK.
+ *
+ * Primary key: isbn
+ *
+ * Foreign keys: [LIBRARY.BOOK.AUTHOR_ID to LIBRARY.AUTHOR.ID] 
+ */
 object Book:Table<BookRow>("BOOK"), HasUpdateBuilder<BookUpdateBuilder, BookInsertBuilder> {
+    /**
+     * Represents db column LIBRARY.BOOK.ISBN
+     */
     val isbn = com.dbobjekts.metadata.column.VarcharColumn(this, "ISBN")
+    /**
+     * Represents db column LIBRARY.BOOK.TITLE
+     */
     val title = com.dbobjekts.metadata.column.VarcharColumn(this, "TITLE")
+    /**
+     * Represents db column LIBRARY.BOOK.AUTHOR_ID
+     *
+     * Foreign key to LIBRARY.AUTHOR.ID
+     */
     val authorId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "AUTHOR_ID", Author.id)
+    /**
+     * Represents db column LIBRARY.BOOK.PUBLISHED
+     */
     val published = com.dbobjekts.metadata.column.DateColumn(this, "PUBLISHED")
     override val columns: List<AnyColumn> = listOf(isbn,title,authorId,published)
     override fun toValue(values: List<Any?>) = BookRow(values[0] as String,values[1] as String,values[2] as Long,values[3] as java.time.LocalDate)
@@ -24,7 +46,10 @@ class BookUpdateBuilder() : UpdateBuilderBase(Book) {
     fun title(value: String): BookUpdateBuilder = put(Book.title, value)
     fun authorId(value: Long): BookUpdateBuilder = put(Book.authorId, value)
     fun published(value: java.time.LocalDate): BookUpdateBuilder = put(Book.published, value)
-
+    
+    /**
+     * FOR INTERNAL USE ONLY
+     */
     override fun updateRow(rowData: TableRowData<*, *>): Long {
       rowData as BookRow
       add(Book.isbn, rowData.isbn)

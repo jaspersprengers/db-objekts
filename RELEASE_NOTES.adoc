@@ -38,3 +38,4 @@ First alpha release
 * Aggregate functions in `BigDecimalColumn` return `BigDecimal`. Long or Double values means possible loss of range and precision.
 * Added sample schema `nations.sql` to mariadb module for component testing.
 * Manual commit and rollback checks for auto-commit mode.
+* Dokka on table and column metadata objects, providing the db name and foreign key references.

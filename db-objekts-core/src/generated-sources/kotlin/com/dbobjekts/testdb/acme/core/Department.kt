@@ -9,8 +9,22 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
+
+/**           
+ * Metadata object for db table DEPARTMENT.
+ *
+ * Primary key: id
+ *
+ * Foreign keys: [] 
+ */
 object Department:Table<DepartmentRow>("DEPARTMENT"), HasUpdateBuilder<DepartmentUpdateBuilder, DepartmentInsertBuilder> {
+    /**
+     * Represents db column CORE.DEPARTMENT.ID
+     */
     val id = com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "ID", "DEPARTMENT_SEQ")
+    /**
+     * Represents db column CORE.DEPARTMENT.NAME
+     */
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
     override val columns: List<AnyColumn> = listOf(id,name)
     override fun toValue(values: List<Any?>) = DepartmentRow(values[0] as Long,values[1] as String)
@@ -19,7 +33,10 @@ object Department:Table<DepartmentRow>("DEPARTMENT"), HasUpdateBuilder<Departmen
 
 class DepartmentUpdateBuilder() : UpdateBuilderBase(Department) {
     fun name(value: String): DepartmentUpdateBuilder = put(Department.name, value)
-
+    
+    /**
+     * FOR INTERNAL USE ONLY
+     */
     override fun updateRow(rowData: TableRowData<*, *>): Long {
       rowData as DepartmentRow
       add(Department.id, rowData.id)
