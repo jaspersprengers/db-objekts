@@ -31,7 +31,23 @@ class CatalogParser(
     )
 
 
-    fun createTableMetaData(conf: ParserConfig): List<TableMetaData> {
+    fun parseCatalog(): DBCatalogDefinition {
+        val tableDefinitions = createTableDefinitions(basePackage, tableMetaData)
+        val schemas: List<DBSchemaDefinition> = tableDefinitions
+            .groupBy { it.schema.value }
+            .map { entry ->
+                val schemaName = SchemaName(entry.key)
+                val packageForSchema = basePackage.createSubPackageForSchema(schemaName)
+                val (excluded, included) = parserConfig.exclusionConfigurer.partition(entry.value)
+                DBSchemaDefinition(packageForSchema, schemaName, included, excluded)
+            }
+        return DBCatalogDefinition(basePackage, parserConfig.vendor, schemas, "catalog_definition")
+            .also {
+                validateCatalogForMissingTables(it)
+            }
+    }
+
+    private fun createTableMetaData(conf: ParserConfig): List<TableMetaData> {
         val fkMetadata = metaDataExtractor.extractForeignKeyMetaDataFromDB(transactionManager)
         val foreignKeyProperties = parseForeignKeyMetaData(fkMetadata)
         val metaData = metaDataExtractor.extractColumnAndTableMetaDataFromDB(transactionManager)
@@ -44,7 +60,7 @@ class CatalogParser(
         })
     }
 
-    protected fun parseForeignKeyMetaData(metadata: List<ForeignKeyMetaDataRow>): List<ForeignKeyProperties> {
+    private fun parseForeignKeyMetaData(metadata: List<ForeignKeyMetaDataRow>): List<ForeignKeyProperties> {
         return metadata.map { row ->
             ForeignKeyProperties(
                 col = ColumnName(row.column),
@@ -57,7 +73,7 @@ class CatalogParser(
         }
     }
 
-    protected fun parseTableMetaDataForSchema(
+    private fun parseTableMetaDataForSchema(
         schema: String,
         foreignKeyProperties: List<ForeignKeyProperties>,
         metaData: List<TableMetaDataRow>
@@ -80,22 +96,6 @@ class CatalogParser(
         })
     }
 
-    fun parseCatalog(): DBCatalogDefinition {
-        val tableDefinitions = createTableDefinitions(basePackage, tableMetaData)
-        val schemas: List<DBSchemaDefinition> = tableDefinitions
-            .groupBy { it.schema.value }
-            .map { entry ->
-                val schemaName = SchemaName(entry.key)
-                val packageForSchema = basePackage.createSubPackageForSchema(schemaName)
-                val (excluded, included) = parserConfig.exclusionConfigurer.partition(entry.value)
-                DBSchemaDefinition(packageForSchema, schemaName, included, excluded)
-            }
-        return DBCatalogDefinition(basePackage, parserConfig.vendor, schemas, "catalog_definition")
-            .also {
-                validateCatalogForMissingTables(it)
-            }
-    }
-
     private fun validateCatalogForMissingTables(catalog: DBCatalogDefinition): DBCatalogDefinition {
         return if (!ValidateForeignKeyConstraints(catalog)) {
             val missing: List<Pair<String, String>> = ValidateForeignKeyConstraints.reportMissing(catalog)
@@ -110,7 +110,7 @@ class CatalogParser(
         } else catalog
     }
 
-    fun createTableDefinitions(basePackage: PackageName, tableMetaData: List<TableMetaData>): List<DBTableDefinition> {
+    private fun createTableDefinitions(basePackage: PackageName, tableMetaData: List<TableMetaData>): List<DBTableDefinition> {
         val keyManager = ForeignKeyManager(tableMetaData)
         val tableBuilders: List<TableBuilder> = tableMetaData.map({ table ->
             val packageForSchema = basePackage.createSubPackageForSchema(table.schema)

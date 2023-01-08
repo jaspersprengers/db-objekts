@@ -45,7 +45,7 @@ object AcmeDB {
             tr.execute("create table IF NOT EXISTS core.COUNTRY(id varchar(10) primary key, name varchar(50) not null)")
 
             tr.execute("create table IF NOT EXISTS core.ADDRESS(id BIGINT primary key, street varchar(50) not null, postcode varchar(10) null, country_id varchar(10) not null, foreign key(country_id) references core.country(id)  on DELETE CASCADE)")
-            tr.execute("create table if not exists core.EMPLOYEE_ADDRESS(employee_id BIGINT not null, address_id BIGINT not null,kind varchar(10) not null, primary key (employee_id, address_id, kind), foreign key(employee_id) references core.employee(id)  on DELETE CASCADE, foreign key(address_id) references core.ADDRESS(id)  on DELETE CASCADE)")
+            tr.execute("create table if not exists core.EMPLOYEE_ADDRESS(employee_id BIGINT not null, address_id BIGINT not null,kind varchar(10) not null, primary key (employee_id, address_id), foreign key(employee_id) references core.employee(id)  on DELETE CASCADE, foreign key(address_id) references core.ADDRESS(id)  on DELETE CASCADE)")
 
             tr.execute("create table IF NOT EXISTS core.DEPARTMENT(id BIGINT primary key, name varchar(50) not null)")
             tr.execute(

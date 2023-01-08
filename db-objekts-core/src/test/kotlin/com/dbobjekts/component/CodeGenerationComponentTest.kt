@@ -39,7 +39,6 @@ class CodeGenerationComponentTest {
             .setSequenceNameForPrimaryKey("core", "address", "id", "ADDRESS_SEQ")
             .setSequenceNameForPrimaryKey("core", "department", "id", "DEPARTMENT_SEQ")
 
-
         generator.configureColumnTypeMapping()
             .setColumnTypeForJDBCType("TINYINT(1)", NumberAsBooleanColumn::class.java)
             .setColumnTypeForName(table = "EMPLOYEE_ADDRESS", column = "KIND", columnType = AddressTypeAsStringColumn::class.java)
@@ -56,7 +55,7 @@ class CodeGenerationComponentTest {
 
     object LibrarySchemaResolver : SequenceForPrimaryKeyResolver {
         override fun invoke(properties: ColumnMappingProperties): String? =
-            if (properties.jdbcType == "BIGINT") properties.table.value + "_SEQ" else null
+            if (properties.schema.value.equals("library", true)  && properties.column.value == "ID") properties.table.value + "_SEQ" else null
     }
 
 
