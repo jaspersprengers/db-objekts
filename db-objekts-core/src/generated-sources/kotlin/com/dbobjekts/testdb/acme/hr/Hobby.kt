@@ -3,6 +3,7 @@ package com.dbobjekts.testdb.acme.hr
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
+import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -73,5 +74,7 @@ class HobbyInsertBuilder():InsertBuilderBase(){
 data class HobbyRow(
   val id: String,
   val name: String    
-) : TableRowData<HobbyUpdateBuilder, HobbyInsertBuilder>(Hobby.metadata())
+) : TableRowData<HobbyUpdateBuilder, HobbyInsertBuilder>(Hobby.metadata()){
+     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Hobby.id, id))
+}
         

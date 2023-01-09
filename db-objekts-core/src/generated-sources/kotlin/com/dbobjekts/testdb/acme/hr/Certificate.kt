@@ -3,6 +3,7 @@ package com.dbobjekts.testdb.acme.hr
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
+import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -83,5 +84,7 @@ data class CertificateRow(
 val id: Long = 0,
   val name: String,
   val employeeId: Long    
-) : TableRowData<CertificateUpdateBuilder, CertificateInsertBuilder>(Certificate.metadata())
+) : TableRowData<CertificateUpdateBuilder, CertificateInsertBuilder>(Certificate.metadata()){
+     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Certificate.id, id))
+}
         

@@ -3,6 +3,7 @@ package com.dbobjekts.testdb.acme.core
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
+import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -73,5 +74,7 @@ class EmployeeDepartmentInsertBuilder():InsertBuilderBase(){
 data class EmployeeDepartmentRow(
   val employeeId: Long,
   val departmentId: Long    
-) : TableRowData<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder>(EmployeeDepartment.metadata())
+) : TableRowData<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder>(EmployeeDepartment.metadata()){
+     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(EmployeeDepartment.employeeId, employeeId),Pair(EmployeeDepartment.departmentId, departmentId))
+}
         

@@ -6,7 +6,7 @@ import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.TableOrJoin
 import com.dbobjekts.metadata.joins.TableJoinChain
-import com.dbobjekts.metadata.column.Column
+import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
 import com.dbobjekts.statement.customsql.CustomSQLStatementBuilder
 import com.dbobjekts.statement.customsql.SQLStatementExecutor
 import com.dbobjekts.statement.delete.DeleteStatementExecutor
@@ -89,6 +89,26 @@ class Transaction(internal val connection: ConnectionAdapter) {
         semaphore.claim("update")
         inserter.semaphore = semaphore
         return inserter.insertRow(rowData)
+    }
+
+    fun <U : UpdateBuilderBase, I : InsertBuilderBase, T : TableRowData<U, I>> save(rowData: T): Long {
+        return if (rowData.primaryKeys.isEmpty()) {
+            insert(rowData)
+        } else if (rowData.primaryKeys.any { it.first is IsGeneratedPrimaryKey }) {
+            val (_, value) = rowData.primaryKeys.first()
+            val id = value.toString().toLong()
+            if (id > 0) update(rowData) else insert(rowData)
+        } else {
+            //check if row exists
+            val pks = rowData.primaryKeys
+            val (column, value) = pks[0]
+            val schema = column.table.schemaName().value
+            val table = column.table.tableName.value
+            val columnNames = pks.map { it.first.nameInTable }
+            val conditions = columnNames.map { "$it = ?" }.joinToString(" AND ")
+            val exists = sql("select 1 from $schema.$table where $conditions", pks.map { it.second }).withResultTypes().int().firstOrNull()
+            if (exists != null) update(rowData) else insert(rowData)
+        }
     }
 
     /**

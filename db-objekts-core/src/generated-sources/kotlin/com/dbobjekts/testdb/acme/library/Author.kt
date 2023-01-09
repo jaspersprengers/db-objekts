@@ -3,6 +3,7 @@ package com.dbobjekts.testdb.acme.library
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
+import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -78,5 +79,7 @@ data class AuthorRow(
 val id: Long = 0,
   val name: String,
   val bio: String?    
-) : TableRowData<AuthorUpdateBuilder, AuthorInsertBuilder>(Author.metadata())
+) : TableRowData<AuthorUpdateBuilder, AuthorInsertBuilder>(Author.metadata()){
+     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Author.id, id))
+}
         

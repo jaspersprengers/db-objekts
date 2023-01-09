@@ -8,6 +8,7 @@ import com.dbobjekts.codegen.metadata.DBTableDefinition
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.api.exception.StatementBuilderException
+import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
@@ -49,6 +50,7 @@ class TableSourcesBuilder(
         val classesToImport = listOf(
             Table::class.java,
             TableRowData::class.java,
+            IsGeneratedPrimaryKey::class.java,
             StatementBuilderException::class.java,
             WriteQueryAccessors::class.java,
             HasUpdateBuilder::class.java,

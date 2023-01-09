@@ -3,6 +3,7 @@ package com.dbobjekts.testdb.acme.core
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
+import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -602,5 +603,7 @@ val id: Long = 0,
   val addressIntNil: com.dbobjekts.fixture.columns.AddressType,
   val addressString: com.dbobjekts.fixture.columns.AddressType,
   val addressStringNil: com.dbobjekts.fixture.columns.AddressType    
-) : TableRowData<AllTypesUpdateBuilder, AllTypesInsertBuilder>(AllTypes.metadata())
+) : TableRowData<AllTypesUpdateBuilder, AllTypesInsertBuilder>(AllTypes.metadata()){
+     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(AllTypes.id, id))
+}
         

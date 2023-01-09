@@ -15,7 +15,8 @@ data class FieldData(
     val defaultClause: String,
     val nullable: Boolean,
     val autoGenPK: Boolean,
-    val regularPK: Boolean
+    val singlePrimaryKey: Boolean,
+    val compositePrimaryKey: Boolean
 )
 
 class TableDetailsSourceBuilder(val tableDefinition: DBTableDefinition) {
@@ -25,7 +26,8 @@ class TableDetailsSourceBuilder(val tableDefinition: DBTableDefinition) {
     val fields: List<FieldData>
     val allFieldsExceptAutoPK: List<FieldData>
     val nonNullFields: List<FieldData>
-    val primaryKey: FieldData?
+    val singlePrimaryKey: FieldData?
+    val allPrimaryKeys: List<FieldData>
     val autoPrimaryKey: FieldData?
 
     init {
@@ -36,11 +38,12 @@ class TableDetailsSourceBuilder(val tableDefinition: DBTableDefinition) {
             val dataType = StringUtil.classToString(colDef.column.valueClass) + (if (isNullable) "?" else "")
             val defaultClause: String = getDefaultValue(colDef)?.let { " = $it" } ?: ""
             val autoGenPk = colDef is DBGeneratedPrimaryKey
-            FieldData(fieldName, colDef.columnName.value, dataType, defaultClause, isNullable, autoGenPk, colDef.isPrimaryKey)
+            FieldData(fieldName, colDef.columnName.value, dataType, defaultClause, isNullable, autoGenPk, colDef.isSinglePrimaryKey, colDef.isCompositePrimaryKey)
         }
+        allPrimaryKeys = fields.filter { it.singlePrimaryKey || it.compositePrimaryKey }
         allFieldsExceptAutoPK = fields.filterNot { it.autoGenPK }
         nonNullFields = allFieldsExceptAutoPK.filterNot { it.nullable || it.autoGenPK }
-        primaryKey = fields.filter { it.regularPK || it.autoGenPK }.firstOrNull()
+        singlePrimaryKey = fields.filter { it.singlePrimaryKey}.firstOrNull()
         autoPrimaryKey = fields.filter { it.autoGenPK }.firstOrNull()
     }
 
@@ -49,7 +52,7 @@ class TableDetailsSourceBuilder(val tableDefinition: DBTableDefinition) {
             tableDefinition.columns.filter { it is DBForeignKeyDefinition }.map { it as DBForeignKeyDefinition }
                 .map { "${it.columnName.value} to ${it.parentSchema.value}.${it.parentTable.value}.${it.parentColumn.value}" }
         val composite = tableDefinition.columns.filter { it.isCompositePrimaryKey }
-        val pks = if (composite.isEmpty()) (primaryKey?.columnName ?: "none") else composite.map { it.columnName.value }
+        val pks = if (composite.isEmpty()) (singlePrimaryKey?.columnName ?: "none") else composite.map { it.columnName.value }
         return """
             /**           
              * Auto-generated metadata object for db table ${tableDefinition.schema.value}.${tableDefinition.tableName}.
@@ -71,7 +74,7 @@ class TableDetailsSourceBuilder(val tableDefinition: DBTableDefinition) {
     }
 
     fun sourceForUpdateRowMethod(): String {
-        if (primaryKey == null)
+        if (singlePrimaryKey == null)
             return """
     /**
      * Warning: this method will throw a StatementBuilderException at runtime because $tableName does not have a primary key, or has a composite one.
@@ -83,7 +86,7 @@ class TableDetailsSourceBuilder(val tableDefinition: DBTableDefinition) {
         val elements = fields.mapIndexed { _, field ->
             "      add($tableName.${field.field}, rowData.${field.field})"
         }.joinToString("\n")
-        val pkCol = primaryKey.field
+        val pkCol = singlePrimaryKey.field
         val source = """    
     /**
      * FOR INTERNAL USE ONLY
@@ -105,11 +108,14 @@ $elements
         elements.addAll(allFieldsExceptAutoPK.map { f ->
             "  val ${f.field}: ${f.fieldType}"
         })
+        val pks = allPrimaryKeys.map { "Pair($tableName.${it.field}, ${it.field})" }.joinToString(",")
         val fieldStr = elements.joinToString(",\n")
         val source = """
 data class ${tableName}Row(
 $fieldStr    
-) : TableRowData<${tableName}UpdateBuilder, ${tableName}InsertBuilder>(${tableName}.metadata())
+) : TableRowData<${tableName}UpdateBuilder, ${tableName}InsertBuilder>(${tableName}.metadata()){
+     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>($pks)
+}
         """
         return source
     }

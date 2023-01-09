@@ -1,15 +1,13 @@
 package com.dbobjekts.metadata
 
 import com.dbobjekts.api.*
-import com.dbobjekts.api.exception.CodeGenerationException
 import com.dbobjekts.api.exception.DBObjektsException
 import com.dbobjekts.metadata.column.IsForeignKey
-import com.dbobjekts.metadata.column.IsPrimaryKey
+import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
 import com.dbobjekts.metadata.joins.JoinFactory
 import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.util.Errors
 import com.dbobjekts.util.ValidateDBObjectName
-import java.lang.IllegalStateException
 
 /**
  * Parent of all the generated [Table] objects that represent the tables in the database and act as metadata for the query engine.
@@ -62,10 +60,10 @@ abstract class Table<I> (
     /**
      * The Table's primary key column, or None if no Column is configured as a primary key.
      */
-    internal fun primaryKey(): IsPrimaryKey? {
-        val idCols = columns.filter { it is IsPrimaryKey }
+    internal fun primaryKey(): IsGeneratedPrimaryKey? {
+        val idCols = columns.filter { it is IsGeneratedPrimaryKey }
         Errors.require(idCols.size < 2, "table cannot have more than one primary key")
-        return if (idCols.isNotEmpty()) idCols[0] as IsPrimaryKey else null
+        return if (idCols.isNotEmpty()) idCols[0] as IsGeneratedPrimaryKey else null
     }
 
     /**

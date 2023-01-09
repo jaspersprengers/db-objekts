@@ -30,8 +30,8 @@ object AcmeDB {
         tm.newTransaction { tr ->
             tr.execute("CREATE SCHEMA if not exists core")
             tr.execute("CREATE SCHEMA if not exists hr")
-
-            tr.execute("CREATE SEQUENCE IF NOT EXISTS core.EMPLOYEE_SEQ START WITH 100")
+            //deliberaty use a different sequence pattern
+            tr.execute("CREATE SEQUENCE IF NOT EXISTS core.EMPLOYEE_SEQUENCE START WITH 100")
             tr.execute("CREATE SEQUENCE IF NOT EXISTS core.ADDRESS_SEQ START WITH 100")
             tr.execute("CREATE SEQUENCE IF NOT EXISTS core.DEPARTMENT_SEQ START WITH 100")
 

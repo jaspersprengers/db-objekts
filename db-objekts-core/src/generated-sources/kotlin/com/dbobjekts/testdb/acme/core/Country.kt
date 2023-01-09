@@ -3,6 +3,7 @@ package com.dbobjekts.testdb.acme.core
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
+import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -73,5 +74,7 @@ class CountryInsertBuilder():InsertBuilderBase(){
 data class CountryRow(
   val id: String,
   val name: String    
-) : TableRowData<CountryUpdateBuilder, CountryInsertBuilder>(Country.metadata())
+) : TableRowData<CountryUpdateBuilder, CountryInsertBuilder>(Country.metadata()){
+     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Country.id, id))
+}
         

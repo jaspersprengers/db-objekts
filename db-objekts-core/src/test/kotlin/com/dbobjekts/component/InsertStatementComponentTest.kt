@@ -5,7 +5,6 @@ import com.dbobjekts.testdb.acme.core.*
 import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.*
 import java.time.LocalDate
 
 class InsertStatementComponentTest {

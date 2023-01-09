@@ -82,16 +82,22 @@ internal class TableBuilder(
         table: TableName,
         columnMetaData: List<ColumnMetaData>
     ): TableBuilder {
-        val compositePk: Boolean = columnMetaData.filter { it.isPrimaryKey }.count() > 1
+        val tableHasCompositePK: Boolean = columnMetaData.filter { it.isPrimaryKey }.count() > 1
         columnMetaData.forEach { props ->
-            findPrimaryKey(props, compositePk)?.let { pk ->
+            findPrimaryKey(props, tableHasCompositePK)?.let { pk ->
                 log.debug("Adding primary key for ${pk.tableName}.${pk.columnName}")
                 columns += pk
             } ?: getForeignKeyDefinition(props)?.let { fk ->
                 log.debug("Adding foreign key for ${fk.tableName}.${fk.columnName}")
                 columns += fk
             } ?: columnTypeResolver.mapDataType(ColumnMappingProperties.fromMetaData(schema, table, props)).let { colType ->
-                columns += DBColumnDefinition(schema, tableName, props.columnName, colType, false, props.isPrimaryKey, props.remarks)
+                columns += DBColumnDefinition(schema,
+                    tableName,
+                    props.columnName,
+                    colType,
+                    false,
+                    tableHasCompositePK && props.isPrimaryKey,
+                    props.remarks)
             }
         }
         return this

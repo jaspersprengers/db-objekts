@@ -3,6 +3,7 @@ package com.dbobjekts.testdb.acme.core
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
+import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.api.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -120,5 +121,7 @@ val id: Long = 0,
   val dateOfBirth: java.time.LocalDate,
   val children: Int?,
   val hobbyId: String?    
-) : TableRowData<EmployeeUpdateBuilder, EmployeeInsertBuilder>(Employee.metadata())
+) : TableRowData<EmployeeUpdateBuilder, EmployeeInsertBuilder>(Employee.metadata()){
+     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Employee.id, id))
+}
         
