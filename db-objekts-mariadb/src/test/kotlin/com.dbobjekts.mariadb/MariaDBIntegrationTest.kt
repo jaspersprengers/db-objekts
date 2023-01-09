@@ -45,7 +45,7 @@ class MariaDBIntegrationTest {
             dataSource = container.createDataSource()
             tm = TransactionManager.builder()
                 .withDataSource(dataSource)
-                .withCatalog(CatalogDefinition)
+                //.withCatalog(CatalogDefinition)
                 .build()
         }
     }

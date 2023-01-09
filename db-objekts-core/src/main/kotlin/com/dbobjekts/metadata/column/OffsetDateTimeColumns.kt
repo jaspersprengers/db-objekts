@@ -19,7 +19,7 @@ class OffsetDateTimeColumn(table: AnyTable, name: String, aggregateType: Aggrega
 
     override fun distinct() = OffsetDateTimeColumn(table, nameInTable, AggregateType.DISTINCT)
 
-    override val nullable: NullableColumn<OffsetDateTime?> = NullableOffsetDateTimeColumn(table, name)
+    override val nullable: NullableColumn<OffsetDateTime?> = NullableOffsetDateTimeColumn(table, name, aggregateType)
     override fun getValue(position: Int, resultSet: ResultSet): OffsetDateTime? = resultSet.getObject(position, OffsetDateTime::class.java)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: OffsetDateTime) {

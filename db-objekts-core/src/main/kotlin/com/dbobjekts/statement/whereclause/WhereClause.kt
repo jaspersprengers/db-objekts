@@ -2,6 +2,7 @@ package com.dbobjekts.statement.whereclause
 
 import com.dbobjekts.api.AnyCondition
 import com.dbobjekts.api.AnySqlParameter
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.And
 import com.dbobjekts.statement.SQLOptions
 import com.dbobjekts.statement.SqlParameter
@@ -24,9 +25,16 @@ class WhereClause(
     }
 
     fun getParameters(): List<AnySqlParameter> {
-        val flattenedConditions = getFlattenedConditions().filter { it.values != null }
+        val flattenedConditions = getFlattenedConditions().filter { validateCondition(it).values != null }
         val params: List<AnySqlParameter> = flattenedConditions.flatMap { SqlParameter.fromWhereClauseCondition(it) }
         return params.mapIndexed { index, sqlParameter -> sqlParameter.copy(oneBasedPosition = index + 1) }
+    }
+
+    private fun validateCondition(condition: AnyCondition): AnyCondition {
+        if (condition.column.aggregateType != null) {
+            throw StatementBuilderException("Cannot use aggregate method ${condition.column.aggregateType} for column ${condition.column.nameInTable} in a whereclause.")
+        }
+        return condition
     }
 
     fun getFlattenedConditions(): List<AnyCondition> {

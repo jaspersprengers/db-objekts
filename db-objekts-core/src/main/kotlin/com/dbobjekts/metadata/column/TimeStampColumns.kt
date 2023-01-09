@@ -19,7 +19,7 @@ class TimeStampColumn(table: AnyTable, name: String, aggregateType: AggregateTyp
 
     override fun distinct() = TimeStampColumn(table, nameInTable, AggregateType.DISTINCT)
 
-    override val nullable: NullableColumn<Instant?> = NullableTimeStampColumn(table, name)
+    override val nullable: NullableColumn<Instant?> = NullableTimeStampColumn(table, name, aggregateType)
     override fun getValue(position: Int, resultSet: ResultSet): Instant? = resultSet.getTimestamp(position)?.let { DateUtil.toInstant(it) }
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Instant) =

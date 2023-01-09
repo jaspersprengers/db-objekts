@@ -21,7 +21,7 @@ class DoubleColumn(table: AnyTable, name: String, aggregateType: AggregateType?)
     override fun min() = DoubleColumn(table, nameInTable, AggregateType.MIN)
     override fun max() = DoubleColumn(table, nameInTable, AggregateType.MAX)
 
-    override val nullable: NullableColumn<Double?> = NullableDoubleColumn(table, name)
+    override val nullable: NullableColumn<Double?> = NullableDoubleColumn(table, name, aggregateType)
     override fun getValue(position: Int, resultSet: ResultSet): Double = resultSet.getDouble(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Double) =

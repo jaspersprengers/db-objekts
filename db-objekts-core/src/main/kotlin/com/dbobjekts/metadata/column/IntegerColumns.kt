@@ -15,7 +15,7 @@ open class IntegerColumn(table: AnyTable, name: String, aggregateType: Aggregate
     override fun min() = LongColumn(table, nameInTable, AggregateType.MIN)
     override fun max() = LongColumn(table, nameInTable, AggregateType.MAX)
 
-    override val nullable: NullableColumn<Int?> = NullableIntegerColumn(table, name, null)
+    override val nullable: NullableColumn<Int?> = NullableIntegerColumn(table, name, aggregateType)
     override fun setValue(position: Int, statement: PreparedStatement, value: Int) = statement.setInt(position, value)
     override fun getValue(position: Int, resultSet: ResultSet): Int = resultSet.getInt(position)
 }

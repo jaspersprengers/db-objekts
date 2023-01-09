@@ -44,7 +44,7 @@ class MemberUpdateBuilder() : UpdateBuilderBase(Member) {
       rowData as MemberRow
       add(Member.id, rowData.id)
       add(Member.name, rowData.name)
-      return where (Member.id.eq(rowData.id))
+      return where(Member.id.eq(rowData.id))
     }    
         
 }

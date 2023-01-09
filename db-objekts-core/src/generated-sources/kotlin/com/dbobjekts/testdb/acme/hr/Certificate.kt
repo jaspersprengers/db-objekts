@@ -54,7 +54,7 @@ class CertificateUpdateBuilder() : UpdateBuilderBase(Certificate) {
       add(Certificate.id, rowData.id)
       add(Certificate.name, rowData.name)
       add(Certificate.employeeId, rowData.employeeId)
-      return where (Certificate.id.eq(rowData.id))
+      return where(Certificate.id.eq(rowData.id))
     }    
         
 }

@@ -51,13 +51,19 @@ class LoanUpdateBuilder() : UpdateBuilderBase(Loan) {
     fun memberId(value: Long): LoanUpdateBuilder = put(Loan.memberId, value)
     fun dateLoaned(value: java.time.LocalDate): LoanUpdateBuilder = put(Loan.dateLoaned, value)
     fun dateReturned(value: java.time.LocalDate?): LoanUpdateBuilder = put(Loan.dateReturned, value)
-
+    
     /**
-     * Warning: this method will throw a StatementBuilderException at runtime because Loan does not have a primary key, or has a composite one.
+     * FOR INTERNAL USE ONLY
      */
-    override fun updateRow(rowData: TableRowData<*, *>): Long = 
-      throw StatementBuilderException("Sorry, but you cannot use row-based updates for table Loan. There must be exactly one column marked as primary key.")                
-            
+    override fun updateRow(rowData: TableRowData<*, *>): Long {
+      rowData as LoanRow
+      add(Loan.itemId, rowData.itemId)
+      add(Loan.memberId, rowData.memberId)
+      add(Loan.dateLoaned, rowData.dateLoaned)
+      add(Loan.dateReturned, rowData.dateReturned)
+      return where(Loan.itemId.eq(rowData.itemId).and(Loan.memberId.eq(rowData.memberId)).and(Loan.dateLoaned.eq(rowData.dateLoaned)))
+    }    
+        
 }
 
 class LoanInsertBuilder():InsertBuilderBase(){

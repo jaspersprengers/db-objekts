@@ -45,7 +45,7 @@ class HobbyUpdateBuilder() : UpdateBuilderBase(Hobby) {
       rowData as HobbyRow
       add(Hobby.id, rowData.id)
       add(Hobby.name, rowData.name)
-      return where (Hobby.id.eq(rowData.id))
+      return where(Hobby.id.eq(rowData.id))
     }    
         
 }

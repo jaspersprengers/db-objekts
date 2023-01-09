@@ -46,13 +46,18 @@ class EmployeeAddressUpdateBuilder() : UpdateBuilderBase(EmployeeAddress) {
     fun employeeId(value: Long): EmployeeAddressUpdateBuilder = put(EmployeeAddress.employeeId, value)
     fun addressId(value: Long): EmployeeAddressUpdateBuilder = put(EmployeeAddress.addressId, value)
     fun kind(value: com.dbobjekts.fixture.columns.AddressType): EmployeeAddressUpdateBuilder = put(EmployeeAddress.kind, value)
-
+    
     /**
-     * Warning: this method will throw a StatementBuilderException at runtime because EmployeeAddress does not have a primary key, or has a composite one.
+     * FOR INTERNAL USE ONLY
      */
-    override fun updateRow(rowData: TableRowData<*, *>): Long = 
-      throw StatementBuilderException("Sorry, but you cannot use row-based updates for table EmployeeAddress. There must be exactly one column marked as primary key.")                
-            
+    override fun updateRow(rowData: TableRowData<*, *>): Long {
+      rowData as EmployeeAddressRow
+      add(EmployeeAddress.employeeId, rowData.employeeId)
+      add(EmployeeAddress.addressId, rowData.addressId)
+      add(EmployeeAddress.kind, rowData.kind)
+      return where(EmployeeAddress.employeeId.eq(rowData.employeeId).and(EmployeeAddress.addressId.eq(rowData.addressId)))
+    }    
+        
 }
 
 class EmployeeAddressInsertBuilder():InsertBuilderBase(){

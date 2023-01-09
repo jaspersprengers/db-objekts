@@ -380,7 +380,7 @@ class AllTypesUpdateBuilder() : UpdateBuilderBase(AllTypes) {
       add(AllTypes.addressIntNil, rowData.addressIntNil)
       add(AllTypes.addressString, rowData.addressString)
       add(AllTypes.addressStringNil, rowData.addressStringNil)
-      return where (AllTypes.id.eq(rowData.id))
+      return where(AllTypes.id.eq(rowData.id))
     }    
         
 }

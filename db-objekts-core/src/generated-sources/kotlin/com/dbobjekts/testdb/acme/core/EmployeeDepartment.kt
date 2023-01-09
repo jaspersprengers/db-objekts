@@ -41,13 +41,17 @@ object EmployeeDepartment:Table<EmployeeDepartmentRow>("EMPLOYEE_DEPARTMENT"), H
 class EmployeeDepartmentUpdateBuilder() : UpdateBuilderBase(EmployeeDepartment) {
     fun employeeId(value: Long): EmployeeDepartmentUpdateBuilder = put(EmployeeDepartment.employeeId, value)
     fun departmentId(value: Long): EmployeeDepartmentUpdateBuilder = put(EmployeeDepartment.departmentId, value)
-
+    
     /**
-     * Warning: this method will throw a StatementBuilderException at runtime because EmployeeDepartment does not have a primary key, or has a composite one.
+     * FOR INTERNAL USE ONLY
      */
-    override fun updateRow(rowData: TableRowData<*, *>): Long = 
-      throw StatementBuilderException("Sorry, but you cannot use row-based updates for table EmployeeDepartment. There must be exactly one column marked as primary key.")                
-            
+    override fun updateRow(rowData: TableRowData<*, *>): Long {
+      rowData as EmployeeDepartmentRow
+      add(EmployeeDepartment.employeeId, rowData.employeeId)
+      add(EmployeeDepartment.departmentId, rowData.departmentId)
+      return where(EmployeeDepartment.employeeId.eq(rowData.employeeId).and(EmployeeDepartment.departmentId.eq(rowData.departmentId)))
+    }    
+        
 }
 
 class EmployeeDepartmentInsertBuilder():InsertBuilderBase(){

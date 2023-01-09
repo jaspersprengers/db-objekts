@@ -44,7 +44,7 @@ class DepartmentUpdateBuilder() : UpdateBuilderBase(Department) {
       rowData as DepartmentRow
       add(Department.id, rowData.id)
       add(Department.name, rowData.name)
-      return where (Department.id.eq(rowData.id))
+      return where(Department.id.eq(rowData.id))
     }    
         
 }

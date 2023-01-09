@@ -59,7 +59,7 @@ class BookUpdateBuilder() : UpdateBuilderBase(Book) {
       add(Book.title, rowData.title)
       add(Book.authorId, rowData.authorId)
       add(Book.published, rowData.published)
-      return where (Book.isbn.eq(rowData.isbn))
+      return where(Book.isbn.eq(rowData.isbn))
     }    
         
 }

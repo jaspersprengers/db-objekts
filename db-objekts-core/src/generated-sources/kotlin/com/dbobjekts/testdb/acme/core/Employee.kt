@@ -78,7 +78,7 @@ class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
       add(Employee.dateOfBirth, rowData.dateOfBirth)
       add(Employee.children, rowData.children)
       add(Employee.hobbyId, rowData.hobbyId)
-      return where (Employee.id.eq(rowData.id))
+      return where(Employee.id.eq(rowData.id))
     }    
         
 }

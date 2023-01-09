@@ -21,7 +21,7 @@ class FloatColumn(table: AnyTable, name: String, aggregateType: AggregateType?) 
     override fun min() = DoubleColumn(table, nameInTable, AggregateType.MIN)
     override fun max() = DoubleColumn(table, nameInTable, AggregateType.MAX)
 
-    override val nullable: NullableColumn<Float?> = NullableFloatColumn(table, name)
+    override val nullable: NullableColumn<Float?> = NullableFloatColumn(table, name, aggregateType)
     override fun getValue(position: Int, resultSet: ResultSet): Float = resultSet.getFloat(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Float) =

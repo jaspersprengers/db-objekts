@@ -4,6 +4,7 @@ import com.dbobjekts.fixture.columns.AddressType
 import com.dbobjekts.testdb.acme.core.*
 import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.*
 import java.time.LocalDate
 
@@ -46,6 +47,11 @@ class InsertStatementComponentTest {
                 hobbyId = "c"
             )
             val johnsId = tr.insert(row)
+            //try to insert it again and it will fail
+            assertThatThrownBy {
+                tr.insert(row.copy(id = johnsId))
+            }.hasMessage("Row data object 'EmployeeRow' has non-zero auto-generated primary key. Therefore it must exist already in the db and you cannot insert it.")
+
             val addressId = tr.insert(AddressRow(street = "Zuidhoek", postcode = "5591HA", countryId = "nl"))
             tr.insert(EmployeeAddressRow(johnsId, addressId, AddressType.HOME))
 

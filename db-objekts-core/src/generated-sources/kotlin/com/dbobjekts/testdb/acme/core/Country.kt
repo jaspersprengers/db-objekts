@@ -45,7 +45,7 @@ class CountryUpdateBuilder() : UpdateBuilderBase(Country) {
       rowData as CountryRow
       add(Country.id, rowData.id)
       add(Country.name, rowData.name)
-      return where (Country.id.eq(rowData.id))
+      return where(Country.id.eq(rowData.id))
     }    
         
 }

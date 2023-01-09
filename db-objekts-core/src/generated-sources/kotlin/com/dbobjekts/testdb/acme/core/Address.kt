@@ -58,7 +58,7 @@ class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
       add(Address.street, rowData.street)
       add(Address.postcode, rowData.postcode)
       add(Address.countryId, rowData.countryId)
-      return where (Address.id.eq(rowData.id))
+      return where(Address.id.eq(rowData.id))
     }    
         
 }

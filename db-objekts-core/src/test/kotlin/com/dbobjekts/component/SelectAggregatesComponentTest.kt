@@ -31,6 +31,14 @@ class SelectAggregatesComponentTest {
     }
 
     @Test
+    fun `use aggregate in whereclause fails`() {
+        tm {
+            Assertions.assertThatThrownBy { it.select(e.name, e.salary.avg()).where(e.salary.avg().gt(100.0)).asList() }
+                .hasMessage("Cannot use aggregate method AVG for column SALARY in a whereclause.")
+        }
+    }
+
+    @Test
     fun `use two aggregates columns fails`() {
         tm {
             Assertions.assertThatThrownBy { it.select(e.name, e.salary.avg(), e.children.sum()).asList() }
@@ -120,6 +128,11 @@ class SelectAggregatesComponentTest {
             assertThat(name).isEqualTo("Information Technology")
             assertThat(kiddos).isEqualTo(5)
         }
+    }
+
+    @Test
+    fun `use same column in aggregate as well as whereclause`() {
+        tm { assertThat(it.select(e.salary.max().nullable).where(e.salary.gt(40000.0)).firstOrNull()).isNull() }
     }
 
     //MIN operations

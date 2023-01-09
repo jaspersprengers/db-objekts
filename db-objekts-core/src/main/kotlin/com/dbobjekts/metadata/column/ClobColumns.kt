@@ -18,7 +18,7 @@ class ClobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
 
     override fun distinct() = ClobColumn(table, nameInTable, AggregateType.DISTINCT)
 
-    override val nullable: NullableColumn<Clob?> = NullableClobColumn(table, name)
+    override val nullable: NullableColumn<Clob?> = NullableClobColumn(table, name, aggregateType)
     override fun getValue(position: Int, resultSet: ResultSet): Clob? = resultSet.getClob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Clob) =
         statement.setClob(position, value)

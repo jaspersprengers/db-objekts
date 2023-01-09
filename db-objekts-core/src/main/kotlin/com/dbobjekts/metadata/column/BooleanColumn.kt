@@ -16,7 +16,7 @@ class BooleanColumn(table: AnyTable, name: String, aggregateType: AggregateType?
 
     override fun distinct() = BooleanColumn(table, nameInTable, AggregateType.DISTINCT)
 
-    override val nullable: NullableColumn<Boolean?> = NullableBooleanColumn(table, name)
+    override val nullable: NullableColumn<Boolean?> = NullableBooleanColumn(table, name, aggregateType)
     override fun getValue(position: Int, resultSet: ResultSet): Boolean = resultSet.getBoolean(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Boolean) =
@@ -41,7 +41,7 @@ class NumberAsBooleanColumn(table: AnyTable, name: String, aggregateType: Aggreg
 
     override fun distinct() = NumberAsBooleanColumn(table, nameInTable, AggregateType.DISTINCT)
 
-    override val nullable: NullableColumn<Boolean?> = NullableNumberAsBooleanColumn(table, name)
+    override val nullable: NullableColumn<Boolean?> = NullableNumberAsBooleanColumn(table, name, aggregateType)
     override fun getValue(position: Int, resultSet: ResultSet): Boolean = resultSet.getInt(position) == 1
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Boolean) =

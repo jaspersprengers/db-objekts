@@ -52,7 +52,7 @@ class ItemUpdateBuilder() : UpdateBuilderBase(Item) {
       add(Item.id, rowData.id)
       add(Item.isbn, rowData.isbn)
       add(Item.dateAcquired, rowData.dateAcquired)
-      return where (Item.id.eq(rowData.id))
+      return where(Item.id.eq(rowData.id))
     }    
         
 }

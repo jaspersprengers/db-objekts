@@ -19,7 +19,7 @@ class TimeColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
 
     override fun distinct() = TimeColumn(table, nameInTable, AggregateType.DISTINCT)
 
-    override val nullable: NullableColumn<LocalTime?> = NullableTimeColumn(table, name)
+    override val nullable: NullableColumn<LocalTime?> = NullableTimeColumn(table, name, aggregateType)
     fun of(hour: Int, minutes: Int, seconds: Int): ColumnAndValue<LocalTime> = create(LocalTime.of(hour, minutes, seconds))
     override fun getValue(position: Int, resultSet: ResultSet): LocalTime? = resultSet.getTime(position)?.let { DateUtil.toLocalTime(it) }
 

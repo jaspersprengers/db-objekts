@@ -50,7 +50,7 @@ class AuthorUpdateBuilder() : UpdateBuilderBase(Author) {
       add(Author.id, rowData.id)
       add(Author.name, rowData.name)
       add(Author.bio, rowData.bio)
-      return where (Author.id.eq(rowData.id))
+      return where(Author.id.eq(rowData.id))
     }    
         
 }

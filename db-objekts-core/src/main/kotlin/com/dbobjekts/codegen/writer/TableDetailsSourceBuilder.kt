@@ -38,12 +38,21 @@ class TableDetailsSourceBuilder(val tableDefinition: DBTableDefinition) {
             val dataType = StringUtil.classToString(colDef.column.valueClass) + (if (isNullable) "?" else "")
             val defaultClause: String = getDefaultValue(colDef)?.let { " = $it" } ?: ""
             val autoGenPk = colDef is DBGeneratedPrimaryKey
-            FieldData(fieldName, colDef.columnName.value, dataType, defaultClause, isNullable, autoGenPk, colDef.isSinglePrimaryKey, colDef.isCompositePrimaryKey)
+            FieldData(
+                fieldName,
+                colDef.columnName.value,
+                dataType,
+                defaultClause,
+                isNullable,
+                autoGenPk,
+                colDef.isSinglePrimaryKey,
+                colDef.isCompositePrimaryKey
+            )
         }
         allPrimaryKeys = fields.filter { it.singlePrimaryKey || it.compositePrimaryKey }
         allFieldsExceptAutoPK = fields.filterNot { it.autoGenPK }
         nonNullFields = allFieldsExceptAutoPK.filterNot { it.nullable || it.autoGenPK }
-        singlePrimaryKey = fields.filter { it.singlePrimaryKey}.firstOrNull()
+        singlePrimaryKey = fields.filter { it.singlePrimaryKey }.firstOrNull()
         autoPrimaryKey = fields.filter { it.autoGenPK }.firstOrNull()
     }
 
@@ -74,19 +83,26 @@ class TableDetailsSourceBuilder(val tableDefinition: DBTableDefinition) {
     }
 
     fun sourceForUpdateRowMethod(): String {
-        if (singlePrimaryKey == null)
+        if (allPrimaryKeys.isEmpty())
             return """
     /**
-     * Warning: this method will throw a StatementBuilderException at runtime because $tableName does not have a primary key, or has a composite one.
+     * Warning: this method will throw a StatementBuilderException at runtime because $tableName does not have a primary key.
      */
     override fun updateRow(rowData: TableRowData<*, *>): Long = 
-      throw StatementBuilderException("Sorry, but you cannot use row-based updates for table ${tableName}. There must be exactly one column marked as primary key.")                
+      throw StatementBuilderException("Sorry, but you cannot use row-based updates for table ${tableName}. At least one column must be marked as primary key.")                
             """
 
         val elements = fields.mapIndexed { _, field ->
             "      add($tableName.${field.field}, rowData.${field.field})"
         }.joinToString("\n")
-        val pkCol = singlePrimaryKey.field
+        val pk1 = allPrimaryKeys[0].field
+        val whereclause = StringBuilder("${tableName}.$pk1.eq(rowData.$pk1)")
+        allPrimaryKeys.forEachIndexed { i, r ->
+            if (i > 0) {
+                val field = r.field
+                whereclause.append(".and(${tableName}.$field.eq(rowData.$field))")
+            }
+        }
         val source = """    
     /**
      * FOR INTERNAL USE ONLY
@@ -94,7 +110,7 @@ class TableDetailsSourceBuilder(val tableDefinition: DBTableDefinition) {
     override fun updateRow(rowData: TableRowData<*, *>): Long {
       rowData as ${tableName}Row
 $elements
-      return where (${tableName}.$pkCol.eq(rowData.$pkCol))
+      return where($whereclause)
     }    
         """
         return source

@@ -15,7 +15,7 @@ open class LongColumn(table: AnyTable, name: String, aggregateType: AggregateTyp
     override fun avg() = DoubleColumn(table, nameInTable, AggregateType.AVG)
     override fun min() = LongColumn(table, nameInTable, AggregateType.MIN)
     override fun max() = LongColumn(table, nameInTable, AggregateType.MAX)
-    override val nullable: NullableColumn<Long?> = NullableLongColumn(table, name)
+    override val nullable: NullableColumn<Long?> = NullableLongColumn(table, name, aggregateType)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Long) = statement.setLong(position, value)
     override fun getValue(position: Int, resultSet: ResultSet): Long = resultSet.getLong(position)
