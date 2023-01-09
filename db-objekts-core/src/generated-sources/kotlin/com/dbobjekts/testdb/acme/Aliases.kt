@@ -10,6 +10,7 @@ import com.dbobjekts.testdb.acme.hr.Certificate
 import com.dbobjekts.testdb.acme.hr.Hobby
 import com.dbobjekts.testdb.acme.library.Author
 import com.dbobjekts.testdb.acme.library.Book
+import com.dbobjekts.testdb.acme.library.BookReview
 import com.dbobjekts.testdb.acme.library.Item
 import com.dbobjekts.testdb.acme.library.Loan
 import com.dbobjekts.testdb.acme.library.Member
@@ -39,6 +40,7 @@ object Aliases {
     val h = Hobby
     val a1 = Author
     val b = Book
+    val br = BookReview
     val i = Item
     val l = Loan
     val m = Member

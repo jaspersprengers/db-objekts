@@ -218,6 +218,8 @@ object AcmeDB {
 
             tr.execute("create table if not exists library.item(id BIGINT NOT NULL primary key,isbn varchar(20) NOT NULL,date_acquired DATE NOT NULL,foreign key (isbn) references library.book(isbn))")
 
+            tr.execute("create table if not exists library.book_review(isbn varchar(20) NOT NULL,review VARCHAR(1000) NOT NULL,foreign key (isbn) references library.book(isbn))")
+
             tr.execute("create table if not exists library.member(id BIGINT NOT NULL primary key,name varchar(200) NOT NULl)")
 
             tr.execute(

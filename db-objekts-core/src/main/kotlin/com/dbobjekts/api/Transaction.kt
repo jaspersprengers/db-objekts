@@ -94,6 +94,17 @@ class Transaction(internal val connection: ConnectionAdapter) {
         return inserter.insertRow(rowData)
     }
 
+    /**
+     * A convenience abstraction that delegates to `insert()` and `update().` Behavior and performance depend on the type and state of the primary key(s).
+     *
+     * Rows with a single generated primary key (sequences and auto_increment), are delegated to update or insert depending on a positive or zero value of the key, respectively.
+     *
+     * For all other primary keys db-Objekts must first check in the database if the primary key already exists before it can update or insert accordingly.
+     *
+     * If you know beforehand that a row is or isn’t persisted, it is more efficient to invoke update/insert directly and avoid this unnecessary check.
+     *
+     * Rows without a primary key are delegated to `insert()` without any checks.
+     */
     fun <U : UpdateBuilderBase, I : InsertBuilderBase, T : TableRowData<U, I>> save(rowData: T): Long {
         return if (rowData.primaryKeys.isEmpty()) {
             insert(rowData)
