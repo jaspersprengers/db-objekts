@@ -58,6 +58,18 @@ class HavingClauseForLong(symbol: String, value: Long) : HavingClause<Long>() {
 
 class HavingClauseForDouble(symbol: String, value: Double) : HavingClause<Double>() {
     override val column = ColumnFactory.DOUBLE
+
+    init {
+        add(Condition(this, And).withCondition(symbol, value))
+    }
+
+    fun and(): Condition<Double, HavingClauseForDouble> {
+        return Condition(this, And)
+    }
+
+    fun or(): Condition<Double, HavingClauseForDouble> {
+        return Condition(this, Or)
+    }
 }
 
 data class Condition<T : Number, C : HavingClause<T>>(private val clause: C, val joinType: ConditionJoinType) {

@@ -18,11 +18,11 @@ class CodeGenerationComponentTest {
 
         AcmeDB.transactionManager {
             //add some stuff to the test db that wel will ignore for the code generator
-            it.execute("create table IF NOT EXISTS hr.COUNTRY(id varchar(10) primary key, name varchar(50) not null)")
-            it.execute("CREATE SCHEMA if not exists finance")
-            it.execute("alter table core.employee add date_created DATETIME not null default now()")
-            it.execute("alter table core.country add date_created DATETIME not null default now()")
-            it.execute("alter table core.country add audit_pending DATETIME null")
+            it.sql("create table IF NOT EXISTS hr.COUNTRY(id varchar(10) primary key, name varchar(50) not null)").execute()
+            it.sql("CREATE SCHEMA if not exists finance").execute()
+            it.sql("alter table core.employee add date_created DATETIME not null default now()").execute()
+            it.sql("alter table core.country add date_created DATETIME not null default now()").execute()
+            it.sql("alter table core.country add audit_pending DATETIME null").execute()
         }
 
         val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)

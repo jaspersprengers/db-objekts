@@ -1,11 +1,12 @@
 package com.dbobjekts.component
 
-import ColumnClasses
+import com.dbobjekts.api.ColumnClasses
 import com.dbobjekts.fixture.columns.NullableAddressTypeAsStringColumn
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class CustomSQLComponentTest {
+
 
     @Test
     fun `test all employees with home and work address`() {

@@ -441,6 +441,8 @@ val johnsId = tr.insert(row) //immediately executes and returns the auto-generat
 ```
 It's your own responsibility to make sure all the mandatory columns have non-null values.
 
+The `save(..)` method does the same. xref:save-method[Read more].
+
 NOTE: About auto-generated primary keys. `EmployeeRow` has a non-null `id` field, which is auto-generated, hence unavailable until after the `insert(...)` call. Making such numeric PKs nullable (`Long?` or `Int?`), might make sense for inserts, but means ugly `!!` when the id is guaranteed to be non-null, after a fetch. The compromise is to provide a default value of zero. db-Objekts assumes that zero is equivalent to null for generated numeric keys. You should never set such ids to a positive value. It will be rejected in an `insert()` statement.
 
 [#queries-select]
@@ -634,8 +636,9 @@ tr.update(retrieved.copy(salary = retrieved.salary + 100))
 ```
 The row data object retrieved is immutable, so we need to make a copy with an updated salary field. Note that data rows in db-Objekts are very different from managed entities in ORM.
 
+[#save-method]
 === Transparant inserts or updates with save
-`Transaction` also offers a `save(..)` method that takes `TableRowData` instances and acts as a convenient delegator to insert or update. Its performance depend on the type and state of the primary key(s), so note the following:
+`Transaction` has a `save(..)` method that takes `TableRowData` instances and acts as a convenient delegator to `insert()` or `update()`. Its performance depend on the type and state of the primary key(s), so note the following:
 
 * Rows with a single generated primary key (sequences and auto_increment), are delegated to update or insert depending on a positive or zero value of the key, respectively.
 * For all other primary keys db-Objekts must first check in the database if the primary key already exists before it can update or insert accordingly. If you know beforehand that a row is or isn’t persisted, it is more efficient to invoke update/insert directly and avoid this unnecessary check.
@@ -647,23 +650,25 @@ The statement to delete rows has the fewest options. See https://github.com/jasp
 ```kotlin
 tr.deleteFrom(Employee).where(Employee.id.eq(id))
 ```
-* The `deleteFrom` method takes a single table or a join (not all vendors supports it). `tm { it.deleteFrom(e.innerJoin(Hobby)).where(h.name.eq("chess")) }`
+* The `deleteFrom` method takes a single table or a join (not all vendors supports this: `tm { it.deleteFrom(e.innerJoin(Hobby)).where(h.name.eq("chess")) }`)
 * The call to `where(...)` is always mandatory. If you want to delete all rows, use the no-arg version: `tr.deleteFrom(Employee).where()`
 
 [#queries-customsql]
 === Custom sql queries
-db-Objekts does not set out to cover all your select, insert, update and delete query needs. That is a deliberate design decision. It aims to make mundane queries more pleasant and safe, but recognizes that sometimes native SQL makes more sense. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/CustomSQLComponentTest.kt[CustomSQLComponentTest]
+db-Objekts does not try to cover all your query needs with its own DSL. That is a deliberate design decision. It aims to make mundane queries more pleasant and safe, but recognizes that other times you need native SQL. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/CustomSQLComponentTest.kt[CustomSQLComponentTest]
 
-You can still execute nativeSQL through the TransactionManager and enjoy type-safe results. There are two flavors: queries that return results and those that don't. Let's tackle the latter first.
+You can run native SQL queries through the TransactionManager and still get type-safe results. There are two flavors: queries that return results and those that don't. Both are started with the `sql(..)` method.
 
 ```kotlin
- tr.execute("CREATE SCHEMA if not exists core")
+// no arguments, and no results
+tr.sql("CREATE SCHEMA if not exists core").execute()
 ```
-`Transaction.execute` takes a String of SQL and a vararg of arbitrary parameters. The length must match the number of `?` placeholders in the query.
+`Transaction.execute` takes a SQL `String` and a vararg of `Any?` parameters and is terminated with `execute()`. The length must match the number of `?` placeholders in the query.
 ```kotlin
- tr.execute("update core.employee where e.name=?", "john")
+// no results, one argument
+ tr.sql("update core.employee where e.name=?", "john").execute()
 ```
-That was too easy. Let's move up to statements that retrieve results.
+That was easy. Let's move to statements that return results.
 
 ```kotlin
 val (id, name, salary, married, children, hobby) =
@@ -680,9 +685,9 @@ This returns a builder with methods for each available standard SQL type in a nu
 
 image::custom_sql.png[autocomplete_update, 600]
 
-But wait, there are more goodies. Wouldn't it be great if you could employ the same custom column types that you created for your metadata-based queries in native SQL? You can, with the `custom(..)` builder method.
+Apart from standard column types you can also map retrieved values using a custom column type. For this there are the `custom(..)` and `customNil(..)` builder methods.
 
-This method comes in the same nullable and non-nullable flavors and takes a reference to the appropriate Column class. Suppose the following query selects two columns which are stored as TINYINT(1) used as a Boolean, and VARCHAR(10) nullable, respectively. We want to read them out as Boolean and our own AddressType.
+These come in a nullable and non-nullable flavor and take a reference to the appropriate Column class. Suppose the following query selects two columns which are stored as TINYINT(1) used as a Boolean, and VARCHAR(10) nullable, respectively. We want to read them out as Boolean and our own AddressType.
 
 ```kotlin
 val rows: List<Tuple2<Boolean, AddressType?>> = it.sql(
@@ -693,7 +698,7 @@ val rows: List<Tuple2<Boolean, AddressType?>> = it.sql(
     .asList()
 ```
 
-Static objects `com.dbobjekts.metadata.column.[Nil]ColumnClasses` gives a handy overview, so you could also write:
+Static objects `com.dbobjekts.api.[Nil]ColumnClasses` gives a handy overview, so you could also write:
 ```kotlin
 .custom(ColumnClasses.NUMBER_AS_BOOLEAN)
 ```

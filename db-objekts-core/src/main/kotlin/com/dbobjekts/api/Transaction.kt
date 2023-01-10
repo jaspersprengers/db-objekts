@@ -114,7 +114,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         } else {
             //check if row exists
             val pks = rowData.primaryKeys
-            val (column, value) = pks[0]
+            val column = pks[0].first
             val schema = column.table.schemaName().value
             val table = column.table.tableName.value
             val columnNames = pks.map { it.first.nameInTable }
@@ -170,21 +170,13 @@ class Transaction(internal val connection: ConnectionAdapter) {
     fun rollback() = connection.rollback()
 
     /**
-     * Executes a native sql query that does not return data. Example:
+     * Starts a native sql query.
+     * For queries that do not retrurn a value, use the following syntax and terminate with execute()
      * ```kotlin
-     *  val result: Long = transaction.execute("delete from book b where b.id = ?", 42)
+     *  val result: Long = transaction.sql("delete from book b where b.id = ?", 42).execute()
      * ```
-     * @param sql a native sql query, highly specific to the underlying vendor
-     * @param any number of placeholders, identified with '?' in the query
-     * @return the result of the underlying call to [java.sql.PreparedStatement.executeUpdate]
-     */
-    fun execute(sql: String, vararg args: Any): Long {
-        return SQLStatementExecutor<Long?, ResultRow1<Long>>(semaphore, connection, sql, args.toList()).execute()
-            .also { connection.statementLog.logResult(it) }
-    }
-
-    /**
-     * Starts a native sql query that expects a result and returns a builder object to specify the types of the expected columns. Example:
+     *
+     * For queries that expect a result, use withResultTypes to return a builder object to specify the types of the expected columns. Example:
      * ```kotlin
      *  val rows: Tuple6<Long, String, Double, Boolean?, Int?, String?> =
      *    transaction.sql("select e.id,e.name,e.salary,e.married, e.children, h.NAME from core.employee e join hr.HOBBY h on h.ID = e.HOBBY_ID where e.name = ?",
