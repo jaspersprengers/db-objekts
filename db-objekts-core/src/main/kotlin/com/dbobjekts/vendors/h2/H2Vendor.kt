@@ -1,6 +1,5 @@
 package com.dbobjekts.vendors.h2
 
-import com.dbobjekts.codegen.datatypemapper.ColumnTypeMapper
 import com.dbobjekts.codegen.datatypemapper.VendorDefaultColumnTypeMapper
 import com.dbobjekts.codegen.parsers.VendorSpecificMetaDataExtractor
 import com.dbobjekts.vendors.Vendor

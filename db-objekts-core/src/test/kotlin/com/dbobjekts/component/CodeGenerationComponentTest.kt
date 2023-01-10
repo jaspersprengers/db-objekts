@@ -1,14 +1,13 @@
 package com.dbobjekts.component
 
+import com.dbobjekts.api.SequenceForPrimaryKeyResolver
 import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
-import com.dbobjekts.codegen.datatypemapper.SequenceForPrimaryKeyResolver
 import com.dbobjekts.fixture.columns.AddressTypeAsIntegerColumn
 import com.dbobjekts.fixture.columns.AddressTypeAsStringColumn
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
-import org.junit.jupiter.api.Test
 import com.dbobjekts.testdb.acme.CatalogDefinition
-import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Test
 import java.nio.file.Paths
 
 class CodeGenerationComponentTest {

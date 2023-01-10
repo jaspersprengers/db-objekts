@@ -1,5 +1,7 @@
 package com.dbobjekts.codegen.datatypemapper
 
+import com.dbobjekts.api.SequenceForPrimaryKeyResolver
+
 class SequenceForPrimaryMapperByName(
     private val schema: String,
     private  val table: String,
