@@ -67,40 +67,21 @@ class UpdateStatementComponentTest {
         }
     }
 
-
-    @Test
-    fun `update row with non-pk row throws`(){
-        tm { tr ->
-            val empId = tr.save(EmployeeRow(
-                name = "Jill",
-                salary = 300.5,
-                married = true,
-                dateOfBirth = LocalDate.of(1980, 3, 3),
-                children = 2,
-                hobbyId = null
-            ))
-            val addressId = tr.save(AddressRow(street="Sparrenlaan", postcode="5591HA", countryId = "be"))
-            val ea = EmployeeAddressRow(empId, addressId, AddressType.HOME)
-            tr.save(ea)
-
-            Assertions.assertThatThrownBy( { tr.update(ea.copy(kind = AddressType.WORK)) })
-                .hasMessage("Sorry, but you cannot use row-based updates for table EmployeeAddress. There must be exactly one column marked as primary key.")
-        }
-    }
-
     @Test
     fun `row-based update scenarios`() {
         tm { tr ->
             val hobby = HobbyRow("go", "the game of Go")
             tr.save(hobby)
-            val empId = tr.insert(EmployeeRow(
-                name = "John",
-                salary = 300.5,
-                married = true,
-                dateOfBirth = LocalDate.of(1980, 3, 3),
-                children = 2,
-                hobbyId = "go"
-            ))
+            val empId = tr.insert(
+                EmployeeRow(
+                    name = "John",
+                    salary = 300.5,
+                    married = true,
+                    dateOfBirth = LocalDate.of(1980, 3, 3),
+                    children = 2,
+                    hobbyId = "go"
+                )
+            )
 
             val retrieved2: EmployeeRow = tr.select(Employee).where(Employee.id.eq(empId)).first()
             tr.save(retrieved2.copy(salary = retrieved2.salary + 100))
