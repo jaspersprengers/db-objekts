@@ -25,14 +25,4 @@ class MariaDBWrapper(
         }
 
     }
-
-    fun createDataSource(): DataSource {
-        return HikariDataSourceFactory
-            .create(
-                url = "jdbc:mariadb://localhost:${firstMappedPort}/test",
-                username = "root",
-                password = "test",
-                driver = "org.mariadb.jdbc.Driver"
-            )
-    }
 }

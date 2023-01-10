@@ -3,7 +3,7 @@ package com.dbobjekts.metadata.column
 import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.exception.DBObjektsException
 
-interface SequenceKeyColumn<I> : IsPrimaryKey {
+interface SequenceKeyColumn<I> : IsGeneratedPrimaryKey {
     fun qualifiedSequence(): String
     fun createValueForUpdate(key: Long): NullableColumnAndValue<I>
 }

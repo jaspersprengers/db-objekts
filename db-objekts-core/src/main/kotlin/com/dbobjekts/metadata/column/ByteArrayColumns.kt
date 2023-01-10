@@ -11,7 +11,7 @@ class ByteArrayColumn(table: AnyTable, name: String, aggregateType: AggregateTyp
 
     override fun distinct() = ByteArrayColumn(table, nameInTable, AggregateType.DISTINCT)
 
-    override val nullable: NullableColumn<ByteArray?> = NullableByteArrayColumn(table, name)
+    override val nullable: NullableColumn<ByteArray?> = NullableByteArrayColumn(table, name, aggregateType)
     override fun getValue(position: Int, resultSet: ResultSet): ByteArray? = resultSet.getBytes(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: ByteArray) =
         statement.setBytes(position, value)

@@ -19,7 +19,7 @@ class DateColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
 
     override fun distinct() = DateColumn(table, nameInTable, AggregateType.DISTINCT)
 
-    override val nullable: NullableColumn<LocalDate?> = NullableDateColumn(table, name)
+    override val nullable: NullableColumn<LocalDate?> = NullableDateColumn(table, name, aggregateType)
     fun of(year: Int, month: Int, day: Int): ColumnAndValue<LocalDate> = create(LocalDate.of(year, month, day))
     override fun getValue(position: Int, resultSet: ResultSet): LocalDate? = resultSet.getDate(position)?.let {
         DateUtil.toLocalDate(DateUtil.toUtilDate(it))

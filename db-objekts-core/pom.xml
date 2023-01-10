@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.db-objekts</groupId>
         <artifactId>db-objekts</artifactId>
-        <version>0.3.2-alpha-SNAPSHOT</version>
+        <version>0.3.2-alpha</version>
     </parent>
 
     <packaging>jar</packaging>
@@ -41,11 +41,6 @@
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-
 
         <!--database-->
         <dependency>
@@ -77,7 +72,6 @@
 
 
         <!--Test dependencies-->
-
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -95,14 +89,6 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito.kotlin</groupId>
-            <artifactId>mockito-kotlin</artifactId>
         </dependency>
     </dependencies>
     <build>

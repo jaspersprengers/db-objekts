@@ -1,6 +1,6 @@
 package com.dbobjekts.component
 
-import com.dbobjekts.testdb.AddressType
+import com.dbobjekts.fixture.columns.AddressType
 import com.dbobjekts.testdb.acme.core.*
 import com.dbobjekts.testdb.acme.hr.Hobby
 import com.dbobjekts.testdb.acme.hr.HobbyRow
@@ -33,7 +33,7 @@ class UpdateStatementComponentTest {
             val row: EmployeeRow = tr.select(e).where(e.name.eq("Howard")).first()
             val updated = row.copy(name = "Janet", married = true, salary = 50000.3, children = 5)
 
-            tr.update(updated)
+            tr.save(updated)
             val retrieved: EmployeeRow = tr.select(e).where(e.id.eq(row.id)).first()
             assertThat(retrieved).isEqualTo(updated)
 
@@ -67,43 +67,24 @@ class UpdateStatementComponentTest {
         }
     }
 
-
-    @Test
-    fun `update row with non-pk row throws`(){
-        tm { tr ->
-            val empId = tr.insert(EmployeeRow(
-                name = "Jill",
-                salary = 300.5,
-                married = true,
-                dateOfBirth = LocalDate.of(1980, 3, 3),
-                children = 2,
-                hobbyId = null
-            ))
-            val addressId = tr.insert(AddressRow(street="Sparrenlaan", postcode="5591HA", countryId = "be"))
-            val ea = EmployeeAddressRow(empId, addressId, AddressType.HOME)
-            tr.insert(ea)
-
-            Assertions.assertThatThrownBy( { tr.update(ea.copy(kind = AddressType.WORK)) })
-                .hasMessage("Sorry, but you cannot use row-based updates for table EmployeeAddress. There must be exactly one column marked as primary key.")
-        }
-    }
-
     @Test
     fun `row-based update scenarios`() {
         tm { tr ->
             val hobby = HobbyRow("go", "the game of Go")
-            tr.insert(hobby)
-            val empId = tr.insert(EmployeeRow(
-                name = "John",
-                salary = 300.5,
-                married = true,
-                dateOfBirth = LocalDate.of(1980, 3, 3),
-                children = 2,
-                hobbyId = "go"
-            ))
+            tr.save(hobby)
+            val empId = tr.insert(
+                EmployeeRow(
+                    name = "John",
+                    salary = 300.5,
+                    married = true,
+                    dateOfBirth = LocalDate.of(1980, 3, 3),
+                    children = 2,
+                    hobbyId = "go"
+                )
+            )
 
             val retrieved2: EmployeeRow = tr.select(Employee).where(Employee.id.eq(empId)).first()
-            tr.update(retrieved2.copy(salary = retrieved2.salary + 100))
+            tr.save(retrieved2.copy(salary = retrieved2.salary + 100))
 
 
             val retrieved: EmployeeRow = tr.select(Employee).where(Employee.id.eq(empId)).first()
@@ -115,7 +96,7 @@ class UpdateStatementComponentTest {
                 children = 1,
                 hobbyId = null
             )
-            tr.update(updated)
+            tr.save(updated)
             val retrievedUpdated = tr.select(Employee).where(Employee.id.eq(empId)).first()
             assertThat(retrievedUpdated.name).isEqualTo("Jake")
             assertThat(retrievedUpdated.salary).isEqualTo(320.5)

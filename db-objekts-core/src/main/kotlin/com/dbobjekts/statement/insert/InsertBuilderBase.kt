@@ -1,11 +1,20 @@
 package com.dbobjekts.statement.insert
 
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.api.Semaphore
+import com.dbobjekts.statement.Semaphore
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl
 
+/**
+ * A concrete `InsertBuilderBase` is auto-generated for each table and provides setter methods for each column to supply the values that need to be inserted.
+ *
+ * It is the class returned by the call to `insert(..)` in the following example.
+ *
+ * ```kotlin
+ *  tr.insert(EmployeeAddressRow(johnsId, addressId, AddressType.HOME))
+ * ```
+ */
 abstract class InsertBuilderBase() {
     internal lateinit var connection: ConnectionAdapter
     internal lateinit var semaphore: Semaphore
@@ -26,7 +35,7 @@ abstract class InsertBuilderBase() {
         ct.put(col, value)
     }
 
-    abstract fun insertRow(tableRowData: TableRowData<*, *>): Long
+    abstract fun insertRow(rowData: TableRowData<*, *>): Long
 
     /**
      * Executes the insert statement and persists a new row to the table.

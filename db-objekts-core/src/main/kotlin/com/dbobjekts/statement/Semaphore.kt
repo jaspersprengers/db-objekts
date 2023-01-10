@@ -1,7 +1,6 @@
-package com.dbobjekts.api
+package com.dbobjekts.statement
 
 import com.dbobjekts.api.exception.StatementBuilderException
-
 
 class Semaphore {
 

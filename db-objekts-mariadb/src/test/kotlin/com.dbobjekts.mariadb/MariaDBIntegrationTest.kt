@@ -22,29 +22,27 @@ import java.time.LocalTime
 import javax.sql.DataSource
 import com.dbobjekts.mariadb.testdb.Aliases.e
 import com.dbobjekts.mariadb.testdb.Aliases.h
+import com.dbobjekts.mariadb.testdb.nation.Continents
+import com.dbobjekts.mariadb.testdb.nation.Countries
+import com.dbobjekts.mariadb.testdb.nation.CountryStats
+import com.dbobjekts.mariadb.testdb.nation.Regions
+import com.dbobjekts.metadata.column.Aggregate
 import com.dbobjekts.util.HikariDataSourceFactory
 
-//@Testcontainers
+@Testcontainers
 class MariaDBIntegrationTest {
 
     companion object {
 
-        //@Container
-        val container: MariaDBWrapper = MariaDBWrapper("10.10", listOf("acme.sql"))
+        @Container
+        val container: MariaDBWrapper = MariaDBWrapper("10.10", listOf("acme.sql", "nation.sql"))
         lateinit var dataSource: DataSource
         lateinit var tm: TransactionManager
 
         @JvmStatic
         @BeforeAll
         fun beforeAll() {
-            //dataSource = container.createDataSource()
-            dataSource = HikariDataSourceFactory
-                .create(
-                    url = "jdbc:mariadb://localhost:3306/test",
-                    username = "root",
-                    password = "test",
-                    driver = "org.mariadb.jdbc.Driver"
-                )
+            dataSource = container.createDataSource()
             tm = TransactionManager.builder()
                 .withDataSource(dataSource)
                 .withCatalog(CatalogDefinition)
@@ -62,7 +60,22 @@ class MariaDBIntegrationTest {
         .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff = gen.differencesWithCatalog(CatalogDefinition)
         assertThat(diff).isEmpty()
-        //gen.generateSourceFiles()
+        gen.generateSourceFiles()
+    }
+
+    @Test
+    fun `get total population per continent`() {
+        tm { tr ->
+            val pairs = tr.select(Continents.name, CountryStats.year, CountryStats.population.sum())
+                .from(CountryStats.innerJoin(Countries).innerJoin(Regions).innerJoin(Continents))
+                .orderAsc(CountryStats.year, CountryStats.population)
+                .where(CountryStats.year.gt(2000))
+                .having(Aggregate.gt(800_000_000))
+                .asList()
+            val (name, year, number) = pairs[0]
+            assertThat(name).isEqualTo("Africa")
+            assertThat(number).isEqualTo(814022223)
+        }
     }
 
     @Test

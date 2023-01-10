@@ -5,7 +5,6 @@ import com.dbobjekts.fixture.DateFixtures
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.testdb.acme.CatalogDefinition
 import com.dbobjekts.testdb.acme.core.Employee
-import com.dbobjekts.util.Version
 import com.dbobjekts.vendors.Vendors
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThatThrownBy

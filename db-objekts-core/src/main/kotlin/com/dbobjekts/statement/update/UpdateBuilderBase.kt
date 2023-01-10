@@ -5,6 +5,8 @@ import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.metadata.column.NullableColumnAndValue
+import com.dbobjekts.statement.Semaphore
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
@@ -30,6 +32,15 @@ class ColumnForWriteMapContainerImpl<T>(val builder: T) {
     }
 }
 
+/**
+ * A concrete `UpdateBuilderBase` is auto-generated for each table and provides setter methods for each column to supply the values that need to be updated.
+ *
+ * It is the class returned by the call to `update()` in the following example.
+ *
+ * ```kotlin
+ * tr.update(e).children(2).married(true).where(e.name.eq("Janet"))
+ * ```
+ */
 abstract class UpdateBuilderBase(
     internal val table: AnyTable) {
     private val ct = ColumnForWriteMapContainerImpl(this)
@@ -46,7 +57,10 @@ abstract class UpdateBuilderBase(
         ct.put(col, value)
     }
 
-    abstract fun updateRow(tableRowData: TableRowData<*,*>): Long
+    /**
+     * FOR INTERNAL USE ONLY
+     */
+    abstract fun updateRow(rowData: TableRowData<*,*>): Long
 
     /**
      * Opens the whereclause for this update statement.

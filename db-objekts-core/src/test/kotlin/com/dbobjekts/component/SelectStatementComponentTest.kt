@@ -10,8 +10,6 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import com.dbobjekts.testdb.acme.core.*
 import com.dbobjekts.testdb.acme.hr.Certificate
-import com.dbobjekts.testdb.acme.library.Book
-import org.junit.jupiter.api.Order
 
 class SelectStatementComponentTest {
 

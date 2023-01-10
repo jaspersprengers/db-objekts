@@ -53,7 +53,7 @@ abstract class ResultRow<out O> {
         var index = 0
         val values = mutableListOf<Any?>()
         for (s in selectables){
-            val retrieved: List<Any?> = s.columns.mapIndexed() { idx, col ->
+            val retrieved: List<Any?> = s.columns.mapIndexed() { idx, _ ->
                 val curr = index + idx
                 extractValue(cols[curr], resultSet)
             }

@@ -22,7 +22,7 @@ class BigDecimalColumn(table: AnyTable, name: String, aggregateType: AggregateTy
     fun min() = BigDecimalColumn(table, nameInTable, AggregateType.MIN)
     fun max() = BigDecimalColumn(table, nameInTable, AggregateType.MAX)
 
-    override val nullable: NullableColumn<BigDecimal?> = NullableBigDecimalColumn(table, name)
+    override val nullable: NullableColumn<BigDecimal?> = NullableBigDecimalColumn(table, name, aggregateType)
     override fun getValue(position: Int, resultSet: ResultSet): BigDecimal = resultSet.getBigDecimal(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: BigDecimal) =

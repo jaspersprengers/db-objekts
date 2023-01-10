@@ -9,7 +9,8 @@ open class DBColumnDefinition(
     val tableName: TableName,
     val columnName: ColumnName,
     val column: AnyColumn,
-    val isPrimaryKey: Boolean = false,
+    val isSinglePrimaryKey: Boolean = false,
+    val isCompositePrimaryKey: Boolean = false,
     val comment: String? = null
 ) : DBObjectDefinition {
 

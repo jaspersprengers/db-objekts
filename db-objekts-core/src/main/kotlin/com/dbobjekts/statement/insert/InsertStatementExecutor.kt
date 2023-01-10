@@ -2,9 +2,8 @@ package com.dbobjekts.statement.insert
 
 import com.dbobjekts.api.AnyColumnAndValue
 import com.dbobjekts.api.AnySqlParameter
-import com.dbobjekts.api.Semaphore
+import com.dbobjekts.statement.Semaphore
 import com.dbobjekts.api.exception.StatementBuilderException
-import com.dbobjekts.api.exception.StatementExecutionException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.metadata.column.AutoKeyColumn
@@ -14,7 +13,6 @@ import com.dbobjekts.statement.StatementBase
 import com.dbobjekts.util.StringUtil
 import com.dbobjekts.vendors.VendorSpecificProperties
 import org.slf4j.LoggerFactory
-import java.lang.IllegalStateException
 
 class InsertStatementExecutor(
     semaphore: Semaphore,

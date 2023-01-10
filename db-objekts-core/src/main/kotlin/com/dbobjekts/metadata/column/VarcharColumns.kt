@@ -12,7 +12,7 @@ open class VarcharColumn(table: AnyTable, name: String, aggregateType: Aggregate
 
     override fun distinct() = VarcharColumn(table, nameInTable, AggregateType.DISTINCT)
 
-    override val nullable: NullableColumn<String?> = NullableVarcharColumn(table, name)
+    override val nullable: NullableColumn<String?> = NullableVarcharColumn(table, name, aggregateType)
     override fun getValue(position: Int, resultSet: ResultSet): String? = resultSet.getString(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: String) =
         statement.setString(position, value)

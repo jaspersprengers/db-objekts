@@ -19,7 +19,7 @@ class BlobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
     override fun distinct() = BlobColumn(table, nameInTable, AggregateType.DISTINCT)
-    override val nullable: NullableColumn<Blob?> = NullableBlobColumn(table, name)
+    override val nullable: NullableColumn<Blob?> = NullableBlobColumn(table, name, aggregateType)
     override fun getValue(position: Int, resultSet: ResultSet): Blob? = resultSet.getBlob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Blob) =
         statement.setBlob(position, value)

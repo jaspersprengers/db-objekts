@@ -21,7 +21,7 @@ class LegacyDateColumn(table: AnyTable, name: String, aggregateType: AggregateTy
 
     override fun distinct() = LegacyDateColumn(table, nameInTable, AggregateType.DISTINCT)
 
-    override val nullable: NullableColumn<Date?> = NullableLegacyDateColumn(table, name)
+    override val nullable: NullableColumn<Date?> = NullableLegacyDateColumn(table, name, aggregateType)
 
     override fun getValue(position: Int, resultSet: ResultSet): Date? = resultSet.getDate(position)
 

@@ -1,4 +1,4 @@
-package com.dbobjekts.testdb
+package com.dbobjekts.fixture.columns
 
 import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table

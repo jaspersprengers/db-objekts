@@ -32,7 +32,7 @@ import javax.sql.DataSource
  *    generator.generateSourceFiles()
  * ```
  */
-open class CodeGenerator {
+class CodeGenerator {
 
     private val logger = LoggerFactory.getLogger(CodeGenerator::class.java)
     private var exclusionConfigurer: ExclusionConfigurer = ExclusionConfigurer()

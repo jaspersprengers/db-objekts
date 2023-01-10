@@ -1,6 +1,6 @@
-package com.dbobjekts.codegen.datatypemapper
+package com.dbobjekts.api
 
-import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 
 /**
  * Resolves the [com.dbobjekts.metadata.column.Column] implementation based on [ColumnMappingProperties]

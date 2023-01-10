@@ -1,6 +1,8 @@
 package com.dbobjekts.codegen.configbuilders
 
-import com.dbobjekts.codegen.datatypemapper.*
+import com.dbobjekts.api.SequenceForPrimaryKeyResolver
+import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
+import com.dbobjekts.codegen.datatypemapper.SequenceForPrimaryMapperByName
 
 /**
  * Resolves the sequence name to be used for tables that require one for the primary key

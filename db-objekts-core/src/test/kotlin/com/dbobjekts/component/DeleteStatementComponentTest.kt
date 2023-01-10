@@ -2,13 +2,10 @@ package com.dbobjekts.component
 
 import com.dbobjekts.testdb.acme.core.Employee
 import com.dbobjekts.testdb.acme.hr.Hobby
-import com.dbobjekts.statement.select.SelectStatementExecutor
-import com.dbobjekts.testdb.acme.core.EmployeeRow
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
-import java.time.LocalDate
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation::class)
 class DeleteStatementComponentTest {

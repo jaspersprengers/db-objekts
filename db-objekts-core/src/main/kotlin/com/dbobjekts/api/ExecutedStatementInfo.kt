@@ -9,7 +9,7 @@ data class ExecutedStatementInfo(
      */
     val sql: String,
     /**
-     * The values used for the placeholders, marked as '?' in the query
+     * The values used for the placeholders, marked as '?' in the query.
      */
     val parameters: List<AnySqlParameter>,
     /**

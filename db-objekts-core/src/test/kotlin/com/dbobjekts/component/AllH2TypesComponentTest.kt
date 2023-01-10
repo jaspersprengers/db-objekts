@@ -1,13 +1,12 @@
 package com.dbobjekts.component
 
-import com.dbobjekts.testdb.acme.core.AllTypes
+import com.dbobjekts.fixture.columns.AddressType
 import com.dbobjekts.metadata.column.BlobColumn
-import com.dbobjekts.testdb.AddressType
+import com.dbobjekts.testdb.acme.core.AllTypes
 import org.assertj.core.api.Assertions.assertThat
 import org.h2.api.Interval
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.math.BigDecimal
 import java.time.*

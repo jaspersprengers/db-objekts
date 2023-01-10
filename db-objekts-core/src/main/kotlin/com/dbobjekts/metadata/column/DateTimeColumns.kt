@@ -13,7 +13,7 @@ class DateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType
 
     override fun distinct() = DateTimeColumn(table, nameInTable, AggregateType.DISTINCT)
 
-    override val nullable: NullableColumn<LocalDateTime?> = NullableDateTimeColumn(table, name)
+    override val nullable: NullableColumn<LocalDateTime?> = NullableDateTimeColumn(table, name, aggregateType)
     override fun getValue(position: Int, resultSet: ResultSet): LocalDateTime? =
         resultSet.getTimestamp(position)?.let { DateUtil.toLocalDateTime(it) }
 

@@ -15,7 +15,7 @@ open class ShortColumn(table: AnyTable, name: String, aggregateType: AggregateTy
 
     override fun distinct() = ShortColumn(table, nameInTable, AggregateType.DISTINCT)
 
-    override val nullable: NullableColumn<Short?> = NullableShortColumn(table, name)
+    override val nullable: NullableColumn<Short?> = NullableShortColumn(table, name, aggregateType)
     override fun setValue(position: Int, statement: PreparedStatement, value: Short) = statement.setShort(position, value)
     override fun getValue(position: Int, resultSet: ResultSet): Short = resultSet.getShort(position)
 }

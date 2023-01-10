@@ -3,7 +3,7 @@ package com.dbobjekts.metadata.column
 import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.exception.DBObjektsException
 
-interface AutoKeyColumn<I> : IsPrimaryKey
+interface AutoKeyColumn<I> : IsGeneratedPrimaryKey
 
 class AutoKeyIntegerColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     IntegerColumn(table, name, aggregateType), AutoKeyColumn<Int> {

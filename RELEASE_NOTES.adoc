@@ -1,28 +1,18 @@
 = Release notes
 
-== 0.1-alpha-1
-First alpha release
+== 0.3.2-alpha
+* Aggregate functions in `BigDecimalColumn` return `BigDecimal`. Long or Double values means possible loss of range and precision.
+* Added sample schema `nation.sql` to mariadb module for component testing.
+* Manual commit and rollback checks for auto-commit mode.
+* Dokka on Catalog, Aliases, Table and column metadata objects, providing the db name and foreign key references.
 
-== 0.1-alpha-2
-* Documentation updates
-* Component tests for `db-objekts-mariadb`, using TestContainers.
-* User MariaDB 10.10 in TestContainers setup
-* Rework in CodeGenerator configuration for setting sequences for primary keys. Separate configurer for greater clarity
+=== New features
+* Added `Transaction.save(..)` as a convenience delegator to insert and update for `TableRowData` instances.
 
+=== Breaking API changes
+* removed separate `Transaction.execute` as shortcut to `sql(...).execute()`
+* moved several interfaces from `codegen` to `api` and others out of `api.`
 
-== 0.2.1-alpha
-
-* Introducing stateful and immutable row objects for CRUD operations
-* Use DbObjektsException and subclasses instead of generic IllegalStateException
-* Documentation and component tests
-
-== 0.2.2-alpha
-* Support for custom column types in native sql queries
-
-== 0.3.0-alpha
-* Support for aggregate select queries: `avg()`, `sum()`, `count[Distinct]()`, `min()`, `max()`
-* Support for `distinct()` in select queries
-* An optional `having()` clause to constrain results in aggregate select statements.
 
 == 0.3.1-alpha
 * Refactoring to reduce visibility of platform-internal properties and methods in the public API. In cases where this is not possible, it is clearly marked in Dokka comments.
@@ -30,11 +20,37 @@ First alpha release
 * Various test enhancements
 * Overall documentation improvements
 * Added db-objekts-spring-demo project
-
-=== functionality
 * New `LegacyDateColumn` to handle java.sql.Date without conversion to/from java.time API.
 
-== 0.3.2-alpha
-* Aggregate functions in `BigDecimalColumn` return `BigDecimal`. Long or Double values means possible loss of range and precision.
-* Added sample schema `nations.sql` to mariadb module for component testing.
-* Manual commit and rollback checks for auto-commit mode.
+== 0.3.0-alpha
+* Support for aggregate select queries: `avg()`, `sum()`, `count[Distinct]()`, `min()`, `max()`
+* Support for `distinct()` in select queries
+* An optional `having()` clause to constrain results in aggregate select statements.
+
+== 0.2.2-alpha
+* Support for custom column types in native sql queries
+
+== 0.2.1-alpha
+* Introducing stateful and immutable row objects for CRUD operations
+* Use DbObjektsException and subclasses instead of generic IllegalStateException
+* Documentation and component tests
+
+== 0.1-alpha-2
+* Documentation updates
+* Component tests for `db-objekts-mariadb`, using TestContainers.
+* User MariaDB 10.10 in TestContainers setup
+* Rework in CodeGenerator configuration for setting sequences for primary keys. Separate configurer for greater clarity
+
+== 0.1-alpha-1
+First alpha release
+
+
+
+
+
+
+
+
+
+
+
