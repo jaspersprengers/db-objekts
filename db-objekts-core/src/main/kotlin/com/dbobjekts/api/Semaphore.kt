@@ -2,7 +2,6 @@ package com.dbobjekts.api
 
 import com.dbobjekts.api.exception.StatementBuilderException
 
-
 class Semaphore {
 
     private var statement: String? = null

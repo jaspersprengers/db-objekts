@@ -737,9 +737,9 @@ All that is needed to create queries is expressed in the column types: how to cr
 
 [#custom-column-types]
 === Creating custom column types
-The power of db-Objekts is that you can fully customize the way values are read from and written to the database. For this we need to dig deeper in the `Column` hierarchy.
+db-Objekts lets you customize the way values are read from and written to the database. For this you need to know about the `Column` hierarchy.
 
-Abstract `com.dbobjekts.metadata.column.Column<T>` is at the basis and has only two direct abstract descendants: `NonNullableColumn<T>` and `NullableColumn<T>`, parameterized for a certain value type. Implementations must override
+Abstract `com.dbobjekts.metadata.column.Column<T>` is at the basis and has two direct abstract descendants: `NonNullableColumn<T>` and `NullableColumn<T>`, parameterized for a certain value type. Implementations must override
 ```kotlin
  abstract fun getValue(position: Int, resultSet: ResultSet): I?
  abstract fun setValue(position: Int, statement: PreparedStatement, value: I)
@@ -749,9 +749,9 @@ Abstract `com.dbobjekts.metadata.column.Column<T>` is at the basis and has only 
 override fun getValue(position: Int, resultSet: ResultSet): String? = resultSet.getString(position)
 override fun setValue(position: Int, statement: PreparedStatement, value: String) = statement.setString(position, value)
 ```
-Notice that `getValue` must always return a nullable result, also for `NonNullableColumn`, because getter calls on a `ResulSet` can return null. The base class will cast it to a non-nullable value: you never directly invoke `getValue`.
+Notice that `getValue` must always return a nullable result, also for `NonNullableColumn`, because getter calls on a `ResulSet` can return null. The base class will cast it to a non-nullable value if desired by the concrete class. You don't invoke `getValue` in application code.
 
-The JDBC getter and setter methods cover all the Java primitives, including dates, string, blobs and other esoteric types. For each of these there is a suitable implementation in `com.dbobjekts.metadata.column`, with a companion `Nullable*Column`.
+The JDBC getter and setter methods cover all the Java primitives, including dates, String, Blob and more esoteric types. For each of these there is a suitable implementation in `com.dbobjekts.metadata.column`, with a companion `Nullable*Column`.
 
 [#platform-column-types]
 ==== Platform column types
@@ -868,8 +868,8 @@ And a number of utility columns, most of them abstract, to serve as a basis for 
 
 |===
 
-==== Customizing EnumAsString with AddressTypeColumn
-Suppose we have the following `AddressType` enum:
+==== Creating an AddressTypeColumn
+Suppose we have a simple `AddressType` enum and we want to use it to read and write values stored in a varchar column.
 
 ```kotlin
 enum class AddressType : Serializable {
@@ -888,7 +888,7 @@ class NullableAddressTypeAsStringColumn(table: Table, name: String) :
     override fun toEnum(name: String): AddressType = AddressType.valueOf(name)
 }
 ```
-You need to signal the `CodeGenerator` where this custom column applies, and then you can use it.
+You need to tell `CodeGenerator` where this custom column applies, generate the code, and then you can use it in queries.
 ```kotlin
 generator.configureColumnTypeMapping()
     .setColumnTypeForName(table = "EMPLOYEE_ADDRESS", column = "KIND", columnType = AddressTypeAsStringColumn::class.java)
@@ -937,14 +937,14 @@ override fun setValue(position: Int, statement: PreparedStatement, value: String
 ```
 [#security]
 === Security concerns
-Much sensitive data flows through a database library like db-Objekts, so we take security seriously. And so should you! The following design decisions and principles are in place:
+Much sensitive data flows through a database library like db-Objekts, so it takes security seriously. Note the following design decisions and principles:
 
-* db-Objekts never logs concrete data that is read or written to the db tables. It keeps such data in-memory for debugging purposes in an [ExecutedStatementInfo] data class only for the duration of a single `Transaction`, after which it is cleared.
+* db-Objekts never logs concrete data read from or written to the tables. It keeps such data in-memory for debugging purposes in an [ExecutedStatementInfo] data class only for the duration of a single `Transaction`, after which it is cleared.
 * All generated statements use placeholder `?` syntax to guard against SQL injection attacks. You should still be careful to sanitise end-user data before you pass them as parts of a query, like in `tr.select(Employee).where(e.name.eq(someValueFromRestCall))`
 * This warning applies especially to custom sql statements, for which db-Objekts cannot provide similar safeguards.
 
 == Status and roadmap
-db-Objekts has been a long time in the making. I started it in Scala, but switched to Kotlin because its null-safety is perfectly suited to the world of (relational) data. For several years it remained a hobby project and was not mature enough to become the Open Source tool I had in mind. But that time has now come.
+db-Objekts has been a long time in the making. I started it in Scala, but switched to Kotlin because its null-safety is perfectly suited to the world of (relational) data. For several years it remained a hobby project and was not mature enough to become the Open Source tool I had in mind.
 
 This is the very first alpha release. The API may change slightly, so it is not yet ready for a beta release and you should not use it in production yet. While I'm confident and proud of my work, more rigorous testing is needed.
 

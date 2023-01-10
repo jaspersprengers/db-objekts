@@ -1,6 +1,5 @@
 package com.dbobjekts.codegen.datatypemapper
 
-
 class SequenceForPrimaryMapperByName(
     private val schema: String,
     private  val table: String,

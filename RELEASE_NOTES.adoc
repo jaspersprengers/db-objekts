@@ -6,6 +6,13 @@
 * Manual commit and rollback checks for auto-commit mode.
 * Dokka on Catalog, Aliases, Table and column metadata objects, providing the db name and foreign key references.
 
+=== New features
+* `Transaction.save(..)` as a convenience delegator to insert and update for `TableRowData` instances.
+
+=== Breaking changes
+* removed separate `Transaction.execute` as shortcut to `sql(...).execute()`
+
+
 == 0.3.1-alpha
 * Refactoring to reduce visibility of platform-internal properties and methods in the public API. In cases where this is not possible, it is clearly marked in Dokka comments.
 * General code cleanup. Removed some redundant interfaces.
