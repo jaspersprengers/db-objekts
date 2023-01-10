@@ -7,6 +7,7 @@ import com.dbobjekts.fixture.columns.AddressTypeAsIntegerColumn
 import com.dbobjekts.fixture.columns.AddressTypeAsStringColumn
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
 import com.dbobjekts.testdb.acme.CatalogDefinition
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.nio.file.Paths
 
@@ -47,8 +48,8 @@ class CodeGenerationComponentTest {
             .basePackageForSources("com.dbobjekts.testdb.acme")
         .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff: List<String> = generator.differencesWithCatalog(CatalogDefinition)
-        //assertThat(diff).describedAs("acme catalog differs from database definition").isEmpty()
-        generator.generateSourceFiles()
+        assertThat(diff).describedAs("acme catalog differs from database definition").isEmpty()
+        //generator.generateSourceFiles()
 
     }
 

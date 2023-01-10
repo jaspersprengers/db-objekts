@@ -1,23 +1,12 @@
  package com.dbobjekts.statement.customsql
  
   import com.dbobjekts.api.*
-  import com.dbobjekts.api.Semaphore
+  import com.dbobjekts.statement.Semaphore
   import com.dbobjekts.jdbc.ConnectionAdapter
-  import com.dbobjekts.metadata.ColumnFactory
   import com.dbobjekts.metadata.column.Column
-  import com.dbobjekts.metadata.column.NonNullableColumn
-  import com.dbobjekts.metadata.column.NullableColumn
-  import java.math.BigDecimal
-  import java.sql.Blob
-  import java.sql.Clob
-  import java.time.Instant
-  import java.time.LocalDate
-  import java.time.LocalDateTime
-  import java.time.LocalTime
-  import java.time.OffsetDateTime 
-     
-class Returns22<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22>(
-   internal val column1: Column<T1>, internal val column2: Column<T2>, internal val column3: Column<T3>, internal val column4: Column<T4>, internal val column5: Column<T5>, internal val column6: Column<T6>, internal val column7: Column<T7>, internal val column8: Column<T8>, internal val column9: Column<T9>, internal val column10: Column<T10>, internal val column11: Column<T11>, internal val column12: Column<T12>, internal val column13: Column<T13>, internal val column14: Column<T14>, internal val column15: Column<T15>, internal val column16: Column<T16>, internal val column17: Column<T17>, internal val column18: Column<T18>, internal val column19: Column<T19>, internal val column20: Column<T20>, internal val column21: Column<T21>, internal val column22: Column<T22>,
+
+ class Returns22<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22>(
+    internal val column1: Column<T1>, internal val column2: Column<T2>, internal val column3: Column<T3>, internal val column4: Column<T4>, internal val column5: Column<T5>, internal val column6: Column<T6>, internal val column7: Column<T7>, internal val column8: Column<T8>, internal val column9: Column<T9>, internal val column10: Column<T10>, internal val column11: Column<T11>, internal val column12: Column<T12>, internal val column13: Column<T13>, internal val column14: Column<T14>, internal val column15: Column<T15>, internal val column16: Column<T16>, internal val column17: Column<T17>, internal val column18: Column<T18>, internal val column19: Column<T19>, internal val column20: Column<T20>, internal val column21: Column<T21>, internal val column22: Column<T22>,
     private val semaphore: Semaphore, private val conn: ConnectionAdapter,
     private val sql: String,
     private val args: List<Any>

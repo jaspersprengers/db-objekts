@@ -6,9 +6,8 @@ import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.TableOrJoin
 import com.dbobjekts.metadata.joins.TableJoinChain
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
+import com.dbobjekts.statement.Semaphore
 import com.dbobjekts.statement.customsql.CustomSQLStatementBuilder
-import com.dbobjekts.statement.customsql.SQLStatementExecutor
 import com.dbobjekts.statement.delete.DeleteStatementExecutor
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.select.SelectStatementExecutor

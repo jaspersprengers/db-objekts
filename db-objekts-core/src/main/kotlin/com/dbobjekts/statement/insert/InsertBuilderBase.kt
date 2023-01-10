@@ -1,7 +1,7 @@
 package com.dbobjekts.statement.insert
 
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.api.Semaphore
+import com.dbobjekts.statement.Semaphore
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.statement.update.ColumnForWriteMapContainerImpl

@@ -6,7 +6,7 @@ import com.dbobjekts.codegen.metadata.DBColumnDefinition
 import com.dbobjekts.codegen.metadata.DBForeignKeyDefinition
 import com.dbobjekts.codegen.metadata.DBTableDefinition
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.api.WriteQueryAccessors
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
 import com.dbobjekts.statement.insert.InsertBuilderBase

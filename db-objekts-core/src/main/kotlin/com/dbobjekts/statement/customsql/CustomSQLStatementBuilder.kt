@@ -6,6 +6,7 @@ import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.metadata.column.NonNullableColumn
 import com.dbobjekts.metadata.column.NullableColumn
+import com.dbobjekts.statement.Semaphore
 import com.dbobjekts.util.StatementLogger
 import java.math.BigDecimal
 import java.sql.Blob

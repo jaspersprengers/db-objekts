@@ -1,6 +1,7 @@
 package com.dbobjekts.api
 
 import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 

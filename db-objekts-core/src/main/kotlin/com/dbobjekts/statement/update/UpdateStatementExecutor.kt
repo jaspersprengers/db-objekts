@@ -3,19 +3,16 @@ package com.dbobjekts.statement.update
 import com.dbobjekts.api.AnyColumnAndValue
 import com.dbobjekts.api.AnySqlParameter
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.api.Semaphore
+import com.dbobjekts.statement.Semaphore
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.statement.ColumnsForUpdate
 import com.dbobjekts.statement.SQLOptions
 import com.dbobjekts.statement.StatementBase
-import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.util.Errors
 import com.dbobjekts.util.StringUtil
 import org.slf4j.LoggerFactory
-import java.lang.IllegalStateException
 
 
 class UpdateStatementExecutor(

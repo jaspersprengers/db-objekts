@@ -4,6 +4,7 @@ import com.dbobjekts.api.*
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.statement.ColumnInResultRow
+import com.dbobjekts.statement.Semaphore
 import com.dbobjekts.statement.SqlParameter
 import com.dbobjekts.statement.StatementExecutor
 

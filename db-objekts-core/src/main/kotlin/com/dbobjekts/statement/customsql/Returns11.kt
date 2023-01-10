@@ -1,7 +1,7 @@
  package com.dbobjekts.statement.customsql
  
   import com.dbobjekts.api.*
-  import com.dbobjekts.api.Semaphore
+  import com.dbobjekts.statement.Semaphore
   import com.dbobjekts.jdbc.ConnectionAdapter
   import com.dbobjekts.metadata.ColumnFactory
   import com.dbobjekts.metadata.column.Column
@@ -17,7 +17,7 @@
   import java.time.OffsetDateTime 
      
 class Returns11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
-   internal val column1: Column<T1>, internal val column2: Column<T2>, internal val column3: Column<T3>, internal val column4: Column<T4>, internal val column5: Column<T5>, internal val column6: Column<T6>, internal val column7: Column<T7>, internal val column8: Column<T8>, internal val column9: Column<T9>, internal val column10: Column<T10>, internal val column11: Column<T11>,
+    internal val column1: Column<T1>, internal val column2: Column<T2>, internal val column3: Column<T3>, internal val column4: Column<T4>, internal val column5: Column<T5>, internal val column6: Column<T6>, internal val column7: Column<T7>, internal val column8: Column<T8>, internal val column9: Column<T9>, internal val column10: Column<T10>, internal val column11: Column<T11>,
     private val semaphore: Semaphore, private val conn: ConnectionAdapter,
     private val sql: String,
     private val args: List<Any>
@@ -202,4 +202,3 @@ class Returns11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
     }
 }
 
- 

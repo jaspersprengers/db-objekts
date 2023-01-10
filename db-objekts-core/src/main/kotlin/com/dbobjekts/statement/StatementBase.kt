@@ -2,7 +2,6 @@ package com.dbobjekts.statement
 
 import com.dbobjekts.api.AnyColumnAndValue
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.api.Semaphore
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Catalog

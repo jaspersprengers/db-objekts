@@ -1,6 +1,6 @@
 package com.dbobjekts.codegen.writer
 
-import com.dbobjekts.api.WriteQueryAccessors
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.codegen.metadata.*
 import com.dbobjekts.codegen.metadata.DBGeneratedPrimaryKey
 import com.dbobjekts.metadata.column.NullableColumn

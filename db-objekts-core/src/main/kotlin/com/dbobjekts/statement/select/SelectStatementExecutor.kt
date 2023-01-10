@@ -3,7 +3,7 @@ package com.dbobjekts.statement.select
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.ResultRow
-import com.dbobjekts.api.Semaphore
+import com.dbobjekts.statement.Semaphore
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Selectable

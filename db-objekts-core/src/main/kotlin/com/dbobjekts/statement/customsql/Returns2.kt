@@ -1,7 +1,7 @@
  package com.dbobjekts.statement.customsql
  
   import com.dbobjekts.api.*
-  import com.dbobjekts.api.Semaphore
+  import com.dbobjekts.statement.Semaphore
   import com.dbobjekts.jdbc.ConnectionAdapter
   import com.dbobjekts.metadata.ColumnFactory
   import com.dbobjekts.metadata.column.Column
@@ -17,7 +17,7 @@
   import java.time.OffsetDateTime 
      
 class Returns2<T1, T2>(
-   internal val column1: Column<T1>, internal val column2: Column<T2>,
+    internal val column1: Column<T1>, internal val column2: Column<T2>,
     private val semaphore: Semaphore, private val conn: ConnectionAdapter,
     private val sql: String,
     private val args: List<Any>
@@ -202,4 +202,3 @@ class Returns2<T1, T2>(
     }
 }
 
- 

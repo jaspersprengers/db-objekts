@@ -1,4 +1,4 @@
-package com.dbobjekts.api
+package com.dbobjekts.statement
 
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
