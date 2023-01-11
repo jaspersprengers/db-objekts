@@ -222,6 +222,10 @@ object AcmeDB {
 
             tr.sql("create table if not exists library.member(id BIGINT NOT NULL primary key,name varchar(200) NOT NULl)").execute()
 
+            tr.sql("create table if not exists library.composite(isbn varchar(20) NOT NULL,title varchar(200) NOT NULL, published DATE NULL,primary key (isbn,title))").execute()
+
+            tr.sql("create table if not exists library.composite_foreign_key(isbn varchar(20) NOT NULL,title varchar(200) NOT NULL, message varchar(100) null, primary key (isbn, title), foreign key (isbn,title) references library.composite(isbn,title))").execute()
+
             tr.sql(
                 "create table if not exists library.loan(item_id BIGINT NOT NULL,member_id BIGINT NOT NULL,date_loaned DATE NOT NULL,date_returned DATE NULL," +
                         "primary key (item_id,member_id,date_loaned), foreign key (item_id) references library.item(id),foreign key (member_id) references library.member(id))"

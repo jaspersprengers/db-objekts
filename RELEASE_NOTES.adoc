@@ -1,5 +1,8 @@
 = Release notes
 
+== 0.4.0-alpha
+
+
 == 0.3.2-alpha
 * Aggregate functions in `BigDecimalColumn` return `BigDecimal`. Long or Double values means possible loss of range and precision.
 * Added sample schema `nation.sql` to mariadb module for component testing.
