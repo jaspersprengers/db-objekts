@@ -7,6 +7,7 @@ import java.lang.reflect.Constructor
 import java.math.BigDecimal
 import java.sql.Blob
 import java.sql.Clob
+import java.sql.SQLXML
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -74,6 +75,9 @@ object ColumnFactory {
     val OFFSET_DATETIME = OffsetDateTimeColumn(table, DUMMY)
     val OFFSET_DATETIME_NIL = NullableOffsetDateTimeColumn(table, DUMMY)
 
+    val SQLXML = XMLColumn(table, DUMMY)
+    val SQLXML_NIL = NullableXMLColumn(table, DUMMY)
+
     val AUTOKEY_LONG = AutoKeyLongColumn(table, DUMMY)
     val AUTOKEY_INTEGER = AutoKeyIntegerColumn(table, DUMMY)
     val SEQUENCE_LONG = SequenceKeyLongColumn(table, DUMMY, "")
@@ -103,6 +107,7 @@ object ColumnFactory {
     fun timeColumn(nullable: Boolean = false): Column<out LocalTime?> = if (nullable) TIME_NIL else TIME
     fun timeStampColumn(nullable: Boolean = false): Column<out Instant?> = if (nullable) TIMESTAMP_NIL else TIMESTAMP
     fun offsetDateTimeColumn(nullable: Boolean = false): Column<out OffsetDateTime?> = if (nullable) OFFSET_DATETIME_NIL else OFFSET_DATETIME
+    fun xmlColumn(nullable: Boolean = false): Column<out SQLXML?> = if (nullable) SQLXML else SQLXML_NIL
 
     @Suppress("UNCHECKED_CAST")
     fun <C : NonNullableColumn<*>> forClass(clz: Class<C>): C =

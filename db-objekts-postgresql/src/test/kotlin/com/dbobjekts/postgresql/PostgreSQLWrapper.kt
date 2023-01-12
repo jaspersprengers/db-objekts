@@ -1,8 +1,10 @@
-package com.dbobjekts.mysql
+package com.dbobjekts.postgresql
 
+import com.dbobjekts.util.HikariDataSourceFactory
 import org.testcontainers.containers.BindMode
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
+import javax.sql.DataSource
 
 
 class PostgreSQLWrapper(
@@ -22,7 +24,16 @@ class PostgreSQLWrapper(
                 BindMode.READ_ONLY
             )
         }
+    }
 
+    fun createDataSource(): DataSource {
+        return HikariDataSourceFactory
+            .create(
+                url = "jdbc:postgresql://localhost:${firstMappedPort}/test",
+                username = "test",
+                password = "test",
+                driver = "org.postgresql.Driver"
+            )
     }
 
 }

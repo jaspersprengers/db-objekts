@@ -1,4 +1,4 @@
-package com.dbobjekts.vendors.mysql
+package com.dbobjekts.vendors.postgresql
 
 import com.dbobjekts.vendors.VendorSpecificProperties
 

@@ -44,19 +44,16 @@ object MysqlMetadataExtractor : VendorSpecificMetaDataExtractor {
     override fun extractForeignKeyMetaDataFromDB(transactionManager: TransactionManager): List<ForeignKeyMetaDataRow> {
         return transactionManager.newTransaction {
             val sql = """
-                select u.TABLE_SCHEMA,
-               u.TABLE_NAME,
-               u.COLUMN_NAME,
-               u.REFERENCED_TABLE_SCHEMA,
-               u.REFERENCED_TABLE_NAME,
-               u.REFERENCED_COLUMN_NAME
-                from information_schema.KEY_COLUMN_USAGE u
-                 join (select count(1) as c, u2.CONSTRAINT_NAME as ctr
-                       from information_schema.KEY_COLUMN_USAGE u2
-                       where u2.REFERENCED_TABLE_NAME is not null
-                       group by u2.CONSTRAINT_NAME
-                       having c = 1) as j on j.ctr = u.CONSTRAINT_NAME
-                    where REFERENCED_TABLE_NAME is not null
+              select  ccu.table_schema,ccu.table_name, ccu.column_name, kcu.table_schema, kcu.table_name, kcu.column_name
+                from information_schema.constraint_column_usage ccu
+                    join (select  count(1), tc.constraint_name as ctr
+                          from information_schema.table_constraints tc
+                                   join information_schema.key_column_usage kcu on kcu.constraint_name = tc.constraint_name
+                          where
+                                  tc.constraint_type = 'FOREIGN KEY' and
+                                  tc.table_schema NOT IN ('pg_catalog', 'information_schema')
+                          group by tc.constraint_name having count(1) = 1) as j on j.ctr = ccu.constraint_name
+                    join information_schema.key_column_usage kcu on kcu.constraint_name = ccu.constraint_name
             """.trimIndent()
 
             val rows = it.sql(sql).withResultTypes().string().string().string().string().string().string().asList()

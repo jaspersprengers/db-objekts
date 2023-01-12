@@ -18,7 +18,8 @@ enum class Vendors(
 ) {
     H2("com.dbobjekts.vendors.h2.H2Vendor", 2),
     MARIADB("com.dbobjekts.vendors.mariadb.MariaDBVendor", 10),
-    MYSQL("com.dbobjekts.vendors.mysql.MysqlVendor", 8);
+    MYSQL("com.dbobjekts.vendors.mysql.MysqlVendor", 8),
+    POSTGRESQL("com.dbobjekts.vendors.postgresql.PostgreSQLVendor", 15);
 
     private fun validateVersion(actualVersionOfDataSource: Int): Vendors {
         if (requiredMajorVersion < actualVersionOfDataSource)
