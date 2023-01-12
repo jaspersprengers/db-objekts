@@ -29,24 +29,6 @@ class TableJoinChainBuilderTest {
     }
 
     @Test
-    fun `find Join`() {
-        val join = defaultBuilder.findJoin(Pair(Address, Country))!!
-        assertEquals("COUNTRY_ID", join.foreignKey.column.nameInTable)
-    }
-
-    @Test
-    fun `no join`() {
-        val join = defaultBuilder.findJoin(Pair(Address, Employee))
-        assertNull(join)
-    }
-
-    @Test
-    fun `create join`() {
-        val join = defaultBuilder.createJoin(Address, Country)
-        assertNull(join)
-    }
-
-    @Test
     fun `find join for unjoined pair`() {
         assertEquals(EmployeeAddress, defaultBuilder.findJoinTableForUnjoinedPair(Pair(Address, Employee)))
         assertEquals(EmployeeAddress, defaultBuilder.findJoinTableForUnjoinedPair(Pair(Employee, Address)))

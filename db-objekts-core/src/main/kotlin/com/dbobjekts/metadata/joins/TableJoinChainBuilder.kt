@@ -3,6 +3,7 @@ package com.dbobjekts.metadata.joins
 import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.Catalog
+import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.IsForeignKey
 import com.dbobjekts.util.StringUtil
 
@@ -25,8 +26,7 @@ class TableJoinChainBuilder(
         fun createProperties(tbls: List<AnyTable>): JoinProperties {
             val pairings: List<Pair<AnyTable, AnyTable>> = getTablePairings(tbls)
             val (joined, unjoined) = extractJoins(pairings)
-            val joins = joined.map { it.joinOpt!! }
-            return JoinProperties(tbls, joins, joined, unjoined)
+            return JoinProperties(tbls, joined, unjoined)
         }
 
         if (tables.isEmpty())
@@ -52,8 +52,8 @@ class TableJoinChainBuilder(
         return l.flatMap { t -> l.slice(l.indexOf(t) + 1..l.size - 1).map { Pair(t, it) } }
     }
 
-    internal fun findJoin(pair: Pair<AnyTable, AnyTable>): ForeignKeyJoin? =
-        listOf(createJoin(pair.first, pair.second), createJoin(pair.second, pair.first)).find { it != null }
+    internal fun findJoin(pair: Pair<AnyTable, AnyTable>): Boolean =
+        areJoined(pair.first, pair.second) && areJoined(pair.second, pair.first)
 
     private fun createPairWithOptionalJoin(pair: Pair<AnyTable, AnyTable>): TablePair = TablePair(pair, findJoin(pair))
 
@@ -68,10 +68,10 @@ class TableJoinChainBuilder(
             .find { it.first != null && it.second != null }?.first?.column?.table
     }
 
-    internal fun createJoin(parent: AnyTable, child: AnyTable): ForeignKeyJoin? =
-        child.getForeignKeyToParent(parent)?.let {
-            if (it.parentColumn.table == parent) ForeignKeyJoin(it.parentColumn, it) else null
-        }
+    internal fun areJoined(parent: AnyTable, child: AnyTable): Boolean =
+        child.getForeignKeysToParent(parent).filter {
+            it.parentColumn.table == parent
+        }.isNotEmpty()
 
 
     internal fun buildChain(props: JoinProperties): TableJoinChain {
@@ -80,7 +80,7 @@ class TableJoinChainBuilder(
         fun sort(sorted: List<AnyTable>, toSort: List<AnyTable>): List<AnyTable> {
             val maybeFound = sorted
                 .flatMap { t -> toSort.map { Pair(t, it) } }
-                .find { createJoin(it.first, it.second) != null || createJoin(it.second, it.first) != null }
+                .find { areJoined(it.first, it.second)  || areJoined(it.second, it.first) }
             return maybeFound?.let {
                 val m = it
                 sort(StringUtil.concatLists(sorted, listOf(m.second)), toSort.filterNot { it == m.second })
@@ -88,7 +88,7 @@ class TableJoinChainBuilder(
         }
 
         val tablesToJoin = props.tables.filterNot { it == drivingTable }
-        val sortedTables = sort(listOf(drivingTable), tablesToJoin.sortedBy { it.tableName.value })
+        val sortedTables: List<Table<*>> = sort(listOf(drivingTable), tablesToJoin.sortedBy { it.tableName.value })
 
         val sortedSet = sortedTables.toHashSet()
         val unUsed = tablesToJoin.filterNot { sortedSet.contains(it) }
@@ -104,13 +104,12 @@ class TableJoinChainBuilder(
 
 internal data class JoinProperties(
     val tables: List<AnyTable>,
-    val joins: List<ForeignKeyJoin>,
     val joinedPairs: List<TablePair>,
     val unJoinedPairs: List<TablePair>
 )
 
 
-internal data class TablePair(val pair: Pair<AnyTable, AnyTable>, val joinOpt: ForeignKeyJoin?) {
-    fun isJoined(): Boolean = joinOpt != null
+internal data class TablePair(val pair: Pair<AnyTable, AnyTable>, val joinOpt: Boolean) {
+    fun isJoined(): Boolean = joinOpt
 }
 

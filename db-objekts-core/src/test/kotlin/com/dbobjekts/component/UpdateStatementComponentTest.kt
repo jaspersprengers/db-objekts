@@ -1,13 +1,16 @@
 package com.dbobjekts.component
 
-import com.dbobjekts.fixture.columns.AddressType
-import com.dbobjekts.testdb.acme.core.*
+import com.dbobjekts.testdb.acme.core.Employee
+import com.dbobjekts.testdb.acme.core.EmployeeRow
 import com.dbobjekts.testdb.acme.hr.Hobby
 import com.dbobjekts.testdb.acme.hr.HobbyRow
-import org.assertj.core.api.Assertions
+import com.dbobjekts.testdb.acme.library.Composite
+import com.dbobjekts.testdb.acme.library.CompositeForeignKey
 import org.assertj.core.api.Assertions.assertThat
-import org.junit.jupiter.api.*
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 class UpdateStatementComponentTest {
@@ -24,6 +27,16 @@ class UpdateStatementComponentTest {
             AcmeDB.createExampleCatalog(AcmeDB.transactionManager)
         }
     }
+
+    @Test
+    fun `composite foreign keys are not supported`(){
+        tm {
+            it.insert(Composite).mandatoryColumns("ISBN", "The Shining").published(LocalDate.now()).execute()
+            it.insert(CompositeForeignKey).mandatoryColumns("ISBN", "The Shining").message("Hello world!").execute()
+            assertThatThrownBy { it.select(Composite.published, CompositeForeignKey.message).where(Composite.isbn.eq("ISBN")).first() }
+        }
+    }
+
 
     @Test
     fun `update all fields in employee record`() {

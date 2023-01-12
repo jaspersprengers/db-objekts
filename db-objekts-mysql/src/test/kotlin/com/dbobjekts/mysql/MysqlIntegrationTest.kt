@@ -15,28 +15,30 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import javax.sql.DataSource
 import com.dbobjekts.util.HikariDataSourceFactory
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
 
-//@Testcontainers
+@Testcontainers
 class MysqlIntegrationTest {
 
     companion object {
 
-        //@Container
-        val container: MysqlWrapper = MysqlWrapper("10.10", listOf("acme.sql"))
+        @Container
+        val container: MysqlWrapper = MysqlWrapper("8.0", listOf("acme.sql", "classicmodels.sql"))
         lateinit var dataSource: DataSource
         lateinit var tm: TransactionManager
 
         @JvmStatic
         @BeforeAll
         fun beforeAll() {
-            //dataSource = container.createDataSource()
-            dataSource = HikariDataSourceFactory
+            dataSource = container.createDataSource()
+            /*dataSource = HikariDataSourceFactory
                 .create(
                     url = "jdbc:mysql://localhost:3306/test",
                     username = "root",
                     password = "test",
                     driver = "com.mysql.cj.jdbc.Driver"
-                )
+                )*/
             tm = TransactionManager.builder()
                 .withDataSource(dataSource)
                // .withCatalog(CatalogDefinition)
@@ -51,7 +53,7 @@ class MysqlIntegrationTest {
         gen.configureColumnTypeMapping().setColumnTypeForJDBCType("TINYINT", NumberAsBooleanColumn::class.java)
         gen.configureOutput()
             .basePackageForSources("com.dbobjekts.mysql.testdb")
-        .outputDirectoryForGeneratedSources(Paths.get("db-objekts-mysql/src/generated-sources/kotlin").toAbsolutePath().toString())
+        .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         //val diff = gen.differencesWithCatalog(CatalogDefinition)
         //assertThat(diff).isEmpty()
         gen.generateSourceFiles()

@@ -35,12 +35,11 @@ object JoinFactory {
         //1: person left join hobby (person has optional FK to hobby)
         val fkToParent = left.getForeignKeyToParent(right)
         if ( fkToParent == null ){
-            val fk = right.getForeignKeyToParent (left)
+            val fk = right.getForeignKeyToParent(left)
             if ( fk == null ) throw StatementBuilderException("Could not establish foreign key relation between tables ${left.tableName} and ${right.tableName}")
             else return Pair(left.columnByName(fk.parentColumn.nameInTable)!!, fk.column)
         } else
             return Pair(fkToParent.column, right.columnByName(fkToParent.parentColumn.nameInTable)!!)
-
     }
 
     fun toSQL(vararg join: JoinBase): String = toSQL(join.asList())

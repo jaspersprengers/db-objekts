@@ -32,6 +32,8 @@ abstract class Table<I> (
 
     internal fun getForeignKeyToParent(parent: AnyTable): IsForeignKey<*, *>? = foreignKeys.find { it.parentColumn.table == parent }
 
+    internal fun getForeignKeysToParent(parent: AnyTable): List<IsForeignKey<*, *>> = foreignKeys.filter { it.parentColumn.table == parent }
+
     internal fun columnByName(column: String): AnyColumn? = columns.find { it.nameInTable.equals(column, true) }
 
     internal open fun alias(): String = ensureSchema().aliasForTable(this)

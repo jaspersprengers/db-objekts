@@ -11,6 +11,8 @@ import com.dbobjekts.testdb.acme.hr.Hobby
 import com.dbobjekts.testdb.acme.library.Author
 import com.dbobjekts.testdb.acme.library.Book
 import com.dbobjekts.testdb.acme.library.BookReview
+import com.dbobjekts.testdb.acme.library.Composite
+import com.dbobjekts.testdb.acme.library.CompositeForeignKey
 import com.dbobjekts.testdb.acme.library.Item
 import com.dbobjekts.testdb.acme.library.Loan
 import com.dbobjekts.testdb.acme.library.Member
@@ -41,6 +43,8 @@ object Aliases {
     val a1 = Author
     val b = Book
     val br = BookReview
+    val c2 = Composite
+    val cfk = CompositeForeignKey
     val i = Item
     val l = Loan
     val m = Member

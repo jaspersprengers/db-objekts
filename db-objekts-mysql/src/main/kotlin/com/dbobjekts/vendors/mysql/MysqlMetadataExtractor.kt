@@ -44,13 +44,19 @@ object MysqlMetadataExtractor : VendorSpecificMetaDataExtractor {
     override fun extractForeignKeyMetaDataFromDB(transactionManager: TransactionManager): List<ForeignKeyMetaDataRow> {
         return transactionManager.newTransaction {
             val sql = """
-                select  u.TABLE_SCHEMA, 
-                u.TABLE_NAME,
-                u.REFERENCED_TABLE_NAME,
-                u.REFERENCED_TABLE_SCHEMA,
-                u.COLUMN_NAME,
-                u.REFERENCED_COLUMN_NAME
-                from information_schema.KEY_COLUMN_USAGE u where REFERENCED_TABLE_NAME is not null
+                select u.TABLE_SCHEMA,
+               u.TABLE_NAME,
+               u.COLUMN_NAME,
+               u.REFERENCED_TABLE_SCHEMA,
+               u.REFERENCED_TABLE_NAME,
+               u.REFERENCED_COLUMN_NAME
+                from information_schema.KEY_COLUMN_USAGE u
+                 join (select count(1) as c, u2.CONSTRAINT_NAME as ctr
+                       from information_schema.KEY_COLUMN_USAGE u2
+                       where u2.REFERENCED_TABLE_NAME is not null
+                       group by u2.CONSTRAINT_NAME
+                       having c = 1) as j on j.ctr = u.CONSTRAINT_NAME
+                    where REFERENCED_TABLE_NAME is not null
             """.trimIndent()
 
             val rows = it.sql(sql).withResultTypes().string().string().string().string().string().string().asList()

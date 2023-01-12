@@ -13,29 +13,38 @@ object PostgreSQLMetaDataExtractor : VendorSpecificMetaDataExtractor {
             val sql = """
                 select t.TABLE_SCHEMA,
                        t.TABLE_NAME,
-                       c.EXTRA,
-                       c.COLUMN_NAME,
-                       c.COLUMN_KEY,
-                       c.IS_NULLABLE,
-                       c.COLUMN_DEFAULT,
-                       c.DATA_TYPE
+                       c.is_identity,
+                       c.column_name,
+                       ccu.column_name,
+                       c.is_nullable,
+                       c.data_type
                 from information_schema.TABLES t
                          join information_schema.COLUMNS c on c.TABLE_NAME = t.TABLE_NAME and c.TABLE_SCHEMA = t.TABLE_SCHEMA
-                where table_type = 'BASE TABLE' AND t.TABLE_SCHEMA NOT IN ('mysql','information_schema','performance_schema','sys')
-                order by t.TABLE_SCHEMA, t.TABLE_NAME, c.ORDINAL_POSITION asc
+                         left join information_schema.table_constraints tc on tc.table_schema = t.table_schema and tc.table_name = t.table_name and tc.constraint_type = 'PRIMARY KEY'
+                         left join information_schema.constraint_column_usage ccu on ccu.constraint_name = tc.constraint_name and ccu.table_name = c.table_name and ccu.column_name = c.column_name
+                where table_type = 'BASE TABLE' AND t.TABLE_SCHEMA NOT IN ('pg_catalog', 'information_schema')
+                order by t.TABLE_SCHEMA, t.TABLE_NAME, c.ORDINAL_POSITION
             """.trimIndent()
 
-            val rows = it.sql(sql).withResultTypes().string().string().string().string().stringNil().string().stringNil().string().asList()
+            val rows = it.sql(sql).withResultTypes()
+                .string()//schema
+                .string()//table
+                .string()//identity ?
+                .string()//column name
+                .stringNil()//primary key
+                .string()//nullable?
+                .string()// data type
+                .asList()
             rows.map({ tuple ->
                 TableMetaDataRow(
                     schema = tuple.v1,
                     table = tuple.v2,
-                    autoIncrement = (tuple.v3 ) == "auto_increment",
+                    autoIncrement = (tuple.v3 ) == "YES",
                     column = tuple.v4,
-                    isPrimaryKey = tuple.v5 == "PRI",
+                    isPrimaryKey = tuple.v5 != null,
                     nullable = tuple.v6 == "YES",
-                    defaultValue = tuple.v7,
-                    dataType = tuple.v8
+                    defaultValue = null,
+                    dataType = tuple.v7
                 )
             })
         }
@@ -44,13 +53,13 @@ object PostgreSQLMetaDataExtractor : VendorSpecificMetaDataExtractor {
     override fun extractForeignKeyMetaDataFromDB(transactionManager: TransactionManager): List<ForeignKeyMetaDataRow> {
         return transactionManager.newTransaction {
             val sql = """
-                select  u.TABLE_SCHEMA, 
-                u.TABLE_NAME,
-                u.REFERENCED_TABLE_NAME,
-                u.REFERENCED_TABLE_SCHEMA,
-                u.COLUMN_NAME,
-                u.REFERENCED_COLUMN_NAME
-                from information_schema.KEY_COLUMN_USAGE u where REFERENCED_TABLE_NAME is not null
+                select  ccu.table_schema,ccu.table_name, ccu.column_name, kcu.table_schema, kcu.table_name, kcu.column_name
+                from information_schema.table_constraints tc
+                  join information_schema.constraint_column_usage ccu on ccu.constraint_name = tc.constraint_name
+                  join information_schema.key_column_usage kcu on kcu.constraint_name = tc.constraint_name
+                where
+                    tc.constraint_type = 'FOREIGN KEY' and
+                    tc.table_schema NOT IN ('pg_catalog', 'information_schema')
             """.trimIndent()
 
             val rows = it.sql(sql).withResultTypes().string().string().string().string().string().string().asList()

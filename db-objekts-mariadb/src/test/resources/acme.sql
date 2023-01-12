@@ -97,3 +97,21 @@ create table IF NOT EXISTS core.ALL_TYPES_NIL
     TIMESTAMP_COL        TIMESTAMP,
     YEAR_COL             YEAR
 );
+
+
+create table if not exists core.composite
+(
+    isbn      varchar(20)  NOT NULL,
+    title     varchar(200) NOT NULL,
+    published DATE         NULL,
+    primary key (isbn, title)
+);
+
+create table if not exists core.composite_foreign_key
+(
+    isbn    varchar(20)  NOT NULL,
+    title   varchar(200) NOT NULL,
+    message varchar(100) null,
+    primary key (isbn, title),
+    foreign key (isbn, title) references core.composite (isbn, title)
+);

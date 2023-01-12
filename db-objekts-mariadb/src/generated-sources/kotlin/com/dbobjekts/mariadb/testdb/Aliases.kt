@@ -1,6 +1,8 @@
 package com.dbobjekts.mariadb.testdb
 import com.dbobjekts.mariadb.testdb.core.Address
 import com.dbobjekts.mariadb.testdb.core.AllTypesNil
+import com.dbobjekts.mariadb.testdb.core.Composite
+import com.dbobjekts.mariadb.testdb.core.CompositeForeignKey
 import com.dbobjekts.mariadb.testdb.core.Country
 import com.dbobjekts.mariadb.testdb.core.Department
 import com.dbobjekts.mariadb.testdb.core.Employee
@@ -34,15 +36,17 @@ import com.dbobjekts.mariadb.testdb.nation.Vips
 object Aliases {
     val a = Address
     val atn = AllTypesNil
+    val c1 = Composite
+    val cfk = CompositeForeignKey
     val c = Country
     val d = Department
     val e = Employee
     val ea = EmployeeAddress
     val ed = EmployeeDepartment
-    val c1 = Certificate
+    val c2 = Certificate
     val h = Hobby
-    val c2 = Continents
-    val c3 = Countries
+    val c3 = Continents
+    val c4 = Countries
     val cl = CountryLanguages
     val cs = CountryStats
     val g = Guests

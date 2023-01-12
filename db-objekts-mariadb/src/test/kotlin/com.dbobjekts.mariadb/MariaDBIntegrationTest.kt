@@ -27,7 +27,6 @@ import com.dbobjekts.mariadb.testdb.nation.Countries
 import com.dbobjekts.mariadb.testdb.nation.CountryStats
 import com.dbobjekts.mariadb.testdb.nation.Regions
 import com.dbobjekts.metadata.column.Aggregate
-import com.dbobjekts.util.HikariDataSourceFactory
 
 @Testcontainers
 class MariaDBIntegrationTest {
@@ -57,10 +56,10 @@ class MariaDBIntegrationTest {
         gen.configureColumnTypeMapping().setColumnTypeForJDBCType("TINYINT", NumberAsBooleanColumn::class.java)
         gen.configureOutput()
             .basePackageForSources("com.dbobjekts.mariadb.testdb")
-        .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
+            .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff = gen.differencesWithCatalog(CatalogDefinition)
         assertThat(diff).isEmpty()
-        gen.generateSourceFiles()
+        //gen.generateSourceFiles()
     }
 
     @Test
@@ -306,7 +305,7 @@ class MariaDBIntegrationTest {
             val value = "MAYBE"
             it.insert(AllTypesNil).enumCol(value).execute()
             val retrieved = it.select(AllTypesNil.enumCol).where(AllTypesNil.enumCol.eq(value)).first()!!
-           assertThat(retrieved).isEqualTo(value)
+            assertThat(retrieved).isEqualTo(value)
         }
     }
 
@@ -316,7 +315,7 @@ class MariaDBIntegrationTest {
             val value = "[{\"hello\": 42}]"
             it.insert(AllTypesNil).jsonCol(value).execute()
             val retrieved = it.select(AllTypesNil.jsonCol).where(AllTypesNil.jsonCol.eq(value)).first()!!
-           assertThat(retrieved).isEqualTo(value)
+            assertThat(retrieved).isEqualTo(value)
         }
     }
 
@@ -326,7 +325,7 @@ class MariaDBIntegrationTest {
             val value = "The quick brown fox"
             it.insert(AllTypesNil).textCol(value).execute()
             val retrieved = it.select(AllTypesNil.textCol).where(AllTypesNil.textCol.eq(value)).first()!!
-           assertThat(retrieved).isEqualTo(value)
+            assertThat(retrieved).isEqualTo(value)
         }
     }
 
@@ -336,7 +335,7 @@ class MariaDBIntegrationTest {
             val value = "text"
             it.insert(AllTypesNil).varcharCol(value).execute()
             val retrieved = it.select(AllTypesNil.varcharCol).where(AllTypesNil.varcharCol.eq(value)).first()!!
-           assertThat(retrieved).isEqualTo(value)
+            assertThat(retrieved).isEqualTo(value)
         }
     }
 
@@ -346,7 +345,7 @@ class MariaDBIntegrationTest {
             val value = "chess"
             it.insert(AllTypesNil).setCol(value).execute()
             val retrieved = it.select(AllTypesNil.setCol).where(AllTypesNil.setCol.eq(value)).first()!!
-           assertThat(retrieved).isEqualTo(value)
+            assertThat(retrieved).isEqualTo(value)
         }
     }
 
@@ -356,7 +355,7 @@ class MariaDBIntegrationTest {
             val value = LocalDate.of(1980, 10, 10)
             it.insert(AllTypesNil).dateCol(value).execute()
             val retrieved = it.select(AllTypesNil.dateCol).where(AllTypesNil.dateCol.eq(value)).first()!!
-           assertThat(retrieved).isEqualTo(value)
+            assertThat(retrieved).isEqualTo(value)
         }
     }
 
@@ -366,7 +365,7 @@ class MariaDBIntegrationTest {
             val value = LocalTime.of(15, 30)
             it.insert(AllTypesNil).timeCol(value).execute()
             val retrieved = it.select(AllTypesNil.timeCol).where(AllTypesNil.timeCol.eq(value)).first()!!
-           assertThat(retrieved).isEqualTo(value)
+            assertThat(retrieved).isEqualTo(value)
         }
     }
 
@@ -376,7 +375,7 @@ class MariaDBIntegrationTest {
             val value = LocalDateTime.of(1980, 10, 10, 14, 30)
             it.insert(AllTypesNil).datetimeCol(value).execute()
             val retrieved = it.select(AllTypesNil.datetimeCol).where(AllTypesNil.datetimeCol.eq(value)).first()!!
-           assertThat(retrieved).isEqualTo(value)
+            assertThat(retrieved).isEqualTo(value)
         }
     }
 
@@ -387,7 +386,7 @@ class MariaDBIntegrationTest {
             val value = LocalDateTime.of(1980, 10, 10, 14, 30)
             it.insert(AllTypesNil).timestampCol(value).execute()
             val retrieved = it.select(AllTypesNil.timestampCol).where(AllTypesNil.timestampCol.eq(value)).first()!!
-           assertThat(retrieved).isEqualTo(value)
+            assertThat(retrieved).isEqualTo(value)
         }
     }
 
@@ -397,7 +396,7 @@ class MariaDBIntegrationTest {
             val value = 1990
             it.insert(AllTypesNil).yearCol(value).execute()
             val retrieved = it.select(AllTypesNil.yearCol).where(AllTypesNil.yearCol.eq(value)).first()!!
-           assertThat(retrieved).isEqualTo(value)
+            assertThat(retrieved).isEqualTo(value)
         }
     }
 
@@ -434,7 +433,7 @@ class MariaDBIntegrationTest {
         insert("Fred", 38)
         insert("Jasper", 39)
         assertThat(tm { it.select(e.salary).where(e.salary.notIn(31.0, 33.0, 35.0)).asList().size }).isEqualTo(7)
-        assertThat( tm { it.select(e.salary).where(e.salary.within(31.0, 33.0, 35.0)).asList().size }).isEqualTo(3)
+        assertThat(tm { it.select(e.salary).where(e.salary.within(31.0, 33.0, 35.0)).asList().size }).isEqualTo(3)
         assertThat(tm { it.select(e.salary).where(e.salary.gt(35.0)).asList().size }).isEqualTo(4)
         assertThat(tm { it.select(e.salary).where(e.salary.ge(35.0)).asList().size }).isEqualTo(5)
         assertThat(tm { it.select(e.salary).where(e.salary.lt(34.0)).asList().size }).isEqualTo(4)
@@ -443,9 +442,9 @@ class MariaDBIntegrationTest {
         assertThat(tm { it.select(e.salary).where(e.salary.within(31.0, 33.0, 35.0)).asList().size }).isEqualTo(3)
 
         assertThat(tm { it.select(e.salary).orderDesc(e.salary).first() }).isEqualTo(39.0)
-        assertThat( tm { it.select(e.salary).orderAsc(e.salary).first() }).isEqualTo(30.0)
-        assertThat( tm { it.select(e.salary).orderAsc(e.name).first() }).isEqualTo(36.0)
-        assertThat( tm { it.select(e.salary).orderDesc(e.name).first() }).isEqualTo(39.0)
+        assertThat(tm { it.select(e.salary).orderAsc(e.salary).first() }).isEqualTo(30.0)
+        assertThat(tm { it.select(e.salary).orderAsc(e.name).first() }).isEqualTo(36.0)
+        assertThat(tm { it.select(e.salary).orderDesc(e.name).first() }).isEqualTo(39.0)
 
         insert("Oliver", 31)
         insert("Karl", 30)
@@ -545,7 +544,14 @@ class MariaDBIntegrationTest {
             checkCount(tr.select(e.id).where(e.name.endsWith("Holmes")), 1)
             checkCount(tr.select(e.id).where(e.name.endsWith("Arthur Matthew Dent")), 1)
         }
-
+        //composite foreign keys are not supported
+       tm {
+            it.insert(Composite).mandatoryColumns("ISBN", "The Shining").published(LocalDate.now()).execute()
+            it.insert(CompositeForeignKey).mandatoryColumns("ISBN", "The Shining").message("Hello world!").execute()
+            Assertions.assertThatThrownBy {
+                it.select(Composite.published, CompositeForeignKey.message).where(Composite.isbn.eq("ISBN")).first()
+            }
+        }
 
         tm { it.update(e).children(2).where(h.name.eq("curling")) }
         tm { it.deleteFrom(e.innerJoin(Hobby)).where(h.name.eq("curling")) }
