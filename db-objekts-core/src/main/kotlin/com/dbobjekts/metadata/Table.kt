@@ -78,8 +78,8 @@ abstract class Table<I> (
      *  select(..).from(employee e left join hobby h on e.hobby_id = h.id)
      * ```
      */
-    fun leftJoin(table: AnyTable): TableJoinChain =
-        TableJoinChain(this).addJoin(JoinFactory.createLeftJoin(this, table))
+    fun <T2 : Table<*>> leftJoin(table: T2): TableJoinChain<T2> =
+        TableJoinChain(this).addJoin(JoinFactory.createLeftJoin(this, table)) as TableJoinChain<T2>
 
     /**
      * Creates a right outer join with the table provided. Example:
@@ -91,8 +91,8 @@ abstract class Table<I> (
      *  employee e right join hobby h on e.hobby_id = h.id
      * ```
      */
-    fun rightJoin(table: AnyTable): TableJoinChain =
-        TableJoinChain(this).addJoin(JoinFactory.createRightJoin(this, table))
+    fun <T2 : Table<*>> rightJoin(table: T2): TableJoinChain<T2> =
+        TableJoinChain(this).addJoin(JoinFactory.createRightJoin(this, table)) as TableJoinChain<T2>
 
     /**
      * Creates an inner join with the table provided. Example:
@@ -104,8 +104,8 @@ abstract class Table<I> (
      *  employee e join hobby h on e.hobby_id = h.id
      * ```
      */
-    fun innerJoin(table: AnyTable): TableJoinChain =
-        TableJoinChain(this).addJoin(JoinFactory.createInnerJoin(this, table))
+    fun <T2 : Table<*>> innerJoin(table: T2): TableJoinChain<T2> =
+        TableJoinChain(this).addJoin(JoinFactory.createInnerJoin(this, table)) as TableJoinChain<T2>
 
     /**
      * @return the schema and table, e.g. hr.certificate

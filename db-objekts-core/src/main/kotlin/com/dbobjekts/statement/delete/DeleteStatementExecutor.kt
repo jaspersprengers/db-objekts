@@ -27,7 +27,7 @@ class DeleteStatementExecutor(
         return this
     }
 
-    internal fun withJoinChain(tableJoinChain: TableJoinChain): DeleteStatementExecutor {
+    internal fun withJoinChain(tableJoinChain: TableJoinChain<*>): DeleteStatementExecutor {
         registerJoinChain(tableJoinChain)
         return this
     }

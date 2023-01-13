@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 
 class TableJoinChainBuilderTest {
 
-    fun assertChain(chain: TableJoinChain, sql: String) {
+    fun assertChain(chain: TableJoinChain<*>, sql: String) {
         assertEquals(sql, chain.toSQL().trim())
     }
 

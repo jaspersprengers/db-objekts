@@ -18,7 +18,7 @@ class TableJoinChainBuilder(
         require(tables.any { it == drivingTable }, { "Table ${drivingTable.tableName} should be part of List $tables" })
     }
 
-    fun build(): TableJoinChain {
+    fun build(): TableJoinChain<*> {
 
         fun extractJoins(tablePairs: List<Pair<AnyTable, AnyTable>>): Pair<List<TablePair>, List<TablePair>> =
             tablePairs.map { createPairWithOptionalJoin(it) }.partition { it.isJoined() }
@@ -74,7 +74,7 @@ class TableJoinChainBuilder(
         }.isNotEmpty()
 
 
-    internal fun buildChain(props: JoinProperties): TableJoinChain {
+    internal fun buildChain(props: JoinProperties): TableJoinChain<*> {
         require(props.tables.isNotEmpty(), { "No tables to build join query" })
 
         fun sort(sorted: List<AnyTable>, toSort: List<AnyTable>): List<AnyTable> {

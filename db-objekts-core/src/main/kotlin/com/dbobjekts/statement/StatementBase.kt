@@ -22,10 +22,10 @@ abstract class StatementBase<W>(protected val semaphore: Semaphore,
     internal abstract val statementType: String
 
     private var _drivingTable: AnyTable? = null
-    private var _joinChain: TableJoinChain? = null
+    private var _joinChain: TableJoinChain<*>? = null
     protected lateinit var _whereClause: WhereClause
 
-    internal fun registerJoinChain(joinChain: TableJoinChain) {
+    internal fun registerJoinChain(joinChain: TableJoinChain<*>) {
         _joinChain = joinChain
     }
 
@@ -33,7 +33,7 @@ abstract class StatementBase<W>(protected val semaphore: Semaphore,
         _drivingTable = table
     }
 
-    internal fun buildJoinChain(useOuterJoins: Boolean = false): TableJoinChain =
+    internal fun buildJoinChain(useOuterJoins: Boolean = false): TableJoinChain<*> =
         _joinChain ?: TableJoinChainBuilder(
             catalog = catalog,
             drivingTable = _drivingTable ?: tables.firstOrNull() ?: throw StatementBuilderException("Cannot build query: no tables to select"),

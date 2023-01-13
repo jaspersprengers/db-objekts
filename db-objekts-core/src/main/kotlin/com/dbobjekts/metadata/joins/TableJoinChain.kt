@@ -3,28 +3,28 @@ package com.dbobjekts.metadata.joins
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.exception.StatementBuilderException
+import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.TableOrJoin
 import com.dbobjekts.util.StringUtil
 
-class TableJoinChain(val table: AnyTable) : TableOrJoin, Cloneable {
+class TableJoinChain<T : Table<*>>(val table: T,
+                                   private val joins: List<JoinBase> = listOf()
+) : TableOrJoin, Cloneable {
 
-    private val joins: MutableList<JoinBase> = mutableListOf()
+    constructor(table: T, join: JoinBase): this(table, listOf(join))
 
-    internal fun addJoin(join: JoinBase): TableJoinChain {
-        joins += join
-        return this
+    internal fun addJoin(join: JoinBase): TableJoinChain<*> {
+        return TableJoinChain(this.table, joins + join)
     }
 
-    fun leftJoin(table: AnyTable): TableJoinChain {
+    fun <T2 : Table<*>> leftJoin(table: T2): TableJoinChain<T2> {
         checkTableNotJoinedAlready(table)
-        addJoin(createLeftJoin(extractJoinedColumnPair(table)))
-        return this
+        return addJoin(createLeftJoin(extractJoinedColumnPair(table))) as TableJoinChain<T2>
     }
 
-    fun innerJoin(table: AnyTable): TableJoinChain {
+    fun <T2 : Table<*>> innerJoin(table: T2): TableJoinChain<T2> {
         checkTableNotJoinedAlready(table)
-        addJoin(createInnerJoin(extractJoinedColumnPair(table)))
-        return this
+        return addJoin(createInnerJoin(extractJoinedColumnPair(table))) as TableJoinChain<T2>
     }
 
 

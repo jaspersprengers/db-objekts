@@ -135,7 +135,7 @@ class Transaction(internal val connection: ConnectionAdapter) {
         val statement = DeleteStatementExecutor(semaphore, connection)
         return when (tableOrJoin) {
             is AnyTable -> statement.withTable(tableOrJoin)
-            is TableJoinChain -> statement.withJoinChain(tableOrJoin)
+            is TableJoinChain<*> -> statement.withJoinChain(tableOrJoin)
             else -> throw StatementBuilderException("Illegal implementation of TableOrJoin provided. Must be Table or TableJoinChain")
         }
     }
