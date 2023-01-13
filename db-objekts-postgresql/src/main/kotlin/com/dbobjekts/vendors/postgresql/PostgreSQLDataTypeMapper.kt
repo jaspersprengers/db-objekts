@@ -15,14 +15,12 @@ class PostgreSQLDataTypeMapper : VendorDefaultColumnTypeMapper {
         return when (col) {
             //numeric
             "int2" -> ColumnFactory.integerColumn(nullable)
+            "int4" -> ColumnFactory.integerColumn(nullable)
             "int8" -> ColumnFactory.longColumn(nullable)
             "numeric" -> ColumnFactory.bigDecimalColumn(nullable)
             "decimal" -> ColumnFactory.bigDecimalColumn(nullable)
-            "int4" -> ColumnFactory.integerColumn(nullable)
             "float4" -> ColumnFactory.floatColumn(nullable)
             "float8" -> ColumnFactory.doubleColumn(nullable)
-            "real" -> ColumnFactory.doubleColumn(nullable)
-            "double precision" -> ColumnFactory.doubleColumn(nullable)
 
             //serial
             "smallserial" -> ColumnFactory.integerColumn(nullable)

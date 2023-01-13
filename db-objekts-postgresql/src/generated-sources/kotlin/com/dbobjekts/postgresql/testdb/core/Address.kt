@@ -24,7 +24,7 @@ object Address:Table<AddressRow>("address"), HasUpdateBuilder<AddressUpdateBuild
     /**
      * Represents db column core.address.id
      */
-    val id = com.dbobjekts.metadata.column.LongColumn(this, "id")
+    val id = com.dbobjekts.metadata.column.AutoKeyLongColumn(this, "id")
     /**
      * Represents db column core.address.street
      */
@@ -41,7 +41,6 @@ object Address:Table<AddressRow>("address"), HasUpdateBuilder<AddressUpdateBuild
 }
 
 class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
-    fun id(value: Long): AddressUpdateBuilder = put(Address.id, value)
     fun street(value: String): AddressUpdateBuilder = put(Address.street, value)
     fun countryId(value: String): AddressUpdateBuilder = put(Address.countryId, value)
     
@@ -59,12 +58,10 @@ class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
 }
 
 class AddressInsertBuilder():InsertBuilderBase(){
-    fun id(value: Long): AddressInsertBuilder = put(Address.id, value)
     fun street(value: String): AddressInsertBuilder = put(Address.street, value)
     fun countryId(value: String): AddressInsertBuilder = put(Address.countryId, value)
 
-    fun mandatoryColumns(id: Long, street: String, countryId: String) : AddressInsertBuilder {
-      mandatory(Address.id, id)
+    fun mandatoryColumns(street: String, countryId: String) : AddressInsertBuilder {
       mandatory(Address.street, street)
       mandatory(Address.countryId, countryId)
       return this
@@ -73,7 +70,6 @@ class AddressInsertBuilder():InsertBuilderBase(){
 
     override fun insertRow(rowData: TableRowData<*, *>): Long {
       rowData as AddressRow
-      add(Address.id, rowData.id)
       add(Address.street, rowData.street)
       add(Address.countryId, rowData.countryId)
       return execute()
@@ -83,7 +79,7 @@ class AddressInsertBuilder():InsertBuilderBase(){
 
 
 data class AddressRow(
-  val id: Long,
+val id: Long = 0,
   val street: String,
   val countryId: String    
 ) : TableRowData<AddressUpdateBuilder, AddressInsertBuilder>(Address.metadata()){

@@ -8,5 +8,6 @@ data class TableMetaDataRow(
     val isPrimaryKey: Boolean = false,
     val nullable: Boolean = true,
     val defaultValue: String? = null,
-    val dataType: String
+    val dataType: String,
+    val dataTypeExtra: String? = null
 )

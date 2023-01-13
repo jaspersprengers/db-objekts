@@ -24,7 +24,7 @@ object Department:Table<DepartmentRow>("department"), HasUpdateBuilder<Departmen
     /**
      * Represents db column core.department.id
      */
-    val id = com.dbobjekts.metadata.column.LongColumn(this, "id")
+    val id = com.dbobjekts.metadata.column.AutoKeyLongColumn(this, "id")
     /**
      * Represents db column core.department.name
      */
@@ -35,7 +35,6 @@ object Department:Table<DepartmentRow>("department"), HasUpdateBuilder<Departmen
 }
 
 class DepartmentUpdateBuilder() : UpdateBuilderBase(Department) {
-    fun id(value: Long): DepartmentUpdateBuilder = put(Department.id, value)
     fun name(value: String): DepartmentUpdateBuilder = put(Department.name, value)
     
     /**
@@ -51,11 +50,9 @@ class DepartmentUpdateBuilder() : UpdateBuilderBase(Department) {
 }
 
 class DepartmentInsertBuilder():InsertBuilderBase(){
-    fun id(value: Long): DepartmentInsertBuilder = put(Department.id, value)
     fun name(value: String): DepartmentInsertBuilder = put(Department.name, value)
 
-    fun mandatoryColumns(id: Long, name: String) : DepartmentInsertBuilder {
-      mandatory(Department.id, id)
+    fun mandatoryColumns(name: String) : DepartmentInsertBuilder {
       mandatory(Department.name, name)
       return this
     }
@@ -63,7 +60,6 @@ class DepartmentInsertBuilder():InsertBuilderBase(){
 
     override fun insertRow(rowData: TableRowData<*, *>): Long {
       rowData as DepartmentRow
-      add(Department.id, rowData.id)
       add(Department.name, rowData.name)
       return execute()
     }    
@@ -72,7 +68,7 @@ class DepartmentInsertBuilder():InsertBuilderBase(){
 
 
 data class DepartmentRow(
-  val id: Long,
+val id: Long = 0,
   val name: String    
 ) : TableRowData<DepartmentUpdateBuilder, DepartmentInsertBuilder>(Department.metadata()){
      override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Department.id, id))

@@ -17,6 +17,7 @@ object PostgreSQLMetaDataExtractor : VendorSpecificMetaDataExtractor {
                        c.column_name,
                        ccu.column_name,
                        c.is_nullable,
+                       c.data_type,
                        c.udt_name,
                        c.column_default
                 from information_schema.TABLES t
@@ -35,18 +36,20 @@ object PostgreSQLMetaDataExtractor : VendorSpecificMetaDataExtractor {
                 .stringNil()//primary key
                 .string()//nullable?
                 .string()// data type
+                .string()//udt_name extra data type information
                 .stringNil()//column default
                 .asList()
-            rows.map({ tuple ->
+            rows.map({ (schema, table, identity, column, primaryKey, nullable, dataType, udt, colDefault) ->
                 TableMetaDataRow(
-                    schema = tuple.v1,
-                    table = tuple.v2,
-                    autoIncrement = (tuple.v3 == "YES") || (tuple.v8?.startsWith("nextval") ?: false),
-                    column = tuple.v4,
-                    isPrimaryKey = tuple.v5 != null,
-                    nullable = tuple.v6 == "YES",
+                    schema = schema,
+                    table = table,
+                    autoIncrement = (identity == "YES") || (colDefault?.startsWith("nextval") ?: false),
+                    column = column,
+                    isPrimaryKey = primaryKey != null,
+                    nullable = nullable == "YES",
                     defaultValue = null,
-                    dataType = tuple.v7
+                    dataType = udt,
+                    dataTypeExtra = udt
                 )
             })
         }

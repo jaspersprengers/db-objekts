@@ -260,9 +260,13 @@ object AllTypesNil:Table<AllTypesNilRow>("all_types_nil"), HasUpdateBuilder<AllT
     /**
      * Represents db column core.all_types_nil.xml_col
      */
-    val xmlCol = com.dbobjekts.metadata.column.NullableByteArrayColumn(this, "xml_col")
-    override val columns: List<AnyColumn> = listOf(id,bigIntCol,int8Col,bigserialCol,serial8Col,bit4Col,bitVaryingCol,varbitCol,booleanCol,boolCol,boxCol,byteaCol,characterCol,charCol,characterVaryingCol,varcharCol,cidrCol,circleCol,dateCol,doublePrecisionCol,float8Col,inetCol,integerCol,intCol,int4Col,internvalYearCol,jsonCol,jsonBinaryCol,lineCol,lsegCol,macaddressCol,macaddress8Col,moneyCol,numericCol,decimalCol,pathCol,pgLsnCol,pgSnapshotCol,pointCol,polygonCol,realCol,float4Col,smallIntCol,int2Col,smallSerialCol,serial2Col,serialCol,serial4Col,textCol,timeWithoutTzCol,timeWithTzCol,timeTzCol,timestampWihtoutTzCol,timestampWithTzCol,timestampTzCol,tsqueryCol,tsvectorCol,txidSnapshotCol,uuidCol,xmlCol)
-    override fun toValue(values: List<Any?>) = AllTypesNilRow(values[0] as Int,values[1] as Long?,values[2] as Long?,values[3] as Long,values[4] as Long,values[5] as Boolean?,values[6] as ByteArray?,values[7] as ByteArray?,values[8] as Boolean?,values[9] as Boolean?,values[10] as String?,values[11] as ByteArray?,values[12] as String?,values[13] as String?,values[14] as String?,values[15] as String?,values[16] as String?,values[17] as String?,values[18] as java.time.LocalDate?,values[19] as Double?,values[20] as Double?,values[21] as String?,values[22] as Int?,values[23] as Int?,values[24] as Int?,values[25] as org.postgresql.util.PGInterval,values[26] as String?,values[27] as String?,values[28] as String?,values[29] as String?,values[30] as String?,values[31] as String?,values[32] as org.postgresql.util.PGmoney,values[33] as java.math.BigDecimal?,values[34] as java.math.BigDecimal?,values[35] as String?,values[36] as Long?,values[37] as Long?,values[38] as String?,values[39] as String?,values[40] as Float?,values[41] as Float?,values[42] as Int?,values[43] as Int?,values[44] as Int,values[45] as Int,values[46] as Int,values[47] as Int,values[48] as String?,values[49] as java.time.LocalTime?,values[50] as java.time.LocalTime?,values[51] as java.time.LocalTime?,values[52] as java.time.Instant?,values[53] as java.time.OffsetDateTime?,values[54] as java.time.OffsetDateTime?,values[55] as String?,values[56] as String?,values[57] as Long?,values[58] as String?,values[59] as ByteArray?)
+    val xmlCol = com.dbobjekts.metadata.column.XMLColumn(this, "xml_col")
+    /**
+     * Represents db column core.all_types_nil.mood_col
+     */
+    val moodCol = com.dbobjekts.metadata.column.VarcharColumn(this, "mood_col")
+    override val columns: List<AnyColumn> = listOf(id,bigIntCol,int8Col,bigserialCol,serial8Col,bit4Col,bitVaryingCol,varbitCol,booleanCol,boolCol,boxCol,byteaCol,characterCol,charCol,characterVaryingCol,varcharCol,cidrCol,circleCol,dateCol,doublePrecisionCol,float8Col,inetCol,integerCol,intCol,int4Col,internvalYearCol,jsonCol,jsonBinaryCol,lineCol,lsegCol,macaddressCol,macaddress8Col,moneyCol,numericCol,decimalCol,pathCol,pgLsnCol,pgSnapshotCol,pointCol,polygonCol,realCol,float4Col,smallIntCol,int2Col,smallSerialCol,serial2Col,serialCol,serial4Col,textCol,timeWithoutTzCol,timeWithTzCol,timeTzCol,timestampWihtoutTzCol,timestampWithTzCol,timestampTzCol,tsqueryCol,tsvectorCol,txidSnapshotCol,uuidCol,xmlCol,moodCol)
+    override fun toValue(values: List<Any?>) = AllTypesNilRow(values[0] as Int,values[1] as Long?,values[2] as Long?,values[3] as Long,values[4] as Long,values[5] as Boolean?,values[6] as ByteArray?,values[7] as ByteArray?,values[8] as Boolean?,values[9] as Boolean?,values[10] as String?,values[11] as ByteArray?,values[12] as String?,values[13] as String?,values[14] as String?,values[15] as String?,values[16] as String?,values[17] as String?,values[18] as java.time.LocalDate?,values[19] as Double?,values[20] as Double?,values[21] as String?,values[22] as Int?,values[23] as Int?,values[24] as Int?,values[25] as org.postgresql.util.PGInterval,values[26] as String?,values[27] as String?,values[28] as String?,values[29] as String?,values[30] as String?,values[31] as String?,values[32] as org.postgresql.util.PGmoney,values[33] as java.math.BigDecimal?,values[34] as java.math.BigDecimal?,values[35] as String?,values[36] as Long?,values[37] as Long?,values[38] as String?,values[39] as String?,values[40] as Float?,values[41] as Float?,values[42] as Int?,values[43] as Int?,values[44] as Int,values[45] as Int,values[46] as Int,values[47] as Int,values[48] as String?,values[49] as java.time.LocalTime?,values[50] as java.time.LocalTime?,values[51] as java.time.LocalTime?,values[52] as java.time.Instant?,values[53] as java.time.OffsetDateTime?,values[54] as java.time.OffsetDateTime?,values[55] as String?,values[56] as String?,values[57] as Long?,values[58] as String?,values[59] as java.sql.SQLXML,values[60] as String)
     override fun metadata(): WriteQueryAccessors<AllTypesNilUpdateBuilder, AllTypesNilInsertBuilder> = WriteQueryAccessors(AllTypesNilUpdateBuilder(), AllTypesNilInsertBuilder())
 }
 
@@ -325,7 +329,8 @@ class AllTypesNilUpdateBuilder() : UpdateBuilderBase(AllTypesNil) {
     fun tsvectorCol(value: String?): AllTypesNilUpdateBuilder = put(AllTypesNil.tsvectorCol, value)
     fun txidSnapshotCol(value: Long?): AllTypesNilUpdateBuilder = put(AllTypesNil.txidSnapshotCol, value)
     fun uuidCol(value: String?): AllTypesNilUpdateBuilder = put(AllTypesNil.uuidCol, value)
-    fun xmlCol(value: ByteArray?): AllTypesNilUpdateBuilder = put(AllTypesNil.xmlCol, value)
+    fun xmlCol(value: java.sql.SQLXML): AllTypesNilUpdateBuilder = put(AllTypesNil.xmlCol, value)
+    fun moodCol(value: String): AllTypesNilUpdateBuilder = put(AllTypesNil.moodCol, value)
     
     /**
      * FOR INTERNAL USE ONLY
@@ -392,6 +397,7 @@ class AllTypesNilUpdateBuilder() : UpdateBuilderBase(AllTypesNil) {
       add(AllTypesNil.txidSnapshotCol, rowData.txidSnapshotCol)
       add(AllTypesNil.uuidCol, rowData.uuidCol)
       add(AllTypesNil.xmlCol, rowData.xmlCol)
+      add(AllTypesNil.moodCol, rowData.moodCol)
       return where(AllTypesNil.id.eq(rowData.id))
     }    
         
@@ -456,9 +462,10 @@ class AllTypesNilInsertBuilder():InsertBuilderBase(){
     fun tsvectorCol(value: String?): AllTypesNilInsertBuilder = put(AllTypesNil.tsvectorCol, value)
     fun txidSnapshotCol(value: Long?): AllTypesNilInsertBuilder = put(AllTypesNil.txidSnapshotCol, value)
     fun uuidCol(value: String?): AllTypesNilInsertBuilder = put(AllTypesNil.uuidCol, value)
-    fun xmlCol(value: ByteArray?): AllTypesNilInsertBuilder = put(AllTypesNil.xmlCol, value)
+    fun xmlCol(value: java.sql.SQLXML): AllTypesNilInsertBuilder = put(AllTypesNil.xmlCol, value)
+    fun moodCol(value: String): AllTypesNilInsertBuilder = put(AllTypesNil.moodCol, value)
 
-    fun mandatoryColumns(bigserialCol: Long, serial8Col: Long, internvalYearCol: org.postgresql.util.PGInterval, moneyCol: org.postgresql.util.PGmoney, smallSerialCol: Int, serial2Col: Int, serialCol: Int, serial4Col: Int) : AllTypesNilInsertBuilder {
+    fun mandatoryColumns(bigserialCol: Long, serial8Col: Long, internvalYearCol: org.postgresql.util.PGInterval, moneyCol: org.postgresql.util.PGmoney, smallSerialCol: Int, serial2Col: Int, serialCol: Int, serial4Col: Int, xmlCol: java.sql.SQLXML, moodCol: String) : AllTypesNilInsertBuilder {
       mandatory(AllTypesNil.bigserialCol, bigserialCol)
       mandatory(AllTypesNil.serial8Col, serial8Col)
       mandatory(AllTypesNil.internvalYearCol, internvalYearCol)
@@ -467,6 +474,8 @@ class AllTypesNilInsertBuilder():InsertBuilderBase(){
       mandatory(AllTypesNil.serial2Col, serial2Col)
       mandatory(AllTypesNil.serialCol, serialCol)
       mandatory(AllTypesNil.serial4Col, serial4Col)
+      mandatory(AllTypesNil.xmlCol, xmlCol)
+      mandatory(AllTypesNil.moodCol, moodCol)
       return this
     }
 
@@ -532,6 +541,7 @@ class AllTypesNilInsertBuilder():InsertBuilderBase(){
       add(AllTypesNil.txidSnapshotCol, rowData.txidSnapshotCol)
       add(AllTypesNil.uuidCol, rowData.uuidCol)
       add(AllTypesNil.xmlCol, rowData.xmlCol)
+      add(AllTypesNil.moodCol, rowData.moodCol)
       return execute()
     }    
         
@@ -598,7 +608,8 @@ val id: Int = 0,
   val tsvectorCol: String?,
   val txidSnapshotCol: Long?,
   val uuidCol: String?,
-  val xmlCol: ByteArray?    
+  val xmlCol: java.sql.SQLXML,
+  val moodCol: String    
 ) : TableRowData<AllTypesNilUpdateBuilder, AllTypesNilInsertBuilder>(AllTypesNil.metadata()){
      override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(AllTypesNil.id, id))
 }

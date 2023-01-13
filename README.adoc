@@ -316,6 +316,13 @@ generator.configureColumnTypeMapping()
 ```
 The `AddressTypeAsStringColumn` is a custom specialization of `EnumAsStringColumn<AddressType>`.
 
+==== Complete control with CustomColumnTypeMapper
+While the above strategies should be sufficient for most cases, it's possible that you need even greater control. For this, register your own implementation of `api.CustomColumnTypeMapper<C : NonNullableColumn<*>>` and override its single abstract method:
+```kotlin
+abstract operator fun invoke(properties: ColumnMappingProperties): Class<C>?
+```
+The `properties` argument provides metadata about the db column (schema, table, name, nullability and its vendor-specific db type). Judged on these data you then return a class reference to a subclass of `NonNullableColumn`. db-Objekts will create an instance with the correct table reference and column name. If the column in question is nullable, it picks the nullable counterpart.
+
 === Setting sequence names
 Many vendors support sequences for generating primary keys, but the information schema does not store which sequence is used for which table. So, unfortunately, you have to configure this manually, as follows:
 ```kotlin

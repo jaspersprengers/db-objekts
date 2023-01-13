@@ -26,7 +26,7 @@ object Employee:Table<EmployeeRow>("employee"), HasUpdateBuilder<EmployeeUpdateB
     /**
      * Represents db column core.employee.id
      */
-    val id = com.dbobjekts.metadata.column.LongColumn(this, "id")
+    val id = com.dbobjekts.metadata.column.AutoKeyLongColumn(this, "id")
     /**
      * Represents db column core.employee.name
      */
@@ -59,7 +59,6 @@ object Employee:Table<EmployeeRow>("employee"), HasUpdateBuilder<EmployeeUpdateB
 }
 
 class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
-    fun id(value: Long): EmployeeUpdateBuilder = put(Employee.id, value)
     fun name(value: String): EmployeeUpdateBuilder = put(Employee.name, value)
     fun salary(value: Float): EmployeeUpdateBuilder = put(Employee.salary, value)
     fun married(value: Boolean?): EmployeeUpdateBuilder = put(Employee.married, value)
@@ -85,7 +84,6 @@ class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
 }
 
 class EmployeeInsertBuilder():InsertBuilderBase(){
-    fun id(value: Long): EmployeeInsertBuilder = put(Employee.id, value)
     fun name(value: String): EmployeeInsertBuilder = put(Employee.name, value)
     fun salary(value: Float): EmployeeInsertBuilder = put(Employee.salary, value)
     fun married(value: Boolean?): EmployeeInsertBuilder = put(Employee.married, value)
@@ -93,8 +91,7 @@ class EmployeeInsertBuilder():InsertBuilderBase(){
     fun children(value: Int?): EmployeeInsertBuilder = put(Employee.children, value)
     fun hobbyId(value: String?): EmployeeInsertBuilder = put(Employee.hobbyId, value)
 
-    fun mandatoryColumns(id: Long, name: String, salary: Float, dateOfBirth: java.time.LocalDate) : EmployeeInsertBuilder {
-      mandatory(Employee.id, id)
+    fun mandatoryColumns(name: String, salary: Float, dateOfBirth: java.time.LocalDate) : EmployeeInsertBuilder {
       mandatory(Employee.name, name)
       mandatory(Employee.salary, salary)
       mandatory(Employee.dateOfBirth, dateOfBirth)
@@ -104,7 +101,6 @@ class EmployeeInsertBuilder():InsertBuilderBase(){
 
     override fun insertRow(rowData: TableRowData<*, *>): Long {
       rowData as EmployeeRow
-      add(Employee.id, rowData.id)
       add(Employee.name, rowData.name)
       add(Employee.salary, rowData.salary)
       add(Employee.married, rowData.married)
@@ -118,7 +114,7 @@ class EmployeeInsertBuilder():InsertBuilderBase(){
 
 
 data class EmployeeRow(
-  val id: Long,
+val id: Long = 0,
   val name: String,
   val salary: Float,
   val married: Boolean?,

@@ -1,7 +1,6 @@
 package com.dbobjekts.postgresql.testdb
 import com.dbobjekts.postgresql.testdb.core.Address
 import com.dbobjekts.postgresql.testdb.core.AllTypesNil
-import com.dbobjekts.postgresql.testdb.core.AutoIncr
 import com.dbobjekts.postgresql.testdb.core.Composite
 import com.dbobjekts.postgresql.testdb.core.CompositeForeignKey
 import com.dbobjekts.postgresql.testdb.core.Country
@@ -28,7 +27,6 @@ import com.dbobjekts.postgresql.testdb.hr.Hobby
 object Aliases {
     val a = Address
     val atn = AllTypesNil
-    val ai = AutoIncr
     val c = Composite
     val cfk = CompositeForeignKey
     val c1 = Country
