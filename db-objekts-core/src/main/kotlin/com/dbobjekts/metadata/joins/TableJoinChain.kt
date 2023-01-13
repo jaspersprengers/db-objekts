@@ -11,8 +11,6 @@ class TableJoinChain<T : Table<*>>(val table: T,
                                    private val joins: List<JoinBase> = listOf()
 ) : TableOrJoin, Cloneable {
 
-    constructor(table: T, join: JoinBase): this(table, listOf(join))
-
     internal fun addJoin(join: JoinBase): TableJoinChain<*> {
         return TableJoinChain(this.table, joins + join)
     }

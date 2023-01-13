@@ -68,7 +68,9 @@ abstract class Table<I> (
         return if (idCols.isNotEmpty()) idCols[0] as IsGeneratedPrimaryKey else null
     }
 
-    /**
+/*
+    */
+/**
      * Creates a left outer join with the table provided. Example:
      * ```kotlin
      *  Employee.leftJoin(Hobby)
@@ -77,11 +79,13 @@ abstract class Table<I> (
      * ```sql
      *  select(..).from(employee e left join hobby h on e.hobby_id = h.id)
      * ```
-     */
+     *//*
+
     fun <T2 : Table<*>> leftJoin(table: T2): TableJoinChain<T2> =
         TableJoinChain(this).addJoin(JoinFactory.createLeftJoin(this, table)) as TableJoinChain<T2>
 
-    /**
+    */
+/**
      * Creates a right outer join with the table provided. Example:
      * ```kotlin
      *  select(..).from(Employee.rightJoin(Hobby))
@@ -90,11 +94,13 @@ abstract class Table<I> (
      * ```sql
      *  employee e right join hobby h on e.hobby_id = h.id
      * ```
-     */
+     *//*
+
     fun <T2 : Table<*>> rightJoin(table: T2): TableJoinChain<T2> =
         TableJoinChain(this).addJoin(JoinFactory.createRightJoin(this, table)) as TableJoinChain<T2>
 
-    /**
+    */
+/**
      * Creates an inner join with the table provided. Example:
      * ```kotlin
      *  select(..).from(Employee.rightJoin(Hobby))
@@ -103,9 +109,11 @@ abstract class Table<I> (
      * ```sql
      *  employee e join hobby h on e.hobby_id = h.id
      * ```
-     */
+     *//*
+
     fun <T2 : Table<*>> innerJoin(table: T2): TableJoinChain<T2> =
         TableJoinChain(this).addJoin(JoinFactory.createInnerJoin(this, table)) as TableJoinChain<T2>
+*/
 
     /**
      * @return the schema and table, e.g. hr.certificate

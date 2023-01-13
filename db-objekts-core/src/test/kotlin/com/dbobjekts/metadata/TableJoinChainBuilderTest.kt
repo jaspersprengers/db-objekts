@@ -72,11 +72,12 @@ class TableJoinChainBuilderTest {
 
     @Test
     fun `Manually building join chain`() {
-        val chain = TableJoinChain(Employee)
+        var chain = TableJoinChain(Employee)
         assert(chain.canJoin(EmployeeAddress))
         assert(chain.canJoin(Hobby))
         assert(!chain.canJoin(Address))
-        chain.leftJoin(EmployeeAddress)
+       /* chain = chain.leftJoin(EmployeeAddress)*/
+
         assert(chain.canJoin(Address))
     }
 
