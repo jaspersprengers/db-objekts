@@ -2,6 +2,9 @@ package com.dbobjekts.metadata.joins
 
 import com.dbobjekts.api.AnyColumn
 
+enum class JoinType {
+    INNER,LEFT,RIGHT
+}
 
 class LeftJoin(leftPart: AnyColumn, rightPart: AnyColumn) : JoinBase(leftPart, rightPart) {
     override val keyWord = "left join"

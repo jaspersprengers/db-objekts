@@ -1,12 +1,14 @@
 package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.joins.JoinBase
+import com.dbobjekts.metadata.joins.JoinType
+import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
@@ -18,7 +20,8 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: ID
  *
- * Foreign keys: [] 
+ * Foreign keys to: 
+ * References by: 
  */
 object AllTypes:Table<AllTypesRow>("ALL_TYPES"), HasUpdateBuilder<AllTypesUpdateBuilder, AllTypesInsertBuilder> {
     /**
@@ -256,7 +259,13 @@ object AllTypes:Table<AllTypesRow>("ALL_TYPES"), HasUpdateBuilder<AllTypesUpdate
     override val columns: List<AnyColumn> = listOf(id,characterCol,characterColNil,charactervaryingCol,charactervaryingColNil,characterlargeobjectCol,characterlargeobjectColNil,varcharIgnorecaseCol,varcharIgnorecaseColNil,enumCol,enumColNil,binaryCol,binaryColNil,binaryvaryingCol,binaryvaryingColNil,binarylargeobjectCol,binarylargeobjectColNil,jsonCol,jsonColNil,booleanCol,booleanColNil,tinyintCol,tinyintColNil,smallintCol,smallintColNil,integerCol,integerColNil,bigintCol,bigintColNil,numericCol,numericColNil,decfloatCol,decfloatColNil,realCol,realColNil,doubleprecisionCol,doubleprecisionColNil,dateCol,dateColNil,timeCol,timeColNil,timewithtimezoneCol,timewithtimezoneColNil,timestampCol,timestampColNil,timestampwithtimezoneCol,timestampwithtimezoneColNil,uuidCol,uuidColNil,intervalCol,intervalColNil,geometryColNil,intArrayCol,intArrayColNil,addressInt,addressIntNil,addressString,addressStringNil)
     override fun toValue(values: List<Any?>) = AllTypesRow(values[0] as Long,values[1] as String,values[2] as String?,values[3] as String,values[4] as String?,values[5] as String,values[6] as String?,values[7] as String,values[8] as String?,values[9] as String,values[10] as String?,values[11] as ByteArray,values[12] as ByteArray?,values[13] as ByteArray,values[14] as ByteArray?,values[15] as java.sql.Blob,values[16] as java.sql.Blob?,values[17] as ByteArray,values[18] as ByteArray?,values[19] as Boolean,values[20] as Boolean?,values[21] as Byte,values[22] as Byte?,values[23] as Int,values[24] as Int?,values[25] as Int,values[26] as Int?,values[27] as Long,values[28] as Long?,values[29] as java.math.BigDecimal,values[30] as java.math.BigDecimal?,values[31] as java.math.BigDecimal,values[32] as java.math.BigDecimal?,values[33] as Float,values[34] as Float?,values[35] as Double,values[36] as Double?,values[37] as java.time.LocalDate,values[38] as java.time.LocalDate?,values[39] as java.time.LocalTime,values[40] as java.time.LocalTime?,values[41] as java.time.OffsetDateTime,values[42] as java.time.OffsetDateTime?,values[43] as java.time.Instant,values[44] as java.time.Instant?,values[45] as java.time.OffsetDateTime,values[46] as java.time.OffsetDateTime?,values[47] as java.util.UUID,values[48] as java.util.UUID?,values[49] as org.h2.api.Interval,values[50] as org.h2.api.Interval?,values[51] as String?,values[52] as Array<Any>,values[53] as Array<Any>?,values[54] as com.dbobjekts.fixture.columns.AddressType,values[55] as com.dbobjekts.fixture.columns.AddressType,values[56] as com.dbobjekts.fixture.columns.AddressType,values[57] as com.dbobjekts.fixture.columns.AddressType)
     override fun metadata(): WriteQueryAccessors<AllTypesUpdateBuilder, AllTypesInsertBuilder> = WriteQueryAccessors(AllTypesUpdateBuilder(), AllTypesInsertBuilder())
+
 }
+
+class AllTypesJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
+    
+}
+
 
 class AllTypesUpdateBuilder() : UpdateBuilderBase(AllTypes) {
     fun characterCol(value: String): AllTypesUpdateBuilder = put(AllTypes.characterCol, value)

@@ -11,7 +11,7 @@ data class ForeignKeyProperties(
     val parentSchema: SchemaName,
     val parentColumn: ColumnName,
     val parentTable: TableName
-){
+) {
     override fun toString(): String {
         return "$schema.$table.$col references $parentSchema.$parentTable.$parentColumn"
     }
@@ -23,5 +23,12 @@ class ForeignKeyManager(tableMetaData: List<TableMetaData>) {
 
     fun findForeignKey(schema: SchemaName, tableName: TableName, colName: ColumnName): ForeignKeyProperties? =
         foreignKeys.find { tableName == it.table && it.col == colName && it.schema == schema }
+
+    fun findLinkedTables(schema: SchemaName, tableName: TableName): List<Pair<SchemaName, TableName>> {
+        val parents: List<Pair<SchemaName, TableName>> =
+            foreignKeys.filter { it.schema == schema && it.table == tableName }.map { Pair(it.parentSchema, it.parentTable) }
+        val references = foreignKeys.filter { it.parentSchema == schema && it.parentTable == tableName }.map { Pair(it.schema, it.table) }
+        return parents + references
+    }
 
 }

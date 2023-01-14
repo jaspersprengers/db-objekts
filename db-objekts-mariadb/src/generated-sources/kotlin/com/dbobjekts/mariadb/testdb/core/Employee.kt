@@ -1,12 +1,14 @@
 package com.dbobjekts.mariadb.testdb.core
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.joins.JoinBase
+import com.dbobjekts.metadata.joins.JoinType
+import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 import com.dbobjekts.mariadb.testdb.hr.Hobby
@@ -20,7 +22,8 @@ import com.dbobjekts.mariadb.testdb.hr.Hobby
  *
  * Primary keys: id
  *
- * Foreign keys: [hobby_id to hr.HOBBY.id] 
+ * Foreign keys to: 
+ * References by: hr.HOBBY,core.EMPLOYEE_ADDRESS,core.EMPLOYEE_DEPARTMENT,hr.CERTIFICATE
  */
 object Employee:Table<EmployeeRow>("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, EmployeeInsertBuilder> {
     /**
@@ -56,7 +59,47 @@ object Employee:Table<EmployeeRow>("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateB
     override val columns: List<AnyColumn> = listOf(id,name,salary,married,dateOfBirth,children,hobbyId)
     override fun toValue(values: List<Any?>) = EmployeeRow(values[0] as Long,values[1] as String,values[2] as Double,values[3] as Boolean,values[4] as java.time.LocalDate,values[5] as Int?,values[6] as String?)
     override fun metadata(): WriteQueryAccessors<EmployeeUpdateBuilder, EmployeeInsertBuilder> = WriteQueryAccessors(EmployeeUpdateBuilder(), EmployeeInsertBuilder())
+
+    fun leftJoin(table: com.dbobjekts.mariadb.testdb.hr.Hobby): com.dbobjekts.mariadb.testdb.hr.HobbyJoinChain = com.dbobjekts.mariadb.testdb.hr.HobbyJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.mariadb.testdb.hr.Hobby): com.dbobjekts.mariadb.testdb.hr.HobbyJoinChain = com.dbobjekts.mariadb.testdb.hr.HobbyJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.mariadb.testdb.hr.Hobby): com.dbobjekts.mariadb.testdb.hr.HobbyJoinChain = com.dbobjekts.mariadb.testdb.hr.HobbyJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
+
+    fun leftJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeAddress): com.dbobjekts.mariadb.testdb.core.EmployeeAddressJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeAddressJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeAddress): com.dbobjekts.mariadb.testdb.core.EmployeeAddressJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeAddressJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeAddress): com.dbobjekts.mariadb.testdb.core.EmployeeAddressJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeAddressJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
+
+    fun leftJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeDepartment): com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeDepartment): com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeDepartment): com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
+
+    fun leftJoin(table: com.dbobjekts.mariadb.testdb.hr.Certificate): com.dbobjekts.mariadb.testdb.hr.CertificateJoinChain = com.dbobjekts.mariadb.testdb.hr.CertificateJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.mariadb.testdb.hr.Certificate): com.dbobjekts.mariadb.testdb.hr.CertificateJoinChain = com.dbobjekts.mariadb.testdb.hr.CertificateJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.mariadb.testdb.hr.Certificate): com.dbobjekts.mariadb.testdb.hr.CertificateJoinChain = com.dbobjekts.mariadb.testdb.hr.CertificateJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
 }
+
+class EmployeeJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
+    
+    fun leftJoin(table: com.dbobjekts.mariadb.testdb.hr.Hobby): com.dbobjekts.mariadb.testdb.hr.HobbyJoinChain = com.dbobjekts.mariadb.testdb.hr.HobbyJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.mariadb.testdb.hr.Hobby): com.dbobjekts.mariadb.testdb.hr.HobbyJoinChain = com.dbobjekts.mariadb.testdb.hr.HobbyJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.mariadb.testdb.hr.Hobby): com.dbobjekts.mariadb.testdb.hr.HobbyJoinChain = com.dbobjekts.mariadb.testdb.hr.HobbyJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    
+    fun leftJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeAddress): com.dbobjekts.mariadb.testdb.core.EmployeeAddressJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeAddressJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeAddress): com.dbobjekts.mariadb.testdb.core.EmployeeAddressJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeAddressJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeAddress): com.dbobjekts.mariadb.testdb.core.EmployeeAddressJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeAddressJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    
+    fun leftJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeDepartment): com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeDepartment): com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeDepartment): com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    
+    fun leftJoin(table: com.dbobjekts.mariadb.testdb.hr.Certificate): com.dbobjekts.mariadb.testdb.hr.CertificateJoinChain = com.dbobjekts.mariadb.testdb.hr.CertificateJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.mariadb.testdb.hr.Certificate): com.dbobjekts.mariadb.testdb.hr.CertificateJoinChain = com.dbobjekts.mariadb.testdb.hr.CertificateJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.mariadb.testdb.hr.Certificate): com.dbobjekts.mariadb.testdb.hr.CertificateJoinChain = com.dbobjekts.mariadb.testdb.hr.CertificateJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+}
+
 
 class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
     fun name(value: String): EmployeeUpdateBuilder = put(Employee.name, value)

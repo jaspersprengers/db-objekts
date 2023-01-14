@@ -1,12 +1,14 @@
 package com.dbobjekts.mariadb.testdb.nation
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.joins.JoinBase
+import com.dbobjekts.metadata.joins.JoinType
+import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
@@ -18,7 +20,8 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: guest_id
  *
- * Foreign keys: [] 
+ * Foreign keys to: 
+ * References by: 
  */
 object Guests:Table<GuestsRow>("guests"), HasUpdateBuilder<GuestsUpdateBuilder, GuestsInsertBuilder> {
     /**
@@ -32,7 +35,13 @@ object Guests:Table<GuestsRow>("guests"), HasUpdateBuilder<GuestsUpdateBuilder, 
     override val columns: List<AnyColumn> = listOf(guestId,name)
     override fun toValue(values: List<Any?>) = GuestsRow(values[0] as Long,values[1] as String)
     override fun metadata(): WriteQueryAccessors<GuestsUpdateBuilder, GuestsInsertBuilder> = WriteQueryAccessors(GuestsUpdateBuilder(), GuestsInsertBuilder())
+
 }
+
+class GuestsJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
+    
+}
+
 
 class GuestsUpdateBuilder() : UpdateBuilderBase(Guests) {
     fun guestId(value: Long): GuestsUpdateBuilder = put(Guests.guestId, value)

@@ -1,12 +1,14 @@
 package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.joins.JoinBase
+import com.dbobjekts.metadata.joins.JoinType
+import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
@@ -18,7 +20,8 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: [ISBN, TITLE]
  *
- * Foreign keys: [] 
+ * Foreign keys to: 
+ * References by: 
  */
 object Composite:Table<CompositeRow>("COMPOSITE"), HasUpdateBuilder<CompositeUpdateBuilder, CompositeInsertBuilder> {
     /**
@@ -36,7 +39,13 @@ object Composite:Table<CompositeRow>("COMPOSITE"), HasUpdateBuilder<CompositeUpd
     override val columns: List<AnyColumn> = listOf(isbn,title,published)
     override fun toValue(values: List<Any?>) = CompositeRow(values[0] as String,values[1] as String,values[2] as java.time.LocalDate?)
     override fun metadata(): WriteQueryAccessors<CompositeUpdateBuilder, CompositeInsertBuilder> = WriteQueryAccessors(CompositeUpdateBuilder(), CompositeInsertBuilder())
+
 }
+
+class CompositeJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
+    
+}
+
 
 class CompositeUpdateBuilder() : UpdateBuilderBase(Composite) {
     fun isbn(value: String): CompositeUpdateBuilder = put(Composite.isbn, value)

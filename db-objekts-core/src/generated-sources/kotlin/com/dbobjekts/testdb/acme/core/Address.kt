@@ -1,12 +1,14 @@
 package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.joins.JoinBase
+import com.dbobjekts.metadata.joins.JoinType
+import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
@@ -18,7 +20,8 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: ID
  *
- * Foreign keys: [COUNTRY_ID to CORE.COUNTRY.ID] 
+ * Foreign keys to: 
+ * References by: CORE.COUNTRY,CORE.EMPLOYEE_ADDRESS
  */
 object Address:Table<AddressRow>("ADDRESS"), HasUpdateBuilder<AddressUpdateBuilder, AddressInsertBuilder> {
     /**
@@ -42,7 +45,29 @@ object Address:Table<AddressRow>("ADDRESS"), HasUpdateBuilder<AddressUpdateBuild
     override val columns: List<AnyColumn> = listOf(id,street,postcode,countryId)
     override fun toValue(values: List<Any?>) = AddressRow(values[0] as Long,values[1] as String,values[2] as String?,values[3] as String)
     override fun metadata(): WriteQueryAccessors<AddressUpdateBuilder, AddressInsertBuilder> = WriteQueryAccessors(AddressUpdateBuilder(), AddressInsertBuilder())
+
+    fun leftJoin(table: com.dbobjekts.testdb.acme.core.Country): com.dbobjekts.testdb.acme.core.CountryJoinChain = com.dbobjekts.testdb.acme.core.CountryJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.core.Country): com.dbobjekts.testdb.acme.core.CountryJoinChain = com.dbobjekts.testdb.acme.core.CountryJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.core.Country): com.dbobjekts.testdb.acme.core.CountryJoinChain = com.dbobjekts.testdb.acme.core.CountryJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
+
+    fun leftJoin(table: com.dbobjekts.testdb.acme.core.EmployeeAddress): com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain = com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.core.EmployeeAddress): com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain = com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.core.EmployeeAddress): com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain = com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
 }
+
+class AddressJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
+    
+    fun leftJoin(table: com.dbobjekts.testdb.acme.core.Country): com.dbobjekts.testdb.acme.core.CountryJoinChain = com.dbobjekts.testdb.acme.core.CountryJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.core.Country): com.dbobjekts.testdb.acme.core.CountryJoinChain = com.dbobjekts.testdb.acme.core.CountryJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.core.Country): com.dbobjekts.testdb.acme.core.CountryJoinChain = com.dbobjekts.testdb.acme.core.CountryJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    
+    fun leftJoin(table: com.dbobjekts.testdb.acme.core.EmployeeAddress): com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain = com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.core.EmployeeAddress): com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain = com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.core.EmployeeAddress): com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain = com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+}
+
 
 class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
     fun street(value: String): AddressUpdateBuilder = put(Address.street, value)

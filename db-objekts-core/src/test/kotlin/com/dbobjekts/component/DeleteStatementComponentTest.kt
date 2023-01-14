@@ -1,6 +1,7 @@
 package com.dbobjekts.component
 
 import com.dbobjekts.testdb.acme.core.Employee
+import com.dbobjekts.testdb.acme.core.EmployeeAddress
 import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
@@ -36,6 +37,7 @@ class DeleteStatementComponentTest {
             assertThat(tr.deleteFrom(Employee).where(Employee.id.eq(1))).isEqualTo(0)
 
             //this is not supported by H2, but possible in (e.g.) MariaDB
+
             Assertions.assertThatThrownBy { tr.deleteFrom(e.innerJoin(Hobby)).where(h.name.eq("curling")) }
                 .hasMessage("Your database does not support DELETE statements with JOIN syntax.")
 

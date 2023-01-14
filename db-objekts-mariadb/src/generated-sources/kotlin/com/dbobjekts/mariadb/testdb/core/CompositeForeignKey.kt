@@ -1,12 +1,14 @@
 package com.dbobjekts.mariadb.testdb.core
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.joins.JoinBase
+import com.dbobjekts.metadata.joins.JoinType
+import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
@@ -18,7 +20,8 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: [isbn, title]
  *
- * Foreign keys: [] 
+ * Foreign keys to: 
+ * References by: 
  */
 object CompositeForeignKey:Table<CompositeForeignKeyRow>("composite_foreign_key"), HasUpdateBuilder<CompositeForeignKeyUpdateBuilder, CompositeForeignKeyInsertBuilder> {
     /**
@@ -36,7 +39,13 @@ object CompositeForeignKey:Table<CompositeForeignKeyRow>("composite_foreign_key"
     override val columns: List<AnyColumn> = listOf(isbn,title,message)
     override fun toValue(values: List<Any?>) = CompositeForeignKeyRow(values[0] as String,values[1] as String,values[2] as String?)
     override fun metadata(): WriteQueryAccessors<CompositeForeignKeyUpdateBuilder, CompositeForeignKeyInsertBuilder> = WriteQueryAccessors(CompositeForeignKeyUpdateBuilder(), CompositeForeignKeyInsertBuilder())
+
 }
+
+class CompositeForeignKeyJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
+    
+}
+
 
 class CompositeForeignKeyUpdateBuilder() : UpdateBuilderBase(CompositeForeignKey) {
     fun isbn(value: String): CompositeForeignKeyUpdateBuilder = put(CompositeForeignKey.isbn, value)

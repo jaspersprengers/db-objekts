@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test
 
 class TableExclusionTest {
 
-    val employees = DBTableDefinition(PackageName("hr"), SchemaName("hr"), TableName("employees"), "e", listOf())
+    val employees = DBTableDefinition(PackageName("hr"), SchemaName("hr"), TableName("employees"), "e", listOf(), listOf())
     val departments = employees.copy(tableName = TableName("departments"))
     val salaries = employees.copy(tableName = TableName("salaries"), schema = SchemaName("finance"))
 

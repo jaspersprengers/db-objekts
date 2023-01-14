@@ -1,14 +1,15 @@
 package com.dbobjekts.codegen.writer
 
-import com.dbobjekts.api.TableRowData
 import com.dbobjekts.api.PackageName
+import com.dbobjekts.api.TableRowData
 import com.dbobjekts.codegen.metadata.DBColumnDefinition
 import com.dbobjekts.codegen.metadata.DBForeignKeyDefinition
 import com.dbobjekts.codegen.metadata.DBTableDefinition
 import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.joins.JoinBase
+import com.dbobjekts.metadata.joins.JoinType
+import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.api.exception.StatementBuilderException
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
@@ -45,15 +46,16 @@ class TableSourcesBuilder(
 
         val importLineBuilder = ImportLineBuilder()
         val typeAliases = listOf(
-            "api.AnyColumn"
+            "api.AnyColumn", "api.AnyTable"
         )
         val classesToImport = listOf(
             Table::class.java,
             TableRowData::class.java,
-            IsGeneratedPrimaryKey::class.java,
-            StatementBuilderException::class.java,
             WriteQueryAccessors::class.java,
             HasUpdateBuilder::class.java,
+            JoinBase::class.java,
+            JoinType::class.java,
+            TableJoinChain::class.java,
             InsertBuilderBase::class.java,
             UpdateBuilderBase::class.java
         )
@@ -69,14 +71,15 @@ class TableSourcesBuilder(
         strBuilder.appendLine(detailedSourceBuilder.sourceForTableComment())
         strBuilder.appendLine("""object $tbl:Table<${tbl}Row>("${model.tableName}"), $updateBuilderInterface<${tbl}UpdateBuilder, ${tbl}InsertBuilder> {""".trimMargin())
         model.columns.forEach {
-
             generateField(it)
         }
         val columnNames = model.columns.map { it.asFieldName() }.joinToString(",")
         strBuilder.appendLine("    override val columns: List<AnyColumn> = listOf($columnNames)")
         strBuilder.appendLine(detailedSourceBuilder.sourceForToValue())
         strBuilder.appendLine(detailedSourceBuilder.sourceForMetaDataVal())
+        strBuilder.appendLine(detailedSourceBuilder.sourceForJoinMethods(basePackage))
         strBuilder.appendLine("}")
+        strBuilder.appendLine(detailedSourceBuilder.sourceForJoinChainClass(basePackage))
         strBuilder.appendLine(detailedSourceBuilder.sourceForBuilderClasses())
         strBuilder.appendLine(detailedSourceBuilder.sourceForRowDataClass())
         return strBuilder.toString()

@@ -1,12 +1,14 @@
 package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.joins.JoinBase
+import com.dbobjekts.metadata.joins.JoinType
+import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 import com.dbobjekts.testdb.acme.hr.Hobby
@@ -20,7 +22,8 @@ import com.dbobjekts.testdb.acme.hr.Hobby
  *
  * Primary keys: ID
  *
- * Foreign keys: [HOBBY_ID to HR.HOBBY.ID] 
+ * Foreign keys to: 
+ * References by: HR.HOBBY,CORE.EMPLOYEE_ADDRESS,CORE.EMPLOYEE_DEPARTMENT,HR.CERTIFICATE
  */
 object Employee:Table<EmployeeRow>("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, EmployeeInsertBuilder> {
     /**
@@ -56,7 +59,47 @@ object Employee:Table<EmployeeRow>("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateB
     override val columns: List<AnyColumn> = listOf(id,name,salary,married,dateOfBirth,children,hobbyId)
     override fun toValue(values: List<Any?>) = EmployeeRow(values[0] as Long,values[1] as String,values[2] as Double,values[3] as Boolean?,values[4] as java.time.LocalDate,values[5] as Int?,values[6] as String?)
     override fun metadata(): WriteQueryAccessors<EmployeeUpdateBuilder, EmployeeInsertBuilder> = WriteQueryAccessors(EmployeeUpdateBuilder(), EmployeeInsertBuilder())
+
+    fun leftJoin(table: com.dbobjekts.testdb.acme.hr.Hobby): com.dbobjekts.testdb.acme.hr.HobbyJoinChain = com.dbobjekts.testdb.acme.hr.HobbyJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.hr.Hobby): com.dbobjekts.testdb.acme.hr.HobbyJoinChain = com.dbobjekts.testdb.acme.hr.HobbyJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.hr.Hobby): com.dbobjekts.testdb.acme.hr.HobbyJoinChain = com.dbobjekts.testdb.acme.hr.HobbyJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
+
+    fun leftJoin(table: com.dbobjekts.testdb.acme.core.EmployeeAddress): com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain = com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.core.EmployeeAddress): com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain = com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.core.EmployeeAddress): com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain = com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
+
+    fun leftJoin(table: com.dbobjekts.testdb.acme.core.EmployeeDepartment): com.dbobjekts.testdb.acme.core.EmployeeDepartmentJoinChain = com.dbobjekts.testdb.acme.core.EmployeeDepartmentJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.core.EmployeeDepartment): com.dbobjekts.testdb.acme.core.EmployeeDepartmentJoinChain = com.dbobjekts.testdb.acme.core.EmployeeDepartmentJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.core.EmployeeDepartment): com.dbobjekts.testdb.acme.core.EmployeeDepartmentJoinChain = com.dbobjekts.testdb.acme.core.EmployeeDepartmentJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
+
+    fun leftJoin(table: com.dbobjekts.testdb.acme.hr.Certificate): com.dbobjekts.testdb.acme.hr.CertificateJoinChain = com.dbobjekts.testdb.acme.hr.CertificateJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.hr.Certificate): com.dbobjekts.testdb.acme.hr.CertificateJoinChain = com.dbobjekts.testdb.acme.hr.CertificateJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.hr.Certificate): com.dbobjekts.testdb.acme.hr.CertificateJoinChain = com.dbobjekts.testdb.acme.hr.CertificateJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
 }
+
+class EmployeeJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
+    
+    fun leftJoin(table: com.dbobjekts.testdb.acme.hr.Hobby): com.dbobjekts.testdb.acme.hr.HobbyJoinChain = com.dbobjekts.testdb.acme.hr.HobbyJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.hr.Hobby): com.dbobjekts.testdb.acme.hr.HobbyJoinChain = com.dbobjekts.testdb.acme.hr.HobbyJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.hr.Hobby): com.dbobjekts.testdb.acme.hr.HobbyJoinChain = com.dbobjekts.testdb.acme.hr.HobbyJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    
+    fun leftJoin(table: com.dbobjekts.testdb.acme.core.EmployeeAddress): com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain = com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.core.EmployeeAddress): com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain = com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.core.EmployeeAddress): com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain = com.dbobjekts.testdb.acme.core.EmployeeAddressJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    
+    fun leftJoin(table: com.dbobjekts.testdb.acme.core.EmployeeDepartment): com.dbobjekts.testdb.acme.core.EmployeeDepartmentJoinChain = com.dbobjekts.testdb.acme.core.EmployeeDepartmentJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.core.EmployeeDepartment): com.dbobjekts.testdb.acme.core.EmployeeDepartmentJoinChain = com.dbobjekts.testdb.acme.core.EmployeeDepartmentJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.core.EmployeeDepartment): com.dbobjekts.testdb.acme.core.EmployeeDepartmentJoinChain = com.dbobjekts.testdb.acme.core.EmployeeDepartmentJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    
+    fun leftJoin(table: com.dbobjekts.testdb.acme.hr.Certificate): com.dbobjekts.testdb.acme.hr.CertificateJoinChain = com.dbobjekts.testdb.acme.hr.CertificateJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.hr.Certificate): com.dbobjekts.testdb.acme.hr.CertificateJoinChain = com.dbobjekts.testdb.acme.hr.CertificateJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.hr.Certificate): com.dbobjekts.testdb.acme.hr.CertificateJoinChain = com.dbobjekts.testdb.acme.hr.CertificateJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+}
+
 
 class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
     fun name(value: String): EmployeeUpdateBuilder = put(Employee.name, value)

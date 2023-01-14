@@ -1,12 +1,14 @@
 package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.joins.JoinBase
+import com.dbobjekts.metadata.joins.JoinType
+import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
@@ -18,7 +20,8 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: ID
  *
- * Foreign keys: [] 
+ * Foreign keys to: 
+ * References by: LIBRARY.BOOK
  */
 object Author:Table<AuthorRow>("AUTHOR"), HasUpdateBuilder<AuthorUpdateBuilder, AuthorInsertBuilder> {
     /**
@@ -36,7 +39,20 @@ object Author:Table<AuthorRow>("AUTHOR"), HasUpdateBuilder<AuthorUpdateBuilder, 
     override val columns: List<AnyColumn> = listOf(id,name,bio)
     override fun toValue(values: List<Any?>) = AuthorRow(values[0] as Long,values[1] as String,values[2] as String?)
     override fun metadata(): WriteQueryAccessors<AuthorUpdateBuilder, AuthorInsertBuilder> = WriteQueryAccessors(AuthorUpdateBuilder(), AuthorInsertBuilder())
+
+    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
 }
+
+class AuthorJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
+    
+    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+}
+
 
 class AuthorUpdateBuilder() : UpdateBuilderBase(Author) {
     fun name(value: String): AuthorUpdateBuilder = put(Author.name, value)

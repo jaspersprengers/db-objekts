@@ -18,7 +18,7 @@ class TableJoinChainBuilder(
         require(tables.any { it == drivingTable }, { "Table ${drivingTable.tableName} should be part of List $tables" })
     }
 
-    fun build(): TableJoinChain<*> {
+    fun build(): TableJoinChain {
 
         fun extractJoins(tablePairs: List<Pair<AnyTable, AnyTable>>): Pair<List<TablePair>, List<TablePair>> =
             tablePairs.map { createPairWithOptionalJoin(it) }.partition { it.isJoined() }
@@ -32,7 +32,7 @@ class TableJoinChainBuilder(
         if (tables.isEmpty())
             throw StatementBuilderException("Need at least one table")
         if (tables.size == 1)
-            return TableJoinChain(tables[0])
+            return TableJoinChain(tables[0], listOf())
 
         val joinProperties: JoinProperties = createProperties(tables)
         val manyToManyTables =
@@ -74,7 +74,7 @@ class TableJoinChainBuilder(
         }.isNotEmpty()
 
 
-    internal fun buildChain(props: JoinProperties): TableJoinChain<*> {
+    internal fun buildChain(props: JoinProperties): TableJoinChain {
         require(props.tables.isNotEmpty(), { "No tables to build join query" })
 
         fun sort(sorted: List<AnyTable>, toSort: List<AnyTable>): List<AnyTable> {
@@ -94,8 +94,8 @@ class TableJoinChainBuilder(
         val unUsed = tablesToJoin.filterNot { sortedSet.contains(it) }
         if (unUsed.isNotEmpty())
             throw StatementBuilderException("The following table(s) could not be joined: ${StringUtil.joinBy(unUsed, { it.dbName })}")
-        var chain = TableJoinChain(sortedTables.first())
-        sortedTables.drop(1).forEach { chain = if (useOuterJoins) chain.leftJoin(it) else chain.innerJoin(it) }
+        var chain = TableJoinChain(sortedTables.first(), listOf())
+        sortedTables.drop(1).forEach { chain = if (useOuterJoins) chain._join(it, JoinType.LEFT) else chain._join(it, JoinType.INNER) }
         return chain
     }
 

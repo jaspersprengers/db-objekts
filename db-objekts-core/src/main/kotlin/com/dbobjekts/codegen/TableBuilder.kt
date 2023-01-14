@@ -27,7 +27,7 @@ internal class TableBuilder(
         return this
     }
 
-    fun build(): DBTableDefinition = DBTableDefinition(packageName, schema, tableName, alias, columns)
+    fun build(): DBTableDefinition = DBTableDefinition(packageName, schema, tableName, alias, columns, foreignKeyManager.findLinkedTables(schema, tableName))
 
     private fun getForeignKeyDefinition(columnMetaData: ColumnMetaData): DBForeignKeyDefinition? =
         foreignKeyManager.findForeignKey(schema, tableName, columnMetaData.columnName)?.let {

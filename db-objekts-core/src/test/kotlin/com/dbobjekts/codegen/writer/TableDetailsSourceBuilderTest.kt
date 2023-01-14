@@ -32,7 +32,8 @@ class TableDetailsSourceBuilderTest {
         SchemaName("public"),
         TableName("Employee"),
         "t",
-        listOf(id, name, age, hobbies, married)
+        listOf(id, name, age, hobbies, married),
+        listOf()
     )
 
 

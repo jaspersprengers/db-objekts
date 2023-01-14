@@ -1,5 +1,6 @@
 package com.dbobjekts.codegen.writer
 
+import com.dbobjekts.api.PackageName
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.codegen.metadata.*
 import com.dbobjekts.codegen.metadata.DBGeneratedPrimaryKey
@@ -57,9 +58,7 @@ class TableDetailsSourceBuilder(val tableDefinition: DBTableDefinition) {
     }
 
     fun sourceForTableComment(): String {
-        val fks =
-            tableDefinition.columns.filter { it is DBForeignKeyDefinition }.map { it as DBForeignKeyDefinition }
-                .map { "${it.columnName.value} to ${it.parentSchema.value}.${it.parentTable.value}.${it.parentColumn.value}" }
+        val (foreignKeys, references) = tableDefinition.linkedTables.partition { (s, t) -> s == tableDefinition.schema && t == tableDefinition.tableName }
         val composite = tableDefinition.columns.filter { it.isCompositePrimaryKey }
         val pks = if (composite.isEmpty()) (singlePrimaryKey?.columnName ?: "none") else composite.map { it.columnName.value }
         return """
@@ -70,7 +69,8 @@ class TableDetailsSourceBuilder(val tableDefinition: DBTableDefinition) {
              *
              * Primary keys: $pks
              *
-             * Foreign keys: $fks 
+             * Foreign keys to: ${foreignKeys.map { it.first.value + "." + it.second.value }.joinToString(",")}
+             * References by: ${references.map { it.first.value + "." + it.second.value }.joinToString(",")}
              */
         """.trimIndent()
     }
@@ -89,7 +89,7 @@ class TableDetailsSourceBuilder(val tableDefinition: DBTableDefinition) {
      * Warning: this method will throw a StatementBuilderException at runtime because $tableName does not have a primary key.
      */
     override fun updateRow(rowData: TableRowData<*, *>): Long = 
-      throw StatementBuilderException("Sorry, but you cannot use row-based updates for table ${tableName}. At least one column must be marked as primary key.")                
+      throw com.dbobjekts.api.exception.StatementBuilderException("Sorry, but you cannot use row-based updates for table ${tableName}. At least one column must be marked as primary key.")                
             """
 
         val elements = fields.mapIndexed { _, field ->
@@ -213,6 +213,34 @@ $insertRowMethodSource
                 else -> null
             }
         }
+    }
+
+    fun sourceForJoinMethods(basePackage: PackageName): String {
+        val allMethods = tableDefinition.linkedTables.map { (schema, table) ->
+            val name = basePackage.createSubPackageForSchema(schema).toString() + "." + table.capitalCamelCase()
+            """
+    fun leftJoin(table: $name): ${name}JoinChain = ${name}JoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: $name): ${name}JoinChain = ${name}JoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: $name): ${name}JoinChain = ${name}JoinChain(this)._join(table, JoinType.RIGHT)                      
+       """
+        }
+        return allMethods.joinToString("\n")
+    }
+
+    fun sourceForJoinChainClass(basePackage: PackageName): String {
+        val allMethods = tableDefinition.linkedTables.map { (schema, table) ->
+            val name = basePackage.createSubPackageForSchema(schema).toString() + "." + table.capitalCamelCase()
+            """
+    fun leftJoin(table: $name): ${name}JoinChain = ${name}JoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: $name): ${name}JoinChain = ${name}JoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: $name): ${name}JoinChain = ${name}JoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)"""
+
+        }
+        return """
+class ${tableName}JoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
+    ${allMethods.joinToString("\n    ")}
+}
+"""
     }
 
 

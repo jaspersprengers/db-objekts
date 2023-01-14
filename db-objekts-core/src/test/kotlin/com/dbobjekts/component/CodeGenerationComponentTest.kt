@@ -45,11 +45,11 @@ class CodeGenerationComponentTest {
             .setColumnTypeForName(column = "address_string", columnType = AddressTypeAsStringColumn::class.java)
             .setColumnTypeForName(column = "address_int", columnType = AddressTypeAsIntegerColumn::class.java)
         generator.configureOutput()
-            .basePackageForSources("com.dbobjekts.testdb2.acme")
+            .basePackageForSources("com.dbobjekts.testdb.acme")
         .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff: List<String> = generator.differencesWithCatalog(CatalogDefinition)
-        //assertThat(diff).describedAs("acme catalog differs from database definition").isEmpty()
-        generator.generateSourceFiles()
+        assertThat(diff).describedAs("acme catalog differs from database definition").isEmpty()
+        //generator.generateSourceFiles()
 
     }
 

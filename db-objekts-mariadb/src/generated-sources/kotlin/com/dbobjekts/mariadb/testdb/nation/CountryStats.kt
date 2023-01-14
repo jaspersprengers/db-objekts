@@ -1,12 +1,14 @@
 package com.dbobjekts.mariadb.testdb.nation
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.joins.JoinBase
+import com.dbobjekts.metadata.joins.JoinType
+import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
@@ -18,7 +20,8 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: [country_id, year]
  *
- * Foreign keys: [country_id to nation.countries.country_id] 
+ * Foreign keys to: 
+ * References by: nation.countries
  */
 object CountryStats:Table<CountryStatsRow>("country_stats"), HasUpdateBuilder<CountryStatsUpdateBuilder, CountryStatsInsertBuilder> {
     /**
@@ -42,7 +45,20 @@ object CountryStats:Table<CountryStatsRow>("country_stats"), HasUpdateBuilder<Co
     override val columns: List<AnyColumn> = listOf(countryId,year,population,gdp)
     override fun toValue(values: List<Any?>) = CountryStatsRow(values[0] as Long,values[1] as Long,values[2] as Long?,values[3] as java.math.BigDecimal?)
     override fun metadata(): WriteQueryAccessors<CountryStatsUpdateBuilder, CountryStatsInsertBuilder> = WriteQueryAccessors(CountryStatsUpdateBuilder(), CountryStatsInsertBuilder())
+
+    fun leftJoin(table: com.dbobjekts.mariadb.testdb.nation.Countries): com.dbobjekts.mariadb.testdb.nation.CountriesJoinChain = com.dbobjekts.mariadb.testdb.nation.CountriesJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.mariadb.testdb.nation.Countries): com.dbobjekts.mariadb.testdb.nation.CountriesJoinChain = com.dbobjekts.mariadb.testdb.nation.CountriesJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.mariadb.testdb.nation.Countries): com.dbobjekts.mariadb.testdb.nation.CountriesJoinChain = com.dbobjekts.mariadb.testdb.nation.CountriesJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
 }
+
+class CountryStatsJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
+    
+    fun leftJoin(table: com.dbobjekts.mariadb.testdb.nation.Countries): com.dbobjekts.mariadb.testdb.nation.CountriesJoinChain = com.dbobjekts.mariadb.testdb.nation.CountriesJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.mariadb.testdb.nation.Countries): com.dbobjekts.mariadb.testdb.nation.CountriesJoinChain = com.dbobjekts.mariadb.testdb.nation.CountriesJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.mariadb.testdb.nation.Countries): com.dbobjekts.mariadb.testdb.nation.CountriesJoinChain = com.dbobjekts.mariadb.testdb.nation.CountriesJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+}
+
 
 class CountryStatsUpdateBuilder() : UpdateBuilderBase(CountryStats) {
     fun countryId(value: Long): CountryStatsUpdateBuilder = put(CountryStats.countryId, value)

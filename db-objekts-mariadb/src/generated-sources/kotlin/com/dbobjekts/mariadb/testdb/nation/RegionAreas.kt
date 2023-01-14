@@ -1,12 +1,14 @@
 package com.dbobjekts.mariadb.testdb.nation
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.joins.JoinBase
+import com.dbobjekts.metadata.joins.JoinType
+import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
@@ -18,7 +20,8 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: region_name
  *
- * Foreign keys: [] 
+ * Foreign keys to: 
+ * References by: 
  */
 object RegionAreas:Table<RegionAreasRow>("region_areas"), HasUpdateBuilder<RegionAreasUpdateBuilder, RegionAreasInsertBuilder> {
     /**
@@ -32,7 +35,13 @@ object RegionAreas:Table<RegionAreasRow>("region_areas"), HasUpdateBuilder<Regio
     override val columns: List<AnyColumn> = listOf(regionName,regionArea)
     override fun toValue(values: List<Any?>) = RegionAreasRow(values[0] as String,values[1] as java.math.BigDecimal)
     override fun metadata(): WriteQueryAccessors<RegionAreasUpdateBuilder, RegionAreasInsertBuilder> = WriteQueryAccessors(RegionAreasUpdateBuilder(), RegionAreasInsertBuilder())
+
 }
+
+class RegionAreasJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
+    
+}
+
 
 class RegionAreasUpdateBuilder() : UpdateBuilderBase(RegionAreas) {
     fun regionName(value: String): RegionAreasUpdateBuilder = put(RegionAreas.regionName, value)

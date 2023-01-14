@@ -5,26 +5,27 @@ import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.TableOrJoin
+import com.dbobjekts.statement.ConditionJoinType
 import com.dbobjekts.util.StringUtil
 
-class TableJoinChain<T : Table<*>>(val table: T,
-                                   private val joins: List<JoinBase> = listOf()
+open class TableJoinChain(val table: AnyTable,
+                          protected var joins: List<JoinBase>
 ) : TableOrJoin, Cloneable {
 
-    internal fun addJoin(join: JoinBase): TableJoinChain<*> {
-        return TableJoinChain(this.table, joins + join)
-    }
+    constructor(joinChain: TableJoinChain) : this(joinChain.table, joinChain.joins)
 
-    fun <T2 : Table<*>> leftJoin(table: T2): TableJoinChain<T2> {
+    @Suppress("UNCHECKED_CAST")
+    fun <T : TableJoinChain> _join(table: AnyTable, joinType: JoinType): T {
         checkTableNotJoinedAlready(table)
-        return addJoin(createLeftJoin(extractJoinedColumnPair(table))) as TableJoinChain<T2>
+        joins = joins + createJoin(joinType, extractJoinedColumnPair(table))
+        return this as T
     }
 
-    fun <T2 : Table<*>> innerJoin(table: T2): TableJoinChain<T2> {
-        checkTableNotJoinedAlready(table)
-        return addJoin(createInnerJoin(extractJoinedColumnPair(table))) as TableJoinChain<T2>
+    private fun createJoin(joinType: JoinType, tuple: Pair<AnyColumn, AnyColumn>) = when(joinType){
+        JoinType.LEFT -> LeftJoin(tuple.first, tuple.second)
+        JoinType.RIGHT -> RightJoin(tuple.first, tuple.second)
+        JoinType.INNER -> InnerJoin(tuple.first, tuple.second)
     }
-
 
     internal fun checkTableNotJoinedAlready(table: AnyTable) {
         if (joins.any { it.containsTable(table) })
@@ -68,10 +69,6 @@ class TableJoinChain<T : Table<*>>(val table: T,
         }
         return null
     }
-
-    private fun createLeftJoin(tuple: Pair<AnyColumn, AnyColumn>) = LeftJoin(tuple.first, tuple.second)
-
-    private fun createInnerJoin(tuple: Pair<AnyColumn, AnyColumn>) = InnerJoin(tuple.first, tuple.second)
 
     fun toSQL(): String = StringUtil.concat(listOf(table.toSQL(), JoinFactory.toSQL(joins.toList())))
 

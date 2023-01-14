@@ -1,12 +1,14 @@
 package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.joins.JoinBase
+import com.dbobjekts.metadata.joins.JoinType
+import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
@@ -18,7 +20,8 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: none
  *
- * Foreign keys: [ISBN to LIBRARY.BOOK.ISBN] 
+ * Foreign keys to: 
+ * References by: LIBRARY.BOOK
  */
 object BookReview:Table<BookReviewRow>("BOOK_REVIEW"), HasUpdateBuilder<BookReviewUpdateBuilder, BookReviewInsertBuilder> {
     /**
@@ -34,7 +37,20 @@ object BookReview:Table<BookReviewRow>("BOOK_REVIEW"), HasUpdateBuilder<BookRevi
     override val columns: List<AnyColumn> = listOf(isbn,review)
     override fun toValue(values: List<Any?>) = BookReviewRow(values[0] as String,values[1] as String)
     override fun metadata(): WriteQueryAccessors<BookReviewUpdateBuilder, BookReviewInsertBuilder> = WriteQueryAccessors(BookReviewUpdateBuilder(), BookReviewInsertBuilder())
+
+    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
 }
+
+class BookReviewJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
+    
+    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+}
+
 
 class BookReviewUpdateBuilder() : UpdateBuilderBase(BookReview) {
     fun isbn(value: String): BookReviewUpdateBuilder = put(BookReview.isbn, value)
@@ -44,7 +60,7 @@ class BookReviewUpdateBuilder() : UpdateBuilderBase(BookReview) {
      * Warning: this method will throw a StatementBuilderException at runtime because BookReview does not have a primary key.
      */
     override fun updateRow(rowData: TableRowData<*, *>): Long = 
-      throw StatementBuilderException("Sorry, but you cannot use row-based updates for table BookReview. At least one column must be marked as primary key.")                
+      throw com.dbobjekts.api.exception.StatementBuilderException("Sorry, but you cannot use row-based updates for table BookReview. At least one column must be marked as primary key.")                
             
 }
 

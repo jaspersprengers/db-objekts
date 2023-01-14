@@ -149,9 +149,9 @@ class SelectStatementComponentTest {
         tm({ s ->
             assertThat(
                 s.select(e.name).from(
-                    e.innerJoin(EmployeeAddress)
-                        .innerJoin(Address)
-                        .innerJoin(Country)
+                    e.leftJoin(EmployeeAddress)
+                        .leftJoin(Address)
+                        .leftJoin(Country)
                 )
                     .where(Country.name.eq("Nederland")).first()
             ).isEqualTo("Eve")

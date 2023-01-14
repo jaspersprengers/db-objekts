@@ -1,12 +1,14 @@
 package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.joins.JoinBase
+import com.dbobjekts.metadata.joins.JoinType
+import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
@@ -18,7 +20,8 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: ID
  *
- * Foreign keys: [] 
+ * Foreign keys to: 
+ * References by: LIBRARY.LOAN
  */
 object Member:Table<MemberRow>("MEMBER"), HasUpdateBuilder<MemberUpdateBuilder, MemberInsertBuilder> {
     /**
@@ -32,7 +35,20 @@ object Member:Table<MemberRow>("MEMBER"), HasUpdateBuilder<MemberUpdateBuilder, 
     override val columns: List<AnyColumn> = listOf(id,name)
     override fun toValue(values: List<Any?>) = MemberRow(values[0] as Long,values[1] as String)
     override fun metadata(): WriteQueryAccessors<MemberUpdateBuilder, MemberInsertBuilder> = WriteQueryAccessors(MemberUpdateBuilder(), MemberInsertBuilder())
+
+    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Loan): com.dbobjekts.testdb.acme.library.LoanJoinChain = com.dbobjekts.testdb.acme.library.LoanJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Loan): com.dbobjekts.testdb.acme.library.LoanJoinChain = com.dbobjekts.testdb.acme.library.LoanJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Loan): com.dbobjekts.testdb.acme.library.LoanJoinChain = com.dbobjekts.testdb.acme.library.LoanJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
 }
+
+class MemberJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
+    
+    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Loan): com.dbobjekts.testdb.acme.library.LoanJoinChain = com.dbobjekts.testdb.acme.library.LoanJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Loan): com.dbobjekts.testdb.acme.library.LoanJoinChain = com.dbobjekts.testdb.acme.library.LoanJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Loan): com.dbobjekts.testdb.acme.library.LoanJoinChain = com.dbobjekts.testdb.acme.library.LoanJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+}
+
 
 class MemberUpdateBuilder() : UpdateBuilderBase(Member) {
     fun name(value: String): MemberUpdateBuilder = put(Member.name, value)

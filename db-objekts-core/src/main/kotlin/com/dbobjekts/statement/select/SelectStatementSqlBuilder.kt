@@ -16,9 +16,9 @@ class SelectStatementSqlBuilder {
     var limitFunction: ((Int) -> String)? = null
     var havingCondition: String? = null
 
-    private lateinit var joinChain: TableJoinChain<*>
+    private lateinit var joinChain: TableJoinChain
 
-    fun withJoinChain(joinChain: TableJoinChain<*>): SelectStatementSqlBuilder {
+    fun withJoinChain(joinChain: TableJoinChain): SelectStatementSqlBuilder {
         this.joinChain = joinChain
         return this
     }

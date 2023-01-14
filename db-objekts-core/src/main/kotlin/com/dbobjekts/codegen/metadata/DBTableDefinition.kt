@@ -13,14 +13,12 @@ data class DBTableDefinition(
     val schema: SchemaName,
     val tableName: TableName,
     val alias: String,
-    val columns: List<DBColumnDefinition>
+    val columns: List<DBColumnDefinition>,
+    val linkedTables: List<Pair<SchemaName, TableName>>
 ) : DBObjectDefinition {
     override fun toString(): String = tableName.value
 
     fun foreignKeys(): List<DBForeignKeyDefinition> = columns.map { it as? DBForeignKeyDefinition }.filterNotNull()
-
-    fun generatedPrimaryKey(): DBColumnDefinition? = columns
-        .filter { it is DBGeneratedPrimaryKey }.firstOrNull()
 
     fun prettyPrint(): String =
         """

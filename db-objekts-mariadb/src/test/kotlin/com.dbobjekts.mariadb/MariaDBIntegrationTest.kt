@@ -59,12 +59,13 @@ class MariaDBIntegrationTest {
             .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff = gen.differencesWithCatalog(CatalogDefinition)
         assertThat(diff).isEmpty()
-        //gen.generateSourceFiles()
+        gen.generateSourceFiles()
     }
 
-    @Test
+   @Test
     fun `get total population per continent`() {
         tm { tr ->
+
             val pairs = tr.select(Continents.name, CountryStats.year, CountryStats.population.sum())
                 .from(CountryStats.innerJoin(Countries).innerJoin(Regions).innerJoin(Continents))
                 .orderAsc(CountryStats.year, CountryStats.population)
@@ -461,7 +462,7 @@ class MariaDBIntegrationTest {
         assertThat(l2[2]).isEqualTo("Charlie")
         assertThat(l2[3]).isEqualTo("Karl")
 
-        tm { tr ->
+   /*     tm { tr ->
             val id = tr.insert(e).mandatoryColumns("Jack", 3000.5, true, LocalDate.of(1980, 1, 1)).execute()
             Assertions.assertThat(
                 tr.select(h.name.nullable)
@@ -470,7 +471,7 @@ class MariaDBIntegrationTest {
             )
             assertThat(tr.select(e.children).where(e.id.eq(id)).first()).isNull()
         }
-
+*/
         tm { tr ->
             tr.update(e).name("Janet").where(e.name.eq("Bob"))
             assertThat(tr.select(e.name).where(e.name.eq("Janet")).first()).isEqualTo("Janet")

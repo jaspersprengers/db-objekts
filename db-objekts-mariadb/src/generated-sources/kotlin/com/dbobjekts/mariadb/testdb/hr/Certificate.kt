@@ -1,12 +1,14 @@
 package com.dbobjekts.mariadb.testdb.hr
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.joins.JoinBase
+import com.dbobjekts.metadata.joins.JoinType
+import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 import com.dbobjekts.mariadb.testdb.core.Employee
@@ -20,7 +22,8 @@ import com.dbobjekts.mariadb.testdb.core.Employee
  *
  * Primary keys: id
  *
- * Foreign keys: [employee_id to core.EMPLOYEE.id] 
+ * Foreign keys to: 
+ * References by: core.EMPLOYEE
  */
 object Certificate:Table<CertificateRow>("CERTIFICATE"), HasUpdateBuilder<CertificateUpdateBuilder, CertificateInsertBuilder> {
     /**
@@ -40,7 +43,20 @@ object Certificate:Table<CertificateRow>("CERTIFICATE"), HasUpdateBuilder<Certif
     override val columns: List<AnyColumn> = listOf(id,name,employeeId)
     override fun toValue(values: List<Any?>) = CertificateRow(values[0] as Long,values[1] as String,values[2] as Long)
     override fun metadata(): WriteQueryAccessors<CertificateUpdateBuilder, CertificateInsertBuilder> = WriteQueryAccessors(CertificateUpdateBuilder(), CertificateInsertBuilder())
+
+    fun leftJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
 }
+
+class CertificateJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
+    
+    fun leftJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+}
+
 
 class CertificateUpdateBuilder() : UpdateBuilderBase(Certificate) {
     fun name(value: String): CertificateUpdateBuilder = put(Certificate.name, value)

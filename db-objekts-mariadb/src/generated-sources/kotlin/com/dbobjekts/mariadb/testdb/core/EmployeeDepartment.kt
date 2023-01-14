@@ -1,12 +1,14 @@
 package com.dbobjekts.mariadb.testdb.core
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.joins.JoinBase
+import com.dbobjekts.metadata.joins.JoinType
+import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
@@ -18,7 +20,8 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: none
  *
- * Foreign keys: [employee_id to core.EMPLOYEE.id, department_id to core.DEPARTMENT.id] 
+ * Foreign keys to: 
+ * References by: core.EMPLOYEE,core.DEPARTMENT
  */
 object EmployeeDepartment:Table<EmployeeDepartmentRow>("EMPLOYEE_DEPARTMENT"), HasUpdateBuilder<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder> {
     /**
@@ -36,7 +39,29 @@ object EmployeeDepartment:Table<EmployeeDepartmentRow>("EMPLOYEE_DEPARTMENT"), H
     override val columns: List<AnyColumn> = listOf(employeeId,departmentId)
     override fun toValue(values: List<Any?>) = EmployeeDepartmentRow(values[0] as Long,values[1] as Long)
     override fun metadata(): WriteQueryAccessors<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder> = WriteQueryAccessors(EmployeeDepartmentUpdateBuilder(), EmployeeDepartmentInsertBuilder())
+
+    fun leftJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
+
+    fun leftJoin(table: com.dbobjekts.mariadb.testdb.core.Department): com.dbobjekts.mariadb.testdb.core.DepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.DepartmentJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.mariadb.testdb.core.Department): com.dbobjekts.mariadb.testdb.core.DepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.DepartmentJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.mariadb.testdb.core.Department): com.dbobjekts.mariadb.testdb.core.DepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.DepartmentJoinChain(this)._join(table, JoinType.RIGHT)                      
+       
 }
+
+class EmployeeDepartmentJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
+    
+    fun leftJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    
+    fun leftJoin(table: com.dbobjekts.mariadb.testdb.core.Department): com.dbobjekts.mariadb.testdb.core.DepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.DepartmentJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: com.dbobjekts.mariadb.testdb.core.Department): com.dbobjekts.mariadb.testdb.core.DepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.DepartmentJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: com.dbobjekts.mariadb.testdb.core.Department): com.dbobjekts.mariadb.testdb.core.DepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.DepartmentJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+}
+
 
 class EmployeeDepartmentUpdateBuilder() : UpdateBuilderBase(EmployeeDepartment) {
     fun employeeId(value: Long): EmployeeDepartmentUpdateBuilder = put(EmployeeDepartment.employeeId, value)
@@ -46,7 +71,7 @@ class EmployeeDepartmentUpdateBuilder() : UpdateBuilderBase(EmployeeDepartment) 
      * Warning: this method will throw a StatementBuilderException at runtime because EmployeeDepartment does not have a primary key.
      */
     override fun updateRow(rowData: TableRowData<*, *>): Long = 
-      throw StatementBuilderException("Sorry, but you cannot use row-based updates for table EmployeeDepartment. At least one column must be marked as primary key.")                
+      throw com.dbobjekts.api.exception.StatementBuilderException("Sorry, but you cannot use row-based updates for table EmployeeDepartment. At least one column must be marked as primary key.")                
             
 }
 

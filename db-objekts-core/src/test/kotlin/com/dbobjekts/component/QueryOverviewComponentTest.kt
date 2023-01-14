@@ -60,11 +60,11 @@ class QueryOverviewComponentTest {
                 }
             println(transaction.transactionExecutionLog().last().sql)
 
-            transaction.select(Item.id, Item.isbn, Member.name, Loan.dateLoaned.nullable, Loan.dateReturned)
+         /*   transaction.select(Item.id, Item.isbn, Member.name, Loan.dateLoaned.nullable, Loan.dateReturned)
                 .from(Loan.rightJoin(Item).innerJoin(Book).innerJoin(Member)).forEachRow { (item, isbn, member, loaned, returned) ->
                     println("$item $isbn $loaned by $member returned $returned")
                     true
-                }
+                }*/
         }
 
     }

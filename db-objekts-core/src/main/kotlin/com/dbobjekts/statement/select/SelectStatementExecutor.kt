@@ -50,7 +50,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
      */
     fun from(joinChain: TableOrJoin): SelectStatementExecutor<T, RSB> {
         when (val obj = joinChain) {
-            is TableJoinChain<*> -> registerJoinChain(obj)
+            is TableJoinChain -> registerJoinChain(obj)
             is AnyTable -> registerDrivingTable(obj)
             else -> throw StatementBuilderException("Unsupported operation: argument must be subclass of TableJoinChain or Table")
         }
