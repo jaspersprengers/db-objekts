@@ -15,7 +15,7 @@ class DBForeignKeyDefinition(schema: SchemaName,
 
     val tableAndColumn = "${parentTable.capitalCamelCase()}.${parentColumn.lowerCamelCase()}"
 
-    override fun asFactoryMethod(): String = """${fullyQualifiedClassName()}(this, "$columnName", $tableAndColumn)"""
+    override fun asFactoryMethod(): String = """${column::class.java.simpleName}(this, "$columnName", $tableAndColumn)"""
 
     override fun prettyPrint(): String =
         "     Foreign key column $tableName.$columnName maps to ${fullyQualifiedClassName()}. Parent: $parentSchema.$parentTable.$parentColumn"

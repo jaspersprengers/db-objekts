@@ -215,9 +215,9 @@ $insertRowMethodSource
         }
     }
 
-    fun sourceForJoinMethods(basePackage: PackageName): String {
+    fun sourceForJoinMethods(): String {
         val allMethods = tableDefinition.linkedTables.map { (schema, table) ->
-            val name = basePackage.createSubPackageForSchema(schema).toString() + "." + table.capitalCamelCase()
+            val name = table.capitalCamelCase()
             """
     fun leftJoin(table: $name): ${name}JoinChain = ${name}JoinChain(this)._join(table, JoinType.LEFT)
     fun innerJoin(table: $name): ${name}JoinChain = ${name}JoinChain(this)._join(table, JoinType.INNER)
@@ -227,9 +227,9 @@ $insertRowMethodSource
         return allMethods.joinToString("\n")
     }
 
-    fun sourceForJoinChainClass(basePackage: PackageName): String {
+    fun sourceForJoinChainClass(): String {
         val allMethods = tableDefinition.linkedTables.map { (schema, table) ->
-            val name = basePackage.createSubPackageForSchema(schema).toString() + "." + table.capitalCamelCase()
+            val name = table.capitalCamelCase()
             """
     fun leftJoin(table: $name): ${name}JoinChain = ${name}JoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
     fun innerJoin(table: $name): ${name}JoinChain = ${name}JoinChain(this.table, this.joins)._join(table, JoinType.INNER)

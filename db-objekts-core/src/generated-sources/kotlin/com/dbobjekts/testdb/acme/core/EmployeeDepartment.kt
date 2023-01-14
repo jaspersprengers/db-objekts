@@ -1,7 +1,5 @@
 package com.dbobjekts.testdb.acme.core
 
-import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.statement.WriteQueryAccessors
@@ -11,6 +9,8 @@ import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 
 
 /**           

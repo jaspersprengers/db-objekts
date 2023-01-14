@@ -1,6 +1,7 @@
 package com.dbobjekts.codegen.writer
 
 import com.dbobjekts.api.PackageName
+import com.dbobjekts.api.SchemaName
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.codegen.metadata.DBColumnDefinition
 import com.dbobjekts.codegen.metadata.DBForeignKeyDefinition
@@ -14,22 +15,23 @@ import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
-class TableSourcesBuilder(
+internal class TableSourcesBuilder(
     val basePackage: PackageName,
     val model: DBTableDefinition
 ) {
 
     val strBuilder = StringBuilder()
+    val importLineBuilder = ImportLineBuilder(basePackage)
 
     /**
      * FKs to parents in a different schema/package need to be imported
      */
-    private fun generateImportsForForeignKeys(): List<String> =
+    private fun generateImportsForForeignKeys(): List<Pair<SchemaName, String>> =
         model.columns.filter {
             it is DBForeignKeyDefinition && it.parentSchema.value != model.schema.value
         }.map { col ->
             val fk = col as DBForeignKeyDefinition
-            "${basePackage.createSubPackageForSchema(fk.parentSchema)}.${fk.parentTable.capitalCamelCase()}\n"
+            Pair(fk.parentSchema, fk.parentTable.capitalCamelCase())
         }.distinct()
 
     fun build(): String {
@@ -44,11 +46,7 @@ class TableSourcesBuilder(
             strBuilder.appendLine("    val ${column.asFieldName()} = ${column.asFactoryMethod()}")
         }
 
-        val importLineBuilder = ImportLineBuilder()
-        val typeAliases = listOf(
-            "api.AnyColumn", "api.AnyTable"
-        )
-        val classesToImport = listOf(
+        importLineBuilder.addClasses(
             Table::class.java,
             TableRowData::class.java,
             WriteQueryAccessors::class.java,
@@ -59,12 +57,18 @@ class TableSourcesBuilder(
             InsertBuilderBase::class.java,
             UpdateBuilderBase::class.java
         )
+        importLineBuilder.add("com.dbobjekts.api.AnyColumn")
+        importLineBuilder.add("com.dbobjekts.api.AnyTable")
+
         val updateBuilderInterface = HasUpdateBuilder::class.java.simpleName
 
-        typeAliases.forEach { importLineBuilder.add("com.dbobjekts.$it") }
-        classesToImport.forEach { importLineBuilder.add(it.canonicalName) }
+        importLineBuilder.addImportsForForeignKeys(model.schema, model.linkedTables)
 
-        generateImportsForForeignKeys().forEach { importLineBuilder.add(it) }
+        val columnNames = model.columns.map {
+            importLineBuilder.addClasses(it.column.javaClass)
+            it.asFieldName()
+        }.joinToString(",")
+
         strBuilder.appendLine(importLineBuilder.build())
         strBuilder.appendLine()
         val tbl = model.asClassName()
@@ -73,13 +77,13 @@ class TableSourcesBuilder(
         model.columns.forEach {
             generateField(it)
         }
-        val columnNames = model.columns.map { it.asFieldName() }.joinToString(",")
+
         strBuilder.appendLine("    override val columns: List<AnyColumn> = listOf($columnNames)")
         strBuilder.appendLine(detailedSourceBuilder.sourceForToValue())
         strBuilder.appendLine(detailedSourceBuilder.sourceForMetaDataVal())
-        strBuilder.appendLine(detailedSourceBuilder.sourceForJoinMethods(basePackage))
+        strBuilder.appendLine(detailedSourceBuilder.sourceForJoinMethods())
         strBuilder.appendLine("}")
-        strBuilder.appendLine(detailedSourceBuilder.sourceForJoinChainClass(basePackage))
+        strBuilder.appendLine(detailedSourceBuilder.sourceForJoinChainClass())
         strBuilder.appendLine(detailedSourceBuilder.sourceForBuilderClasses())
         strBuilder.appendLine(detailedSourceBuilder.sourceForRowDataClass())
         return strBuilder.toString()

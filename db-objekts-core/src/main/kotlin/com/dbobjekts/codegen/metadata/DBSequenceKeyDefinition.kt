@@ -13,7 +13,7 @@ class DBSequenceKeyDefinition(schema: SchemaName,
                               comment: String? = null)
    : DBColumnDefinition(schema, table, name, columnType, true, false, comment), DBPrimaryKeyDefinition, DBGeneratedPrimaryKey {
 
-    override fun asFactoryMethod(): String = """${fullyQualifiedClassName()}(this, "$columnName", "$sequence")"""
+    override fun asFactoryMethod(): String = """${column::class.java.simpleName}(this, "$columnName", "$sequence")"""
 
     override fun prettyPrint(): String =
         "     Sequence primary key column $tableName.$columnName maps to ${fullyQualifiedClassName()}. Sequence: $sequence"

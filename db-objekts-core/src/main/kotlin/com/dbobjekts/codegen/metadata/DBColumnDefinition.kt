@@ -16,7 +16,10 @@ open class DBColumnDefinition(
 
     override val packageName: PackageName = PackageName.fromClass(column::class.java)
 
-    open fun asFactoryMethod(): String = """${column::class.java.name}(this, "$columnName")"""
+    /**
+     * @return com.dbobjekts.acme.AddressColumn(this, "address")
+     */
+    open fun asFactoryMethod(): String = """${column::class.java.simpleName}(this, "$columnName")"""
 
     override fun fullyQualifiedClassName(): String = packageName.concat(column::class.java.simpleName).toString()
 
