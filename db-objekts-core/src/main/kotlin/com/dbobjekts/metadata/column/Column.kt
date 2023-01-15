@@ -6,6 +6,7 @@ import com.dbobjekts.api.exception.DBObjektsException
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.statement.And
+import com.dbobjekts.statement.ValueOrColumn
 import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.util.ValidateDBObjectName
 import java.sql.PreparedStatement
@@ -42,6 +43,11 @@ abstract class Column<I>(
             value,
             "="
         )
+
+
+    fun eq(column: AnyColumn): SubClause = createColumnCondition(column,"=")
+
+    fun ne(column: AnyColumn): SubClause = createColumnCondition(column,"!=")
 
     /**
      * operator for nullability check. Results in SQL my_column IS NULL
@@ -99,38 +105,41 @@ abstract class Column<I>(
     /**
      * LIKE operator to find matches beginning with a string value. Results in SQL: my_column1 like ? and parameter ''john%''
      */
-    fun startsWith(value: String): SubClause = createLikeCondition(value + "%", "like")
+    fun startsWith(value: String): SubClause = createLikeCondition(value + "%")
 
     /**
      * LIKE operator to find matches ending in a string value. Results in SQL: my_column1 like ? and parameter ''%john''
      */
-    fun endsWith(value: String): SubClause = createLikeCondition("%" + value, "like")
+    fun endsWith(value: String): SubClause = createLikeCondition("%" + value)
 
     /**
      * LIKE operator to find records containing a certain value. Results in SQL: my_column1 like ? and parameter ''%john%''
      */
-    fun contains(value: String): SubClause = createLikeCondition("%" + value + "%", "like")
+    fun contains(value: String): SubClause = createLikeCondition("%" + value + "%")
 
     private fun createSimpleCondition(value: I, sql: String): SubClause =
-        createSubClause(sql, listOf(value))
+        createSubClause(sql, ValueOrColumn.forValues(listOf(value)))
+
+    private fun createColumnCondition(column: AnyColumn, sql: String): SubClause =
+        createSubClause(sql, ValueOrColumn.forColumn(column))
 
 
     private fun createInCondition(sql: String, values: List<I>): SubClause =
-        createSubClause(sql, values)
+        createSubClause(sql, ValueOrColumn.forValues(values))
 
 
     private fun createIsNullCondition(sql: String): SubClause =
-        createSubClause(sql, null)
+        createSubClause(sql, ValueOrColumn.forNullValues())
 
     @Suppress("UNCHECKED_CAST")
-    private fun createLikeCondition(v: String, sql: String): SubClause =
-        createSubClause(sql, listOf(v as I))
+    private fun createLikeCondition(v: String): SubClause =
+        createSubClause("like", ValueOrColumn.forValues(listOf(v as I)))
 
     internal abstract fun create(value: I?): ColumnAndValue<I>
 
-    private fun createSubClause(symbol: String, values: List<I>?): SubClause {
+    private fun createSubClause(symbol: String, valueOrColumn: ValueOrColumn<I>): SubClause {
         val clause = SubClause()
-        clause.addCondition(this, And, symbol, values)
+        clause.addCondition(this, And, symbol, valueOrColumn)
         return clause
     }
 

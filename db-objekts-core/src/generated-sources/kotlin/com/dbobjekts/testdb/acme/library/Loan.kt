@@ -1,17 +1,19 @@
 package com.dbobjekts.testdb.acme.library
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.DateColumn
+import com.dbobjekts.metadata.column.ForeignKeyLongColumn
+import com.dbobjekts.metadata.column.NullableDateColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
-
 
 /**           
  * Auto-generated metadata object for db table LIBRARY.LOAN.
@@ -29,45 +31,45 @@ object Loan:Table<LoanRow>("LOAN"), HasUpdateBuilder<LoanUpdateBuilder, LoanInse
      *
      * Foreign key to LIBRARY.ITEM.ID
      */
-    val itemId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "ITEM_ID", Item.id)
+    val itemId = ForeignKeyLongColumn(this, "ITEM_ID", Item.id)
     /**
      * Represents db column LIBRARY.LOAN.MEMBER_ID
      *
      * Foreign key to LIBRARY.MEMBER.ID
      */
-    val memberId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "MEMBER_ID", Member.id)
+    val memberId = ForeignKeyLongColumn(this, "MEMBER_ID", Member.id)
     /**
      * Represents db column LIBRARY.LOAN.DATE_LOANED
      */
-    val dateLoaned = com.dbobjekts.metadata.column.DateColumn(this, "DATE_LOANED")
+    val dateLoaned = DateColumn(this, "DATE_LOANED")
     /**
      * Represents db column LIBRARY.LOAN.DATE_RETURNED
      */
-    val dateReturned = com.dbobjekts.metadata.column.NullableDateColumn(this, "DATE_RETURNED")
+    val dateReturned = NullableDateColumn(this, "DATE_RETURNED")
     override val columns: List<AnyColumn> = listOf(itemId,memberId,dateLoaned,dateReturned)
     override fun toValue(values: List<Any?>) = LoanRow(values[0] as Long,values[1] as Long,values[2] as java.time.LocalDate,values[3] as java.time.LocalDate?)
     override fun metadata(): WriteQueryAccessors<LoanUpdateBuilder, LoanInsertBuilder> = WriteQueryAccessors(LoanUpdateBuilder(), LoanInsertBuilder())
 
-    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Item): com.dbobjekts.testdb.acme.library.ItemJoinChain = com.dbobjekts.testdb.acme.library.ItemJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Item): com.dbobjekts.testdb.acme.library.ItemJoinChain = com.dbobjekts.testdb.acme.library.ItemJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Item): com.dbobjekts.testdb.acme.library.ItemJoinChain = com.dbobjekts.testdb.acme.library.ItemJoinChain(this)._join(table, JoinType.RIGHT)                      
+    fun leftJoin(table: Item): ItemJoinChain = ItemJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Item): ItemJoinChain = ItemJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: Item): ItemJoinChain = ItemJoinChain(this)._join(table, JoinType.RIGHT)                      
        
 
-    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Member): com.dbobjekts.testdb.acme.library.MemberJoinChain = com.dbobjekts.testdb.acme.library.MemberJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Member): com.dbobjekts.testdb.acme.library.MemberJoinChain = com.dbobjekts.testdb.acme.library.MemberJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Member): com.dbobjekts.testdb.acme.library.MemberJoinChain = com.dbobjekts.testdb.acme.library.MemberJoinChain(this)._join(table, JoinType.RIGHT)                      
+    fun leftJoin(table: Member): MemberJoinChain = MemberJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Member): MemberJoinChain = MemberJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: Member): MemberJoinChain = MemberJoinChain(this)._join(table, JoinType.RIGHT)                      
        
 }
 
 class LoanJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
     
-    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Item): com.dbobjekts.testdb.acme.library.ItemJoinChain = com.dbobjekts.testdb.acme.library.ItemJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Item): com.dbobjekts.testdb.acme.library.ItemJoinChain = com.dbobjekts.testdb.acme.library.ItemJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Item): com.dbobjekts.testdb.acme.library.ItemJoinChain = com.dbobjekts.testdb.acme.library.ItemJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    fun leftJoin(table: Item): ItemJoinChain = ItemJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Item): ItemJoinChain = ItemJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: Item): ItemJoinChain = ItemJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
     
-    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Member): com.dbobjekts.testdb.acme.library.MemberJoinChain = com.dbobjekts.testdb.acme.library.MemberJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Member): com.dbobjekts.testdb.acme.library.MemberJoinChain = com.dbobjekts.testdb.acme.library.MemberJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Member): com.dbobjekts.testdb.acme.library.MemberJoinChain = com.dbobjekts.testdb.acme.library.MemberJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    fun leftJoin(table: Member): MemberJoinChain = MemberJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Member): MemberJoinChain = MemberJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: Member): MemberJoinChain = MemberJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
 }
 
 

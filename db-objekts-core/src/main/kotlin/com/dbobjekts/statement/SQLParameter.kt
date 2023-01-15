@@ -23,8 +23,8 @@ data class SqlParameter<T>(
 
     companion object {
 
-        fun <T> fromWhereClauseCondition(condition: Condition<T, *>): List<AnySqlParameter> = condition.values!!
-            .map { SqlParameter<T>(0, condition.column, it) }
+        fun <T> fromWhereClauseCondition(condition: Condition<T, *>): List<AnySqlParameter> =
+            condition.valueOrColumn.values?.map { SqlParameter<T>(0, condition.column, it) } ?: listOf()
 
         fun <T> fromColumnValue(zeroBasedIndex: Int, colValue: ColumnAndValue<T>): SqlParameter<T> =
             SqlParameter<T>(zeroBasedIndex + 1, colValue.column, colValue.value)

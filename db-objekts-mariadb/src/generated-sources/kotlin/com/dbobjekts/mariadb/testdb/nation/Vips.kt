@@ -2,16 +2,17 @@ package com.dbobjekts.mariadb.testdb.nation
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.LongColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table nation.vips.
@@ -27,11 +28,11 @@ object Vips:Table<VipsRow>("vips"), HasUpdateBuilder<VipsUpdateBuilder, VipsInse
     /**
      * Represents db column nation.vips.vip_id
      */
-    val vipId = com.dbobjekts.metadata.column.LongColumn(this, "vip_id")
+    val vipId = LongColumn(this, "vip_id")
     /**
      * Represents db column nation.vips.name
      */
-    val name = com.dbobjekts.metadata.column.VarcharColumn(this, "name")
+    val name = VarcharColumn(this, "name")
     override val columns: List<AnyColumn> = listOf(vipId,name)
     override fun toValue(values: List<Any?>) = VipsRow(values[0] as Long,values[1] as String)
     override fun metadata(): WriteQueryAccessors<VipsUpdateBuilder, VipsInsertBuilder> = WriteQueryAccessors(VipsUpdateBuilder(), VipsInsertBuilder())

@@ -2,16 +2,17 @@ package com.dbobjekts.mariadb.testdb.nation
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.BigDecimalColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table nation.region_areas.
@@ -27,11 +28,11 @@ object RegionAreas:Table<RegionAreasRow>("region_areas"), HasUpdateBuilder<Regio
     /**
      * Represents db column nation.region_areas.region_name
      */
-    val regionName = com.dbobjekts.metadata.column.VarcharColumn(this, "region_name")
+    val regionName = VarcharColumn(this, "region_name")
     /**
      * Represents db column nation.region_areas.region_area
      */
-    val regionArea = com.dbobjekts.metadata.column.BigDecimalColumn(this, "region_area")
+    val regionArea = BigDecimalColumn(this, "region_area")
     override val columns: List<AnyColumn> = listOf(regionName,regionArea)
     override fun toValue(values: List<Any?>) = RegionAreasRow(values[0] as String,values[1] as java.math.BigDecimal)
     override fun metadata(): WriteQueryAccessors<RegionAreasUpdateBuilder, RegionAreasInsertBuilder> = WriteQueryAccessors(RegionAreasUpdateBuilder(), RegionAreasInsertBuilder())

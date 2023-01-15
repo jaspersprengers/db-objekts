@@ -72,7 +72,8 @@ class HavingClauseForDouble(symbol: String, value: Double) : HavingClause<Double
     }
 }
 
-data class Condition<T : Number, C : HavingClause<T>>(private val clause: C, val joinType: ConditionJoinType) {
+data class Condition<T : Number, C : HavingClause<T>>(private val clause: C,
+                                                      val joinType: ConditionJoinType) {
     internal lateinit var symbol: String
     internal lateinit var value: T
 

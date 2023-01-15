@@ -2,16 +2,17 @@ package com.dbobjekts.mariadb.testdb.nation
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.LongColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table nation.guests.
@@ -27,11 +28,11 @@ object Guests:Table<GuestsRow>("guests"), HasUpdateBuilder<GuestsUpdateBuilder, 
     /**
      * Represents db column nation.guests.guest_id
      */
-    val guestId = com.dbobjekts.metadata.column.LongColumn(this, "guest_id")
+    val guestId = LongColumn(this, "guest_id")
     /**
      * Represents db column nation.guests.name
      */
-    val name = com.dbobjekts.metadata.column.VarcharColumn(this, "name")
+    val name = VarcharColumn(this, "name")
     override val columns: List<AnyColumn> = listOf(guestId,name)
     override fun toValue(values: List<Any?>) = GuestsRow(values[0] as Long,values[1] as String)
     override fun metadata(): WriteQueryAccessors<GuestsUpdateBuilder, GuestsInsertBuilder> = WriteQueryAccessors(GuestsUpdateBuilder(), GuestsInsertBuilder())

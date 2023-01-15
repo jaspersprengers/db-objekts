@@ -1,17 +1,18 @@
 package com.dbobjekts.testdb.acme.library
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.ForeignKeyVarcharColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
-
 
 /**           
  * Auto-generated metadata object for db table LIBRARY.BOOK_REVIEW.
@@ -29,26 +30,26 @@ object BookReview:Table<BookReviewRow>("BOOK_REVIEW"), HasUpdateBuilder<BookRevi
      *
      * Foreign key to LIBRARY.BOOK.ISBN
      */
-    val isbn = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "ISBN", Book.isbn)
+    val isbn = ForeignKeyVarcharColumn(this, "ISBN", Book.isbn)
     /**
      * Represents db column LIBRARY.BOOK_REVIEW.REVIEW
      */
-    val review = com.dbobjekts.metadata.column.VarcharColumn(this, "REVIEW")
+    val review = VarcharColumn(this, "REVIEW")
     override val columns: List<AnyColumn> = listOf(isbn,review)
     override fun toValue(values: List<Any?>) = BookReviewRow(values[0] as String,values[1] as String)
     override fun metadata(): WriteQueryAccessors<BookReviewUpdateBuilder, BookReviewInsertBuilder> = WriteQueryAccessors(BookReviewUpdateBuilder(), BookReviewInsertBuilder())
 
-    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this)._join(table, JoinType.RIGHT)                      
+    fun leftJoin(table: Book): BookJoinChain = BookJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Book): BookJoinChain = BookJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: Book): BookJoinChain = BookJoinChain(this)._join(table, JoinType.RIGHT)                      
        
 }
 
 class BookReviewJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
     
-    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    fun leftJoin(table: Book): BookJoinChain = BookJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Book): BookJoinChain = BookJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: Book): BookJoinChain = BookJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
 }
 
 

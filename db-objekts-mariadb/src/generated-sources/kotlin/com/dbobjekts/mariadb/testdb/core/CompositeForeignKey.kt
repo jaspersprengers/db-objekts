@@ -2,16 +2,17 @@ package com.dbobjekts.mariadb.testdb.core
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.NullableVarcharColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table core.composite_foreign_key.
@@ -27,15 +28,15 @@ object CompositeForeignKey:Table<CompositeForeignKeyRow>("composite_foreign_key"
     /**
      * Represents db column core.composite_foreign_key.isbn
      */
-    val isbn = com.dbobjekts.metadata.column.VarcharColumn(this, "isbn")
+    val isbn = VarcharColumn(this, "isbn")
     /**
      * Represents db column core.composite_foreign_key.title
      */
-    val title = com.dbobjekts.metadata.column.VarcharColumn(this, "title")
+    val title = VarcharColumn(this, "title")
     /**
      * Represents db column core.composite_foreign_key.message
      */
-    val message = com.dbobjekts.metadata.column.NullableVarcharColumn(this, "message")
+    val message = NullableVarcharColumn(this, "message")
     override val columns: List<AnyColumn> = listOf(isbn,title,message)
     override fun toValue(values: List<Any?>) = CompositeForeignKeyRow(values[0] as String,values[1] as String,values[2] as String?)
     override fun metadata(): WriteQueryAccessors<CompositeForeignKeyUpdateBuilder, CompositeForeignKeyInsertBuilder> = WriteQueryAccessors(CompositeForeignKeyUpdateBuilder(), CompositeForeignKeyInsertBuilder())

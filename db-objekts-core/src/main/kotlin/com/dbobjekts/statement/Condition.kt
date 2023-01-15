@@ -1,28 +1,52 @@
 package com.dbobjekts.statement
 
+import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.statement.whereclause.WhereClauseComponent
 import com.dbobjekts.util.StringUtil
 
+class ValueOrColumn<T>(val values: List<T>? = null, val column: AnyColumn? = null) {
+    fun getParameterCharactersForValues(): String =
+        if (column != null) {
+            column.aliasDotName()
+        } else if (values == null) {
+            ""
+        } else if (values.size == 1) {
+            "?"
+        } else "(${values.map { "?" }.joinToString(",")})"
+    companion object {
+        fun <T> forValues(values: List<T>) = ValueOrColumn<T>(values = values)
+        fun <T> forNullValues() = ValueOrColumn<Unit>()  as ValueOrColumn<T>
+        fun <T> forColumn(column: AnyColumn) = ValueOrColumn<T>(column = column)
+    }
+}
+
 data class Condition<I, W : WhereClauseComponent>(
     val parent: W,
     val column: Column<I>,
-    override val joinType: ConditionJoinType = And,
-    internal var symbol: String? = null,
-     var values: List<I>? = null
+    override val joinType: ConditionJoinType = And
 ) : WhereClauseComponent() {
 
-    private fun getParameterCharactersForValues(): String =
-        if (values == null) "" else (if (values!!.size == 1) "?" else "(${values!!.map { "?" }.joinToString(",")})")
+    internal lateinit var symbol: String
+    internal lateinit var valueOrColumn: ValueOrColumn<I>
 
+    private fun getParameterCharactersForValues(): String = valueOrColumn.getParameterCharactersForValues()
 
-    override fun toString(): String = column.nameInTable + symbol + (values ?: "null")
+    override fun toString(): String = column.nameInTable + symbol + valueOrColumn
 
     /**
      * operator for equality condition. Results in SQL: my_column = ?
      */
-    fun eq(value: I): W = if (value == null) throw StatementBuilderException("Cannot supply null argument. Use isNull()") else createSimpleCondition(value, "=")
+    fun eq(value: I): W =
+        if (value == null) throw StatementBuilderException("Cannot supply null argument. Use isNull()") else createSimpleCondition(
+            value,
+            "="
+        )
+
+    fun eq(column: AnyColumn): W = createColumnCondition(column,"=")
+
+    fun ne(column: AnyColumn): W = createColumnCondition(column,"!=")
 
     /**
      * operator for nullability check. Results in SQL my_column IS NULL
@@ -34,7 +58,11 @@ data class Condition<I, W : WhereClauseComponent>(
      *
      * @param value a non-null value
      */
-    fun ne(value: I): W = if (value == null) throw StatementBuilderException("Cannot supply null argument. Use isNotNull()") else createSimpleCondition(value, "<>")
+    fun ne(value: I): W =
+        if (value == null) throw StatementBuilderException("Cannot supply null argument. Use isNotNull()") else createSimpleCondition(
+            value,
+            "<>"
+        )
 
     fun isNotNull(): W = createIsNullCondition("is not null")
 
@@ -88,27 +116,30 @@ data class Condition<I, W : WhereClauseComponent>(
      */
     fun contains(value: String): W = createLikeCondition("%" + value + "%", "like")
 
+    private fun createColumnCondition(column: AnyColumn, sql: String): W =
+        createSubClause(sql, ValueOrColumn.forColumn(column))
+
     private fun createSimpleCondition(value: I, sql: String): W =
-        createSubClause(sql, listOf(value))
+        createSubClause(sql, ValueOrColumn.forValues(listOf(value)))
 
 
     private fun createInCondition(sql: String, values: List<I>): W =
-        createSubClause(sql, values)
+        createSubClause(sql, ValueOrColumn.forValues(values))
 
 
     private fun createIsNullCondition(sql: String): W =
-        createSubClause(sql, null)
+        createSubClause(sql, ValueOrColumn.forNullValues())
 
     @Suppress("UNCHECKED_CAST")
     private fun createLikeCondition(v: String, sql: String): W =
-        createSubClause(sql, listOf(v as I))
+        createSubClause(sql, ValueOrColumn.forValues(listOf(v as I)))
 
     private fun createSubClause(
         symbol: String,
-        values: List<I>?
+        valueOrColumn: ValueOrColumn<I>
     ): W {
         this.symbol = symbol
-        this.values = values
+        this.valueOrColumn = valueOrColumn
         return parent
     }
 
@@ -123,7 +154,7 @@ data class Condition<I, W : WhereClauseComponent>(
         return StringUtil.concat(
             listOf(
                 columnComponent(),
-                symbol ?: throw StatementBuilderException("This Condition is not finished"),
+                symbol,
                 getParameterCharactersForValues()
             )
         )

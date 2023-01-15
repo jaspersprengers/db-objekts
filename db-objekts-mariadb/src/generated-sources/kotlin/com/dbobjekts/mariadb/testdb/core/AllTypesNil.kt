@@ -2,16 +2,28 @@ package com.dbobjekts.mariadb.testdb.core
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.AutoKeyLongColumn
+import com.dbobjekts.metadata.column.NullableBigDecimalColumn
+import com.dbobjekts.metadata.column.NullableBooleanColumn
+import com.dbobjekts.metadata.column.NullableByteArrayColumn
+import com.dbobjekts.metadata.column.NullableDateColumn
+import com.dbobjekts.metadata.column.NullableDateTimeColumn
+import com.dbobjekts.metadata.column.NullableDoubleColumn
+import com.dbobjekts.metadata.column.NullableFloatColumn
+import com.dbobjekts.metadata.column.NullableIntegerColumn
+import com.dbobjekts.metadata.column.NullableLongColumn
+import com.dbobjekts.metadata.column.NullableTimeColumn
+import com.dbobjekts.metadata.column.NullableVarcharColumn
+import com.dbobjekts.metadata.column.NumberAsBooleanColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table core.ALL_TYPES_NIL.
@@ -27,135 +39,135 @@ object AllTypesNil:Table<AllTypesNilRow>("ALL_TYPES_NIL"), HasUpdateBuilder<AllT
     /**
      * Represents db column core.ALL_TYPES_NIL.ID
      */
-    val id = com.dbobjekts.metadata.column.AutoKeyLongColumn(this, "ID")
+    val id = AutoKeyLongColumn(this, "ID")
     /**
      * Represents db column core.ALL_TYPES_NIL.DECIMAL_COL
      */
-    val decimalCol = com.dbobjekts.metadata.column.NullableBigDecimalColumn(this, "DECIMAL_COL")
+    val decimalCol = NullableBigDecimalColumn(this, "DECIMAL_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.DEC_COL
      */
-    val decCol = com.dbobjekts.metadata.column.NullableBigDecimalColumn(this, "DEC_COL")
+    val decCol = NullableBigDecimalColumn(this, "DEC_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.NUMERIC_COL
      */
-    val numericCol = com.dbobjekts.metadata.column.NullableBigDecimalColumn(this, "NUMERIC_COL")
+    val numericCol = NullableBigDecimalColumn(this, "NUMERIC_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.FIXED_COL
      */
-    val fixedCol = com.dbobjekts.metadata.column.NullableBigDecimalColumn(this, "FIXED_COL")
+    val fixedCol = NullableBigDecimalColumn(this, "FIXED_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.INT1_COL
      */
-    val int1Col = com.dbobjekts.metadata.column.NumberAsBooleanColumn(this, "INT1_COL")
+    val int1Col = NumberAsBooleanColumn(this, "INT1_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.TINYINT_COL
      */
-    val tinyintCol = com.dbobjekts.metadata.column.NumberAsBooleanColumn(this, "TINYINT_COL")
+    val tinyintCol = NumberAsBooleanColumn(this, "TINYINT_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.SMALLINT_COL
      */
-    val smallintCol = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "SMALLINT_COL")
+    val smallintCol = NullableIntegerColumn(this, "SMALLINT_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.INT2_COL
      */
-    val int2Col = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "INT2_COL")
+    val int2Col = NullableIntegerColumn(this, "INT2_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.MEDIUMINT_COL
      */
-    val mediumintCol = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "MEDIUMINT_COL")
+    val mediumintCol = NullableIntegerColumn(this, "MEDIUMINT_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.INT3_COL
      */
-    val int3Col = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "INT3_COL")
+    val int3Col = NullableIntegerColumn(this, "INT3_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.INT_COL
      */
-    val intCol = com.dbobjekts.metadata.column.NullableLongColumn(this, "INT_COL")
+    val intCol = NullableLongColumn(this, "INT_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.INT4_COL
      */
-    val int4Col = com.dbobjekts.metadata.column.NullableLongColumn(this, "INT4_COL")
+    val int4Col = NullableLongColumn(this, "INT4_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.BIGINT_COL
      */
-    val bigintCol = com.dbobjekts.metadata.column.NullableLongColumn(this, "BIGINT_COL")
+    val bigintCol = NullableLongColumn(this, "BIGINT_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.INT8_COL
      */
-    val int8Col = com.dbobjekts.metadata.column.NullableLongColumn(this, "INT8_COL")
+    val int8Col = NullableLongColumn(this, "INT8_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.FLOAT_COL
      */
-    val floatCol = com.dbobjekts.metadata.column.NullableFloatColumn(this, "FLOAT_COL")
+    val floatCol = NullableFloatColumn(this, "FLOAT_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.DOUBLE_COL
      */
-    val doubleCol = com.dbobjekts.metadata.column.NullableDoubleColumn(this, "DOUBLE_COL")
+    val doubleCol = NullableDoubleColumn(this, "DOUBLE_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.DOUBLE_PRECISION_COL
      */
-    val doublePrecisionCol = com.dbobjekts.metadata.column.NullableDoubleColumn(this, "DOUBLE_PRECISION_COL")
+    val doublePrecisionCol = NullableDoubleColumn(this, "DOUBLE_PRECISION_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.BIT_COL
      */
-    val bitCol = com.dbobjekts.metadata.column.NullableBooleanColumn(this, "BIT_COL")
+    val bitCol = NullableBooleanColumn(this, "BIT_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.BINARY_COL
      */
-    val binaryCol = com.dbobjekts.metadata.column.NullableByteArrayColumn(this, "BINARY_COL")
+    val binaryCol = NullableByteArrayColumn(this, "BINARY_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.BLOB_COL
      */
-    val blobCol = com.dbobjekts.metadata.column.NullableByteArrayColumn(this, "BLOB_COL")
+    val blobCol = NullableByteArrayColumn(this, "BLOB_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.CHAR_COL
      */
-    val charCol = com.dbobjekts.metadata.column.NullableVarcharColumn(this, "CHAR_COL")
+    val charCol = NullableVarcharColumn(this, "CHAR_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.CHAR_BYTE_COL
      */
-    val charByteCol = com.dbobjekts.metadata.column.NullableByteArrayColumn(this, "CHAR_BYTE_COL")
+    val charByteCol = NullableByteArrayColumn(this, "CHAR_BYTE_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.ENUM_COL
      */
-    val enumCol = com.dbobjekts.metadata.column.NullableVarcharColumn(this, "ENUM_COL")
+    val enumCol = NullableVarcharColumn(this, "ENUM_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.JSON_COL
      */
-    val jsonCol = com.dbobjekts.metadata.column.NullableVarcharColumn(this, "JSON_COL")
+    val jsonCol = NullableVarcharColumn(this, "JSON_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.TEXT_COL
      */
-    val textCol = com.dbobjekts.metadata.column.NullableVarcharColumn(this, "TEXT_COL")
+    val textCol = NullableVarcharColumn(this, "TEXT_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.VARCHAR_COL
      */
-    val varcharCol = com.dbobjekts.metadata.column.NullableVarcharColumn(this, "VARCHAR_COL")
+    val varcharCol = NullableVarcharColumn(this, "VARCHAR_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.SET_COL
      */
-    val setCol = com.dbobjekts.metadata.column.NullableVarcharColumn(this, "SET_COL")
+    val setCol = NullableVarcharColumn(this, "SET_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.DATE_COL
      */
-    val dateCol = com.dbobjekts.metadata.column.NullableDateColumn(this, "DATE_COL")
+    val dateCol = NullableDateColumn(this, "DATE_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.TIME_COL
      */
-    val timeCol = com.dbobjekts.metadata.column.NullableTimeColumn(this, "TIME_COL")
+    val timeCol = NullableTimeColumn(this, "TIME_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.DATETIME_COL
      */
-    val datetimeCol = com.dbobjekts.metadata.column.NullableDateTimeColumn(this, "DATETIME_COL")
+    val datetimeCol = NullableDateTimeColumn(this, "DATETIME_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.TIMESTAMP_COL
      */
-    val timestampCol = com.dbobjekts.metadata.column.NullableDateTimeColumn(this, "TIMESTAMP_COL")
+    val timestampCol = NullableDateTimeColumn(this, "TIMESTAMP_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.YEAR_COL
      */
-    val yearCol = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "YEAR_COL")
+    val yearCol = NullableIntegerColumn(this, "YEAR_COL")
     override val columns: List<AnyColumn> = listOf(id,decimalCol,decCol,numericCol,fixedCol,int1Col,tinyintCol,smallintCol,int2Col,mediumintCol,int3Col,intCol,int4Col,bigintCol,int8Col,floatCol,doubleCol,doublePrecisionCol,bitCol,binaryCol,blobCol,charCol,charByteCol,enumCol,jsonCol,textCol,varcharCol,setCol,dateCol,timeCol,datetimeCol,timestampCol,yearCol)
     override fun toValue(values: List<Any?>) = AllTypesNilRow(values[0] as Long,values[1] as java.math.BigDecimal?,values[2] as java.math.BigDecimal?,values[3] as java.math.BigDecimal?,values[4] as java.math.BigDecimal?,values[5] as Boolean,values[6] as Boolean,values[7] as Int?,values[8] as Int?,values[9] as Int?,values[10] as Int?,values[11] as Long?,values[12] as Long?,values[13] as Long?,values[14] as Long?,values[15] as Float?,values[16] as Double?,values[17] as Double?,values[18] as Boolean?,values[19] as ByteArray?,values[20] as ByteArray?,values[21] as String?,values[22] as ByteArray?,values[23] as String?,values[24] as String?,values[25] as String?,values[26] as String?,values[27] as String?,values[28] as java.time.LocalDate?,values[29] as java.time.LocalTime?,values[30] as java.time.LocalDateTime?,values[31] as java.time.LocalDateTime?,values[32] as Int?)
     override fun metadata(): WriteQueryAccessors<AllTypesNilUpdateBuilder, AllTypesNilInsertBuilder> = WriteQueryAccessors(AllTypesNilUpdateBuilder(), AllTypesNilInsertBuilder())

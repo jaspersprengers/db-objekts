@@ -6,13 +6,27 @@ import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.TableOrJoin
 import com.dbobjekts.statement.ConditionJoinType
+import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.util.StringUtil
+import javax.swing.plaf.nimbus.State
 
-open class TableJoinChain(val table: AnyTable,
-                          protected var joins: List<JoinBase>
+open class TableJoinChain(
+    val table: AnyTable,
+    protected var joins: List<JoinBase>
 ) : TableOrJoin, Cloneable {
 
     constructor(joinChain: TableJoinChain) : this(joinChain.table, joinChain.joins)
+
+    fun on(clause: SubClause): ManualJoinChainBuilder {
+        if (joins.size != 1)
+            throw StatementBuilderException("Illegal state")
+        val j = joins[0]
+        val toJoin = if (table == j.leftPart.table) j.rightPart.table else j.leftPart.table
+        return when (j) {
+            is LeftJoin -> ManualJoinChainBuilder(table).leftJoin(toJoin).on(clause)
+            else -> throw IllegalStateException("Illegal state")
+        }
+    }
 
     @Suppress("UNCHECKED_CAST")
     fun <T : TableJoinChain> _join(table: AnyTable, joinType: JoinType): T {
@@ -21,7 +35,7 @@ open class TableJoinChain(val table: AnyTable,
         return this as T
     }
 
-    private fun createJoin(joinType: JoinType, tuple: Pair<AnyColumn, AnyColumn>) = when(joinType){
+    private fun createJoin(joinType: JoinType, tuple: Pair<AnyColumn, AnyColumn>) = when (joinType) {
         JoinType.LEFT -> LeftJoin(tuple.first, tuple.second)
         JoinType.RIGHT -> RightJoin(tuple.first, tuple.second)
         JoinType.INNER -> InnerJoin(tuple.first, tuple.second)
@@ -53,19 +67,33 @@ open class TableJoinChain(val table: AnyTable,
     private fun getJoinPair(left: AnyTable, right: AnyTable, tableToAdd: AnyTable): Pair<AnyColumn, AnyColumn>? {
 
         left.getForeignKeyToParent(tableToAdd)?.let {
-            return Pair(it.column, tableToAdd.columnByName(it.parentColumn.nameInTable) ?: throw StatementBuilderException("Cannot resolve foreign key for $tableToAdd"))
+            return Pair(
+                it.column,
+                tableToAdd.columnByName(it.parentColumn.nameInTable)
+                    ?: throw StatementBuilderException("Cannot resolve foreign key for $tableToAdd")
+            )
         }
 
         right.getForeignKeyToParent(tableToAdd)?.let {
-            return Pair(it.column, tableToAdd.columnByName(it.parentColumn.nameInTable) ?: throw StatementBuilderException("Cannot resolve foreign key for $tableToAdd"))
+            return Pair(
+                it.column,
+                tableToAdd.columnByName(it.parentColumn.nameInTable)
+                    ?: throw StatementBuilderException("Cannot resolve foreign key for $tableToAdd")
+            )
         }
 
         tableToAdd.getForeignKeyToParent(left)?.let {
-            return Pair(left.columnByName(it.parentColumn.nameInTable) ?: throw StatementBuilderException("Cannot resolve foreign key for $tableToAdd"), it.column)
+            return Pair(
+                left.columnByName(it.parentColumn.nameInTable)
+                    ?: throw StatementBuilderException("Cannot resolve foreign key for $tableToAdd"), it.column
+            )
         }
 
         tableToAdd.getForeignKeyToParent(right)?.let {
-            return Pair(right.columnByName(it.parentColumn.nameInTable) ?: throw StatementBuilderException("Cannot resolve foreign key for $tableToAdd"), it.column)
+            return Pair(
+                right.columnByName(it.parentColumn.nameInTable)
+                    ?: throw StatementBuilderException("Cannot resolve foreign key for $tableToAdd"), it.column
+            )
         }
         return null
     }

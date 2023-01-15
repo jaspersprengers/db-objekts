@@ -4,8 +4,8 @@ import com.dbobjekts.api.*
 import com.dbobjekts.api.exception.DBObjektsException
 import com.dbobjekts.metadata.column.IsForeignKey
 import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.metadata.joins.JoinFactory
-import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.metadata.joins.ManualJoinChain
+import com.dbobjekts.metadata.joins.ManualJoinChainBuilder
 import com.dbobjekts.util.Errors
 import com.dbobjekts.util.ValidateDBObjectName
 
@@ -13,7 +13,7 @@ import com.dbobjekts.util.ValidateDBObjectName
  * Parent of all the generated [Table] objects that represent the tables in the database and act as metadata for the query engine.
  *
  */
-abstract class Table<I> (
+abstract class Table<I>(
     internal val dbName: String
 ) : TableOrJoin, Selectable<I> {
 
@@ -28,7 +28,13 @@ abstract class Table<I> (
             throw DBObjektsException("Not a valid table name: " + tableName)
     }
 
-    internal val foreignKeys: List<IsForeignKey<*, *>> by lazy { columns.filter { it is IsForeignKey<*, *> }.map { it as IsForeignKey<*, *> } }
+    fun leftJoin(table: AnyTable): ManualJoinChain {
+        return ManualJoinChainBuilder(this).leftJoin(table)
+    }
+
+    internal val foreignKeys: List<IsForeignKey<*, *>> by lazy {
+        columns.filter { it is IsForeignKey<*, *> }.map { it as IsForeignKey<*, *> }
+    }
 
     internal fun getForeignKeyToParent(parent: AnyTable): IsForeignKey<*, *>? = foreignKeys.find { it.parentColumn.table == parent }
 

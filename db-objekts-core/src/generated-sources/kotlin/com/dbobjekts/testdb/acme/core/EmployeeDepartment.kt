@@ -1,17 +1,17 @@
 package com.dbobjekts.testdb.acme.core
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.ForeignKeyLongColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
-
 
 /**           
  * Auto-generated metadata object for db table CORE.EMPLOYEE_DEPARTMENT.
@@ -29,37 +29,37 @@ object EmployeeDepartment:Table<EmployeeDepartmentRow>("EMPLOYEE_DEPARTMENT"), H
      *
      * Foreign key to CORE.EMPLOYEE.ID
      */
-    val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "EMPLOYEE_ID", Employee.id)
+    val employeeId = ForeignKeyLongColumn(this, "EMPLOYEE_ID", Employee.id)
     /**
      * Represents db column CORE.EMPLOYEE_DEPARTMENT.DEPARTMENT_ID
      *
      * Foreign key to CORE.DEPARTMENT.ID
      */
-    val departmentId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "DEPARTMENT_ID", Department.id)
+    val departmentId = ForeignKeyLongColumn(this, "DEPARTMENT_ID", Department.id)
     override val columns: List<AnyColumn> = listOf(employeeId,departmentId)
     override fun toValue(values: List<Any?>) = EmployeeDepartmentRow(values[0] as Long,values[1] as Long)
     override fun metadata(): WriteQueryAccessors<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder> = WriteQueryAccessors(EmployeeDepartmentUpdateBuilder(), EmployeeDepartmentInsertBuilder())
 
-    fun leftJoin(table: com.dbobjekts.testdb.acme.core.Employee): com.dbobjekts.testdb.acme.core.EmployeeJoinChain = com.dbobjekts.testdb.acme.core.EmployeeJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.core.Employee): com.dbobjekts.testdb.acme.core.EmployeeJoinChain = com.dbobjekts.testdb.acme.core.EmployeeJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.core.Employee): com.dbobjekts.testdb.acme.core.EmployeeJoinChain = com.dbobjekts.testdb.acme.core.EmployeeJoinChain(this)._join(table, JoinType.RIGHT)                      
+    fun leftJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this)._join(table, JoinType.RIGHT)                      
        
 
-    fun leftJoin(table: com.dbobjekts.testdb.acme.core.Department): com.dbobjekts.testdb.acme.core.DepartmentJoinChain = com.dbobjekts.testdb.acme.core.DepartmentJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.core.Department): com.dbobjekts.testdb.acme.core.DepartmentJoinChain = com.dbobjekts.testdb.acme.core.DepartmentJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.core.Department): com.dbobjekts.testdb.acme.core.DepartmentJoinChain = com.dbobjekts.testdb.acme.core.DepartmentJoinChain(this)._join(table, JoinType.RIGHT)                      
+    fun leftJoin(table: Department): DepartmentJoinChain = DepartmentJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Department): DepartmentJoinChain = DepartmentJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: Department): DepartmentJoinChain = DepartmentJoinChain(this)._join(table, JoinType.RIGHT)                      
        
 }
 
 class EmployeeDepartmentJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
     
-    fun leftJoin(table: com.dbobjekts.testdb.acme.core.Employee): com.dbobjekts.testdb.acme.core.EmployeeJoinChain = com.dbobjekts.testdb.acme.core.EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.core.Employee): com.dbobjekts.testdb.acme.core.EmployeeJoinChain = com.dbobjekts.testdb.acme.core.EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.core.Employee): com.dbobjekts.testdb.acme.core.EmployeeJoinChain = com.dbobjekts.testdb.acme.core.EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    fun leftJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
     
-    fun leftJoin(table: com.dbobjekts.testdb.acme.core.Department): com.dbobjekts.testdb.acme.core.DepartmentJoinChain = com.dbobjekts.testdb.acme.core.DepartmentJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.core.Department): com.dbobjekts.testdb.acme.core.DepartmentJoinChain = com.dbobjekts.testdb.acme.core.DepartmentJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.core.Department): com.dbobjekts.testdb.acme.core.DepartmentJoinChain = com.dbobjekts.testdb.acme.core.DepartmentJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    fun leftJoin(table: Department): DepartmentJoinChain = DepartmentJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Department): DepartmentJoinChain = DepartmentJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: Department): DepartmentJoinChain = DepartmentJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
 }
 
 

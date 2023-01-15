@@ -2,16 +2,17 @@ package com.dbobjekts.mariadb.testdb.core
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.AutoKeyLongColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table core.DEPARTMENT.
@@ -27,26 +28,26 @@ object Department:Table<DepartmentRow>("DEPARTMENT"), HasUpdateBuilder<Departmen
     /**
      * Represents db column core.DEPARTMENT.id
      */
-    val id = com.dbobjekts.metadata.column.AutoKeyLongColumn(this, "id")
+    val id = AutoKeyLongColumn(this, "id")
     /**
      * Represents db column core.DEPARTMENT.name
      */
-    val name = com.dbobjekts.metadata.column.VarcharColumn(this, "name")
+    val name = VarcharColumn(this, "name")
     override val columns: List<AnyColumn> = listOf(id,name)
     override fun toValue(values: List<Any?>) = DepartmentRow(values[0] as Long,values[1] as String)
     override fun metadata(): WriteQueryAccessors<DepartmentUpdateBuilder, DepartmentInsertBuilder> = WriteQueryAccessors(DepartmentUpdateBuilder(), DepartmentInsertBuilder())
 
-    fun leftJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeDepartment): com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeDepartment): com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeDepartment): com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain(this)._join(table, JoinType.RIGHT)                      
+    fun leftJoin(table: EmployeeDepartment): EmployeeDepartmentJoinChain = EmployeeDepartmentJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: EmployeeDepartment): EmployeeDepartmentJoinChain = EmployeeDepartmentJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: EmployeeDepartment): EmployeeDepartmentJoinChain = EmployeeDepartmentJoinChain(this)._join(table, JoinType.RIGHT)                      
        
 }
 
 class DepartmentJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
     
-    fun leftJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeDepartment): com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeDepartment): com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.mariadb.testdb.core.EmployeeDepartment): com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeDepartmentJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    fun leftJoin(table: EmployeeDepartment): EmployeeDepartmentJoinChain = EmployeeDepartmentJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: EmployeeDepartment): EmployeeDepartmentJoinChain = EmployeeDepartmentJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: EmployeeDepartment): EmployeeDepartmentJoinChain = EmployeeDepartmentJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
 }
 
 

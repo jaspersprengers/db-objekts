@@ -1,17 +1,18 @@
 package com.dbobjekts.testdb.acme.library
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.NullableVarcharColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
-
 
 /**           
  * Auto-generated metadata object for db table LIBRARY.COMPOSITE_FOREIGN_KEY.
@@ -27,15 +28,15 @@ object CompositeForeignKey:Table<CompositeForeignKeyRow>("COMPOSITE_FOREIGN_KEY"
     /**
      * Represents db column LIBRARY.COMPOSITE_FOREIGN_KEY.ISBN
      */
-    val isbn = com.dbobjekts.metadata.column.VarcharColumn(this, "ISBN")
+    val isbn = VarcharColumn(this, "ISBN")
     /**
      * Represents db column LIBRARY.COMPOSITE_FOREIGN_KEY.TITLE
      */
-    val title = com.dbobjekts.metadata.column.VarcharColumn(this, "TITLE")
+    val title = VarcharColumn(this, "TITLE")
     /**
      * Represents db column LIBRARY.COMPOSITE_FOREIGN_KEY.MESSAGE
      */
-    val message = com.dbobjekts.metadata.column.NullableVarcharColumn(this, "MESSAGE")
+    val message = NullableVarcharColumn(this, "MESSAGE")
     override val columns: List<AnyColumn> = listOf(isbn,title,message)
     override fun toValue(values: List<Any?>) = CompositeForeignKeyRow(values[0] as String,values[1] as String,values[2] as String?)
     override fun metadata(): WriteQueryAccessors<CompositeForeignKeyUpdateBuilder, CompositeForeignKeyInsertBuilder> = WriteQueryAccessors(CompositeForeignKeyUpdateBuilder(), CompositeForeignKeyInsertBuilder())

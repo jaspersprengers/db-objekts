@@ -2,16 +2,17 @@ package com.dbobjekts.mariadb.testdb.nation
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.AutoKeyLongColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table nation.languages.
@@ -27,26 +28,26 @@ object Languages:Table<LanguagesRow>("languages"), HasUpdateBuilder<LanguagesUpd
     /**
      * Represents db column nation.languages.language_id
      */
-    val languageId = com.dbobjekts.metadata.column.AutoKeyLongColumn(this, "language_id")
+    val languageId = AutoKeyLongColumn(this, "language_id")
     /**
      * Represents db column nation.languages.language
      */
-    val language = com.dbobjekts.metadata.column.VarcharColumn(this, "language")
+    val language = VarcharColumn(this, "language")
     override val columns: List<AnyColumn> = listOf(languageId,language)
     override fun toValue(values: List<Any?>) = LanguagesRow(values[0] as Long,values[1] as String)
     override fun metadata(): WriteQueryAccessors<LanguagesUpdateBuilder, LanguagesInsertBuilder> = WriteQueryAccessors(LanguagesUpdateBuilder(), LanguagesInsertBuilder())
 
-    fun leftJoin(table: com.dbobjekts.mariadb.testdb.nation.CountryLanguages): com.dbobjekts.mariadb.testdb.nation.CountryLanguagesJoinChain = com.dbobjekts.mariadb.testdb.nation.CountryLanguagesJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.mariadb.testdb.nation.CountryLanguages): com.dbobjekts.mariadb.testdb.nation.CountryLanguagesJoinChain = com.dbobjekts.mariadb.testdb.nation.CountryLanguagesJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.mariadb.testdb.nation.CountryLanguages): com.dbobjekts.mariadb.testdb.nation.CountryLanguagesJoinChain = com.dbobjekts.mariadb.testdb.nation.CountryLanguagesJoinChain(this)._join(table, JoinType.RIGHT)                      
+    fun leftJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this)._join(table, JoinType.RIGHT)                      
        
 }
 
 class LanguagesJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
     
-    fun leftJoin(table: com.dbobjekts.mariadb.testdb.nation.CountryLanguages): com.dbobjekts.mariadb.testdb.nation.CountryLanguagesJoinChain = com.dbobjekts.mariadb.testdb.nation.CountryLanguagesJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.mariadb.testdb.nation.CountryLanguages): com.dbobjekts.mariadb.testdb.nation.CountryLanguagesJoinChain = com.dbobjekts.mariadb.testdb.nation.CountryLanguagesJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.mariadb.testdb.nation.CountryLanguages): com.dbobjekts.mariadb.testdb.nation.CountryLanguagesJoinChain = com.dbobjekts.mariadb.testdb.nation.CountryLanguagesJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    fun leftJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
 }
 
 

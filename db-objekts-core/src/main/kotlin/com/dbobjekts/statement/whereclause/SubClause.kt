@@ -6,8 +6,7 @@ import com.dbobjekts.vendors.Vendor
 
 
 open class SubClause(
-    override var joinType: ConditionJoinType = And,
-    internal var isRoot: Boolean = false
+    override var joinType: ConditionJoinType = And
 ) : WhereClauseComponent() {
 
     private val buffer = mutableListOf<WhereClauseComponent>()
@@ -77,8 +76,11 @@ open class SubClause(
         column: Column<C>,
         joinType: ConditionJoinType = And,
         symbol: String,
-        values: List<C>?): Condition<C, SubClause>  {
-        val condition = Condition<C, SubClause>(this, column, joinType, symbol, values)
+        valueOrColumn: ValueOrColumn<C>
+    ): Condition<C, SubClause> {
+        val condition = Condition<C, SubClause>(this, column, joinType)
+        condition.symbol = symbol
+        condition.valueOrColumn = valueOrColumn
         buffer.add(condition)
         return condition
     }
@@ -94,9 +96,21 @@ open class SubClause(
                 (if (isNotFirst) it.keyword else "") + it.toSQL(options)
             }.joinToString("")
         }
-        val prefix = if (isRoot) "" else " $joinType "
-        return "$prefix($str)"
+        return "$joinType($str)"
     }
 
     private val clause: SubClause = this
+
+    companion object {
+
+        fun sql(clause: SubClause, options: SQLOptions): String {
+            val elements = clause.elements().toList()
+            val sql = elements.mapIndexed { i, clauseElement ->
+                val keyword = if (i > 0) clauseElement.keyword else ""
+                keyword + clauseElement.toSQL(options)
+            }.joinToString("")
+            return sql
+        }
+    }
+
 }

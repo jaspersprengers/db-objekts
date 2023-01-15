@@ -1,17 +1,19 @@
 package com.dbobjekts.testdb.acme.hr
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
-
+import com.dbobjekts.testdb.acme.core.Employee
+import com.dbobjekts.testdb.acme.core.EmployeeJoinChain
 
 /**           
  * Auto-generated metadata object for db table HR.HOBBY.
@@ -27,26 +29,26 @@ object Hobby:Table<HobbyRow>("HOBBY"), HasUpdateBuilder<HobbyUpdateBuilder, Hobb
     /**
      * Represents db column HR.HOBBY.ID
      */
-    val id = com.dbobjekts.metadata.column.VarcharColumn(this, "ID")
+    val id = VarcharColumn(this, "ID")
     /**
      * Represents db column HR.HOBBY.NAME
      */
-    val name = com.dbobjekts.metadata.column.VarcharColumn(this, "NAME")
+    val name = VarcharColumn(this, "NAME")
     override val columns: List<AnyColumn> = listOf(id,name)
     override fun toValue(values: List<Any?>) = HobbyRow(values[0] as String,values[1] as String)
     override fun metadata(): WriteQueryAccessors<HobbyUpdateBuilder, HobbyInsertBuilder> = WriteQueryAccessors(HobbyUpdateBuilder(), HobbyInsertBuilder())
 
-    fun leftJoin(table: com.dbobjekts.testdb.acme.core.Employee): com.dbobjekts.testdb.acme.core.EmployeeJoinChain = com.dbobjekts.testdb.acme.core.EmployeeJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.core.Employee): com.dbobjekts.testdb.acme.core.EmployeeJoinChain = com.dbobjekts.testdb.acme.core.EmployeeJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.core.Employee): com.dbobjekts.testdb.acme.core.EmployeeJoinChain = com.dbobjekts.testdb.acme.core.EmployeeJoinChain(this)._join(table, JoinType.RIGHT)                      
+    fun leftJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this)._join(table, JoinType.RIGHT)                      
        
 }
 
 class HobbyJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
     
-    fun leftJoin(table: com.dbobjekts.testdb.acme.core.Employee): com.dbobjekts.testdb.acme.core.EmployeeJoinChain = com.dbobjekts.testdb.acme.core.EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.core.Employee): com.dbobjekts.testdb.acme.core.EmployeeJoinChain = com.dbobjekts.testdb.acme.core.EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.core.Employee): com.dbobjekts.testdb.acme.core.EmployeeJoinChain = com.dbobjekts.testdb.acme.core.EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    fun leftJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
 }
 
 

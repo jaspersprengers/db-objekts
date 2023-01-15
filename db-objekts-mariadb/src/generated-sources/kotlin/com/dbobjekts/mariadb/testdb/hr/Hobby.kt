@@ -2,16 +2,18 @@ package com.dbobjekts.mariadb.testdb.hr
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.mariadb.testdb.core.Employee
+import com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table hr.HOBBY.
@@ -27,26 +29,26 @@ object Hobby:Table<HobbyRow>("HOBBY"), HasUpdateBuilder<HobbyUpdateBuilder, Hobb
     /**
      * Represents db column hr.HOBBY.id
      */
-    val id = com.dbobjekts.metadata.column.VarcharColumn(this, "id")
+    val id = VarcharColumn(this, "id")
     /**
      * Represents db column hr.HOBBY.name
      */
-    val name = com.dbobjekts.metadata.column.VarcharColumn(this, "name")
+    val name = VarcharColumn(this, "name")
     override val columns: List<AnyColumn> = listOf(id,name)
     override fun toValue(values: List<Any?>) = HobbyRow(values[0] as String,values[1] as String)
     override fun metadata(): WriteQueryAccessors<HobbyUpdateBuilder, HobbyInsertBuilder> = WriteQueryAccessors(HobbyUpdateBuilder(), HobbyInsertBuilder())
 
-    fun leftJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this)._join(table, JoinType.RIGHT)                      
+    fun leftJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this)._join(table, JoinType.RIGHT)                      
        
 }
 
 class HobbyJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
     
-    fun leftJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.mariadb.testdb.core.Employee): com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain = com.dbobjekts.mariadb.testdb.core.EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    fun leftJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
 }
 
 

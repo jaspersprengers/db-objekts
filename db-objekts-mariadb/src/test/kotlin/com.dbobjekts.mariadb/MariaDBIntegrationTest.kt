@@ -65,7 +65,6 @@ class MariaDBIntegrationTest {
    @Test
     fun `get total population per continent`() {
         tm { tr ->
-
             val pairs = tr.select(Continents.name, CountryStats.year, CountryStats.population.sum())
                 .from(CountryStats.innerJoin(Countries).innerJoin(Regions).innerJoin(Continents))
                 .orderAsc(CountryStats.year, CountryStats.population)

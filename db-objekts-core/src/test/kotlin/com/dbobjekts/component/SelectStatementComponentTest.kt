@@ -1,5 +1,7 @@
 package com.dbobjekts.component
 
+import com.dbobjekts.metadata.joins.ManualJoinChain
+import com.dbobjekts.metadata.joins.ManualJoinChainBuilder
 import com.dbobjekts.statement.select.SelectStatementExecutor
 import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions
@@ -224,6 +226,7 @@ class SelectStatementComponentTest {
             s.select(e.name).where(e.id.gt(5)).limit(3).first()
         })
     }
+
 
 
 }

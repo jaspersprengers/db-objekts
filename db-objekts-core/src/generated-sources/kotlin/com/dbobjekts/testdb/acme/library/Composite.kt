@@ -1,17 +1,18 @@
 package com.dbobjekts.testdb.acme.library
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.NullableDateColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
-
 
 /**           
  * Auto-generated metadata object for db table LIBRARY.COMPOSITE.
@@ -27,15 +28,15 @@ object Composite:Table<CompositeRow>("COMPOSITE"), HasUpdateBuilder<CompositeUpd
     /**
      * Represents db column LIBRARY.COMPOSITE.ISBN
      */
-    val isbn = com.dbobjekts.metadata.column.VarcharColumn(this, "ISBN")
+    val isbn = VarcharColumn(this, "ISBN")
     /**
      * Represents db column LIBRARY.COMPOSITE.TITLE
      */
-    val title = com.dbobjekts.metadata.column.VarcharColumn(this, "TITLE")
+    val title = VarcharColumn(this, "TITLE")
     /**
      * Represents db column LIBRARY.COMPOSITE.PUBLISHED
      */
-    val published = com.dbobjekts.metadata.column.NullableDateColumn(this, "PUBLISHED")
+    val published = NullableDateColumn(this, "PUBLISHED")
     override val columns: List<AnyColumn> = listOf(isbn,title,published)
     override fun toValue(values: List<Any?>) = CompositeRow(values[0] as String,values[1] as String,values[2] as java.time.LocalDate?)
     override fun metadata(): WriteQueryAccessors<CompositeUpdateBuilder, CompositeInsertBuilder> = WriteQueryAccessors(CompositeUpdateBuilder(), CompositeInsertBuilder())

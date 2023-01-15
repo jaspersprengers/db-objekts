@@ -1,17 +1,19 @@
 package com.dbobjekts.testdb.acme.library
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.DateColumn
+import com.dbobjekts.metadata.column.ForeignKeyLongColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
-
 
 /**           
  * Auto-generated metadata object for db table LIBRARY.BOOK.
@@ -27,54 +29,54 @@ object Book:Table<BookRow>("BOOK"), HasUpdateBuilder<BookUpdateBuilder, BookInse
     /**
      * Represents db column LIBRARY.BOOK.ISBN
      */
-    val isbn = com.dbobjekts.metadata.column.VarcharColumn(this, "ISBN")
+    val isbn = VarcharColumn(this, "ISBN")
     /**
      * Represents db column LIBRARY.BOOK.TITLE
      */
-    val title = com.dbobjekts.metadata.column.VarcharColumn(this, "TITLE")
+    val title = VarcharColumn(this, "TITLE")
     /**
      * Represents db column LIBRARY.BOOK.AUTHOR_ID
      *
      * Foreign key to LIBRARY.AUTHOR.ID
      */
-    val authorId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "AUTHOR_ID", Author.id)
+    val authorId = ForeignKeyLongColumn(this, "AUTHOR_ID", Author.id)
     /**
      * Represents db column LIBRARY.BOOK.PUBLISHED
      */
-    val published = com.dbobjekts.metadata.column.DateColumn(this, "PUBLISHED")
+    val published = DateColumn(this, "PUBLISHED")
     override val columns: List<AnyColumn> = listOf(isbn,title,authorId,published)
     override fun toValue(values: List<Any?>) = BookRow(values[0] as String,values[1] as String,values[2] as Long,values[3] as java.time.LocalDate)
     override fun metadata(): WriteQueryAccessors<BookUpdateBuilder, BookInsertBuilder> = WriteQueryAccessors(BookUpdateBuilder(), BookInsertBuilder())
 
-    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Author): com.dbobjekts.testdb.acme.library.AuthorJoinChain = com.dbobjekts.testdb.acme.library.AuthorJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Author): com.dbobjekts.testdb.acme.library.AuthorJoinChain = com.dbobjekts.testdb.acme.library.AuthorJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Author): com.dbobjekts.testdb.acme.library.AuthorJoinChain = com.dbobjekts.testdb.acme.library.AuthorJoinChain(this)._join(table, JoinType.RIGHT)                      
+    fun leftJoin(table: Author): AuthorJoinChain = AuthorJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Author): AuthorJoinChain = AuthorJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: Author): AuthorJoinChain = AuthorJoinChain(this)._join(table, JoinType.RIGHT)                      
        
 
-    fun leftJoin(table: com.dbobjekts.testdb.acme.library.BookReview): com.dbobjekts.testdb.acme.library.BookReviewJoinChain = com.dbobjekts.testdb.acme.library.BookReviewJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.library.BookReview): com.dbobjekts.testdb.acme.library.BookReviewJoinChain = com.dbobjekts.testdb.acme.library.BookReviewJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.library.BookReview): com.dbobjekts.testdb.acme.library.BookReviewJoinChain = com.dbobjekts.testdb.acme.library.BookReviewJoinChain(this)._join(table, JoinType.RIGHT)                      
+    fun leftJoin(table: BookReview): BookReviewJoinChain = BookReviewJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: BookReview): BookReviewJoinChain = BookReviewJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: BookReview): BookReviewJoinChain = BookReviewJoinChain(this)._join(table, JoinType.RIGHT)                      
        
 
-    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Item): com.dbobjekts.testdb.acme.library.ItemJoinChain = com.dbobjekts.testdb.acme.library.ItemJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Item): com.dbobjekts.testdb.acme.library.ItemJoinChain = com.dbobjekts.testdb.acme.library.ItemJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Item): com.dbobjekts.testdb.acme.library.ItemJoinChain = com.dbobjekts.testdb.acme.library.ItemJoinChain(this)._join(table, JoinType.RIGHT)                      
+    fun leftJoin(table: Item): ItemJoinChain = ItemJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Item): ItemJoinChain = ItemJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: Item): ItemJoinChain = ItemJoinChain(this)._join(table, JoinType.RIGHT)                      
        
 }
 
 class BookJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
     
-    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Author): com.dbobjekts.testdb.acme.library.AuthorJoinChain = com.dbobjekts.testdb.acme.library.AuthorJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Author): com.dbobjekts.testdb.acme.library.AuthorJoinChain = com.dbobjekts.testdb.acme.library.AuthorJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Author): com.dbobjekts.testdb.acme.library.AuthorJoinChain = com.dbobjekts.testdb.acme.library.AuthorJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    fun leftJoin(table: Author): AuthorJoinChain = AuthorJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Author): AuthorJoinChain = AuthorJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: Author): AuthorJoinChain = AuthorJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
     
-    fun leftJoin(table: com.dbobjekts.testdb.acme.library.BookReview): com.dbobjekts.testdb.acme.library.BookReviewJoinChain = com.dbobjekts.testdb.acme.library.BookReviewJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.library.BookReview): com.dbobjekts.testdb.acme.library.BookReviewJoinChain = com.dbobjekts.testdb.acme.library.BookReviewJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.library.BookReview): com.dbobjekts.testdb.acme.library.BookReviewJoinChain = com.dbobjekts.testdb.acme.library.BookReviewJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    fun leftJoin(table: BookReview): BookReviewJoinChain = BookReviewJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: BookReview): BookReviewJoinChain = BookReviewJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: BookReview): BookReviewJoinChain = BookReviewJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
     
-    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Item): com.dbobjekts.testdb.acme.library.ItemJoinChain = com.dbobjekts.testdb.acme.library.ItemJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Item): com.dbobjekts.testdb.acme.library.ItemJoinChain = com.dbobjekts.testdb.acme.library.ItemJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Item): com.dbobjekts.testdb.acme.library.ItemJoinChain = com.dbobjekts.testdb.acme.library.ItemJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    fun leftJoin(table: Item): ItemJoinChain = ItemJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Item): ItemJoinChain = ItemJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: Item): ItemJoinChain = ItemJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
 }
 
 

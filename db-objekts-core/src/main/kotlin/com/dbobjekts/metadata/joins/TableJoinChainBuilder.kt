@@ -5,6 +5,7 @@ import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.IsForeignKey
+import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.util.StringUtil
 
 class TableJoinChainBuilder(

@@ -2,16 +2,17 @@ package com.dbobjekts.mariadb.testdb.core
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.NullableDateColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table core.composite.
@@ -27,15 +28,15 @@ object Composite:Table<CompositeRow>("composite"), HasUpdateBuilder<CompositeUpd
     /**
      * Represents db column core.composite.isbn
      */
-    val isbn = com.dbobjekts.metadata.column.VarcharColumn(this, "isbn")
+    val isbn = VarcharColumn(this, "isbn")
     /**
      * Represents db column core.composite.title
      */
-    val title = com.dbobjekts.metadata.column.VarcharColumn(this, "title")
+    val title = VarcharColumn(this, "title")
     /**
      * Represents db column core.composite.published
      */
-    val published = com.dbobjekts.metadata.column.NullableDateColumn(this, "published")
+    val published = NullableDateColumn(this, "published")
     override val columns: List<AnyColumn> = listOf(isbn,title,published)
     override fun toValue(values: List<Any?>) = CompositeRow(values[0] as String,values[1] as String,values[2] as java.time.LocalDate?)
     override fun metadata(): WriteQueryAccessors<CompositeUpdateBuilder, CompositeInsertBuilder> = WriteQueryAccessors(CompositeUpdateBuilder(), CompositeInsertBuilder())

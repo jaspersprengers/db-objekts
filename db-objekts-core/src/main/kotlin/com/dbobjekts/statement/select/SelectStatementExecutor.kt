@@ -9,6 +9,8 @@ import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.metadata.TableOrJoin
 import com.dbobjekts.metadata.column.*
+import com.dbobjekts.metadata.joins.ManualJoinChain
+import com.dbobjekts.metadata.joins.ManualJoinChainBuilder
 import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.ColumnInResultRow
 import com.dbobjekts.statement.SqlParameter
@@ -54,6 +56,10 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
             is AnyTable -> registerDrivingTable(obj)
             else -> throw StatementBuilderException("Unsupported operation: argument must be subclass of TableJoinChain or Table")
         }
+        return this
+    }
+
+    fun from(manualJoinChainBuilder: ManualJoinChainBuilder): SelectStatementExecutor<T, RSB> {
         return this
     }
 

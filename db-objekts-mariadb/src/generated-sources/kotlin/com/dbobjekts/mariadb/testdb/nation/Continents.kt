@@ -2,16 +2,17 @@ package com.dbobjekts.mariadb.testdb.nation
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.AutoKeyLongColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table nation.continents.
@@ -27,26 +28,26 @@ object Continents:Table<ContinentsRow>("continents"), HasUpdateBuilder<Continent
     /**
      * Represents db column nation.continents.continent_id
      */
-    val continentId = com.dbobjekts.metadata.column.AutoKeyLongColumn(this, "continent_id")
+    val continentId = AutoKeyLongColumn(this, "continent_id")
     /**
      * Represents db column nation.continents.name
      */
-    val name = com.dbobjekts.metadata.column.VarcharColumn(this, "name")
+    val name = VarcharColumn(this, "name")
     override val columns: List<AnyColumn> = listOf(continentId,name)
     override fun toValue(values: List<Any?>) = ContinentsRow(values[0] as Long,values[1] as String)
     override fun metadata(): WriteQueryAccessors<ContinentsUpdateBuilder, ContinentsInsertBuilder> = WriteQueryAccessors(ContinentsUpdateBuilder(), ContinentsInsertBuilder())
 
-    fun leftJoin(table: com.dbobjekts.mariadb.testdb.nation.Regions): com.dbobjekts.mariadb.testdb.nation.RegionsJoinChain = com.dbobjekts.mariadb.testdb.nation.RegionsJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.mariadb.testdb.nation.Regions): com.dbobjekts.mariadb.testdb.nation.RegionsJoinChain = com.dbobjekts.mariadb.testdb.nation.RegionsJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.mariadb.testdb.nation.Regions): com.dbobjekts.mariadb.testdb.nation.RegionsJoinChain = com.dbobjekts.mariadb.testdb.nation.RegionsJoinChain(this)._join(table, JoinType.RIGHT)                      
+    fun leftJoin(table: Regions): RegionsJoinChain = RegionsJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Regions): RegionsJoinChain = RegionsJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: Regions): RegionsJoinChain = RegionsJoinChain(this)._join(table, JoinType.RIGHT)                      
        
 }
 
 class ContinentsJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
     
-    fun leftJoin(table: com.dbobjekts.mariadb.testdb.nation.Regions): com.dbobjekts.mariadb.testdb.nation.RegionsJoinChain = com.dbobjekts.mariadb.testdb.nation.RegionsJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.mariadb.testdb.nation.Regions): com.dbobjekts.mariadb.testdb.nation.RegionsJoinChain = com.dbobjekts.mariadb.testdb.nation.RegionsJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.mariadb.testdb.nation.Regions): com.dbobjekts.mariadb.testdb.nation.RegionsJoinChain = com.dbobjekts.mariadb.testdb.nation.RegionsJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    fun leftJoin(table: Regions): RegionsJoinChain = RegionsJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Regions): RegionsJoinChain = RegionsJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: Regions): RegionsJoinChain = RegionsJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
 }
 
 

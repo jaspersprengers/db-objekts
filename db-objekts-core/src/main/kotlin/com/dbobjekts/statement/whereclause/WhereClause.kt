@@ -7,7 +7,6 @@ import com.dbobjekts.statement.And
 import com.dbobjekts.statement.SQLOptions
 import com.dbobjekts.statement.SqlParameter
 import com.dbobjekts.util.StringUtil
-import com.dbobjekts.vendors.Vendor
 
 class WhereClause(
     private val clause: SubClause
@@ -16,16 +15,10 @@ class WhereClause(
     fun build(options: SQLOptions): String =
         if (getFlattenedConditions().isEmpty()) "" else StringUtil.concat(listOf("where", toSQL(options)))
 
-    fun toSQL(options: SQLOptions): String {
-        val sql = elements().map { clauseElement ->
-            val isNotFirst = elements().indexOf(clauseElement) > 0
-            (if (isNotFirst) clauseElement.keyword else "") + clauseElement.toSQL(options)
-        }.joinToString("")
-        return sql
-    }
+    fun toSQL(options: SQLOptions): String = SubClause.sql(clause, options)
 
     fun getParameters(): List<AnySqlParameter> {
-        val flattenedConditions = getFlattenedConditions().filter { validateCondition(it).values != null }
+        val flattenedConditions = getFlattenedConditions().filter { validateCondition(it).valueOrColumn.values != null }
         val params: List<AnySqlParameter> = flattenedConditions.flatMap { SqlParameter.fromWhereClauseCondition(it) }
         return params.mapIndexed { index, sqlParameter -> sqlParameter.copy(oneBasedPosition = index + 1) }
     }

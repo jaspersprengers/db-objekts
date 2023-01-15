@@ -1,17 +1,19 @@
 package com.dbobjekts.testdb.acme.library
 
-import com.dbobjekts.metadata.Table
+import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.DateColumn
+import com.dbobjekts.metadata.column.ForeignKeyVarcharColumn
+import com.dbobjekts.metadata.column.SequenceKeyLongColumn
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
-
 
 /**           
  * Auto-generated metadata object for db table LIBRARY.ITEM.
@@ -27,41 +29,41 @@ object Item:Table<ItemRow>("ITEM"), HasUpdateBuilder<ItemUpdateBuilder, ItemInse
     /**
      * Represents db column LIBRARY.ITEM.ID
      */
-    val id = com.dbobjekts.metadata.column.SequenceKeyLongColumn(this, "ID", "ITEM_SEQ")
+    val id = SequenceKeyLongColumn(this, "ID", "ITEM_SEQ")
     /**
      * Represents db column LIBRARY.ITEM.ISBN
      *
      * Foreign key to LIBRARY.BOOK.ISBN
      */
-    val isbn = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "ISBN", Book.isbn)
+    val isbn = ForeignKeyVarcharColumn(this, "ISBN", Book.isbn)
     /**
      * Represents db column LIBRARY.ITEM.DATE_ACQUIRED
      */
-    val dateAcquired = com.dbobjekts.metadata.column.DateColumn(this, "DATE_ACQUIRED")
+    val dateAcquired = DateColumn(this, "DATE_ACQUIRED")
     override val columns: List<AnyColumn> = listOf(id,isbn,dateAcquired)
     override fun toValue(values: List<Any?>) = ItemRow(values[0] as Long,values[1] as String,values[2] as java.time.LocalDate)
     override fun metadata(): WriteQueryAccessors<ItemUpdateBuilder, ItemInsertBuilder> = WriteQueryAccessors(ItemUpdateBuilder(), ItemInsertBuilder())
 
-    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this)._join(table, JoinType.RIGHT)                      
+    fun leftJoin(table: Book): BookJoinChain = BookJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Book): BookJoinChain = BookJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: Book): BookJoinChain = BookJoinChain(this)._join(table, JoinType.RIGHT)                      
        
 
-    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Loan): com.dbobjekts.testdb.acme.library.LoanJoinChain = com.dbobjekts.testdb.acme.library.LoanJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Loan): com.dbobjekts.testdb.acme.library.LoanJoinChain = com.dbobjekts.testdb.acme.library.LoanJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Loan): com.dbobjekts.testdb.acme.library.LoanJoinChain = com.dbobjekts.testdb.acme.library.LoanJoinChain(this)._join(table, JoinType.RIGHT)                      
+    fun leftJoin(table: Loan): LoanJoinChain = LoanJoinChain(this)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Loan): LoanJoinChain = LoanJoinChain(this)._join(table, JoinType.INNER)
+    fun rightJoin(table: Loan): LoanJoinChain = LoanJoinChain(this)._join(table, JoinType.RIGHT)                      
        
 }
 
 class ItemJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
     
-    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Book): com.dbobjekts.testdb.acme.library.BookJoinChain = com.dbobjekts.testdb.acme.library.BookJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    fun leftJoin(table: Book): BookJoinChain = BookJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Book): BookJoinChain = BookJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: Book): BookJoinChain = BookJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
     
-    fun leftJoin(table: com.dbobjekts.testdb.acme.library.Loan): com.dbobjekts.testdb.acme.library.LoanJoinChain = com.dbobjekts.testdb.acme.library.LoanJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: com.dbobjekts.testdb.acme.library.Loan): com.dbobjekts.testdb.acme.library.LoanJoinChain = com.dbobjekts.testdb.acme.library.LoanJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: com.dbobjekts.testdb.acme.library.Loan): com.dbobjekts.testdb.acme.library.LoanJoinChain = com.dbobjekts.testdb.acme.library.LoanJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
+    fun leftJoin(table: Loan): LoanJoinChain = LoanJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
+    fun innerJoin(table: Loan): LoanJoinChain = LoanJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
+    fun rightJoin(table: Loan): LoanJoinChain = LoanJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
 }
 
 

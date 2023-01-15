@@ -8,15 +8,14 @@ import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
 import java.math.BigDecimal
 import java.nio.file.Paths
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import javax.sql.DataSource
-import com.dbobjekts.util.HikariDataSourceFactory
-import org.testcontainers.junit.jupiter.Container
-import org.testcontainers.junit.jupiter.Testcontainers
 
 @Testcontainers
 class MysqlIntegrationTest {
@@ -32,16 +31,9 @@ class MysqlIntegrationTest {
         @BeforeAll
         fun beforeAll() {
             dataSource = container.createDataSource()
-            /*dataSource = HikariDataSourceFactory
-                .create(
-                    url = "jdbc:mysql://localhost:3306/test",
-                    username = "root",
-                    password = "test",
-                    driver = "com.mysql.cj.jdbc.Driver"
-                )*/
             tm = TransactionManager.builder()
                 .withDataSource(dataSource)
-               // .withCatalog(CatalogDefinition)
+                //.withCatalog(CatalogDefinition)
                 .build()
         }
     }
@@ -530,7 +522,7 @@ class MysqlIntegrationTest {
 
         tm { it.update(e).children(2).where(h.name.eq("curling")) }
         tm { it.deleteFrom(e.innerJoin(Hobby)).where(h.name.eq("curling")) }
-    }*/
-
+    }
+*/
 
 }

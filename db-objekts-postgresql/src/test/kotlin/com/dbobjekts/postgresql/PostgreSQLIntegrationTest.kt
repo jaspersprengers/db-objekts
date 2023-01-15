@@ -28,7 +28,7 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.TimeZone
 
-//@Testcontainers
+@Testcontainers
 class PostgreSQLIntegrationTest {
 
     companion object {
