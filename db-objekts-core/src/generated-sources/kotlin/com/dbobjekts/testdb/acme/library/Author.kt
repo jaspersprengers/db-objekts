@@ -1,15 +1,11 @@
 package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.NullableVarcharColumn
 import com.dbobjekts.metadata.column.SequenceKeyLongColumn
 import com.dbobjekts.metadata.column.VarcharColumn
-import com.dbobjekts.metadata.joins.JoinBase
-import com.dbobjekts.metadata.joins.JoinType
-import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -41,20 +37,7 @@ object Author:Table<AuthorRow>("AUTHOR"), HasUpdateBuilder<AuthorUpdateBuilder, 
     override val columns: List<AnyColumn> = listOf(id,name,bio)
     override fun toValue(values: List<Any?>) = AuthorRow(values[0] as Long,values[1] as String,values[2] as String?)
     override fun metadata(): WriteQueryAccessors<AuthorUpdateBuilder, AuthorInsertBuilder> = WriteQueryAccessors(AuthorUpdateBuilder(), AuthorInsertBuilder())
-
-    fun leftJoin(table: Book): BookJoinChain = BookJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Book): BookJoinChain = BookJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: Book): BookJoinChain = BookJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
 }
-
-class AuthorJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
-    
-    fun leftJoin(table: Book): BookJoinChain = BookJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Book): BookJoinChain = BookJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: Book): BookJoinChain = BookJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-}
-
 
 class AuthorUpdateBuilder() : UpdateBuilderBase(Author) {
     fun name(value: String): AuthorUpdateBuilder = put(Author.name, value)

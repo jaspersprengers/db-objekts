@@ -9,7 +9,7 @@ import com.dbobjekts.codegen.metadata.DBTableDefinition
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.joins.JoinBase
 import com.dbobjekts.metadata.joins.JoinType
-import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.metadata.joins.DerivedJoin
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -51,14 +51,10 @@ internal class TableSourcesBuilder(
             TableRowData::class.java,
             WriteQueryAccessors::class.java,
             HasUpdateBuilder::class.java,
-            JoinBase::class.java,
-            JoinType::class.java,
-            TableJoinChain::class.java,
             InsertBuilderBase::class.java,
             UpdateBuilderBase::class.java
         )
         importLineBuilder.add("com.dbobjekts.api.AnyColumn")
-        importLineBuilder.add("com.dbobjekts.api.AnyTable")
 
         val updateBuilderInterface = HasUpdateBuilder::class.java.simpleName
 
@@ -81,9 +77,9 @@ internal class TableSourcesBuilder(
         strBuilder.appendLine("    override val columns: List<AnyColumn> = listOf($columnNames)")
         strBuilder.appendLine(detailedSourceBuilder.sourceForToValue())
         strBuilder.appendLine(detailedSourceBuilder.sourceForMetaDataVal())
-        strBuilder.appendLine(detailedSourceBuilder.sourceForJoinMethods())
+        //strBuilder.appendLine(detailedSourceBuilder.sourceForJoinMethods())
         strBuilder.appendLine("}")
-        strBuilder.appendLine(detailedSourceBuilder.sourceForJoinChainClass())
+        //strBuilder.appendLine(detailedSourceBuilder.sourceForJoinChainClass())
         strBuilder.appendLine(detailedSourceBuilder.sourceForBuilderClasses())
         strBuilder.appendLine(detailedSourceBuilder.sourceForRowDataClass())
         return strBuilder.toString()

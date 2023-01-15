@@ -1,7 +1,6 @@
 package com.dbobjekts.mariadb.testdb.nation
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.AutoKeyLongColumn
@@ -10,9 +9,6 @@ import com.dbobjekts.metadata.column.ForeignKeyLongColumn
 import com.dbobjekts.metadata.column.NullableDateColumn
 import com.dbobjekts.metadata.column.NullableVarcharColumn
 import com.dbobjekts.metadata.column.VarcharColumn
-import com.dbobjekts.metadata.joins.JoinBase
-import com.dbobjekts.metadata.joins.JoinType
-import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -62,38 +58,7 @@ object Countries:Table<CountriesRow>("countries"), HasUpdateBuilder<CountriesUpd
     override val columns: List<AnyColumn> = listOf(countryId,name,area,nationalDay,countryCode2,countryCode3,regionId)
     override fun toValue(values: List<Any?>) = CountriesRow(values[0] as Long,values[1] as String?,values[2] as java.math.BigDecimal,values[3] as java.time.LocalDate?,values[4] as String,values[5] as String,values[6] as Long)
     override fun metadata(): WriteQueryAccessors<CountriesUpdateBuilder, CountriesInsertBuilder> = WriteQueryAccessors(CountriesUpdateBuilder(), CountriesInsertBuilder())
-
-    fun leftJoin(table: Regions): RegionsJoinChain = RegionsJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Regions): RegionsJoinChain = RegionsJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: Regions): RegionsJoinChain = RegionsJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
-
-    fun leftJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
-
-    fun leftJoin(table: CountryStats): CountryStatsJoinChain = CountryStatsJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: CountryStats): CountryStatsJoinChain = CountryStatsJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: CountryStats): CountryStatsJoinChain = CountryStatsJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
 }
-
-class CountriesJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
-    
-    fun leftJoin(table: Regions): RegionsJoinChain = RegionsJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Regions): RegionsJoinChain = RegionsJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: Regions): RegionsJoinChain = RegionsJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-    
-    fun leftJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-    
-    fun leftJoin(table: CountryStats): CountryStatsJoinChain = CountryStatsJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: CountryStats): CountryStatsJoinChain = CountryStatsJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: CountryStats): CountryStatsJoinChain = CountryStatsJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-}
-
 
 class CountriesUpdateBuilder() : UpdateBuilderBase(Countries) {
     fun name(value: String?): CountriesUpdateBuilder = put(Countries.name, value)

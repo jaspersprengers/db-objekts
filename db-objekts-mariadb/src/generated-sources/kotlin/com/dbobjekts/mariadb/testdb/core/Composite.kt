@@ -1,14 +1,10 @@
 package com.dbobjekts.mariadb.testdb.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.NullableDateColumn
 import com.dbobjekts.metadata.column.VarcharColumn
-import com.dbobjekts.metadata.joins.JoinBase
-import com.dbobjekts.metadata.joins.JoinType
-import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -40,13 +36,7 @@ object Composite:Table<CompositeRow>("composite"), HasUpdateBuilder<CompositeUpd
     override val columns: List<AnyColumn> = listOf(isbn,title,published)
     override fun toValue(values: List<Any?>) = CompositeRow(values[0] as String,values[1] as String,values[2] as java.time.LocalDate?)
     override fun metadata(): WriteQueryAccessors<CompositeUpdateBuilder, CompositeInsertBuilder> = WriteQueryAccessors(CompositeUpdateBuilder(), CompositeInsertBuilder())
-
 }
-
-class CompositeJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
-    
-}
-
 
 class CompositeUpdateBuilder() : UpdateBuilderBase(Composite) {
     fun isbn(value: String): CompositeUpdateBuilder = put(Composite.isbn, value)

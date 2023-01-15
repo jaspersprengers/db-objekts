@@ -1,15 +1,11 @@
 package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.DateColumn
 import com.dbobjekts.metadata.column.ForeignKeyLongColumn
 import com.dbobjekts.metadata.column.NullableDateColumn
-import com.dbobjekts.metadata.joins.JoinBase
-import com.dbobjekts.metadata.joins.JoinType
-import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -49,29 +45,7 @@ object Loan:Table<LoanRow>("LOAN"), HasUpdateBuilder<LoanUpdateBuilder, LoanInse
     override val columns: List<AnyColumn> = listOf(itemId,memberId,dateLoaned,dateReturned)
     override fun toValue(values: List<Any?>) = LoanRow(values[0] as Long,values[1] as Long,values[2] as java.time.LocalDate,values[3] as java.time.LocalDate?)
     override fun metadata(): WriteQueryAccessors<LoanUpdateBuilder, LoanInsertBuilder> = WriteQueryAccessors(LoanUpdateBuilder(), LoanInsertBuilder())
-
-    fun leftJoin(table: Item): ItemJoinChain = ItemJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Item): ItemJoinChain = ItemJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: Item): ItemJoinChain = ItemJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
-
-    fun leftJoin(table: Member): MemberJoinChain = MemberJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Member): MemberJoinChain = MemberJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: Member): MemberJoinChain = MemberJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
 }
-
-class LoanJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
-    
-    fun leftJoin(table: Item): ItemJoinChain = ItemJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Item): ItemJoinChain = ItemJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: Item): ItemJoinChain = ItemJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-    
-    fun leftJoin(table: Member): MemberJoinChain = MemberJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Member): MemberJoinChain = MemberJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: Member): MemberJoinChain = MemberJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-}
-
 
 class LoanUpdateBuilder() : UpdateBuilderBase(Loan) {
     fun itemId(value: Long): LoanUpdateBuilder = put(Loan.itemId, value)

@@ -15,7 +15,7 @@ class WhereClause(
     fun build(options: SQLOptions): String =
         if (getFlattenedConditions().isEmpty()) "" else StringUtil.concat(listOf("where", toSQL(options)))
 
-    fun toSQL(options: SQLOptions): String = SubClause.sql(clause, options)
+    fun toSQL(options: SQLOptions): String = SubClause.toSQL(clause, options)
 
     fun getParameters(): List<AnySqlParameter> {
         val flattenedConditions = getFlattenedConditions().filter { validateCondition(it).valueOrColumn.values != null }

@@ -1,15 +1,11 @@
 package com.dbobjekts.testdb.acme.library
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.DateColumn
 import com.dbobjekts.metadata.column.ForeignKeyLongColumn
 import com.dbobjekts.metadata.column.VarcharColumn
-import com.dbobjekts.metadata.joins.JoinBase
-import com.dbobjekts.metadata.joins.JoinType
-import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -47,38 +43,7 @@ object Book:Table<BookRow>("BOOK"), HasUpdateBuilder<BookUpdateBuilder, BookInse
     override val columns: List<AnyColumn> = listOf(isbn,title,authorId,published)
     override fun toValue(values: List<Any?>) = BookRow(values[0] as String,values[1] as String,values[2] as Long,values[3] as java.time.LocalDate)
     override fun metadata(): WriteQueryAccessors<BookUpdateBuilder, BookInsertBuilder> = WriteQueryAccessors(BookUpdateBuilder(), BookInsertBuilder())
-
-    fun leftJoin(table: Author): AuthorJoinChain = AuthorJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Author): AuthorJoinChain = AuthorJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: Author): AuthorJoinChain = AuthorJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
-
-    fun leftJoin(table: BookReview): BookReviewJoinChain = BookReviewJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: BookReview): BookReviewJoinChain = BookReviewJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: BookReview): BookReviewJoinChain = BookReviewJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
-
-    fun leftJoin(table: Item): ItemJoinChain = ItemJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Item): ItemJoinChain = ItemJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: Item): ItemJoinChain = ItemJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
 }
-
-class BookJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
-    
-    fun leftJoin(table: Author): AuthorJoinChain = AuthorJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Author): AuthorJoinChain = AuthorJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: Author): AuthorJoinChain = AuthorJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-    
-    fun leftJoin(table: BookReview): BookReviewJoinChain = BookReviewJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: BookReview): BookReviewJoinChain = BookReviewJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: BookReview): BookReviewJoinChain = BookReviewJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-    
-    fun leftJoin(table: Item): ItemJoinChain = ItemJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Item): ItemJoinChain = ItemJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: Item): ItemJoinChain = ItemJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-}
-
 
 class BookUpdateBuilder() : UpdateBuilderBase(Book) {
     fun isbn(value: String): BookUpdateBuilder = put(Book.isbn, value)

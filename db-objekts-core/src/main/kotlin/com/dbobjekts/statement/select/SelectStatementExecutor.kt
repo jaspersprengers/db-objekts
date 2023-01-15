@@ -1,18 +1,16 @@
 package com.dbobjekts.statement.select
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.ResultRow
-import com.dbobjekts.statement.Semaphore
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Selectable
-import com.dbobjekts.metadata.TableOrJoin
 import com.dbobjekts.metadata.column.*
 import com.dbobjekts.metadata.joins.ManualJoinChain
-import com.dbobjekts.metadata.joins.ManualJoinChainBuilder
-import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.metadata.joins.DerivedJoin
+import com.dbobjekts.metadata.joins.JoinChain
 import com.dbobjekts.statement.ColumnInResultRow
+import com.dbobjekts.statement.Semaphore
 import com.dbobjekts.statement.SqlParameter
 import com.dbobjekts.statement.StatementBase
 import com.dbobjekts.statement.whereclause.SubClause
@@ -50,16 +48,8 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
      * ```
      * In this example, not every `employee` has a record in the `hobby` table
      */
-    fun from(joinChain: TableOrJoin): SelectStatementExecutor<T, RSB> {
-        when (val obj = joinChain) {
-            is TableJoinChain -> registerJoinChain(obj)
-            is AnyTable -> registerDrivingTable(obj)
-            else -> throw StatementBuilderException("Unsupported operation: argument must be subclass of TableJoinChain or Table")
-        }
-        return this
-    }
-
-    fun from(manualJoinChainBuilder: ManualJoinChainBuilder): SelectStatementExecutor<T, RSB> {
+    fun from(joinChain: JoinChain): SelectStatementExecutor<T, RSB> {
+        registerJoinChain(joinChain)
         return this
     }
 
@@ -208,7 +198,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         getWhereClause().getFlattenedConditions().forEach { registerTable(it.column.table) }
         val builder = SelectStatementSqlBuilder()
         builder.withWhereClause(getWhereClause())
-        builder.withJoinChain(buildJoinChain(useOuterJoins))
+        builder.withJoinChain(joinChainSQL(useOuterJoins).toSQL())
             .withOrderByClause(orderByClauses.toList())
             .withColumnsToSelect(columnsToFetch())
             .withHavingClause(havingClause?.toSQL())

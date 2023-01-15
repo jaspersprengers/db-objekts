@@ -1,14 +1,10 @@
 package com.dbobjekts.mariadb.testdb.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.NullableVarcharColumn
 import com.dbobjekts.metadata.column.VarcharColumn
-import com.dbobjekts.metadata.joins.JoinBase
-import com.dbobjekts.metadata.joins.JoinType
-import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -40,13 +36,7 @@ object CompositeForeignKey:Table<CompositeForeignKeyRow>("composite_foreign_key"
     override val columns: List<AnyColumn> = listOf(isbn,title,message)
     override fun toValue(values: List<Any?>) = CompositeForeignKeyRow(values[0] as String,values[1] as String,values[2] as String?)
     override fun metadata(): WriteQueryAccessors<CompositeForeignKeyUpdateBuilder, CompositeForeignKeyInsertBuilder> = WriteQueryAccessors(CompositeForeignKeyUpdateBuilder(), CompositeForeignKeyInsertBuilder())
-
 }
-
-class CompositeForeignKeyJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
-    
-}
-
 
 class CompositeForeignKeyUpdateBuilder() : UpdateBuilderBase(CompositeForeignKey) {
     fun isbn(value: String): CompositeForeignKeyUpdateBuilder = put(CompositeForeignKey.isbn, value)

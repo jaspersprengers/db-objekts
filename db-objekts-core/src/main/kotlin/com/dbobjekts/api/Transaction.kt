@@ -4,8 +4,9 @@ import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.metadata.TableOrJoin
-import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.metadata.joins.ManualJoinChain
+import com.dbobjekts.metadata.joins.DerivedJoin
+import com.dbobjekts.metadata.joins.JoinChain
 import com.dbobjekts.statement.Semaphore
 import com.dbobjekts.statement.customsql.CustomSQLStatementBuilder
 import com.dbobjekts.statement.delete.DeleteStatementExecutor
@@ -126,19 +127,20 @@ class Transaction(internal val connection: ConnectionAdapter) {
     /**
      * Starts a delete statement. Example:
      * ```kotlin
+     *  transaction.deleteFrom(Item.leftJoin(Loan).where(Loan.dateLoaned.gt(someDate)
+     * ```
+     * Note that joins in a delete statement are not supported by all database vendors.
+     */
+    fun deleteFrom(tableJoinChain: JoinChain): DeleteStatementExecutor =
+        DeleteStatementExecutor(semaphore, connection).withJoinChain(tableJoinChain)
+    /**
+     * Starts a delete statement with a complex join chain. Example:
+     * ```kotlin
      *  transaction.deleteFrom(Book).where(Book.isbn.eq("ISBN"))
      * ```
-     * @param a [Table] or join chain, e.g. Item.leftJoin(Loan)
-     * @param a statement to set the where clause
      */
-    fun deleteFrom(tableOrJoin: TableOrJoin): DeleteStatementExecutor {
-        val statement = DeleteStatementExecutor(semaphore, connection)
-        return when (tableOrJoin) {
-            is AnyTable -> statement.withTable(tableOrJoin)
-            is TableJoinChain -> statement.withJoinChain(tableOrJoin)
-            else -> throw StatementBuilderException("Illegal implementation of TableOrJoin provided. Must be Table or TableJoinChain")
-        }
-    }
+    fun deleteFrom(table: AnyTable): DeleteStatementExecutor =
+        DeleteStatementExecutor(semaphore, connection).withTable(table)
 
     internal fun close() {
         connection.close()

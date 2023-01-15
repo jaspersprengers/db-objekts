@@ -1,14 +1,10 @@
 package com.dbobjekts.mariadb.testdb.nation
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.LongColumn
 import com.dbobjekts.metadata.column.VarcharColumn
-import com.dbobjekts.metadata.joins.JoinBase
-import com.dbobjekts.metadata.joins.JoinType
-import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -36,13 +32,7 @@ object Vips:Table<VipsRow>("vips"), HasUpdateBuilder<VipsUpdateBuilder, VipsInse
     override val columns: List<AnyColumn> = listOf(vipId,name)
     override fun toValue(values: List<Any?>) = VipsRow(values[0] as Long,values[1] as String)
     override fun metadata(): WriteQueryAccessors<VipsUpdateBuilder, VipsInsertBuilder> = WriteQueryAccessors(VipsUpdateBuilder(), VipsInsertBuilder())
-
 }
-
-class VipsJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
-    
-}
-
 
 class VipsUpdateBuilder() : UpdateBuilderBase(Vips) {
     fun vipId(value: Long): VipsUpdateBuilder = put(Vips.vipId, value)

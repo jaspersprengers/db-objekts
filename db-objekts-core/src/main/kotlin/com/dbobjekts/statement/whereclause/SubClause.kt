@@ -2,7 +2,6 @@ package com.dbobjekts.statement.whereclause
 
 import com.dbobjekts.metadata.column.Column
 import com.dbobjekts.statement.*
-import com.dbobjekts.vendors.Vendor
 
 
 open class SubClause(
@@ -96,20 +95,18 @@ open class SubClause(
                 (if (isNotFirst) it.keyword else "") + it.toSQL(options)
             }.joinToString("")
         }
-        return "$joinType($str)"
+        return " $joinType ($str)"
     }
-
-    private val clause: SubClause = this
 
     companion object {
 
-        fun sql(clause: SubClause, options: SQLOptions): String {
+        fun toSQL(clause: SubClause, options: SQLOptions): String {
             val elements = clause.elements().toList()
             val sql = elements.mapIndexed { i, clauseElement ->
                 val keyword = if (i > 0) clauseElement.keyword else ""
                 keyword + clauseElement.toSQL(options)
             }.joinToString("")
-            return sql
+            return sql.trim()
         }
     }
 

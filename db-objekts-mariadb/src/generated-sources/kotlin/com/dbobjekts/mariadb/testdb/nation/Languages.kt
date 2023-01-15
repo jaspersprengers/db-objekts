@@ -1,14 +1,10 @@
 package com.dbobjekts.mariadb.testdb.nation
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.AutoKeyLongColumn
 import com.dbobjekts.metadata.column.VarcharColumn
-import com.dbobjekts.metadata.joins.JoinBase
-import com.dbobjekts.metadata.joins.JoinType
-import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -36,20 +32,7 @@ object Languages:Table<LanguagesRow>("languages"), HasUpdateBuilder<LanguagesUpd
     override val columns: List<AnyColumn> = listOf(languageId,language)
     override fun toValue(values: List<Any?>) = LanguagesRow(values[0] as Long,values[1] as String)
     override fun metadata(): WriteQueryAccessors<LanguagesUpdateBuilder, LanguagesInsertBuilder> = WriteQueryAccessors(LanguagesUpdateBuilder(), LanguagesInsertBuilder())
-
-    fun leftJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
 }
-
-class LanguagesJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
-    
-    fun leftJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: CountryLanguages): CountryLanguagesJoinChain = CountryLanguagesJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-}
-
 
 class LanguagesUpdateBuilder() : UpdateBuilderBase(Languages) {
     fun language(value: String): LanguagesUpdateBuilder = put(Languages.language, value)

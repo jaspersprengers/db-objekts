@@ -237,7 +237,7 @@ $insertRowMethodSource
 
         }
         return """
-class ${tableName}JoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
+class ${tableName}JoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : DerivedJoin(table, joins) {
     ${allMethods.joinToString("\n    ")}
 }
 """

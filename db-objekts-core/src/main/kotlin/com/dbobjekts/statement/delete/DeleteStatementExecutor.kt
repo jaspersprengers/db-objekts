@@ -2,9 +2,10 @@ package com.dbobjekts.statement.delete
 
 import com.dbobjekts.api.AnyTable
 import com.dbobjekts.statement.Semaphore
-import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
-import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.metadata.joins.ManualJoinChain
+import com.dbobjekts.metadata.joins.DerivedJoin
+import com.dbobjekts.metadata.joins.JoinChain
 import com.dbobjekts.statement.SQLOptions
 import com.dbobjekts.statement.StatementBase
 import com.dbobjekts.statement.whereclause.EmptyWhereClause
@@ -27,7 +28,7 @@ class DeleteStatementExecutor(
         return this
     }
 
-    internal fun withJoinChain(tableJoinChain: TableJoinChain): DeleteStatementExecutor {
+    internal fun withJoinChain(tableJoinChain: JoinChain): DeleteStatementExecutor {
         registerJoinChain(tableJoinChain)
         return this
     }
@@ -57,13 +58,10 @@ class DeleteStatementExecutor(
         try {
             val wc = getWhereClause()
             wc.getFlattenedConditions().forEach { registerTable(it.column.table) }
-            val joinChain = buildJoinChain()
             val supportsJoins = connection.vendorSpecificProperties.supportsJoinsInUpdateAndDelete()
-            if (joinChain.hasJoins() && !supportsJoins) {
-                throw StatementBuilderException("Your database does not support DELETE statements with JOIN syntax.")
-            }
-            val alias = if (supportsJoins) "${joinChain.table.alias()}.*" else ""
-            val sql = StringUtil.concat(listOf("delete", alias, "from", joinChain.toSQL(), wc.build(SQLOptions(includeAlias = true))))
+            val chain = joinChainSQL()
+            val alias = if (supportsJoins) "${chain.table.alias()}.*" else ""
+            val sql = StringUtil.concat(listOf("delete", alias, "from", chain.toSQL(), wc.build(SQLOptions(includeAlias = true))))
             val params = wc.getParameters()
             return connection.prepareAndExecuteDeleteStatement(sql, params).also {
                 connection.statementLog.logResult(it)

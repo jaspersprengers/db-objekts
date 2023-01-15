@@ -1,21 +1,16 @@
 package com.dbobjekts.testdb.acme.hr
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.AutoKeyLongColumn
 import com.dbobjekts.metadata.column.ForeignKeyLongColumn
 import com.dbobjekts.metadata.column.VarcharColumn
-import com.dbobjekts.metadata.joins.JoinBase
-import com.dbobjekts.metadata.joins.JoinType
-import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
 import com.dbobjekts.testdb.acme.core.Employee
-import com.dbobjekts.testdb.acme.core.EmployeeJoinChain
 
 /**           
  * Auto-generated metadata object for db table HR.CERTIFICATE.
@@ -45,20 +40,7 @@ object Certificate:Table<CertificateRow>("CERTIFICATE"), HasUpdateBuilder<Certif
     override val columns: List<AnyColumn> = listOf(id,name,employeeId)
     override fun toValue(values: List<Any?>) = CertificateRow(values[0] as Long,values[1] as String,values[2] as Long)
     override fun metadata(): WriteQueryAccessors<CertificateUpdateBuilder, CertificateInsertBuilder> = WriteQueryAccessors(CertificateUpdateBuilder(), CertificateInsertBuilder())
-
-    fun leftJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
 }
-
-class CertificateJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
-    
-    fun leftJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-}
-
 
 class CertificateUpdateBuilder() : UpdateBuilderBase(Certificate) {
     fun name(value: String): CertificateUpdateBuilder = put(Certificate.name, value)

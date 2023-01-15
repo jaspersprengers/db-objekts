@@ -5,42 +5,40 @@ import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Catalog
+import com.dbobjekts.metadata.joins.JoinChain
+import com.dbobjekts.metadata.joins.ManualJoinChain
 
-import com.dbobjekts.metadata.joins.TableJoinChain
-import com.dbobjekts.metadata.joins.TableJoinChainBuilder
+import com.dbobjekts.metadata.joins.DerivedJoin
+import com.dbobjekts.metadata.joins.DerivedJoinChainBuilder
 import com.dbobjekts.statement.whereclause.EmptyWhereClause
 import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.statement.whereclause.WhereClause
 import com.dbobjekts.util.StatementLogger
 
-abstract class StatementBase<W>(protected val semaphore: Semaphore,
-                                internal val connection: ConnectionAdapter) {
+abstract class StatementBase<W>(
+    protected val semaphore: Semaphore,
+    internal val connection: ConnectionAdapter
+) {
 
     internal open val catalog: Catalog = connection.catalog()
     internal val statementLog: StatementLogger = connection.statementLog
     internal var tables: MutableList<AnyTable> = mutableListOf<AnyTable>()
     internal abstract val statementType: String
 
-    private var _drivingTable: AnyTable? = null
-    private var _joinChain: TableJoinChain? = null
+    private var _joinChain: JoinChain? = null
     protected lateinit var _whereClause: WhereClause
 
-    internal fun registerJoinChain(joinChain: TableJoinChain) {
+    internal fun registerJoinChain(joinChain: JoinChain) {
         _joinChain = joinChain
     }
 
-    internal fun registerDrivingTable(table: AnyTable) {
-        _drivingTable = table
-    }
-
-    internal fun buildJoinChain(useOuterJoins: Boolean = false): TableJoinChain =
-        _joinChain ?: TableJoinChainBuilder(
-            catalog = catalog,
-            drivingTable = _drivingTable ?: tables.firstOrNull() ?: throw StatementBuilderException("Cannot build query: no tables to select"),
-            tables = tables.toList(),
-            useOuterJoins = useOuterJoins
-        ).build()
-
+    internal fun joinChainSQL(useOuterJoins: Boolean = false): JoinChain =  _joinChain ?: DerivedJoinChainBuilder(
+        catalog = catalog,
+        drivingTable = tables.firstOrNull()
+            ?: throw StatementBuilderException("Cannot build query: no tables to select"),
+        tables = tables.toList(),
+        useOuterJoins = useOuterJoins
+    ).build()
 
     internal fun registerTable(table: AnyTable) {
         if (!tables.contains(catalog.assertContainsTable(table)))

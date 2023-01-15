@@ -1,7 +1,6 @@
 package com.dbobjekts.mariadb.testdb.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.AutoKeyLongColumn
@@ -17,9 +16,6 @@ import com.dbobjekts.metadata.column.NullableLongColumn
 import com.dbobjekts.metadata.column.NullableTimeColumn
 import com.dbobjekts.metadata.column.NullableVarcharColumn
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
-import com.dbobjekts.metadata.joins.JoinBase
-import com.dbobjekts.metadata.joins.JoinType
-import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -171,13 +167,7 @@ object AllTypesNil:Table<AllTypesNilRow>("ALL_TYPES_NIL"), HasUpdateBuilder<AllT
     override val columns: List<AnyColumn> = listOf(id,decimalCol,decCol,numericCol,fixedCol,int1Col,tinyintCol,smallintCol,int2Col,mediumintCol,int3Col,intCol,int4Col,bigintCol,int8Col,floatCol,doubleCol,doublePrecisionCol,bitCol,binaryCol,blobCol,charCol,charByteCol,enumCol,jsonCol,textCol,varcharCol,setCol,dateCol,timeCol,datetimeCol,timestampCol,yearCol)
     override fun toValue(values: List<Any?>) = AllTypesNilRow(values[0] as Long,values[1] as java.math.BigDecimal?,values[2] as java.math.BigDecimal?,values[3] as java.math.BigDecimal?,values[4] as java.math.BigDecimal?,values[5] as Boolean,values[6] as Boolean,values[7] as Int?,values[8] as Int?,values[9] as Int?,values[10] as Int?,values[11] as Long?,values[12] as Long?,values[13] as Long?,values[14] as Long?,values[15] as Float?,values[16] as Double?,values[17] as Double?,values[18] as Boolean?,values[19] as ByteArray?,values[20] as ByteArray?,values[21] as String?,values[22] as ByteArray?,values[23] as String?,values[24] as String?,values[25] as String?,values[26] as String?,values[27] as String?,values[28] as java.time.LocalDate?,values[29] as java.time.LocalTime?,values[30] as java.time.LocalDateTime?,values[31] as java.time.LocalDateTime?,values[32] as Int?)
     override fun metadata(): WriteQueryAccessors<AllTypesNilUpdateBuilder, AllTypesNilInsertBuilder> = WriteQueryAccessors(AllTypesNilUpdateBuilder(), AllTypesNilInsertBuilder())
-
 }
-
-class AllTypesNilJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
-    
-}
-
 
 class AllTypesNilUpdateBuilder() : UpdateBuilderBase(AllTypesNil) {
     fun decimalCol(value: java.math.BigDecimal?): AllTypesNilUpdateBuilder = put(AllTypesNil.decimalCol, value)

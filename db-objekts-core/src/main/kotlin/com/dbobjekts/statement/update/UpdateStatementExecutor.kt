@@ -67,13 +67,7 @@ class UpdateStatementExecutor(
         getWhereClause().getFlattenedConditions().forEach { registerTable(it.column.table) }
         val columns = columnsForUpdate.params.map { it.column.aliasDotName() + " = ?" }.joinToString(",")
         val clause = getWhereClause().build(SQLOptions(includeAlias = true))
-
-        val joinChain = buildJoinChain()
-        val supportsJoins = connection.vendorSpecificProperties.supportsJoinsInUpdateAndDelete()
-        if (joinChain.hasJoins() && !supportsJoins) {
-            throw StatementBuilderException("Your database does not support UPDATE statements with JOIN syntax.")
-        }
-        return StringUtil.concat(listOf("update", joinChain.toSQL(), "set", columns, clause))
+        return StringUtil.concat(listOf("update", joinChainSQL(false).toSQL(), "set", columns, clause))
     }
 
     internal fun getAllParameters(): List<AnySqlParameter> {

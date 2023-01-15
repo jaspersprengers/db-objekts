@@ -1,13 +1,9 @@
 package com.dbobjekts.mariadb.testdb.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.ForeignKeyLongColumn
-import com.dbobjekts.metadata.joins.JoinBase
-import com.dbobjekts.metadata.joins.JoinType
-import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -39,29 +35,7 @@ object EmployeeDepartment:Table<EmployeeDepartmentRow>("EMPLOYEE_DEPARTMENT"), H
     override val columns: List<AnyColumn> = listOf(employeeId,departmentId)
     override fun toValue(values: List<Any?>) = EmployeeDepartmentRow(values[0] as Long,values[1] as Long)
     override fun metadata(): WriteQueryAccessors<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder> = WriteQueryAccessors(EmployeeDepartmentUpdateBuilder(), EmployeeDepartmentInsertBuilder())
-
-    fun leftJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
-
-    fun leftJoin(table: Department): DepartmentJoinChain = DepartmentJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Department): DepartmentJoinChain = DepartmentJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: Department): DepartmentJoinChain = DepartmentJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
 }
-
-class EmployeeDepartmentJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
-    
-    fun leftJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: Employee): EmployeeJoinChain = EmployeeJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-    
-    fun leftJoin(table: Department): DepartmentJoinChain = DepartmentJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Department): DepartmentJoinChain = DepartmentJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: Department): DepartmentJoinChain = DepartmentJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-}
-
 
 class EmployeeDepartmentUpdateBuilder() : UpdateBuilderBase(EmployeeDepartment) {
     fun employeeId(value: Long): EmployeeDepartmentUpdateBuilder = put(EmployeeDepartment.employeeId, value)

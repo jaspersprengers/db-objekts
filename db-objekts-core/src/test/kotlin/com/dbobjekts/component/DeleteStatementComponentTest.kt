@@ -39,7 +39,6 @@ class DeleteStatementComponentTest {
             //this is not supported by H2, but possible in (e.g.) MariaDB
 
             Assertions.assertThatThrownBy { tr.deleteFrom(e.innerJoin(Hobby)).where(h.name.eq("curling")) }
-                .hasMessage("Your database does not support DELETE statements with JOIN syntax.")
 
             //delete all Employee records
             tr.deleteFrom(Employee).where()

@@ -1,7 +1,7 @@
 package com.dbobjekts.component
 
-import com.dbobjekts.metadata.joins.ManualJoinChain
-import com.dbobjekts.metadata.joins.ManualJoinChainBuilder
+import com.dbobjekts.api.Tuple6
+import com.dbobjekts.fixture.columns.AddressType
 import com.dbobjekts.statement.select.SelectStatementExecutor
 import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions
@@ -12,16 +12,18 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import com.dbobjekts.testdb.acme.core.*
 import com.dbobjekts.testdb.acme.hr.Certificate
+import com.dbobjekts.testdb.acme.Aliases.e
+import com.dbobjekts.testdb.acme.Aliases.a
+import com.dbobjekts.testdb.acme.Aliases.h
+import com.dbobjekts.testdb.acme.Aliases.ea
+import com.dbobjekts.testdb.acme.Aliases.d
+import com.dbobjekts.testdb.acme.Aliases.ed
+import com.dbobjekts.testdb.acme.Aliases.c1
 
 class SelectStatementComponentTest {
 
 
     companion object {
-
-        val e = Employee
-        val a = Address
-        val h = Hobby
-
 
         val tm = AcmeDB.transactionManager
 
@@ -171,11 +173,35 @@ class SelectStatementComponentTest {
 
     @Test
     fun `join all tables in outer join`() {
-        AcmeDB.newTransaction { tr ->
-            tr.select(Employee, Address.street, EmployeeAddress.kind, Department.name, Hobby.name.nullable, Certificate.name.nullable)
-                .useOuterJoins().asList().forEach { (emp, street, addType, dept, hobby, cert) ->
-                    println("${emp.id}\t${emp.name}\t${emp.salary}\t${emp.married}\t${emp.children}\t${emp.dateOfBirth}\t$hobby\t$street\t$addType\t$dept\t$cert")
-                }
+        tm { tr ->
+            val derivedJoin: Tuple6<EmployeeRow, String, AddressType, String, String?, String?> =
+                tr.select(Employee, Address.street, EmployeeAddress.kind, Department.name, Hobby.name.nullable, Certificate.name.nullable)
+                .from(Employee
+                    .leftJoin(ea)
+                    .leftJoin(a)
+                    .leftJoin(h)
+                    .leftJoin(ed)
+                    .leftJoin(d)
+                    .leftJoin(Certificate))
+                .orderAsc(Employee.name).first()
+            assertThat(derivedJoin.v1.name).isEqualTo("Alice")
+
+            val manualJoin: Tuple6<EmployeeRow, String, AddressType, String, String?, String?> =
+                tr.select(Employee, Address.street, EmployeeAddress.kind, Department.name, Hobby.name.nullable, Certificate.name.nullable)
+                    .from(Employee
+                        .leftJoin(ea).on(ea.employeeId.eq(e.id))
+                        .leftJoin(a).on(ea.addressId.eq(a.id))
+                        .leftJoin(h).on(e.hobbyId.eq(h.id))
+                        .leftJoin(ed).on(e.id.eq(ed.employeeId))
+                        .leftJoin(d).on(ed.departmentId.eq(d.id))
+                        .leftJoin(c1).on(c1.employeeId.eq(e.id)))
+                    .orderAsc(Employee.name).first()
+            assertThat(manualJoin.v1.name).isEqualTo("Alice")
+
+            val autoJoin = tr.select(Employee, Address.street, EmployeeAddress.kind, Department.name, Hobby.name.nullable, Certificate.name.nullable)
+                .orderAsc(Employee.name)
+                .useOuterJoins().first()
+            assertThat(autoJoin.v1.name).isEqualTo("Alice")
         }
     }
 

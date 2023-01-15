@@ -4,8 +4,8 @@ import com.dbobjekts.api.*
 import com.dbobjekts.api.exception.DBObjektsException
 import com.dbobjekts.metadata.column.IsForeignKey
 import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.metadata.joins.ManualJoinChain
-import com.dbobjekts.metadata.joins.ManualJoinChainBuilder
+import com.dbobjekts.metadata.joins.DerivedJoin
+import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.util.Errors
 import com.dbobjekts.util.ValidateDBObjectName
 
@@ -15,7 +15,7 @@ import com.dbobjekts.util.ValidateDBObjectName
  */
 abstract class Table<I>(
     internal val dbName: String
-) : TableOrJoin, Selectable<I> {
+) : Selectable<I> {
 
     override abstract val columns: List<AnyColumn>
 
@@ -28,9 +28,9 @@ abstract class Table<I>(
             throw DBObjektsException("Not a valid table name: " + tableName)
     }
 
-    fun leftJoin(table: AnyTable): ManualJoinChain {
-        return ManualJoinChainBuilder(this).leftJoin(table)
-    }
+    fun leftJoin(table: AnyTable): DerivedJoin = DerivedJoin(this).join(table, JoinType.LEFT)
+    fun innerJoin(table: AnyTable): DerivedJoin = DerivedJoin(this).join(table, JoinType.INNER)
+    fun rightJoin(table: AnyTable): DerivedJoin = DerivedJoin(this).join(table, JoinType.RIGHT)
 
     internal val foreignKeys: List<IsForeignKey<*, *>> by lazy {
         columns.filter { it is IsForeignKey<*, *> }.map { it as IsForeignKey<*, *> }

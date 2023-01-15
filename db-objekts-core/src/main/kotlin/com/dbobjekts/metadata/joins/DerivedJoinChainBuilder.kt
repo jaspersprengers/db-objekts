@@ -5,10 +5,9 @@ import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.IsForeignKey
-import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.util.StringUtil
 
-class TableJoinChainBuilder(
+class DerivedJoinChainBuilder(
     val catalog: Catalog,
     val drivingTable: AnyTable,
     val tables: List<AnyTable>,
@@ -19,7 +18,7 @@ class TableJoinChainBuilder(
         require(tables.any { it == drivingTable }, { "Table ${drivingTable.tableName} should be part of List $tables" })
     }
 
-    fun build(): TableJoinChain {
+    fun build(): DerivedJoin {
 
         fun extractJoins(tablePairs: List<Pair<AnyTable, AnyTable>>): Pair<List<TablePair>, List<TablePair>> =
             tablePairs.map { createPairWithOptionalJoin(it) }.partition { it.isJoined() }
@@ -33,7 +32,7 @@ class TableJoinChainBuilder(
         if (tables.isEmpty())
             throw StatementBuilderException("Need at least one table")
         if (tables.size == 1)
-            return TableJoinChain(tables[0], listOf())
+            return DerivedJoin(tables[0])
 
         val joinProperties: JoinProperties = createProperties(tables)
         val manyToManyTables =
@@ -75,7 +74,7 @@ class TableJoinChainBuilder(
         }.isNotEmpty()
 
 
-    internal fun buildChain(props: JoinProperties): TableJoinChain {
+    internal fun buildChain(props: JoinProperties): DerivedJoin {
         require(props.tables.isNotEmpty(), { "No tables to build join query" })
 
         fun sort(sorted: List<AnyTable>, toSort: List<AnyTable>): List<AnyTable> {
@@ -95,8 +94,8 @@ class TableJoinChainBuilder(
         val unUsed = tablesToJoin.filterNot { sortedSet.contains(it) }
         if (unUsed.isNotEmpty())
             throw StatementBuilderException("The following table(s) could not be joined: ${StringUtil.joinBy(unUsed, { it.dbName })}")
-        var chain = TableJoinChain(sortedTables.first(), listOf())
-        sortedTables.drop(1).forEach { chain = if (useOuterJoins) chain._join(it, JoinType.LEFT) else chain._join(it, JoinType.INNER) }
+        var chain = DerivedJoin(sortedTables.first())
+        sortedTables.drop(1).forEach { chain = if (useOuterJoins) chain.join(it, JoinType.LEFT) else chain.join(it, JoinType.INNER) }
         return chain
     }
 

@@ -1,27 +1,14 @@
 package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.metadata.column.DateColumn
-import com.dbobjekts.metadata.column.DoubleColumn
-import com.dbobjekts.metadata.column.NullableBooleanColumn
-import com.dbobjekts.metadata.column.NullableIntegerColumn
-import com.dbobjekts.metadata.column.OptionalForeignKeyVarcharColumn
-import com.dbobjekts.metadata.column.SequenceKeyLongColumn
-import com.dbobjekts.metadata.column.VarcharColumn
-import com.dbobjekts.metadata.joins.JoinBase
-import com.dbobjekts.metadata.joins.JoinType
-import com.dbobjekts.metadata.joins.TableJoinChain
+import com.dbobjekts.metadata.column.*
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-import com.dbobjekts.testdb.acme.hr.Certificate
-import com.dbobjekts.testdb.acme.hr.CertificateJoinChain
 import com.dbobjekts.testdb.acme.hr.Hobby
-import com.dbobjekts.testdb.acme.hr.HobbyJoinChain
 
 /**           
  * Auto-generated metadata object for db table CORE.EMPLOYEE.
@@ -67,47 +54,7 @@ object Employee:Table<EmployeeRow>("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateB
     override val columns: List<AnyColumn> = listOf(id,name,salary,married,dateOfBirth,children,hobbyId)
     override fun toValue(values: List<Any?>) = EmployeeRow(values[0] as Long,values[1] as String,values[2] as Double,values[3] as Boolean?,values[4] as java.time.LocalDate,values[5] as Int?,values[6] as String?)
     override fun metadata(): WriteQueryAccessors<EmployeeUpdateBuilder, EmployeeInsertBuilder> = WriteQueryAccessors(EmployeeUpdateBuilder(), EmployeeInsertBuilder())
-
-    fun leftJoin(table: Hobby): HobbyJoinChain = HobbyJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Hobby): HobbyJoinChain = HobbyJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: Hobby): HobbyJoinChain = HobbyJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
-
-    fun leftJoin(table: EmployeeAddress): EmployeeAddressJoinChain = EmployeeAddressJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: EmployeeAddress): EmployeeAddressJoinChain = EmployeeAddressJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: EmployeeAddress): EmployeeAddressJoinChain = EmployeeAddressJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
-
-    fun leftJoin(table: EmployeeDepartment): EmployeeDepartmentJoinChain = EmployeeDepartmentJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: EmployeeDepartment): EmployeeDepartmentJoinChain = EmployeeDepartmentJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: EmployeeDepartment): EmployeeDepartmentJoinChain = EmployeeDepartmentJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
-
-    fun leftJoin(table: Certificate): CertificateJoinChain = CertificateJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Certificate): CertificateJoinChain = CertificateJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: Certificate): CertificateJoinChain = CertificateJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
 }
-
-class EmployeeJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
-    
-    fun leftJoin(table: Hobby): HobbyJoinChain = HobbyJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Hobby): HobbyJoinChain = HobbyJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: Hobby): HobbyJoinChain = HobbyJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-    
-    fun leftJoin(table: EmployeeAddress): EmployeeAddressJoinChain = EmployeeAddressJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: EmployeeAddress): EmployeeAddressJoinChain = EmployeeAddressJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: EmployeeAddress): EmployeeAddressJoinChain = EmployeeAddressJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-    
-    fun leftJoin(table: EmployeeDepartment): EmployeeDepartmentJoinChain = EmployeeDepartmentJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: EmployeeDepartment): EmployeeDepartmentJoinChain = EmployeeDepartmentJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: EmployeeDepartment): EmployeeDepartmentJoinChain = EmployeeDepartmentJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-    
-    fun leftJoin(table: Certificate): CertificateJoinChain = CertificateJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Certificate): CertificateJoinChain = CertificateJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: Certificate): CertificateJoinChain = CertificateJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-}
-
 
 class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
     fun name(value: String): EmployeeUpdateBuilder = put(Employee.name, value)

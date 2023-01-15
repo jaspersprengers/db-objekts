@@ -1,7 +1,6 @@
 package com.dbobjekts.statement.select
 
 import com.dbobjekts.api.exception.StatementBuilderException
-import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.ColumnInResultRow
 import com.dbobjekts.statement.SQLOptions
 import com.dbobjekts.statement.whereclause.WhereClause
@@ -16,9 +15,9 @@ class SelectStatementSqlBuilder {
     var limitFunction: ((Int) -> String)? = null
     var havingCondition: String? = null
 
-    private lateinit var joinChain: TableJoinChain
+    private lateinit var joinChain: String
 
-    fun withJoinChain(joinChain: TableJoinChain): SelectStatementSqlBuilder {
+    fun withJoinChain(joinChain: String): SelectStatementSqlBuilder {
         this.joinChain = joinChain
         return this
     }
@@ -73,7 +72,7 @@ class SelectStatementSqlBuilder {
                 "select",
                 columnsToSelect(),
                 "from",
-                joinChain.toSQL(),
+                joinChain,
                 whereClauseSql(),
                 groupBySql(),
                 havingCondition ?: "",

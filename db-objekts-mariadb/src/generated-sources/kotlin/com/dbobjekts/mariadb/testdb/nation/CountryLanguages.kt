@@ -1,14 +1,10 @@
 package com.dbobjekts.mariadb.testdb.nation
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.ForeignKeyLongColumn
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
-import com.dbobjekts.metadata.joins.JoinBase
-import com.dbobjekts.metadata.joins.JoinType
-import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -44,29 +40,7 @@ object CountryLanguages:Table<CountryLanguagesRow>("country_languages"), HasUpda
     override val columns: List<AnyColumn> = listOf(countryId,languageId,official)
     override fun toValue(values: List<Any?>) = CountryLanguagesRow(values[0] as Long,values[1] as Long,values[2] as Boolean)
     override fun metadata(): WriteQueryAccessors<CountryLanguagesUpdateBuilder, CountryLanguagesInsertBuilder> = WriteQueryAccessors(CountryLanguagesUpdateBuilder(), CountryLanguagesInsertBuilder())
-
-    fun leftJoin(table: Countries): CountriesJoinChain = CountriesJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Countries): CountriesJoinChain = CountriesJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: Countries): CountriesJoinChain = CountriesJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
-
-    fun leftJoin(table: Languages): LanguagesJoinChain = LanguagesJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Languages): LanguagesJoinChain = LanguagesJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: Languages): LanguagesJoinChain = LanguagesJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
 }
-
-class CountryLanguagesJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
-    
-    fun leftJoin(table: Countries): CountriesJoinChain = CountriesJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Countries): CountriesJoinChain = CountriesJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: Countries): CountriesJoinChain = CountriesJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-    
-    fun leftJoin(table: Languages): LanguagesJoinChain = LanguagesJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Languages): LanguagesJoinChain = LanguagesJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: Languages): LanguagesJoinChain = LanguagesJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-}
-
 
 class CountryLanguagesUpdateBuilder() : UpdateBuilderBase(CountryLanguages) {
     fun countryId(value: Long): CountryLanguagesUpdateBuilder = put(CountryLanguages.countryId, value)

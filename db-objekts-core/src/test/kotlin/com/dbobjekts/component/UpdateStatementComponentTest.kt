@@ -1,5 +1,6 @@
 package com.dbobjekts.component
 
+import com.dbobjekts.metadata.joins.ManualJoinChain
 import com.dbobjekts.testdb.acme.core.Employee
 import com.dbobjekts.testdb.acme.core.EmployeeRow
 import com.dbobjekts.testdb.acme.hr.Hobby
@@ -29,11 +30,18 @@ class UpdateStatementComponentTest {
     }
 
     @Test
-    fun `composite foreign keys are not supported`(){
+    fun `composite foreign keys through manual join`() {
         tm {
-            it.insert(Composite).mandatoryColumns("ISBN", "The Shining").published(LocalDate.now()).execute()
+            val co = Composite
+            val cof = CompositeForeignKey
+            val now = LocalDate.now()
+            it.insert(Composite).mandatoryColumns("ISBN", "The Shining").published(now).execute()
             it.insert(CompositeForeignKey).mandatoryColumns("ISBN", "The Shining").message("Hello world!").execute()
-            assertThatThrownBy { it.select(Composite.published, CompositeForeignKey.message).where(Composite.isbn.eq("ISBN")).first() }
+            val (dt, message) = it.select(Composite.published, CompositeForeignKey.message)
+                .from(co.innerJoin(cof).on(co.isbn.eq(cof.isbn).and(cof.title).eq(co.title)))
+                .where(Composite.isbn.eq("ISBN")).first()
+            assertThat(dt).isEqualTo(now)
+            assertThat(message).isEqualTo("Hello world!")
         }
     }
 

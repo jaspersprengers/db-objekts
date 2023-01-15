@@ -1,16 +1,12 @@
 package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.ForeignKeyVarcharColumn
 import com.dbobjekts.metadata.column.NullableVarcharColumn
 import com.dbobjekts.metadata.column.SequenceKeyLongColumn
 import com.dbobjekts.metadata.column.VarcharColumn
-import com.dbobjekts.metadata.joins.JoinBase
-import com.dbobjekts.metadata.joins.JoinType
-import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -48,29 +44,7 @@ object Address:Table<AddressRow>("ADDRESS"), HasUpdateBuilder<AddressUpdateBuild
     override val columns: List<AnyColumn> = listOf(id,street,postcode,countryId)
     override fun toValue(values: List<Any?>) = AddressRow(values[0] as Long,values[1] as String,values[2] as String?,values[3] as String)
     override fun metadata(): WriteQueryAccessors<AddressUpdateBuilder, AddressInsertBuilder> = WriteQueryAccessors(AddressUpdateBuilder(), AddressInsertBuilder())
-
-    fun leftJoin(table: Country): CountryJoinChain = CountryJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Country): CountryJoinChain = CountryJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: Country): CountryJoinChain = CountryJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
-
-    fun leftJoin(table: EmployeeAddress): EmployeeAddressJoinChain = EmployeeAddressJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: EmployeeAddress): EmployeeAddressJoinChain = EmployeeAddressJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: EmployeeAddress): EmployeeAddressJoinChain = EmployeeAddressJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
 }
-
-class AddressJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
-    
-    fun leftJoin(table: Country): CountryJoinChain = CountryJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Country): CountryJoinChain = CountryJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: Country): CountryJoinChain = CountryJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-    
-    fun leftJoin(table: EmployeeAddress): EmployeeAddressJoinChain = EmployeeAddressJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: EmployeeAddress): EmployeeAddressJoinChain = EmployeeAddressJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: EmployeeAddress): EmployeeAddressJoinChain = EmployeeAddressJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-}
-
 
 class AddressUpdateBuilder() : UpdateBuilderBase(Address) {
     fun street(value: String): AddressUpdateBuilder = put(Address.street, value)

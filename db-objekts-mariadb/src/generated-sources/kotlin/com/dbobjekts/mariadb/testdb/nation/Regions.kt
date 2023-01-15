@@ -1,15 +1,11 @@
 package com.dbobjekts.mariadb.testdb.nation
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.AutoKeyLongColumn
 import com.dbobjekts.metadata.column.ForeignKeyLongColumn
 import com.dbobjekts.metadata.column.VarcharColumn
-import com.dbobjekts.metadata.joins.JoinBase
-import com.dbobjekts.metadata.joins.JoinType
-import com.dbobjekts.metadata.joins.TableJoinChain
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -43,29 +39,7 @@ object Regions:Table<RegionsRow>("regions"), HasUpdateBuilder<RegionsUpdateBuild
     override val columns: List<AnyColumn> = listOf(regionId,name,continentId)
     override fun toValue(values: List<Any?>) = RegionsRow(values[0] as Long,values[1] as String,values[2] as Long)
     override fun metadata(): WriteQueryAccessors<RegionsUpdateBuilder, RegionsInsertBuilder> = WriteQueryAccessors(RegionsUpdateBuilder(), RegionsInsertBuilder())
-
-    fun leftJoin(table: Continents): ContinentsJoinChain = ContinentsJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Continents): ContinentsJoinChain = ContinentsJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: Continents): ContinentsJoinChain = ContinentsJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
-
-    fun leftJoin(table: Countries): CountriesJoinChain = CountriesJoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Countries): CountriesJoinChain = CountriesJoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: Countries): CountriesJoinChain = CountriesJoinChain(this)._join(table, JoinType.RIGHT)                      
-       
 }
-
-class RegionsJoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : TableJoinChain(table, joins) {
-    
-    fun leftJoin(table: Continents): ContinentsJoinChain = ContinentsJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Continents): ContinentsJoinChain = ContinentsJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: Continents): ContinentsJoinChain = ContinentsJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-    
-    fun leftJoin(table: Countries): CountriesJoinChain = CountriesJoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: Countries): CountriesJoinChain = CountriesJoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: Countries): CountriesJoinChain = CountriesJoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)
-}
-
 
 class RegionsUpdateBuilder() : UpdateBuilderBase(Regions) {
     fun name(value: String): RegionsUpdateBuilder = put(Regions.name, value)
