@@ -1,7 +1,7 @@
 = Release notes
 
 == 0.4.0-alpha
-
+* Added PostgreSQL and MySQL vendor types
 
 == 0.3.2-alpha
 * Aggregate functions in `BigDecimalColumn` return `BigDecimal`. Long or Double values means possible loss of range and precision.
