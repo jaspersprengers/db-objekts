@@ -50,7 +50,7 @@ class PackageName(val parts: List<String>) {
 
     fun createSubPackageForSchema(sub: SchemaName): PackageName = concat(sub.value.lowercase())
 
-    fun concat(part: String): PackageName = PackageName(StringUtil.concatToList(parts, part))
+    fun concat(part: String): PackageName = PackageName(parts + part)
 
     fun asFilePath(): String = parts.joinToString(File.separator)
 

@@ -36,14 +36,6 @@ object StringUtil {
         return buffer.toList()
     }
 
-    @Deprecated("replace with list + list")
-    fun <T> concatToList(els: List<T>, el: T): List<T> {
-        val buffer = mutableListOf<T>()
-        buffer.addAll(els)
-        buffer.add(el)
-        return buffer.toList()
-    }
-
     fun <T> joinBy(items: List<T>, getter: (T) -> String, separator: String = ","): String =
         items.map { getter(it) }.joinToString(separator)
 
