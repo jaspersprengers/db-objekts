@@ -26,7 +26,10 @@ abstract class CustomColumnTypeMapper<C : NonNullableColumn<*>>() : ColumnTypeMa
     abstract operator fun invoke(properties: ColumnMappingProperties): Class<C>?
 
     override fun map(properties: ColumnMappingProperties): AnyColumn? {
-        return invoke(properties)?.let { ColumnFactory.forClass(it) }
+        return invoke(properties)?.let {
+            val col = ColumnFactory.forClass(it)
+            if (properties.isNullable) col.nullable else col
+        }
     }
 
 

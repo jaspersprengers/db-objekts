@@ -111,7 +111,7 @@ create table IF NOT EXISTS core.ALL_TYPES_NIL
     INTEGER_COL              integer,
     INT_COL                  int,
     INT4_COL                 int4,
-    INTERNVAL_YEAR_COL       interval year,
+    INTERNVAL_YEAR_COL       interval year NULL,
     JSON_COL                 json,
     JSON_BINARY_COL          jsonb,
     LINE_COL                 line,

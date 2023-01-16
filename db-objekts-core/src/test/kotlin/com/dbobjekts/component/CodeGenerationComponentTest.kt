@@ -42,14 +42,14 @@ class CodeGenerationComponentTest {
         generator.configureColumnTypeMapping()
             .setColumnTypeForJDBCType("TINYINT(1)", NumberAsBooleanColumn::class.java)
             .setColumnTypeForName(table = "EMPLOYEE_ADDRESS", column = "KIND", columnType = AddressTypeAsStringColumn::class.java)
-            .setColumnTypeForName(column = "address_string", columnType = AddressTypeAsStringColumn::class.java)
-            .setColumnTypeForName(column = "address_int", columnType = AddressTypeAsIntegerColumn::class.java)
+            .setColumnTypeForNamePattern(columnPattern = "address_string", columnType = AddressTypeAsStringColumn::class.java)
+            .setColumnTypeForNamePattern(columnPattern = "address_int", columnType = AddressTypeAsIntegerColumn::class.java)
         generator.configureOutput()
             .basePackageForSources("com.dbobjekts.testdb.acme")
         .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff: List<String> = generator.differencesWithCatalog(CatalogDefinition)
         assertThat(diff).describedAs("acme catalog differs from database definition").isEmpty()
-        //generator.generateSourceFiles()
+        generator.generateSourceFiles()
 
     }
 

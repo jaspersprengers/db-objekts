@@ -107,7 +107,7 @@ object ColumnFactory {
     fun timeColumn(nullable: Boolean = false): Column<out LocalTime?> = if (nullable) TIME_NIL else TIME
     fun timeStampColumn(nullable: Boolean = false): Column<out Instant?> = if (nullable) TIMESTAMP_NIL else TIMESTAMP
     fun offsetDateTimeColumn(nullable: Boolean = false): Column<out OffsetDateTime?> = if (nullable) OFFSET_DATETIME_NIL else OFFSET_DATETIME
-    fun xmlColumn(nullable: Boolean = false): Column<out SQLXML?> = if (nullable) SQLXML else SQLXML_NIL
+    fun xmlColumn(nullable: Boolean = false): Column<out SQLXML?> = if (nullable) SQLXML_NIL else SQLXML
 
     @Suppress("UNCHECKED_CAST")
     fun <C : NonNullableColumn<*>> forClass(clz: Class<C>): C =

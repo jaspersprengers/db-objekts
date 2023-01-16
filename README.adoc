@@ -284,6 +284,8 @@ db-Objekts chooses a suitable implementation of https://github.com/jaspersprenge
 
 Sometimes you want to fine-tune this mapping. For example: in  MySQL a `TINYINT(1)` is mapped to a `Byte` by default, but as it is often used as a boolean value (with 1 or 0), it's more convenient to map it to Boolean. Another scenario is when you create a custom type to represent a String value by a business enum, e.g. your own `AddressType`.
 
+While custom mapping are usually optional, sometimes you have to provide one. PostgreSQL, for example, supports enumeration types which are represented in the metadata as `gender` or `payment_type`. Naturally the default mechanism cannot help you out there.
+
 db-Objekts iterates through a list of https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/codegen/datatypemapper/ColumnTypeMapper.kt[ColumnTypeMapper] instances. These receive the metadata for a given column in a  https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/codegen/datatypemapper/ColumnMappingProperties.kt[ColumnMappingProperties] object and match it to an appropriate `Column`, or null if the mapping does not apply.
 
 db-Objekts tries you custom mappings in order of registration to find a match, and then defaults to the vendor specific mapping, which has a mapping for every SQL type in the database, like https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-mariadb/src/main/kotlin/com/dbobjekts/vendors/mariadb/MariaDBDataTypeMapper.kt[MariaDBDataTypeMapper]. Do have a look at that file: it will make the mechanism clear.
@@ -292,10 +294,13 @@ db-Objekts tries you custom mappings in order of registration to find a match, a
 ==== Overriding a column by sql type
 Here's how to override the default mapping of `TINYINT` to a numeric type and use a Boolean instead.
 
-`setColumnTypeForJDBCType` takes the SQL type and the class of the appropriate Column. `com.dbobjekts.metadata.columnNumberAsBoolean` takes care of converting an Int to Boolean and back.
+`setColumnTypeForJDBCType` takes the SQL type and the class of the appropriate Column. `com.dbobjekts.metadata.columnNumberAsBoolean` takes care of storing a Boolean value as an integer zero or one.
 ```kotlin
 generator.configureColumnTypeMapping()
    .setColumnTypeForJDBCType("TINYINT(1)", NumberAsBooleanColumn::class.java)
+// when you vendor (like PostgreSQL) supports custom column types
+generator.configureColumnTypeMapping()
+   .setColumnTypeForJDBCType("gender", GenderColumn::class.java)
 ```
 
 ==== Overriding a column by name or pattern

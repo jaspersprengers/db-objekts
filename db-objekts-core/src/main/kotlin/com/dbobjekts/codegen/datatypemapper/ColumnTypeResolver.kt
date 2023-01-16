@@ -42,7 +42,18 @@ class ColumnTypeResolver(
 
     fun getDefaultMapping(props: ColumnMappingProperties): AnyColumn =
         defaultMapper.map(props)
-            ?: throw CodeGenerationException("Unable to find matching datatype for column ${props.schema}.${props.table}.${props.column} of type ${props.jdbcType}. No custom mapping associated.")
+            ?: throw CodeGenerationException("""
+                Unable to find matching datatype for column ${props.schema}.${props.table}.${props.column} of type ${props.jdbcType}.
+                There is no custom mapping and no vendor default ${defaultMapper.javaClass.name}.
+                You must provide a custom mapping before you can proceed with code generation, as in the following examples:
+                 generator.configureColumnTypeMapping()
+                    .setColumnTypeForJDBCType("${props.jdbcType}", SomeNonNullableColumn::class.java)
+                    
+                 generator.configureColumnTypeMapping()
+                     .setColumnTypeForName(table = "${props.table}", column = "${props.column}", columnType = SomeNonNullableColumn::class.java)
+                 
+                 Alternatively, you can add an exclusion for every column that uses this type.
+                """.trimIndent())
 
     private fun getCustomMapping(props: ColumnMappingProperties): AnyColumn? =
         customMappers.map { it.map(props) }

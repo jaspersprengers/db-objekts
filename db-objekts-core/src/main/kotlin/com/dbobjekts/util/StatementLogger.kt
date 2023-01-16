@@ -14,6 +14,8 @@ open class StatementLogger {
     //returns immutable list
     fun transactionExecutionLog(): List<ExecutedStatementInfo> = cache.toList()
 
+    fun lastLogLine(): ExecutedStatementInfo? = cache.toList().lastOrNull()
+
     internal fun logStatement(
         sql: String,
         parameters: List<AnySqlParameter>
