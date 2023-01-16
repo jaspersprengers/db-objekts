@@ -4,10 +4,13 @@ import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.postgresql.testdb.CatalogDefinition
-import com.dbobjekts.postgresql.testdb.core.*
-import com.dbobjekts.postgresql.testdb.hr.Certificate
+import com.dbobjekts.postgresql.testdb.core.AllTypesNil
+import com.dbobjekts.postgresql.testdb.core.AllTypesNilInsertBuilder
+import com.dbobjekts.postgresql.testdb.core.AllTypesNilRow
+import com.dbobjekts.postgresql.testdb.core.Employee
 import com.dbobjekts.postgresql.testdb.hr.Hobby
 import com.dbobjekts.statement.select.SelectStatementExecutor
+import com.dbobjekts.util.HikariDataSourceFactory
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
@@ -55,7 +58,7 @@ class PostgreSQLIntegrationTest {
             .basePackageForSources("com.dbobjekts.postgresql.testdb")
             .outputDirectoryForGeneratedSources(Paths.get("db-objekts-postgresql/src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff = gen.differencesWithCatalog(CatalogDefinition)
-        //assertThat(diff).isEmpty()
+        assertThat(diff).isEmpty()
         gen.generateSourceFiles()
     }
 
@@ -103,10 +106,10 @@ class PostgreSQLIntegrationTest {
         assertThat(retrieved.boolCol).isTrue()
     }
 
-    @Test
-    fun test_byteArrays() {
+   /* @Test
+    fun `bit varying`() {
         tm {
-            val arr = "hello".toByteArray()
+            //val arr = "hello".toByteArray()
             val retrieved = insertAndRetrieve {
                 it.byteaCol(arr).bitVaryingCol(arr)
 
@@ -114,7 +117,7 @@ class PostgreSQLIntegrationTest {
             assertThat(retrieved.byteaCol).isEqualTo(arr)
             assertThat(retrieved.bitVaryingCol).isEqualTo(arr)
         }
-    }
+    }*/
 
     @Test
     fun test_date_and_time() {

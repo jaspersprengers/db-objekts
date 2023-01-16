@@ -66,7 +66,7 @@ class UpdateStatementExecutor(
     internal fun toSQL(): String {
         getWhereClause().getFlattenedConditions().forEach { registerTable(it.column.table) }
         val columns = columnsForUpdate.params.map { it.column.aliasDotName() + " = ?" }.joinToString(",")
-        val clause = getWhereClause().build(SQLOptions(includeAlias = true))
+        val clause = getWhereClause().build(SQLOptions(includeAlias = false))
 
         val joinChain = buildJoinChain()
         val supportsJoins = connection.vendorSpecificProperties.supportsJoinsInUpdateAndDelete()
