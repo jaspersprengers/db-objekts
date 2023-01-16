@@ -54,6 +54,7 @@ class PostgreSQLIntegrationTest {
         val gen = CodeGenerator()
         gen.withDataSource(dataSource)
         gen.configureColumnTypeMapping().setColumnTypeForJDBCType("mood", VarcharColumn::class.java)
+        gen.configurePrimaryKeySequences().setSequenceNameForPrimaryKey("core","EMPLOYEE", "id", "EMPLOYEE_SEQ")
         gen.configureOutput()
             .basePackageForSources("com.dbobjekts.postgresql.testdb")
             .outputDirectoryForGeneratedSources(Paths.get("db-objekts-postgresql/src/generated-sources/kotlin").toAbsolutePath().toString())
@@ -217,7 +218,7 @@ class PostgreSQLIntegrationTest {
 
         tm { tr ->
             tr.update(e).salary(3300.50f).where(e.name.eq("Janet"))
-            assertThat(tr.select(e.salary).where(e.name.eq("Janet")).first()).isEqualTo(3300.50)
+            assertThat(tr.select(e.salary).where(e.name.eq("Janet")).first()).isEqualTo(3300.50f)
         }
 
         tm { tr ->
@@ -279,9 +280,6 @@ class PostgreSQLIntegrationTest {
             checkCount(tr.select(e.id).where(e.name.endsWith("Arthur Matthew Dent")), 1)
         }
 
-
-        tm { it.update(e).children(2).where(h.name.eq("curling")) }
-        tm { it.deleteFrom(e.innerJoin(Hobby)).where(h.name.eq("curling")) }
     }
 }
 

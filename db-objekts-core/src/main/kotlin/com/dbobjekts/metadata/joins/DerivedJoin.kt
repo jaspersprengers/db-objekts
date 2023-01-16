@@ -4,6 +4,7 @@ import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.column.IsForeignKey
+import com.dbobjekts.statement.SQLOptions
 import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.util.StringUtil
 
@@ -94,12 +95,14 @@ class DerivedJoin(
         return null
     }
 
-    override fun toSQL(): String {
+    override fun hasJoins() = pairs.isNotEmpty()
+
+    override fun toSQL(options: SQLOptions): String {
         pairs.forEach { (t, j) ->
             checkTableNotJoinedAlready(t)
             joins += createJoin(j, extractJoinedColumnPair(t))
         }
-        return StringUtil.concat(listOf(table.toSQL(), JoinFactory.toSQL(joins.toList())))
+        return StringUtil.concat(listOf(table.toSQL(options), JoinFactory.toSQL(joins.toList())))
     }
 
 }

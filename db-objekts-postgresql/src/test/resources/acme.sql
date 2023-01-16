@@ -6,9 +6,12 @@ create table IF NOT EXISTS hr.HOBBY
     id   varchar(10) primary key ,
     name varchar(50) not null
 );
+
+create sequence if not exists core.EMPLOYEE_SEQ;
+
 create table IF NOT EXISTS core.EMPLOYEE
 (
-    id            BIGINT primary key GENERATED ALWAYS AS IDENTITY,
+    id            BIGINT primary key,
     name          varchar(50) not null,
     salary        real      not null,
     married       boolean     null,

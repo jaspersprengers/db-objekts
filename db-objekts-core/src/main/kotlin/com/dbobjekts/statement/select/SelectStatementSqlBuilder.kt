@@ -3,6 +3,7 @@ package com.dbobjekts.statement.select
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.ColumnInResultRow
 import com.dbobjekts.statement.SQLOptions
+import com.dbobjekts.statement.SQLOptions.Companion.ALIAS
 import com.dbobjekts.statement.whereclause.WhereClause
 import com.dbobjekts.util.StringUtil
 
@@ -48,7 +49,7 @@ class SelectStatementSqlBuilder {
         return this
     }
 
-    protected fun whereClauseSql(): String = whereClause?.build(SQLOptions(includeAlias = true)) ?: ""
+    protected fun whereClauseSql(): String = whereClause?.build(ALIAS) ?: ""
 
     protected fun orderBySql(): String = if (orderByClauses.isNotEmpty()) ("ORDER BY " + StringUtil.joinBy(orderByClauses, ",")) else ""
 

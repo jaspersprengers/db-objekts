@@ -2,7 +2,6 @@ package com.dbobjekts.util
 
 import com.dbobjekts.api.AnySqlParameter
 import com.dbobjekts.api.ExecutedStatementInfo
-import org.slf4j.LoggerFactory
 
 open class StatementLogger {
 
@@ -14,7 +13,7 @@ open class StatementLogger {
     //returns immutable list
     fun transactionExecutionLog(): List<ExecutedStatementInfo> = cache.toList()
 
-    fun lastLogLine(): ExecutedStatementInfo? = cache.toList().lastOrNull()
+    fun lastStatement(): String? = lastSQLStatement
 
     internal fun logStatement(
         sql: String,

@@ -1,15 +1,15 @@
 package com.dbobjekts.postgresql.testdb.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.AutoKeyLongColumn
+import com.dbobjekts.metadata.column.ForeignKeyVarcharColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table core.address.
@@ -18,23 +18,24 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: id
  *
- * Foreign keys: [country_id to core.country.id] 
+ * Foreign keys to: 
+ * References by: core.country,core.employee_address
  */
 object Address:Table<AddressRow>("address"), HasUpdateBuilder<AddressUpdateBuilder, AddressInsertBuilder> {
     /**
      * Represents db column core.address.id
      */
-    val id = com.dbobjekts.metadata.column.AutoKeyLongColumn(this, "id")
+    val id = AutoKeyLongColumn(this, "id")
     /**
      * Represents db column core.address.street
      */
-    val street = com.dbobjekts.metadata.column.VarcharColumn(this, "street")
+    val street = VarcharColumn(this, "street")
     /**
      * Represents db column core.address.country_id
      *
      * Foreign key to core.country.id
      */
-    val countryId = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "country_id", Country.id)
+    val countryId = ForeignKeyVarcharColumn(this, "country_id", Country.id)
     override val columns: List<AnyColumn> = listOf(id,street,countryId)
     override fun toValue(values: List<Any?>) = AddressRow(values[0] as Long,values[1] as String,values[2] as String)
     override fun metadata(): WriteQueryAccessors<AddressUpdateBuilder, AddressInsertBuilder> = WriteQueryAccessors(AddressUpdateBuilder(), AddressInsertBuilder())

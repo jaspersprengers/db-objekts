@@ -1,15 +1,13 @@
 package com.dbobjekts.postgresql.testdb.hr
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table hr.hobby.
@@ -18,17 +16,18 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: id
  *
- * Foreign keys: [] 
+ * Foreign keys to: 
+ * References by: core.employee
  */
 object Hobby:Table<HobbyRow>("hobby"), HasUpdateBuilder<HobbyUpdateBuilder, HobbyInsertBuilder> {
     /**
      * Represents db column hr.hobby.id
      */
-    val id = com.dbobjekts.metadata.column.VarcharColumn(this, "id")
+    val id = VarcharColumn(this, "id")
     /**
      * Represents db column hr.hobby.name
      */
-    val name = com.dbobjekts.metadata.column.VarcharColumn(this, "name")
+    val name = VarcharColumn(this, "name")
     override val columns: List<AnyColumn> = listOf(id,name)
     override fun toValue(values: List<Any?>) = HobbyRow(values[0] as String,values[1] as String)
     override fun metadata(): WriteQueryAccessors<HobbyUpdateBuilder, HobbyInsertBuilder> = WriteQueryAccessors(HobbyUpdateBuilder(), HobbyInsertBuilder())

@@ -1,17 +1,20 @@
 package com.dbobjekts.postgresql.testdb.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
-import com.dbobjekts.statement.insert.InsertBuilderBase
-import com.dbobjekts.statement.update.UpdateBuilderBase
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.DateColumn
+import com.dbobjekts.metadata.column.FloatColumn
+import com.dbobjekts.metadata.column.NullableBooleanColumn
+import com.dbobjekts.metadata.column.NullableIntegerColumn
+import com.dbobjekts.metadata.column.OptionalForeignKeyVarcharColumn
+import com.dbobjekts.metadata.column.SequenceKeyLongColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.postgresql.testdb.hr.Hobby
-
-
+import com.dbobjekts.statement.WriteQueryAccessors
+import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.statement.update.UpdateBuilderBase
 
 /**           
  * Auto-generated metadata object for db table core.employee.
@@ -20,39 +23,40 @@ import com.dbobjekts.postgresql.testdb.hr.Hobby
  *
  * Primary keys: id
  *
- * Foreign keys: [hobby_id to hr.hobby.id] 
+ * Foreign keys to: 
+ * References by: hr.hobby,core.employee_address,core.employee_department,hr.certificate
  */
 object Employee:Table<EmployeeRow>("employee"), HasUpdateBuilder<EmployeeUpdateBuilder, EmployeeInsertBuilder> {
     /**
      * Represents db column core.employee.id
      */
-    val id = com.dbobjekts.metadata.column.AutoKeyLongColumn(this, "id")
+    val id = SequenceKeyLongColumn(this, "id", "EMPLOYEE_SEQ")
     /**
      * Represents db column core.employee.name
      */
-    val name = com.dbobjekts.metadata.column.VarcharColumn(this, "name")
+    val name = VarcharColumn(this, "name")
     /**
      * Represents db column core.employee.salary
      */
-    val salary = com.dbobjekts.metadata.column.FloatColumn(this, "salary")
+    val salary = FloatColumn(this, "salary")
     /**
      * Represents db column core.employee.married
      */
-    val married = com.dbobjekts.metadata.column.NullableBooleanColumn(this, "married")
+    val married = NullableBooleanColumn(this, "married")
     /**
      * Represents db column core.employee.date_of_birth
      */
-    val dateOfBirth = com.dbobjekts.metadata.column.DateColumn(this, "date_of_birth")
+    val dateOfBirth = DateColumn(this, "date_of_birth")
     /**
      * Represents db column core.employee.children
      */
-    val children = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "children")
+    val children = NullableIntegerColumn(this, "children")
     /**
      * Represents db column core.employee.hobby_id
      *
      * Foreign key to hr.hobby.id
      */
-    val hobbyId = com.dbobjekts.metadata.column.OptionalForeignKeyVarcharColumn(this, "hobby_id", Hobby.id)
+    val hobbyId = OptionalForeignKeyVarcharColumn(this, "hobby_id", Hobby.id)
     override val columns: List<AnyColumn> = listOf(id,name,salary,married,dateOfBirth,children,hobbyId)
     override fun toValue(values: List<Any?>) = EmployeeRow(values[0] as Long,values[1] as String,values[2] as Float,values[3] as Boolean?,values[4] as java.time.LocalDate,values[5] as Int?,values[6] as String?)
     override fun metadata(): WriteQueryAccessors<EmployeeUpdateBuilder, EmployeeInsertBuilder> = WriteQueryAccessors(EmployeeUpdateBuilder(), EmployeeInsertBuilder())

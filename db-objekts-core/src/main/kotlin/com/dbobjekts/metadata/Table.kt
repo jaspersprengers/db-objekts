@@ -6,6 +6,8 @@ import com.dbobjekts.metadata.column.IsForeignKey
 import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
 import com.dbobjekts.metadata.joins.DerivedJoin
 import com.dbobjekts.metadata.joins.JoinType
+import com.dbobjekts.statement.SQLOptions
+import com.dbobjekts.statement.SQLOptions.Companion.ALIAS
 import com.dbobjekts.util.Errors
 import com.dbobjekts.util.ValidateDBObjectName
 
@@ -77,7 +79,7 @@ abstract class Table<I>(
     /**
      * @return the schema and table, e.g. hr.certificate
      */
-    internal fun toSQL(): String = "${schema.dottedName}$tableName ${alias()}"
+    internal fun toSQL(options: SQLOptions = ALIAS): String = if(options.includeAlias) "${schema.dottedName}$tableName ${alias()}" else "${schema.dottedName}$tableName"
 
     override fun toString(): String = toSQL()
 

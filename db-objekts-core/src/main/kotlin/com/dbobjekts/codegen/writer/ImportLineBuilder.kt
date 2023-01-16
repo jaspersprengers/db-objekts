@@ -3,15 +3,15 @@ package com.dbobjekts.codegen.writer
 import com.dbobjekts.api.PackageName
 import com.dbobjekts.api.SchemaName
 import com.dbobjekts.api.TableName
+import com.dbobjekts.codegen.metadata.DBForeignKeyDefinition
 
 internal class ImportLineBuilder(private val basePackage: PackageName) {
 
     private val cache = mutableSetOf<String>()
 
-    fun addImportsForForeignKeys(schema: SchemaName, linkedTables: List<Pair<SchemaName, TableName>>) {
-        linkedTables.filter { (s, t) -> s != schema }.forEach {
-            addClass(it.first, it.second.capitalCamelCase())
-            addClass(it.first, it.second.capitalCamelCase() + "JoinChain")
+    fun addImportsForForeignKeys(schema: SchemaName, linkedTables: List<DBForeignKeyDefinition>) {
+        linkedTables.filter { fk -> fk.parentSchema != schema }.forEach {
+            addClass(it.parentSchema, it.parentTable.capitalCamelCase())
         }
     }
 

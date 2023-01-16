@@ -26,14 +26,6 @@ internal class TableSourcesBuilder(
     /**
      * FKs to parents in a different schema/package need to be imported
      */
-    private fun generateImportsForForeignKeys(): List<Pair<SchemaName, String>> =
-        model.columns.filter {
-            it is DBForeignKeyDefinition && it.parentSchema.value != model.schema.value
-        }.map { col ->
-            val fk = col as DBForeignKeyDefinition
-            Pair(fk.parentSchema, fk.parentTable.capitalCamelCase())
-        }.distinct()
-
     fun build(): String {
         val detailedSourceBuilder = TableDetailsSourceBuilder(model)
         strBuilder.append("package ${model.packageName}\n\n")
@@ -58,7 +50,7 @@ internal class TableSourcesBuilder(
 
         val updateBuilderInterface = HasUpdateBuilder::class.java.simpleName
 
-        importLineBuilder.addImportsForForeignKeys(model.schema, model.linkedTables)
+        importLineBuilder.addImportsForForeignKeys(model.schema, model.foreignKeys())
 
         val columnNames = model.columns.map {
             importLineBuilder.addClasses(it.column.javaClass)

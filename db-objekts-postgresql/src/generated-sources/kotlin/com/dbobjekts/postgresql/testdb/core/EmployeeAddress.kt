@@ -1,15 +1,14 @@
 package com.dbobjekts.postgresql.testdb.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.ForeignKeyLongColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table core.employee_address.
@@ -18,7 +17,8 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: none
  *
- * Foreign keys: [employee_id to core.employee.id, address_id to core.address.id] 
+ * Foreign keys to: 
+ * References by: core.employee,core.address
  */
 object EmployeeAddress:Table<EmployeeAddressRow>("employee_address"), HasUpdateBuilder<EmployeeAddressUpdateBuilder, EmployeeAddressInsertBuilder> {
     /**
@@ -26,17 +26,17 @@ object EmployeeAddress:Table<EmployeeAddressRow>("employee_address"), HasUpdateB
      *
      * Foreign key to core.employee.id
      */
-    val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "employee_id", Employee.id)
+    val employeeId = ForeignKeyLongColumn(this, "employee_id", Employee.id)
     /**
      * Represents db column core.employee_address.address_id
      *
      * Foreign key to core.address.id
      */
-    val addressId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "address_id", Address.id)
+    val addressId = ForeignKeyLongColumn(this, "address_id", Address.id)
     /**
      * Represents db column core.employee_address.kind
      */
-    val kind = com.dbobjekts.metadata.column.VarcharColumn(this, "kind")
+    val kind = VarcharColumn(this, "kind")
     override val columns: List<AnyColumn> = listOf(employeeId,addressId,kind)
     override fun toValue(values: List<Any?>) = EmployeeAddressRow(values[0] as Long,values[1] as Long,values[2] as String)
     override fun metadata(): WriteQueryAccessors<EmployeeAddressUpdateBuilder, EmployeeAddressInsertBuilder> = WriteQueryAccessors(EmployeeAddressUpdateBuilder(), EmployeeAddressInsertBuilder())
@@ -51,7 +51,7 @@ class EmployeeAddressUpdateBuilder() : UpdateBuilderBase(EmployeeAddress) {
      * Warning: this method will throw a StatementBuilderException at runtime because EmployeeAddress does not have a primary key.
      */
     override fun updateRow(rowData: TableRowData<*, *>): Long = 
-      throw StatementBuilderException("Sorry, but you cannot use row-based updates for table EmployeeAddress. At least one column must be marked as primary key.")                
+      throw com.dbobjekts.api.exception.StatementBuilderException("Sorry, but you cannot use row-based updates for table EmployeeAddress. At least one column must be marked as primary key.")                
             
 }
 

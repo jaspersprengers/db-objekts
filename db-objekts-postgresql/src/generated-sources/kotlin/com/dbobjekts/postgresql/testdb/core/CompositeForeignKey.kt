@@ -1,15 +1,14 @@
 package com.dbobjekts.postgresql.testdb.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.ForeignKeyVarcharColumn
+import com.dbobjekts.metadata.column.NullableVarcharColumn
 import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table core.composite_foreign_key.
@@ -18,7 +17,8 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: [isbn, title]
  *
- * Foreign keys: [isbn to core.composite.isbn, title to core.composite.isbn] 
+ * Foreign keys to: 
+ * References by: core.composite,core.composite,core.composite,core.composite
  */
 object CompositeForeignKey:Table<CompositeForeignKeyRow>("composite_foreign_key"), HasUpdateBuilder<CompositeForeignKeyUpdateBuilder, CompositeForeignKeyInsertBuilder> {
     /**
@@ -26,17 +26,17 @@ object CompositeForeignKey:Table<CompositeForeignKeyRow>("composite_foreign_key"
      *
      * Foreign key to core.composite.isbn
      */
-    val isbn = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "isbn", Composite.isbn)
+    val isbn = ForeignKeyVarcharColumn(this, "isbn", Composite.isbn)
     /**
      * Represents db column core.composite_foreign_key.title
      *
      * Foreign key to core.composite.isbn
      */
-    val title = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "title", Composite.isbn)
+    val title = ForeignKeyVarcharColumn(this, "title", Composite.isbn)
     /**
      * Represents db column core.composite_foreign_key.message
      */
-    val message = com.dbobjekts.metadata.column.NullableVarcharColumn(this, "message")
+    val message = NullableVarcharColumn(this, "message")
     override val columns: List<AnyColumn> = listOf(isbn,title,message)
     override fun toValue(values: List<Any?>) = CompositeForeignKeyRow(values[0] as String,values[1] as String,values[2] as String?)
     override fun metadata(): WriteQueryAccessors<CompositeForeignKeyUpdateBuilder, CompositeForeignKeyInsertBuilder> = WriteQueryAccessors(CompositeForeignKeyUpdateBuilder(), CompositeForeignKeyInsertBuilder())

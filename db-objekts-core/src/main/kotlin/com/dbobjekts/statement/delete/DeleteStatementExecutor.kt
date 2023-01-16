@@ -1,10 +1,9 @@
 package com.dbobjekts.statement.delete
 
 import com.dbobjekts.api.AnyTable
+import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.statement.Semaphore
 import com.dbobjekts.jdbc.ConnectionAdapter
-import com.dbobjekts.metadata.joins.ManualJoinChain
-import com.dbobjekts.metadata.joins.DerivedJoin
 import com.dbobjekts.metadata.joins.JoinChain
 import com.dbobjekts.statement.SQLOptions
 import com.dbobjekts.statement.StatementBase
@@ -60,8 +59,12 @@ class DeleteStatementExecutor(
             wc.getFlattenedConditions().forEach { registerTable(it.column.table) }
             val supportsJoins = connection.vendorSpecificProperties.supportsJoinsInUpdateAndDelete()
             val chain = joinChainSQL()
-            val alias = if (supportsJoins) "${chain.table.alias()}.*" else ""
-            val sql = StringUtil.concat(listOf("delete", alias, "from", chain.toSQL(), wc.build(SQLOptions(includeAlias = true))))
+            if (chain.hasJoins() && !supportsJoins) {
+                throw StatementBuilderException("Delete statements with join syntax are not supported by your database.")
+            }
+            val useTableAlias = chain.hasJoins()
+            val alias = if (useTableAlias) "${chain.table.alias()}.*" else ""
+            val sql = StringUtil.concat(listOf("delete", alias, "from", chain.toSQL(SQLOptions(useTableAlias)), wc.build(SQLOptions(useTableAlias))))
             val params = wc.getParameters()
             return connection.prepareAndExecuteDeleteStatement(sql, params).also {
                 connection.statementLog.logResult(it)

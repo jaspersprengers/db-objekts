@@ -3,8 +3,8 @@ package com.dbobjekts.statement.update
 import com.dbobjekts.api.AnyColumnAndValue
 import com.dbobjekts.api.AnySqlParameter
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.statement.Semaphore
 import com.dbobjekts.api.exception.StatementBuilderException
+import com.dbobjekts.statement.Semaphore
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.statement.ColumnsForUpdate
 import com.dbobjekts.statement.SQLOptions
@@ -65,9 +65,16 @@ class UpdateStatementExecutor(
      */
     internal fun toSQL(): String {
         getWhereClause().getFlattenedConditions().forEach { registerTable(it.column.table) }
-        val columns = columnsForUpdate.params.map { it.column.aliasDotName() + " = ?" }.joinToString(",")
-        val clause = getWhereClause().build(SQLOptions(includeAlias = true))
-        return StringUtil.concat(listOf("update", joinChainSQL(false).toSQL(), "set", columns, clause))
+        val supportsJoins = connection.vendorSpecificProperties.supportsJoinsInUpdateAndDelete()
+        val joinChain = joinChainSQL(false)
+        if (joinChain.hasJoins() && !supportsJoins) {
+            throw StatementBuilderException("Update statements with join syntax are not supported by your database.")
+        }
+        val useTableAlias = joinChain.hasJoins()
+        val columns =
+            columnsForUpdate.params.map { (if (useTableAlias) it.column.aliasDotName() else it.column.nameInTable) + " = ?" }.joinToString(",")
+        val clause = getWhereClause().build(SQLOptions(useTableAlias))
+        return StringUtil.concat(listOf("update", joinChain.toSQL(SQLOptions(useTableAlias)), "set", columns, clause))
     }
 
     internal fun getAllParameters(): List<AnySqlParameter> {

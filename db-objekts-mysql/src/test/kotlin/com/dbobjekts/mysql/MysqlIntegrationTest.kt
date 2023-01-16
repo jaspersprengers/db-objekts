@@ -50,8 +50,7 @@ class MysqlIntegrationTest {
         gen.configureOutput()
             .basePackageForSources("com.dbobjekts.mysql.testdb")
         .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
-        val diff = gen.differencesWithCatalog(CatalogDefinition)
-        assertThat(diff).isEmpty()
+        assertThat(gen.differencesWithCatalog(CatalogDefinition)).isEmpty()
         gen.generateSourceFiles()
     }
 
@@ -443,7 +442,7 @@ class MysqlIntegrationTest {
         assertThat(l2[3]).isEqualTo("Karl")
 
         tm { tr ->
-            val id = tr.insert(e).mandatoryColumns("Jack", 3000.5, true, LocalDate.of(1980, 1, 1)).execute()
+            val id = tr.insert(e).mandatoryColumns("Jack", 3000.5, LocalDate.of(1980, 1, 1)).execute()
             Assertions.assertThat(
                 tr.select(h.name.nullable)
                     .from(Employee.leftJoin(Hobby))

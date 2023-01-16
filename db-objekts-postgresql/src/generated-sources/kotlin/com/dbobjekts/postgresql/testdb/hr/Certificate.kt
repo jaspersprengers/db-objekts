@@ -1,17 +1,16 @@
 package com.dbobjekts.postgresql.testdb.hr
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.metadata.column.IsGeneratedPrimaryKey
-import com.dbobjekts.api.exception.StatementBuilderException
-import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
-import com.dbobjekts.statement.insert.InsertBuilderBase
-import com.dbobjekts.statement.update.UpdateBuilderBase
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.AutoKeyIntegerColumn
+import com.dbobjekts.metadata.column.ForeignKeyLongColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.postgresql.testdb.core.Employee
-
-
+import com.dbobjekts.statement.WriteQueryAccessors
+import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
+import com.dbobjekts.statement.update.UpdateBuilderBase
 
 /**           
  * Auto-generated metadata object for db table hr.certificate.
@@ -20,23 +19,24 @@ import com.dbobjekts.postgresql.testdb.core.Employee
  *
  * Primary keys: id
  *
- * Foreign keys: [employee_id to core.employee.id] 
+ * Foreign keys to: 
+ * References by: core.employee
  */
 object Certificate:Table<CertificateRow>("certificate"), HasUpdateBuilder<CertificateUpdateBuilder, CertificateInsertBuilder> {
     /**
      * Represents db column hr.certificate.id
      */
-    val id = com.dbobjekts.metadata.column.AutoKeyIntegerColumn(this, "id")
+    val id = AutoKeyIntegerColumn(this, "id")
     /**
      * Represents db column hr.certificate.name
      */
-    val name = com.dbobjekts.metadata.column.VarcharColumn(this, "name")
+    val name = VarcharColumn(this, "name")
     /**
      * Represents db column hr.certificate.employee_id
      *
      * Foreign key to core.employee.id
      */
-    val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "employee_id", Employee.id)
+    val employeeId = ForeignKeyLongColumn(this, "employee_id", Employee.id)
     override val columns: List<AnyColumn> = listOf(id,name,employeeId)
     override fun toValue(values: List<Any?>) = CertificateRow(values[0] as Int,values[1] as String,values[2] as Long)
     override fun metadata(): WriteQueryAccessors<CertificateUpdateBuilder, CertificateInsertBuilder> = WriteQueryAccessors(CertificateUpdateBuilder(), CertificateInsertBuilder())

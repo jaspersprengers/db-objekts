@@ -17,6 +17,7 @@ class ValueOrColumn<T>(val values: List<T>? = null, val column: AnyColumn? = nul
         } else "(${values.map { "?" }.joinToString(",")})"
     companion object {
         fun <T> forValues(values: List<T>) = ValueOrColumn<T>(values = values)
+        @Suppress("UNCHECKED_CAST")
         fun <T> forNullValues() = ValueOrColumn<Unit>()  as ValueOrColumn<T>
         fun <T> forColumn(column: AnyColumn) = ValueOrColumn<T>(column = column)
     }

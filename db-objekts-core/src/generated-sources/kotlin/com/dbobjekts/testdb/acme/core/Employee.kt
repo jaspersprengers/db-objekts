@@ -3,7 +3,13 @@ package com.dbobjekts.testdb.acme.core
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.metadata.column.*
+import com.dbobjekts.metadata.column.DateColumn
+import com.dbobjekts.metadata.column.DoubleColumn
+import com.dbobjekts.metadata.column.NullableBooleanColumn
+import com.dbobjekts.metadata.column.NullableIntegerColumn
+import com.dbobjekts.metadata.column.OptionalForeignKeyVarcharColumn
+import com.dbobjekts.metadata.column.SequenceKeyLongColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder

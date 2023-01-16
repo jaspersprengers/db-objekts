@@ -6,7 +6,7 @@ import com.dbobjekts.statement.whereclause.SubClause
 import java.lang.StringBuilder
 
 
-class ManualJoinChain(table: AnyTable) : JoinChain(table){
+class ManualJoinChain(table: AnyTable) : JoinChain(table) {
 
     private val buffer = mutableListOf<ManualJoin>()
 
@@ -20,11 +20,13 @@ class ManualJoinChain(table: AnyTable) : JoinChain(table){
     fun leftJoin(table: AnyTable): ManualJoin = newJoin(table, JoinType.LEFT)
     fun rightJoin(table: AnyTable): ManualJoin = newJoin(table, JoinType.RIGHT)
 
-    override fun toSQL(): String {
-        val builder = StringBuilder("${table.schemaAndName()} ${table.alias()}")
-        buffer.forEachIndexed { i, join ->
+    override fun hasJoins() = buffer.isNotEmpty()
+
+    override fun toSQL(options: SQLOptions): String {
+        val builder = StringBuilder("${table.schemaAndName()} ${if (options.includeAlias) table.alias() else ""}")
+        buffer.forEachIndexed { _, join ->
             val t = join.table
-            val clause = SubClause.toSQL(join.clause, SQLOptions(true))
+            val clause = SubClause.toSQL(join.clause, options)
             builder.append(" ${join.joinType} JOIN ${t.schemaAndName()} ${t.alias()} on $clause")
         }
         return builder.toString()

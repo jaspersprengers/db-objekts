@@ -82,8 +82,8 @@ class TransactionManager private constructor(
             transaction.commit()
             return TransactionResultValidator.validate(result)
         } catch (e: Exception) {
-            val info = transaction.connection.statementLog.lastLogLine()
-            log.error("Caught exception while executing query '${info?.sql ?: "<NIL>"}'. Rolling back", e)
+            val info = transaction.connection.statementLog.lastStatement()
+            log.error("Caught exception while executing query '${info?: "<NIL>"}'. Rolling back", e)
             transaction.rollback()
             throw e
         } finally {

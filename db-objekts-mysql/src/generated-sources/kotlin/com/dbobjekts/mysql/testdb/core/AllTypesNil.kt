@@ -13,9 +13,9 @@ import com.dbobjekts.metadata.column.NullableDoubleColumn
 import com.dbobjekts.metadata.column.NullableFloatColumn
 import com.dbobjekts.metadata.column.NullableIntegerColumn
 import com.dbobjekts.metadata.column.NullableLongColumn
+import com.dbobjekts.metadata.column.NullableNumberAsBooleanColumn
 import com.dbobjekts.metadata.column.NullableTimeColumn
 import com.dbobjekts.metadata.column.NullableVarcharColumn
-import com.dbobjekts.metadata.column.NumberAsBooleanColumn
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -55,11 +55,11 @@ object AllTypesNil:Table<AllTypesNilRow>("ALL_TYPES_NIL"), HasUpdateBuilder<AllT
     /**
      * Represents db column core.ALL_TYPES_NIL.INT1_COL
      */
-    val int1Col = NumberAsBooleanColumn(this, "INT1_COL")
+    val int1Col = NullableNumberAsBooleanColumn(this, "INT1_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.TINYINT_COL
      */
-    val tinyintCol = NumberAsBooleanColumn(this, "TINYINT_COL")
+    val tinyintCol = NullableNumberAsBooleanColumn(this, "TINYINT_COL")
     /**
      * Represents db column core.ALL_TYPES_NIL.SMALLINT_COL
      */
@@ -165,7 +165,7 @@ object AllTypesNil:Table<AllTypesNilRow>("ALL_TYPES_NIL"), HasUpdateBuilder<AllT
      */
     val yearCol = NullableIntegerColumn(this, "YEAR_COL")
     override val columns: List<AnyColumn> = listOf(id,decimalCol,decCol,numericCol,fixedCol,int1Col,tinyintCol,smallintCol,int2Col,mediumintCol,int3Col,intCol,int4Col,bigintCol,int8Col,floatCol,doubleCol,doublePrecisionCol,bitCol,binaryCol,blobCol,charCol,charByteCol,enumCol,jsonCol,textCol,varcharCol,setCol,dateCol,timeCol,datetimeCol,timestampCol,yearCol)
-    override fun toValue(values: List<Any?>) = AllTypesNilRow(values[0] as Long,values[1] as java.math.BigDecimal?,values[2] as java.math.BigDecimal?,values[3] as java.math.BigDecimal?,values[4] as java.math.BigDecimal?,values[5] as Boolean,values[6] as Boolean,values[7] as Int?,values[8] as Int?,values[9] as Int?,values[10] as Int?,values[11] as Long?,values[12] as Long?,values[13] as Long?,values[14] as Long?,values[15] as Float?,values[16] as Double?,values[17] as Double?,values[18] as Boolean?,values[19] as ByteArray?,values[20] as ByteArray?,values[21] as String?,values[22] as ByteArray?,values[23] as String?,values[24] as String?,values[25] as String?,values[26] as String?,values[27] as String?,values[28] as java.time.LocalDate?,values[29] as java.time.LocalTime?,values[30] as java.time.LocalDateTime?,values[31] as java.time.LocalDateTime?,values[32] as Int?)
+    override fun toValue(values: List<Any?>) = AllTypesNilRow(values[0] as Long,values[1] as java.math.BigDecimal?,values[2] as java.math.BigDecimal?,values[3] as java.math.BigDecimal?,values[4] as java.math.BigDecimal?,values[5] as Boolean?,values[6] as Boolean?,values[7] as Int?,values[8] as Int?,values[9] as Int?,values[10] as Int?,values[11] as Long?,values[12] as Long?,values[13] as Long?,values[14] as Long?,values[15] as Float?,values[16] as Double?,values[17] as Double?,values[18] as Boolean?,values[19] as ByteArray?,values[20] as ByteArray?,values[21] as String?,values[22] as ByteArray?,values[23] as String?,values[24] as String?,values[25] as String?,values[26] as String?,values[27] as String?,values[28] as java.time.LocalDate?,values[29] as java.time.LocalTime?,values[30] as java.time.LocalDateTime?,values[31] as java.time.LocalDateTime?,values[32] as Int?)
     override fun metadata(): WriteQueryAccessors<AllTypesNilUpdateBuilder, AllTypesNilInsertBuilder> = WriteQueryAccessors(AllTypesNilUpdateBuilder(), AllTypesNilInsertBuilder())
 }
 
@@ -174,8 +174,8 @@ class AllTypesNilUpdateBuilder() : UpdateBuilderBase(AllTypesNil) {
     fun decCol(value: java.math.BigDecimal?): AllTypesNilUpdateBuilder = put(AllTypesNil.decCol, value)
     fun numericCol(value: java.math.BigDecimal?): AllTypesNilUpdateBuilder = put(AllTypesNil.numericCol, value)
     fun fixedCol(value: java.math.BigDecimal?): AllTypesNilUpdateBuilder = put(AllTypesNil.fixedCol, value)
-    fun int1Col(value: Boolean): AllTypesNilUpdateBuilder = put(AllTypesNil.int1Col, value)
-    fun tinyintCol(value: Boolean): AllTypesNilUpdateBuilder = put(AllTypesNil.tinyintCol, value)
+    fun int1Col(value: Boolean?): AllTypesNilUpdateBuilder = put(AllTypesNil.int1Col, value)
+    fun tinyintCol(value: Boolean?): AllTypesNilUpdateBuilder = put(AllTypesNil.tinyintCol, value)
     fun smallintCol(value: Int?): AllTypesNilUpdateBuilder = put(AllTypesNil.smallintCol, value)
     fun int2Col(value: Int?): AllTypesNilUpdateBuilder = put(AllTypesNil.int2Col, value)
     fun mediumintCol(value: Int?): AllTypesNilUpdateBuilder = put(AllTypesNil.mediumintCol, value)
@@ -251,8 +251,8 @@ class AllTypesNilInsertBuilder():InsertBuilderBase(){
     fun decCol(value: java.math.BigDecimal?): AllTypesNilInsertBuilder = put(AllTypesNil.decCol, value)
     fun numericCol(value: java.math.BigDecimal?): AllTypesNilInsertBuilder = put(AllTypesNil.numericCol, value)
     fun fixedCol(value: java.math.BigDecimal?): AllTypesNilInsertBuilder = put(AllTypesNil.fixedCol, value)
-    fun int1Col(value: Boolean): AllTypesNilInsertBuilder = put(AllTypesNil.int1Col, value)
-    fun tinyintCol(value: Boolean): AllTypesNilInsertBuilder = put(AllTypesNil.tinyintCol, value)
+    fun int1Col(value: Boolean?): AllTypesNilInsertBuilder = put(AllTypesNil.int1Col, value)
+    fun tinyintCol(value: Boolean?): AllTypesNilInsertBuilder = put(AllTypesNil.tinyintCol, value)
     fun smallintCol(value: Int?): AllTypesNilInsertBuilder = put(AllTypesNil.smallintCol, value)
     fun int2Col(value: Int?): AllTypesNilInsertBuilder = put(AllTypesNil.int2Col, value)
     fun mediumintCol(value: Int?): AllTypesNilInsertBuilder = put(AllTypesNil.mediumintCol, value)
@@ -279,12 +279,6 @@ class AllTypesNilInsertBuilder():InsertBuilderBase(){
     fun datetimeCol(value: java.time.LocalDateTime?): AllTypesNilInsertBuilder = put(AllTypesNil.datetimeCol, value)
     fun timestampCol(value: java.time.LocalDateTime?): AllTypesNilInsertBuilder = put(AllTypesNil.timestampCol, value)
     fun yearCol(value: Int?): AllTypesNilInsertBuilder = put(AllTypesNil.yearCol, value)
-
-    fun mandatoryColumns(int1Col: Boolean, tinyintCol: Boolean) : AllTypesNilInsertBuilder {
-      mandatory(AllTypesNil.int1Col, int1Col)
-      mandatory(AllTypesNil.tinyintCol, tinyintCol)
-      return this
-    }
 
 
     override fun insertRow(rowData: TableRowData<*, *>): Long {
@@ -333,8 +327,8 @@ val id: Long = 0,
   val decCol: java.math.BigDecimal?,
   val numericCol: java.math.BigDecimal?,
   val fixedCol: java.math.BigDecimal?,
-  val int1Col: Boolean,
-  val tinyintCol: Boolean,
+  val int1Col: Boolean?,
+  val tinyintCol: Boolean?,
   val smallintCol: Int?,
   val int2Col: Int?,
   val mediumintCol: Int?,

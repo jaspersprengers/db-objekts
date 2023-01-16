@@ -412,7 +412,6 @@ class MariaDBIntegrationTest {
             tr.deleteFrom(Employee).where()
             tr.deleteFrom(Country).where()
             tr.deleteFrom(Hobby).where()
-            //tr.deleteFrom(Shape).where()
         }
 
         fun insert(name: String, salary: Int) {
