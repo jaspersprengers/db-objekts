@@ -18,7 +18,7 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: customerNumber
  *
- * Foreign keys: [] 
+ * Foreign keys: [salesRepEmployeeNumber to classicmodels.employees.employeeNumber] 
  */
 object Customers:Table<CustomersRow>("customers"), HasUpdateBuilder<CustomersUpdateBuilder, CustomersInsertBuilder> {
     /**
@@ -67,8 +67,10 @@ object Customers:Table<CustomersRow>("customers"), HasUpdateBuilder<CustomersUpd
     val country = com.dbobjekts.metadata.column.VarcharColumn(this, "country")
     /**
      * Represents db column classicmodels.customers.salesRepEmployeeNumber
+     *
+     * Foreign key to classicmodels.employees.employeeNumber
      */
-    val salesrepemployeenumber = com.dbobjekts.metadata.column.NullableLongColumn(this, "salesRepEmployeeNumber")
+    val salesrepemployeenumber = com.dbobjekts.metadata.column.OptionalForeignKeyLongColumn(this, "salesRepEmployeeNumber", Employees.employeenumber)
     /**
      * Represents db column classicmodels.customers.creditLimit
      */

@@ -80,8 +80,8 @@ class PostgreSQLDataTypeMapper : VendorDefaultColumnTypeMapper {
     }
 
     private fun moneyColumn(nullable: Boolean) =
-        if (nullable) MoneyColumn(DefaultTable, "dummy") else NullableMoneyColumn(DefaultTable, "dummy")
+        if (nullable) NullableMoneyColumn(DefaultTable, "dummy") else MoneyColumn(DefaultTable, "dummy")
 
     private fun intervalColumn(nullable: Boolean) =
-        if (nullable) IntervalColumn(DefaultTable, "dummy") else NullableIntervalColumn(DefaultTable, "dummy")
+        if (nullable) NullableIntervalColumn(DefaultTable, "dummy") else IntervalColumn(DefaultTable, "dummy")
 }

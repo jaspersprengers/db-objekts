@@ -18,17 +18,21 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: none
  *
- * Foreign keys: [] 
+ * Foreign keys: [employee_id to core.EMPLOYEE.id, department_id to core.DEPARTMENT.id] 
  */
 object EmployeeDepartment:Table<EmployeeDepartmentRow>("EMPLOYEE_DEPARTMENT"), HasUpdateBuilder<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder> {
     /**
      * Represents db column core.EMPLOYEE_DEPARTMENT.employee_id
+     *
+     * Foreign key to core.EMPLOYEE.id
      */
-    val employeeId = com.dbobjekts.metadata.column.LongColumn(this, "employee_id")
+    val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "employee_id", Employee.id)
     /**
      * Represents db column core.EMPLOYEE_DEPARTMENT.department_id
+     *
+     * Foreign key to core.DEPARTMENT.id
      */
-    val departmentId = com.dbobjekts.metadata.column.LongColumn(this, "department_id")
+    val departmentId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "department_id", Department.id)
     override val columns: List<AnyColumn> = listOf(employeeId,departmentId)
     override fun toValue(values: List<Any?>) = EmployeeDepartmentRow(values[0] as Long,values[1] as Long)
     override fun metadata(): WriteQueryAccessors<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder> = WriteQueryAccessors(EmployeeDepartmentUpdateBuilder(), EmployeeDepartmentInsertBuilder())

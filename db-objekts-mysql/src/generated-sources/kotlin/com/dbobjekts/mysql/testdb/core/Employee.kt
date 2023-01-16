@@ -9,6 +9,8 @@ import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
+import com.dbobjekts.mysql.testdb.hr.Hobby
+
 
 
 /**           
@@ -18,7 +20,7 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: id
  *
- * Foreign keys: [] 
+ * Foreign keys: [hobby_id to hr.HOBBY.id] 
  */
 object Employee:Table<EmployeeRow>("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateBuilder, EmployeeInsertBuilder> {
     /**
@@ -47,8 +49,10 @@ object Employee:Table<EmployeeRow>("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateB
     val children = com.dbobjekts.metadata.column.NullableIntegerColumn(this, "children")
     /**
      * Represents db column core.EMPLOYEE.hobby_id
+     *
+     * Foreign key to hr.HOBBY.id
      */
-    val hobbyId = com.dbobjekts.metadata.column.NullableVarcharColumn(this, "hobby_id")
+    val hobbyId = com.dbobjekts.metadata.column.OptionalForeignKeyVarcharColumn(this, "hobby_id", Hobby.id)
     override val columns: List<AnyColumn> = listOf(id,name,salary,married,dateOfBirth,children,hobbyId)
     override fun toValue(values: List<Any?>) = EmployeeRow(values[0] as Long,values[1] as String,values[2] as Double,values[3] as Boolean,values[4] as java.time.LocalDate,values[5] as Int?,values[6] as String?)
     override fun metadata(): WriteQueryAccessors<EmployeeUpdateBuilder, EmployeeInsertBuilder> = WriteQueryAccessors(EmployeeUpdateBuilder(), EmployeeInsertBuilder())

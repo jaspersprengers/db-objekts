@@ -18,13 +18,15 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: [customerNumber, checkNumber]
  *
- * Foreign keys: [] 
+ * Foreign keys: [customerNumber to classicmodels.customers.customerNumber] 
  */
 object Payments:Table<PaymentsRow>("payments"), HasUpdateBuilder<PaymentsUpdateBuilder, PaymentsInsertBuilder> {
     /**
      * Represents db column classicmodels.payments.customerNumber
+     *
+     * Foreign key to classicmodels.customers.customerNumber
      */
-    val customernumber = com.dbobjekts.metadata.column.LongColumn(this, "customerNumber")
+    val customernumber = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "customerNumber", Customers.customernumber)
     /**
      * Represents db column classicmodels.payments.checkNumber
      */

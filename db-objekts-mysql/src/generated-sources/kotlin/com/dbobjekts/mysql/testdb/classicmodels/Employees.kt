@@ -18,7 +18,7 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: employeeNumber
  *
- * Foreign keys: [] 
+ * Foreign keys: [officeCode to classicmodels.offices.officeCode, reportsTo to classicmodels.employees.employeeNumber] 
  */
 object Employees:Table<EmployeesRow>("employees"), HasUpdateBuilder<EmployeesUpdateBuilder, EmployeesInsertBuilder> {
     /**
@@ -43,12 +43,16 @@ object Employees:Table<EmployeesRow>("employees"), HasUpdateBuilder<EmployeesUpd
     val email = com.dbobjekts.metadata.column.VarcharColumn(this, "email")
     /**
      * Represents db column classicmodels.employees.officeCode
+     *
+     * Foreign key to classicmodels.offices.officeCode
      */
-    val officecode = com.dbobjekts.metadata.column.VarcharColumn(this, "officeCode")
+    val officecode = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "officeCode", Offices.officecode)
     /**
      * Represents db column classicmodels.employees.reportsTo
+     *
+     * Foreign key to classicmodels.employees.employeeNumber
      */
-    val reportsto = com.dbobjekts.metadata.column.NullableLongColumn(this, "reportsTo")
+    val reportsto = com.dbobjekts.metadata.column.OptionalForeignKeyLongColumn(this, "reportsTo", Employees.employeenumber)
     /**
      * Represents db column classicmodels.employees.jobTitle
      */

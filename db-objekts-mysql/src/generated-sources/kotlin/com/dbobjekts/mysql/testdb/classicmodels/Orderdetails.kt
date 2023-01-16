@@ -18,17 +18,21 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: [orderNumber, productCode]
  *
- * Foreign keys: [] 
+ * Foreign keys: [orderNumber to classicmodels.orders.orderNumber, productCode to classicmodels.products.productCode] 
  */
 object Orderdetails:Table<OrderdetailsRow>("orderdetails"), HasUpdateBuilder<OrderdetailsUpdateBuilder, OrderdetailsInsertBuilder> {
     /**
      * Represents db column classicmodels.orderdetails.orderNumber
+     *
+     * Foreign key to classicmodels.orders.orderNumber
      */
-    val ordernumber = com.dbobjekts.metadata.column.LongColumn(this, "orderNumber")
+    val ordernumber = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "orderNumber", Orders.ordernumber)
     /**
      * Represents db column classicmodels.orderdetails.productCode
+     *
+     * Foreign key to classicmodels.products.productCode
      */
-    val productcode = com.dbobjekts.metadata.column.VarcharColumn(this, "productCode")
+    val productcode = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "productCode", Products.productcode)
     /**
      * Represents db column classicmodels.orderdetails.quantityOrdered
      */

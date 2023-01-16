@@ -18,17 +18,21 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: none
  *
- * Foreign keys: [] 
+ * Foreign keys: [employee_id to core.EMPLOYEE.id, address_id to core.ADDRESS.id] 
  */
 object EmployeeAddress:Table<EmployeeAddressRow>("EMPLOYEE_ADDRESS"), HasUpdateBuilder<EmployeeAddressUpdateBuilder, EmployeeAddressInsertBuilder> {
     /**
      * Represents db column core.EMPLOYEE_ADDRESS.employee_id
+     *
+     * Foreign key to core.EMPLOYEE.id
      */
-    val employeeId = com.dbobjekts.metadata.column.LongColumn(this, "employee_id")
+    val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "employee_id", Employee.id)
     /**
      * Represents db column core.EMPLOYEE_ADDRESS.address_id
+     *
+     * Foreign key to core.ADDRESS.id
      */
-    val addressId = com.dbobjekts.metadata.column.LongColumn(this, "address_id")
+    val addressId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "address_id", Address.id)
     /**
      * Represents db column core.EMPLOYEE_ADDRESS.kind
      */

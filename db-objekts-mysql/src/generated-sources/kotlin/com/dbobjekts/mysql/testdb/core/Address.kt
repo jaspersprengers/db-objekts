@@ -18,7 +18,7 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: id
  *
- * Foreign keys: [] 
+ * Foreign keys: [country_id to core.COUNTRY.id] 
  */
 object Address:Table<AddressRow>("ADDRESS"), HasUpdateBuilder<AddressUpdateBuilder, AddressInsertBuilder> {
     /**
@@ -31,8 +31,10 @@ object Address:Table<AddressRow>("ADDRESS"), HasUpdateBuilder<AddressUpdateBuild
     val street = com.dbobjekts.metadata.column.VarcharColumn(this, "street")
     /**
      * Represents db column core.ADDRESS.country_id
+     *
+     * Foreign key to core.COUNTRY.id
      */
-    val countryId = com.dbobjekts.metadata.column.VarcharColumn(this, "country_id")
+    val countryId = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "country_id", Country.id)
     override val columns: List<AnyColumn> = listOf(id,street,countryId)
     override fun toValue(values: List<Any?>) = AddressRow(values[0] as Long,values[1] as String,values[2] as String)
     override fun metadata(): WriteQueryAccessors<AddressUpdateBuilder, AddressInsertBuilder> = WriteQueryAccessors(AddressUpdateBuilder(), AddressInsertBuilder())

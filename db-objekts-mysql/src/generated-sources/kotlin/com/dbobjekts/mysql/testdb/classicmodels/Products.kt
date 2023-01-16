@@ -18,7 +18,7 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: productCode
  *
- * Foreign keys: [] 
+ * Foreign keys: [productLine to classicmodels.productlines.productLine] 
  */
 object Products:Table<ProductsRow>("products"), HasUpdateBuilder<ProductsUpdateBuilder, ProductsInsertBuilder> {
     /**
@@ -31,8 +31,10 @@ object Products:Table<ProductsRow>("products"), HasUpdateBuilder<ProductsUpdateB
     val productname = com.dbobjekts.metadata.column.VarcharColumn(this, "productName")
     /**
      * Represents db column classicmodels.products.productLine
+     *
+     * Foreign key to classicmodels.productlines.productLine
      */
-    val productline = com.dbobjekts.metadata.column.VarcharColumn(this, "productLine")
+    val productline = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "productLine", Productlines.productline)
     /**
      * Represents db column classicmodels.products.productScale
      */

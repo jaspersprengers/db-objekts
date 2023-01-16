@@ -63,7 +63,7 @@ class ColumnTypeMappingConfigurer {
             columnType = columnType,
             schema = schema,
             table = table,
-            exactMatch = true
+            exactMatch = false
         )
         return this
     }

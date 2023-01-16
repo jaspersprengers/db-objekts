@@ -18,7 +18,7 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: orderNumber
  *
- * Foreign keys: [] 
+ * Foreign keys: [customerNumber to classicmodels.customers.customerNumber] 
  */
 object Orders:Table<OrdersRow>("orders"), HasUpdateBuilder<OrdersUpdateBuilder, OrdersInsertBuilder> {
     /**
@@ -47,8 +47,10 @@ object Orders:Table<OrdersRow>("orders"), HasUpdateBuilder<OrdersUpdateBuilder, 
     val comments = com.dbobjekts.metadata.column.NullableVarcharColumn(this, "comments")
     /**
      * Represents db column classicmodels.orders.customerNumber
+     *
+     * Foreign key to classicmodels.customers.customerNumber
      */
-    val customernumber = com.dbobjekts.metadata.column.LongColumn(this, "customerNumber")
+    val customernumber = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "customerNumber", Customers.customernumber)
     override val columns: List<AnyColumn> = listOf(ordernumber,orderdate,requireddate,shippeddate,status,comments,customernumber)
     override fun toValue(values: List<Any?>) = OrdersRow(values[0] as Long,values[1] as java.time.LocalDate,values[2] as java.time.LocalDate,values[3] as java.time.LocalDate?,values[4] as String,values[5] as String?,values[6] as Long)
     override fun metadata(): WriteQueryAccessors<OrdersUpdateBuilder, OrdersInsertBuilder> = WriteQueryAccessors(OrdersUpdateBuilder(), OrdersInsertBuilder())

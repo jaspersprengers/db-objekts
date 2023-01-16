@@ -9,6 +9,8 @@ import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.UpdateBuilderBase
+import com.dbobjekts.mysql.testdb.core.Employee
+
 
 
 /**           
@@ -18,7 +20,7 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: id
  *
- * Foreign keys: [] 
+ * Foreign keys: [employee_id to core.EMPLOYEE.id] 
  */
 object Certificate:Table<CertificateRow>("CERTIFICATE"), HasUpdateBuilder<CertificateUpdateBuilder, CertificateInsertBuilder> {
     /**
@@ -31,8 +33,10 @@ object Certificate:Table<CertificateRow>("CERTIFICATE"), HasUpdateBuilder<Certif
     val name = com.dbobjekts.metadata.column.VarcharColumn(this, "name")
     /**
      * Represents db column hr.CERTIFICATE.employee_id
+     *
+     * Foreign key to core.EMPLOYEE.id
      */
-    val employeeId = com.dbobjekts.metadata.column.LongColumn(this, "employee_id")
+    val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "employee_id", Employee.id)
     override val columns: List<AnyColumn> = listOf(id,name,employeeId)
     override fun toValue(values: List<Any?>) = CertificateRow(values[0] as Long,values[1] as String,values[2] as Long)
     override fun metadata(): WriteQueryAccessors<CertificateUpdateBuilder, CertificateInsertBuilder> = WriteQueryAccessors(CertificateUpdateBuilder(), CertificateInsertBuilder())

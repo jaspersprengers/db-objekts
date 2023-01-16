@@ -244,7 +244,7 @@ object AllTypes:Table<AllTypesRow>("ALL_TYPES"), HasUpdateBuilder<AllTypesUpdate
     /**
      * Represents db column CORE.ALL_TYPES.ADDRESS_INT_NIL
      */
-    val addressIntNil = com.dbobjekts.fixture.columns.AddressTypeAsIntegerColumn(this, "ADDRESS_INT_NIL")
+    val addressIntNil = com.dbobjekts.fixture.columns.NullableAddressTypeAsIntegerColumn(this, "ADDRESS_INT_NIL")
     /**
      * Represents db column CORE.ALL_TYPES.ADDRESS_STRING
      */
@@ -252,9 +252,9 @@ object AllTypes:Table<AllTypesRow>("ALL_TYPES"), HasUpdateBuilder<AllTypesUpdate
     /**
      * Represents db column CORE.ALL_TYPES.ADDRESS_STRING_NIL
      */
-    val addressStringNil = com.dbobjekts.fixture.columns.AddressTypeAsStringColumn(this, "ADDRESS_STRING_NIL")
+    val addressStringNil = com.dbobjekts.fixture.columns.NullableAddressTypeAsStringColumn(this, "ADDRESS_STRING_NIL")
     override val columns: List<AnyColumn> = listOf(id,characterCol,characterColNil,charactervaryingCol,charactervaryingColNil,characterlargeobjectCol,characterlargeobjectColNil,varcharIgnorecaseCol,varcharIgnorecaseColNil,enumCol,enumColNil,binaryCol,binaryColNil,binaryvaryingCol,binaryvaryingColNil,binarylargeobjectCol,binarylargeobjectColNil,jsonCol,jsonColNil,booleanCol,booleanColNil,tinyintCol,tinyintColNil,smallintCol,smallintColNil,integerCol,integerColNil,bigintCol,bigintColNil,numericCol,numericColNil,decfloatCol,decfloatColNil,realCol,realColNil,doubleprecisionCol,doubleprecisionColNil,dateCol,dateColNil,timeCol,timeColNil,timewithtimezoneCol,timewithtimezoneColNil,timestampCol,timestampColNil,timestampwithtimezoneCol,timestampwithtimezoneColNil,uuidCol,uuidColNil,intervalCol,intervalColNil,geometryColNil,intArrayCol,intArrayColNil,addressInt,addressIntNil,addressString,addressStringNil)
-    override fun toValue(values: List<Any?>) = AllTypesRow(values[0] as Long,values[1] as String,values[2] as String?,values[3] as String,values[4] as String?,values[5] as String,values[6] as String?,values[7] as String,values[8] as String?,values[9] as String,values[10] as String?,values[11] as ByteArray,values[12] as ByteArray?,values[13] as ByteArray,values[14] as ByteArray?,values[15] as java.sql.Blob,values[16] as java.sql.Blob?,values[17] as ByteArray,values[18] as ByteArray?,values[19] as Boolean,values[20] as Boolean?,values[21] as Byte,values[22] as Byte?,values[23] as Int,values[24] as Int?,values[25] as Int,values[26] as Int?,values[27] as Long,values[28] as Long?,values[29] as java.math.BigDecimal,values[30] as java.math.BigDecimal?,values[31] as java.math.BigDecimal,values[32] as java.math.BigDecimal?,values[33] as Float,values[34] as Float?,values[35] as Double,values[36] as Double?,values[37] as java.time.LocalDate,values[38] as java.time.LocalDate?,values[39] as java.time.LocalTime,values[40] as java.time.LocalTime?,values[41] as java.time.OffsetDateTime,values[42] as java.time.OffsetDateTime?,values[43] as java.time.Instant,values[44] as java.time.Instant?,values[45] as java.time.OffsetDateTime,values[46] as java.time.OffsetDateTime?,values[47] as java.util.UUID,values[48] as java.util.UUID?,values[49] as org.h2.api.Interval,values[50] as org.h2.api.Interval?,values[51] as String?,values[52] as Array<Any>,values[53] as Array<Any>?,values[54] as com.dbobjekts.fixture.columns.AddressType,values[55] as com.dbobjekts.fixture.columns.AddressType,values[56] as com.dbobjekts.fixture.columns.AddressType,values[57] as com.dbobjekts.fixture.columns.AddressType)
+    override fun toValue(values: List<Any?>) = AllTypesRow(values[0] as Long,values[1] as String,values[2] as String?,values[3] as String,values[4] as String?,values[5] as String,values[6] as String?,values[7] as String,values[8] as String?,values[9] as String,values[10] as String?,values[11] as ByteArray,values[12] as ByteArray?,values[13] as ByteArray,values[14] as ByteArray?,values[15] as java.sql.Blob,values[16] as java.sql.Blob?,values[17] as ByteArray,values[18] as ByteArray?,values[19] as Boolean,values[20] as Boolean?,values[21] as Byte,values[22] as Byte?,values[23] as Int,values[24] as Int?,values[25] as Int,values[26] as Int?,values[27] as Long,values[28] as Long?,values[29] as java.math.BigDecimal,values[30] as java.math.BigDecimal?,values[31] as java.math.BigDecimal,values[32] as java.math.BigDecimal?,values[33] as Float,values[34] as Float?,values[35] as Double,values[36] as Double?,values[37] as java.time.LocalDate,values[38] as java.time.LocalDate?,values[39] as java.time.LocalTime,values[40] as java.time.LocalTime?,values[41] as java.time.OffsetDateTime,values[42] as java.time.OffsetDateTime?,values[43] as java.time.Instant,values[44] as java.time.Instant?,values[45] as java.time.OffsetDateTime,values[46] as java.time.OffsetDateTime?,values[47] as java.util.UUID,values[48] as java.util.UUID?,values[49] as org.h2.api.Interval,values[50] as org.h2.api.Interval?,values[51] as String?,values[52] as Array<Any>,values[53] as Array<Any>?,values[54] as com.dbobjekts.fixture.columns.AddressType,values[55] as com.dbobjekts.fixture.columns.AddressType?,values[56] as com.dbobjekts.fixture.columns.AddressType,values[57] as com.dbobjekts.fixture.columns.AddressType?)
     override fun metadata(): WriteQueryAccessors<AllTypesUpdateBuilder, AllTypesInsertBuilder> = WriteQueryAccessors(AllTypesUpdateBuilder(), AllTypesInsertBuilder())
 }
 
@@ -313,9 +313,9 @@ class AllTypesUpdateBuilder() : UpdateBuilderBase(AllTypes) {
     fun intArrayCol(value: Array<Any>): AllTypesUpdateBuilder = put(AllTypes.intArrayCol, value)
     fun intArrayColNil(value: Array<Any>?): AllTypesUpdateBuilder = put(AllTypes.intArrayColNil, value)
     fun addressInt(value: com.dbobjekts.fixture.columns.AddressType): AllTypesUpdateBuilder = put(AllTypes.addressInt, value)
-    fun addressIntNil(value: com.dbobjekts.fixture.columns.AddressType): AllTypesUpdateBuilder = put(AllTypes.addressIntNil, value)
+    fun addressIntNil(value: com.dbobjekts.fixture.columns.AddressType?): AllTypesUpdateBuilder = put(AllTypes.addressIntNil, value)
     fun addressString(value: com.dbobjekts.fixture.columns.AddressType): AllTypesUpdateBuilder = put(AllTypes.addressString, value)
-    fun addressStringNil(value: com.dbobjekts.fixture.columns.AddressType): AllTypesUpdateBuilder = put(AllTypes.addressStringNil, value)
+    fun addressStringNil(value: com.dbobjekts.fixture.columns.AddressType?): AllTypesUpdateBuilder = put(AllTypes.addressStringNil, value)
     
     /**
      * FOR INTERNAL USE ONLY
@@ -440,11 +440,11 @@ class AllTypesInsertBuilder():InsertBuilderBase(){
     fun intArrayCol(value: Array<Any>): AllTypesInsertBuilder = put(AllTypes.intArrayCol, value)
     fun intArrayColNil(value: Array<Any>?): AllTypesInsertBuilder = put(AllTypes.intArrayColNil, value)
     fun addressInt(value: com.dbobjekts.fixture.columns.AddressType): AllTypesInsertBuilder = put(AllTypes.addressInt, value)
-    fun addressIntNil(value: com.dbobjekts.fixture.columns.AddressType): AllTypesInsertBuilder = put(AllTypes.addressIntNil, value)
+    fun addressIntNil(value: com.dbobjekts.fixture.columns.AddressType?): AllTypesInsertBuilder = put(AllTypes.addressIntNil, value)
     fun addressString(value: com.dbobjekts.fixture.columns.AddressType): AllTypesInsertBuilder = put(AllTypes.addressString, value)
-    fun addressStringNil(value: com.dbobjekts.fixture.columns.AddressType): AllTypesInsertBuilder = put(AllTypes.addressStringNil, value)
+    fun addressStringNil(value: com.dbobjekts.fixture.columns.AddressType?): AllTypesInsertBuilder = put(AllTypes.addressStringNil, value)
 
-    fun mandatoryColumns(characterCol: String, charactervaryingCol: String, characterlargeobjectCol: String, varcharIgnorecaseCol: String, enumCol: String, binaryCol: ByteArray, binaryvaryingCol: ByteArray, binarylargeobjectCol: java.sql.Blob, jsonCol: ByteArray, booleanCol: Boolean, tinyintCol: Byte, smallintCol: Int, integerCol: Int, bigintCol: Long, numericCol: java.math.BigDecimal, decfloatCol: java.math.BigDecimal, realCol: Float, doubleprecisionCol: Double, dateCol: java.time.LocalDate, timeCol: java.time.LocalTime, timewithtimezoneCol: java.time.OffsetDateTime, timestampCol: java.time.Instant, timestampwithtimezoneCol: java.time.OffsetDateTime, uuidCol: java.util.UUID, intervalCol: org.h2.api.Interval, intArrayCol: Array<Any>, addressInt: com.dbobjekts.fixture.columns.AddressType, addressIntNil: com.dbobjekts.fixture.columns.AddressType, addressString: com.dbobjekts.fixture.columns.AddressType, addressStringNil: com.dbobjekts.fixture.columns.AddressType) : AllTypesInsertBuilder {
+    fun mandatoryColumns(characterCol: String, charactervaryingCol: String, characterlargeobjectCol: String, varcharIgnorecaseCol: String, enumCol: String, binaryCol: ByteArray, binaryvaryingCol: ByteArray, binarylargeobjectCol: java.sql.Blob, jsonCol: ByteArray, booleanCol: Boolean, tinyintCol: Byte, smallintCol: Int, integerCol: Int, bigintCol: Long, numericCol: java.math.BigDecimal, decfloatCol: java.math.BigDecimal, realCol: Float, doubleprecisionCol: Double, dateCol: java.time.LocalDate, timeCol: java.time.LocalTime, timewithtimezoneCol: java.time.OffsetDateTime, timestampCol: java.time.Instant, timestampwithtimezoneCol: java.time.OffsetDateTime, uuidCol: java.util.UUID, intervalCol: org.h2.api.Interval, intArrayCol: Array<Any>, addressInt: com.dbobjekts.fixture.columns.AddressType, addressString: com.dbobjekts.fixture.columns.AddressType) : AllTypesInsertBuilder {
       mandatory(AllTypes.characterCol, characterCol)
       mandatory(AllTypes.charactervaryingCol, charactervaryingCol)
       mandatory(AllTypes.characterlargeobjectCol, characterlargeobjectCol)
@@ -472,9 +472,7 @@ class AllTypesInsertBuilder():InsertBuilderBase(){
       mandatory(AllTypes.intervalCol, intervalCol)
       mandatory(AllTypes.intArrayCol, intArrayCol)
       mandatory(AllTypes.addressInt, addressInt)
-      mandatory(AllTypes.addressIntNil, addressIntNil)
       mandatory(AllTypes.addressString, addressString)
-      mandatory(AllTypes.addressStringNil, addressStringNil)
       return this
     }
 
@@ -600,9 +598,9 @@ val id: Long = 0,
   val intArrayCol: Array<Any>,
   val intArrayColNil: Array<Any>?,
   val addressInt: com.dbobjekts.fixture.columns.AddressType,
-  val addressIntNil: com.dbobjekts.fixture.columns.AddressType,
+  val addressIntNil: com.dbobjekts.fixture.columns.AddressType?,
   val addressString: com.dbobjekts.fixture.columns.AddressType,
-  val addressStringNil: com.dbobjekts.fixture.columns.AddressType    
+  val addressStringNil: com.dbobjekts.fixture.columns.AddressType?    
 ) : TableRowData<AllTypesUpdateBuilder, AllTypesInsertBuilder>(AllTypes.metadata()){
      override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(AllTypes.id, id))
 }

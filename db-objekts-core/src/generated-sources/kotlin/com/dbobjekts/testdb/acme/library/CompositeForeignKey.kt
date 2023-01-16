@@ -24,11 +24,11 @@ object CompositeForeignKey:Table<CompositeForeignKeyRow>("COMPOSITE_FOREIGN_KEY"
     /**
      * Represents db column LIBRARY.COMPOSITE_FOREIGN_KEY.ISBN
      */
-    val isbn = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "ISBN", Composite.isbn)
+    val isbn = com.dbobjekts.metadata.column.VarcharColumn(this, "ISBN")
     /**
      * Represents db column LIBRARY.COMPOSITE_FOREIGN_KEY.TITLE
      */
-    val title = com.dbobjekts.metadata.column.ForeignKeyVarcharColumn(this, "TITLE", Composite.title)
+    val title = com.dbobjekts.metadata.column.VarcharColumn(this, "TITLE")
     /**
      * Represents db column LIBRARY.COMPOSITE_FOREIGN_KEY.MESSAGE
      */
