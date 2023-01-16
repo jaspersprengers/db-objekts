@@ -459,9 +459,16 @@ NOTE: About auto-generated primary keys. `EmployeeRow` has a non-null `id` field
 
 [#queries-select]
 === Selecting data
-Let's move on to select statements now. The pattern is `transaction.select( selectable1, s2, ... ).where( conditions ).[first[orNull]()|asList()]`.
+Let's move on to select statements. These consist of the following parts:
 
-You start with listing the columns and tables you want to retrieve, the where clause and then retrieve a list of results. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/SelectStatementComponentTest.kt[SelectStatementComponentTest]
+* At least one column or data row reference in the `select(..)` call.
+* An optional `from(..)` clause for when you need custom join syntax.
+* An optional `where(..)` clause to constrain the selection.
+* An optional `orderBy()` or `limit()` clause.
+* An optional `having(..)` clause when you use an aggregated column.
+* Finally, a call to `asList()` or `first[OrNull]()` executes the statement and returns the result.
+
+See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/SelectStatementComponentTest.kt[SelectStatementComponentTest]
 
 This query selects name and salary for all rows in the employee table. Notice we have imported the 'e' alias from the generated https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/generated-sources/kotlin/com/dbobjekts/testdb/acme/Aliases.kt[Aliases] object. This is a handy shortcut that refers to the exact same Employee object.
 ```kotlin
@@ -481,7 +488,7 @@ The `Employee` and `Address` tables are linked via the `EmployeeAddress` table i
 We can select from the `Employee` table with a constraint on the `Address` table, without specifying the join. This mechanism saves you much typing, but comes with limitations:
 
 * There must be an explicit foreign-key relationship between the tables referenced in either the `select` or the `where` calls, or there must be a many-to-many join table that links two tables referred in your query, like in the above example.
-* By default, joins are inner joins. Using outer joins is possible, but comes with some caveats. Check the xref:outerjoins[dedicated section].
+* By default, joins are inner joins. Using outer joins is possible, but comes with some caveats. Check the xref:customjoins[dedicated section].
 
 
 NOTE: How can db-Objekts figure out the parameterized Tuple* return type from the arguments to `select()`? By having 22 overloaded versions of `select()`. Since you can also retrieve an entire table row as a single `Selectable`, that should be more than enough. The number 22 is inspired by Scala, which supports built-in Tuples up to that number.
@@ -531,12 +538,23 @@ You can further tweak selection results with the `orderBy` and `limit(..)` metho
 
 Note that these constraints are executed server-side, as they are part of the SQL. db-Objekts takes care of the proper syntax, because vendors handle retrieval limits differently.
 
-[#outerjoins]
-=== Outer joins
-Recall the previous query `tm.select(Employee.name, Hobby.name)`, which does an inner join and only returns results where a `hobby` record is linked to an `employee`. If we want all employee records, what we need is a left outer join. There are two options.
+[#customjoins]
+=== Custom join syntax
+When a query refers to columns whose tables are linked through foreign key relationships, then db-Objekts can figure out the correct join syntax. Consider the `hobbyId` field in the `Employee` table metadata object
+```kotlin
+val hobbyId = OptionalForeignKeyVarcharColumn(this, "hobby_id", Hobby.id)
+```
+
+This section deals with scenarios where this automatic behavior is not possible or not desirable. When it comes to join syntax, there are three options:
+
+* Automatic join discovery: only possible when all relevant tables are referenced either in the `select()` or the `where()` clause and they have explicit foreign key relationships.
+* Semi-manual `from()` clause. You specify the tables to join, but db-Objekts can figure out which columns to use for the join.
+* Fully manual `from()` clause. You specify both the tables and the columns to join, when db-Objekts cannot reliably determine this automatically.
+
+==== Automatic join discovery with outer joins
+Recall the previous query `tm.select(Employee.name, Hobby.name)`, which does an inner join and only returns results where a `hobby` record is linked to an `employee`. If we want all employee records, what we need is a left outer join.
 ```
 tr.select(Employee.name, Hobby.name).useOuterJoins()
-tr.select(Employee.name, Hobby.name).from(Employee.leftJoin(Hobby))
 ```
 The method `useOuterJoins` instructs the standard join mechanism to use left outer joins instead of inner joins. Alternatively, you can build the join chain yourself. This gives greater control when there are more tables involved, because maybe not everything should be an outer join.
 
@@ -546,6 +564,39 @@ The fix is to use the nullable counterpart if a non-null column can return null 
 ```kotlin
 tr.select(Employee.name, Hobby.name.nullable).useOuterJoins()
 ```
+
+==== The semi-manual join chain
+The previous query could also be written as follows:
+```
+tr.select(Employee.name, Hobby.name).from(Employee.leftJoin(Hobby))
+```
+The `join()` method takes a `JoinChain`, which is created from a `Table` object and at least one call to `innerJoin()`, `leftJoin()` or `rightJoin()`. It yields the SQL you would expect:
+```sql
+FROM EMPLOYEE e LEFT JOIN HOBBY H on e.id = h.employee_id
+```
+A more typical use of an explicit join would be the following:
+```
+tr.select(Employee.name, Country.name).from(Employee.innerJoin(EmployeeAddress).innerJoin(Address).innerJoin(Country))
+```
+Without this explicit `from` clause and only the `employee` and `country` tables referenced, there's not enough information to join the tables together, so you need to lend a hand.
+
+==== The fully manual join chain
+If there is no foreign key relationship between two tables in the metadata, you need to provide the relevant columns yourself. The `on()` clause takes a clause strung together from a column, an operator, and another column. It's the same syntax you will meet in the next section that covers the where clause in detail.
+```kotlin
+val manualJoin =
+    tr.select(Employee, Address.street, EmployeeAddress.kind, Department.name.nullable, Hobby.name.nullable, Certificate.name.nullable)
+        .from(Employee
+            .innerJoin(ea).on(ea.employeeId.eq(e.id))
+            .innerJoin(a).on(ea.addressId.eq(a.id))
+            .leftJoin(h).on(e.hobbyId.eq(h.id))
+            .leftJoin(EmployeeDepartment).on(e.id.eq(ed.employeeId))
+            .leftJoin(Department).on(ed.departmentId.eq(d.id))
+            .leftJoin(Certificate).on(c1.employeeId.eq(e.id))).asList()
+    //in this example there is a composite foreign key between parent and child on the name and address column. db-Objekts does not handle composite foreign keys automatically.
+    tr.select(Parent,Child).from(Parent.innerJoin(Child).on(p.name.eq(c.name).and(p.address).eq(c.address))).asList()
+```
+
+
 
 === The where-clause in details
 Updates, selects and deletes are executed against a range of database rows that satisfy certain criteria. These criteria are expressed in the where-clause.

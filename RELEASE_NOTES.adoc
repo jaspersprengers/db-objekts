@@ -2,6 +2,7 @@
 
 == 0.4.0-alpha
 * Added PostgreSQL and MySQL vendor types
+* Support for fully manual join syntax
 
 == 0.3.2-alpha
 * Aggregate functions in `BigDecimalColumn` return `BigDecimal`. Long or Double values means possible loss of range and precision.
