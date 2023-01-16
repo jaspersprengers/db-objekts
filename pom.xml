@@ -12,9 +12,9 @@
     <modules>
         <module>db-objekts-core</module>
         <module>db-objekts-mariadb</module>
-        <module>db-objekts-spring-demo</module>
         <module>db-objekts-mysql</module>
         <module>db-objekts-postgresql</module>
+        <module>db-objekts-spring-demo</module>
     </modules>
 
     <parent>

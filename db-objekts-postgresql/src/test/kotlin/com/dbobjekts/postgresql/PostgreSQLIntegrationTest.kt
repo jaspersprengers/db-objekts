@@ -57,7 +57,7 @@ class PostgreSQLIntegrationTest {
         gen.configurePrimaryKeySequences().setSequenceNameForPrimaryKey("core","EMPLOYEE", "id", "EMPLOYEE_SEQ")
         gen.configureOutput()
             .basePackageForSources("com.dbobjekts.postgresql.testdb")
-            .outputDirectoryForGeneratedSources(Paths.get("db-objekts-postgresql/src/generated-sources/kotlin").toAbsolutePath().toString())
+            .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff = gen.differencesWithCatalog(CatalogDefinition)
         assertThat(diff).isEmpty()
         gen.generateSourceFiles()

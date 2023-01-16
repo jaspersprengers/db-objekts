@@ -36,6 +36,7 @@ object StringUtil {
         return buffer.toList()
     }
 
+    @Deprecated("replace with list + list")
     fun <T> concatToList(els: List<T>, el: T): List<T> {
         val buffer = mutableListOf<T>()
         buffer.addAll(els)
