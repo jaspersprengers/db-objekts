@@ -46,8 +46,11 @@ abstract class Column<I>(
 
 
     fun eq(column: AnyColumn): SubClause = createColumnCondition(column,"=")
-
     fun ne(column: AnyColumn): SubClause = createColumnCondition(column,"!=")
+    fun lt(column: AnyColumn): SubClause = createColumnCondition(column,"<")
+    fun gt(column: AnyColumn): SubClause = createColumnCondition(column,">")
+    fun le(column: AnyColumn): SubClause = createColumnCondition(column,"<=")
+    fun ge(column: AnyColumn): SubClause = createColumnCondition(column,">=")
 
     /**
      * operator for nullability check. Results in SQL my_column IS NULL

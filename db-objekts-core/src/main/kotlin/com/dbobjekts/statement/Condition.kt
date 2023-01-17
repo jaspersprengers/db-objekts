@@ -3,6 +3,7 @@ package com.dbobjekts.statement
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.column.Column
+import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.statement.whereclause.WhereClauseComponent
 import com.dbobjekts.util.StringUtil
 
@@ -46,8 +47,11 @@ data class Condition<I, W : WhereClauseComponent>(
         )
 
     fun eq(column: AnyColumn): W = createColumnCondition(column,"=")
-
     fun ne(column: AnyColumn): W = createColumnCondition(column,"!=")
+    fun lt(column: AnyColumn): W = createColumnCondition(column,"<")
+    fun gt(column: AnyColumn): W = createColumnCondition(column,">")
+    fun le(column: AnyColumn): W = createColumnCondition(column,"<=")
+    fun ge(column: AnyColumn): W = createColumnCondition(column,">=")
 
     /**
      * operator for nullability check. Results in SQL my_column IS NULL

@@ -539,19 +539,24 @@ You can further tweak selection results with the `orderBy` and `limit(..)` metho
 Note that these constraints are executed server-side, as they are part of the SQL. db-Objekts takes care of the proper syntax, because vendors handle retrieval limits differently.
 
 [#customjoins]
-=== Custom join syntax
+=== All about joins
 When a query refers to columns whose tables are linked through foreign key relationships, then db-Objekts can figure out the correct join syntax. Consider the `hobbyId` field in the `Employee` table metadata object
 ```kotlin
 val hobbyId = OptionalForeignKeyVarcharColumn(this, "hobby_id", Hobby.id)
 ```
+This is enough information to create the necessary join.
+```sql
+FROM EMPLOYEE e LEFT JOIN HOBBY H on e.id = h.employee_id
+```
+This mechanism also works when you reference `employee` and `address`, that are connected through the many-to-many table `emmployee_address`.
 
-This section deals with scenarios where this automatic behavior is not possible or not desirable. When it comes to join syntax, there are three options:
+This section deals with scenarios where automatic discovery is not possible or desired. When it comes to join syntax, there are three options:
 
 * Automatic join discovery: only possible when all relevant tables are referenced either in the `select()` or the `where()` clause and they have explicit foreign key relationships.
 * Semi-manual `from()` clause. You specify the tables to join, but db-Objekts can figure out which columns to use for the join.
 * Fully manual `from()` clause. You specify both the tables and the columns to join, when db-Objekts cannot reliably determine this automatically.
 
-==== Automatic join discovery with outer joins
+==== Automatic join discovery and outer joins
 Recall the previous query `tm.select(Employee.name, Hobby.name)`, which does an inner join and only returns results where a `hobby` record is linked to an `employee`. If we want all employee records, what we need is a left outer join.
 ```
 tr.select(Employee.name, Hobby.name).useOuterJoins()
@@ -565,38 +570,32 @@ The fix is to use the nullable counterpart if a non-null column can return null 
 tr.select(Employee.name, Hobby.name.nullable).useOuterJoins()
 ```
 
-==== The semi-manual join chain
+==== Manual joins with automatic column discovery
 The previous query could also be written as follows:
 ```
 tr.select(Employee.name, Hobby.name).from(Employee.leftJoin(Hobby))
 ```
-The `join()` method takes a `JoinChain`, which is created from a `Table` object and at least one call to `innerJoin()`, `leftJoin()` or `rightJoin()`. It yields the SQL you would expect:
-```sql
-FROM EMPLOYEE e LEFT JOIN HOBBY H on e.id = h.employee_id
-```
+The `join()` method takes a `JoinChain`, which is created from a `Table` object and at least one call to `innerJoin()`, `leftJoin()` or `rightJoin()`.
+
 A more typical use of an explicit join would be the following:
 ```
 tr.select(Employee.name, Country.name).from(Employee.innerJoin(EmployeeAddress).innerJoin(Address).innerJoin(Country))
 ```
-Without this explicit `from` clause and only the `employee` and `country` tables referenced, there's not enough information to join the tables together, so you need to lend a hand.
+`employee` and `country` are linked through two intermediary tables (`employee_address` and `address`). That's not enough information to join the tables together, so you need to lend a hand. But since the metadata objects contain enough information about the relevant columns to use in the join, you can omit those.
 
 ==== The fully manual join chain
-If there is no foreign key relationship between two tables in the metadata, you need to provide the relevant columns yourself. The `on()` clause takes a clause strung together from a column, an operator, and another column. It's the same syntax you will meet in the next section that covers the where clause in detail.
+If there is no foreign key relationship between two tables in the metadata, you need to provide the relevant join columns yourself. The `on()` clause takes a clause of `column.operator(column)]`. It's the same syntax you will meet in the next section about the where clause.
 ```kotlin
 val manualJoin =
-    tr.select(Employee, Address.street, EmployeeAddress.kind, Department.name.nullable, Hobby.name.nullable, Certificate.name.nullable)
+    tr.select(Employee, Address.street, EmployeeAddress.kind, Hobby.name.nullable)
         .from(Employee
             .innerJoin(ea).on(ea.employeeId.eq(e.id))
             .innerJoin(a).on(ea.addressId.eq(a.id))
             .leftJoin(h).on(e.hobbyId.eq(h.id))
-            .leftJoin(EmployeeDepartment).on(e.id.eq(ed.employeeId))
-            .leftJoin(Department).on(ed.departmentId.eq(d.id))
-            .leftJoin(Certificate).on(c1.employeeId.eq(e.id))).asList()
+            ).asList()
     //in this example there is a composite foreign key between parent and child on the name and address column. db-Objekts does not handle composite foreign keys automatically.
     tr.select(Parent,Child).from(Parent.innerJoin(Child).on(p.name.eq(c.name).and(p.address).eq(c.address))).asList()
 ```
-
-
 
 === The where-clause in details
 Updates, selects and deletes are executed against a range of database rows that satisfy certain criteria. These criteria are expressed in the where-clause.
