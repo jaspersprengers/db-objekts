@@ -328,7 +328,7 @@ abstract operator fun invoke(properties: ColumnMappingProperties): Class<C>?
 ```
 The `properties` argument provides metadata about the db column (schema, table, name, nullability and its vendor-specific db type). Judged on these data you then return a class reference to a subclass of `NonNullableColumn`. db-Objekts will create an instance with the correct table reference and column name. If the column in question is nullable, it picks the nullable counterpart.
 
-=== Setting sequence names
+==== Setting sequence names
 Many vendors support sequences for generating primary keys, but the information schema does not store which sequence is used for which table. So, unfortunately, you have to configure this manually, as follows:
 ```kotlin
  generator.configurePrimaryKeySequences()
@@ -345,6 +345,31 @@ generator.mappingConfigurer()
             properties.table.value + "_SEQ"
     }
 ```
+
+==== Overriding default table and column naming
+db-Objekts uses the following rules to convert table and column names to common JVM patterns:
+
+* Snake case is converted to camel case: `employee_table` becomes `Employee`
+* Table names are always capitalized: `Employee`
+* Column names are always lower camel case: `addressId`
+* Any name that resolves to a reserved Java/Kotlin word is rejected.
+* Table names must be unique across schemas.
+
+Because of these rules it may be necessary to set an explicit name mapping for a table or column. Another reason could be that the naming scheme in the db is inconsistent, or confusing, and you don't want to copy that as-is to the metamodel. For this purpose there's the  `configureObjectNaming()` option.
+
+In this example there's a database with all tables and columns in Dutch, and there are two employee tables in separate schemas.
+
+Now you can do `select(Employee.dateOfBirth)` without learning Dutch first.
+
+```kotlin
+generator.configureObjectNaming()
+    //Sets the name of the Kotlin object
+    .setObjectNameForTable(schema = "core",table = "werknemer", objectName = "Employee")
+    .setObjectNameForTable("hr","werknemer", "HrEmployee")
+    //sets the field name to dateOfBirth in the Employee object
+    .setFieldNameForColumn(schema = "core", table = "werknemer", column = "geboorte_datum", fieldName = "dateOfBirth")
+```
+
 ==== Output configuration
 That was a lot of information! Don't worry, we're almost done. To produce the metadata, `CodeGenerator` only needs to know where to put things.
 
@@ -699,7 +724,7 @@ tr.update(retrieved.copy(salary = retrieved.salary + 100))
 The row data object retrieved is immutable, so we need to make a copy with an updated salary field. Note that data rows in db-Objekts are very different from managed entities in ORM.
 
 [#save-method]
-=== Transparant inserts or updates with save
+=== Inserts or updates with the save method
 `Transaction` has a `save(..)` method that takes `TableRowData` instances and acts as a convenient delegator to `insert()` or `update()`. Its performance depend on the type and state of the primary key(s), so note the following:
 
 * Rows with a single generated primary key (sequences and auto_increment), are delegated to update or insert depending on a positive or zero value of the key, respectively.
