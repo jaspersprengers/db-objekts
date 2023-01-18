@@ -10,8 +10,11 @@ internal interface DBObjectName {
 }
 
 class DBObjectNameBase(val value: String) : DBObjectName {
-    override fun capitalCamelCase(): String = StringUtil.capitalCamel(value)
-    override fun lowerCamelCase(): String = StringUtil.lowerCamel(value)
+    override fun capitalCamelCase(): String =
+        if (StringUtil.isCamelCase(value)) StringUtil.initUpperCase(value) else StringUtil.capitalCamel(value)
+
+    override fun lowerCamelCase(): String =
+        if (StringUtil.isCamelCase(value)) StringUtil.initLowerCase(value) else StringUtil.lowerCamel(value)
 }
 
 data class SchemaName(val value: String) : DBObjectName by DBObjectNameBase(value) {
@@ -25,17 +28,35 @@ data class SchemaName(val value: String) : DBObjectName by DBObjectNameBase(valu
 
 }
 
-data class TableName(val value: String) : DBObjectName by DBObjectNameBase(value) {
+data class TableName(
+    val value: String,
+    private val custom: String? = null
+) : DBObjectName by DBObjectNameBase(value) {
+    val metaDataObjectName: String
+
     init {
         require(value.isNotBlank(), { "Table name cannot be blank" })
+        metaDataObjectName = custom?.let {
+            require(it.isNotBlank(), { "Custom table name cannot be blank" })
+            StringUtil.initUpperCase(it)
+        } ?: capitalCamelCase()
     }
 
     override fun toString(): String = value
 }
 
-data class ColumnName(val value: String) : DBObjectName by DBObjectNameBase(value) {
+data class ColumnName(
+    val value: String,
+    private val custom: String? = null
+) : DBObjectName by DBObjectNameBase(value) {
+    val fieldName: String
+
     init {
         require(value.isNotBlank(), { "Column name cannot be blank" })
+        fieldName = custom?.let {
+            require(it.isNotBlank(), { "Custom column name cannot be blank" })
+            StringUtil.initLowerCase(it)
+        } ?: lowerCamelCase()
     }
 
     override fun toString(): String = value

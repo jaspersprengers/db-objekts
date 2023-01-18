@@ -13,7 +13,7 @@ class DBForeignKeyDefinition(schema: SchemaName,
                              comment: String? = null)
    : DBColumnDefinition(schema, table, columnName, columnType, false, partOfCompositePrimaryKey, comment) {
 
-    val tableAndColumn = "${parentTable.capitalCamelCase()}.${parentColumn.lowerCamelCase()}"
+    val tableAndColumn = "${parentTable.metaDataObjectName}.${parentColumn.fieldName}"
 
     override fun asFactoryMethod(): String = """${column::class.java.simpleName}(this, "$columnName", $tableAndColumn)"""
 

@@ -11,6 +11,7 @@ data class CodeGeneratorConfig(
     val dataSource: DataSource,
     val exclusionConfigurer: ExclusionConfigurer,
     val basePackage: PackageName,
+    val objectNamingConfigurer: ObjectNamingConfigurer,
     val customColumnMappers: List<CustomColumnTypeMapper<*>> = listOf(),
     val sequenceResolvers: List<SequenceForPrimaryKeyResolver> = listOf()
 ){

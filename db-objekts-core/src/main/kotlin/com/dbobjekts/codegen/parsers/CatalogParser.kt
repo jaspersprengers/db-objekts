@@ -20,7 +20,7 @@ class CatalogParser(
     private val log = LoggerFactory.getLogger(CatalogParser::class.java)
 
     val tableMetaData: List<TableMetaData> by lazy {
-        createTableMetaData(parserConfig)
+        validateNoDuplicateTableNames(createTableMetaData(parserConfig))
     }
     private val basePackage: PackageName = parserConfig.basePackage
 
@@ -60,15 +60,36 @@ class CatalogParser(
         })
     }
 
+    private fun validateNoDuplicateTableNames(metaData: List<TableMetaData>): List<TableMetaData> {
+        val duplicates = metaData
+            .groupBy { md -> md.tableName }
+            .entries
+            .filter { e -> e.value.size > 1 }
+        return if (duplicates.isNotEmpty()) {
+            throw CodeGenerationException(
+                """
+                The following table names are found multiple times across schemas. This is not allowed. " +
+                ${duplicates.map { it.key }}
+                You must provide a unique mapping in the code generator like in the following example:
+                generator.configureObjectNaming()
+                    .setObjectNameForTable("core", "employee", "core_employee")
+                    .setObjectNameForTable("hr", "employee", "hr_employee")
+                    """.trimIndent()
+            )
+        } else metaData
+    }
+
     private fun parseForeignKeyMetaData(metadata: List<ForeignKeyMetaDataRow>): List<ForeignKeyProperties> {
+        val conf = parserConfig.objectNamingConfigurer
         return metadata.map { row ->
+            conf.getColumnName(row.schema, row.table, row.column)
             ForeignKeyProperties(
-                col = ColumnName(row.column),
-                table = TableName(row.table),
+                col = conf.getColumnName(row.schema, row.table, row.column),
+                table = conf.getTableName(row.schema, row.table),
                 schema = SchemaName(row.schema),
                 parentSchema = SchemaName(row.refSchema),
-                parentColumn = ColumnName(row.refColumn),
-                parentTable = TableName(row.refTable)
+                parentColumn = conf.getColumnName(row.refSchema, row.refTable, row.refColumn),
+                parentTable = conf.getTableName(row.refSchema, row.refTable)
             )
         }
     }
@@ -78,11 +99,12 @@ class CatalogParser(
         foreignKeyProperties: List<ForeignKeyProperties>,
         metaData: List<TableMetaDataRow>
     ): List<TableMetaData> {
-        val perTable = metaData.groupBy({ it.table })
+        val perTable: Map<String, List<TableMetaDataRow>> = metaData.groupBy({ it.table })
         return perTable.flatMap({ (table, rows) ->
             val cols = rows.map {
+                val columnName = parserConfig.objectNamingConfigurer.getColumnName(it.schema, it.table, it.column)
                 ColumnMetaData(
-                    columnName = ColumnName(it.column),
+                    columnName = columnName,
                     columnType = it.dataType,
                     isAutoIncrement = it.autoIncrement,
                     isPrimaryKey = it.isPrimaryKey,
@@ -90,8 +112,9 @@ class CatalogParser(
                     nullable = if (it.isPrimaryKey) false else it.defaultValue != null || it.nullable
                 )
             }
+            val tableName = parserConfig.objectNamingConfigurer.getTableName(schema, table)
             val foreignKeys = foreignKeyProperties.filter { it.table.value.equals(table, true) && it.schema.value.equals(schema, true) }
-            val tmd = TableMetaData(schema = SchemaName(schema), tableName = TableName(table), columns = cols, foreignKeys = foreignKeys)
+            val tmd = TableMetaData(schema = SchemaName(schema), tableName = tableName, columns = cols, foreignKeys = foreignKeys)
             listOf(tmd)
         })
     }

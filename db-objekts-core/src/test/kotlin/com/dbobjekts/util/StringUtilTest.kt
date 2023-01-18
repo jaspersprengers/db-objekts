@@ -2,6 +2,8 @@ package com.dbobjekts.util
 
 import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.vendors.h2.H2DataTypeMapper
+import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -96,6 +98,16 @@ class StringUtilTest {
         assert(StringUtil.concat(listOf(" one ", " two ")) == "one two")
     }
 
+    @Test
+    fun `is camel case`(){
+        assertThat(StringUtil.isCamelCase("")).isFalse()
+        assertThat(StringUtil.isCamelCase("hello")).isFalse()
+        assertThat(StringUtil.isCamelCase("hello_world")).isFalse()
+        assertThat(StringUtil.isCamelCase("Nothing")).isFalse()
+
+        assertThat(StringUtil.isCamelCase("thisWorks")).isTrue()
+        assertThat(StringUtil.isCamelCase("ThisWorks")).isTrue()
+    }
 
     //non empty optional"){
     @Test

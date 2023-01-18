@@ -1,7 +1,6 @@
 package com.dbobjekts.component
 
 import com.dbobjekts.testdb.acme.core.Employee
-import com.dbobjekts.testdb.acme.core.EmployeeAddress
 import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat

@@ -24,7 +24,7 @@ class AliasCodeBuilder(val catalog: DBCatalogDefinition) {
     builder.add(schemaAndTables)
     val aliases = builder.build()
 
-    val lines = schemaAndTables.map {st -> "    val ${aliases.aliasForSchemaAndTable(st)} = ${st.table.capitalCamelCase()}" }
+    val lines = schemaAndTables.map {st -> "    val ${aliases.aliasForSchemaAndTable(st)} = ${st.table.metaDataObjectName}" }
 
 
       return """

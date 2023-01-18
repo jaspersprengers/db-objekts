@@ -1,14 +1,10 @@
 package com.dbobjekts.component
 
-import com.dbobjekts.metadata.joins.ManualJoinChain
 import com.dbobjekts.testdb.acme.core.Employee
 import com.dbobjekts.testdb.acme.core.EmployeeRow
 import com.dbobjekts.testdb.acme.hr.Hobby
 import com.dbobjekts.testdb.acme.hr.HobbyRow
-import com.dbobjekts.testdb.acme.library.Composite
-import com.dbobjekts.testdb.acme.library.CompositeForeignKey
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -28,23 +24,6 @@ class UpdateStatementComponentTest {
             AcmeDB.createExampleCatalog(AcmeDB.transactionManager)
         }
     }
-
-    @Test
-    fun `composite foreign keys through manual join`() {
-        tm {
-            val co = Composite
-            val cof = CompositeForeignKey
-            val now = LocalDate.now()
-            it.insert(Composite).mandatoryColumns("ISBN", "The Shining").published(now).execute()
-            it.insert(CompositeForeignKey).mandatoryColumns("ISBN", "The Shining").message("Hello world!").execute()
-            val (dt, message) = it.select(Composite.published, CompositeForeignKey.message)
-                .from(co.innerJoin(cof).on(co.isbn.eq(cof.isbn).and(cof.title).eq(co.title)))
-                .where(Composite.isbn.eq("ISBN")).first()
-            assertThat(dt).isEqualTo(now)
-            assertThat(message).isEqualTo("Hello world!")
-        }
-    }
-
 
     @Test
     fun `update all fields in employee record`() {

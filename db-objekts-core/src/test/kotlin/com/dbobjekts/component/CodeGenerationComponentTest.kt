@@ -9,6 +9,7 @@ import com.dbobjekts.metadata.column.NumberAsBooleanColumn
 import com.dbobjekts.testdb.acme.CatalogDefinition
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import java.lang.IllegalStateException
 import java.nio.file.Paths
 
 class CodeGenerationComponentTest {
@@ -18,7 +19,6 @@ class CodeGenerationComponentTest {
 
         AcmeDB.transactionManager {
             //add some stuff to the test db that wel will ignore for the code generator
-            it.sql("create table IF NOT EXISTS hr.COUNTRY(id varchar(10) primary key, name varchar(50) not null)").execute()
             it.sql("CREATE SCHEMA if not exists finance").execute()
             it.sql("alter table core.employee add date_created DATETIME not null default now()").execute()
             it.sql("alter table core.country add date_created DATETIME not null default now()").execute()
@@ -46,16 +46,45 @@ class CodeGenerationComponentTest {
             .setColumnTypeForNamePattern(columnPattern = "address_int", columnType = AddressTypeAsIntegerColumn::class.java)
         generator.configureOutput()
             .basePackageForSources("com.dbobjekts.testdb.acme")
-        .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
+            .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         val diff: List<String> = generator.differencesWithCatalog(CatalogDefinition)
         assertThat(diff).describedAs("acme catalog differs from database definition").isEmpty()
-        generator.generateSourceFiles()
+        //generator.generateSourceFiles()
+    }
 
+    @Test
+    fun `with custom table and column name mappings`() {
+        AcmeDB.transactionManager {
+            //add some stuff to the test db that wel will ignore for the code generator
+            it.sql("CREATE SCHEMA if not exists trial").execute()
+            it.sql("create table trial.emploiee(id BIGINT primary key not null auto_increment)").execute()
+            it.sql("create table trial.adres(id BIGINT primary key not null, adres_id BIGINT not null, foreign key(adres_id) references trial.emploiee(id) )").execute()
+        }
+
+        val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
+        generator.configureExclusions().ignoreSchemas("core", "hr", "library")
+        generator.configureObjectNaming()
+            .setObjectNameForTable("trial","emploiee", "Employee")
+            .setObjectNameForTable("trial","adres", "Address")
+            .setFieldNameForColumn("trial", "emploiee", "id", "primaryKey")
+            .setFieldNameForColumn("trial", "adres", "adres_id", "addressId")
+        generator.configureOutput()
+            .basePackageForSources("com.dbobjekts.testdb.acme")
+        val def = generator.createCatalogDefinition()
+        val employeeTable = def.findTable("trial", "emploiee")?:throw IllegalStateException("no employee table found")
+        val employeeId = employeeTable.findPrimaryKey("id") ?: throw IllegalStateException()
+        val addressId = def.findTable("trial", "adres")?.findForeignKey("adres_id") ?: throw IllegalStateException()
+        assertThat(employeeId.columnName.fieldName).isEqualTo("primaryKey")
+        assertThat(addressId.columnName.fieldName).isEqualTo("addressId")
     }
 
     object LibrarySchemaResolver : SequenceForPrimaryKeyResolver {
         override fun invoke(properties: ColumnMappingProperties): String? =
-            if (properties.schema.value.equals("library", true)  && properties.column.value == "ID") properties.table.value + "_SEQ" else null
+            if (properties.schema.value.equals(
+                    "library",
+                    true
+                ) && properties.column.value == "ID"
+            ) properties.table.value + "_SEQ" else null
     }
 
 

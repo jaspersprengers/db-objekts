@@ -16,7 +16,7 @@ import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
 
 internal class TableSourcesBuilder(
-    val basePackage: PackageName,
+    basePackage: PackageName,
     val model: DBTableDefinition
 ) {
 
@@ -35,7 +35,7 @@ internal class TableSourcesBuilder(
                 "\n     *\n     * Foreign key to ${column.parentSchema.value}.${column.parentTable.value}.${column.parentColumn.value}"
             } else ""
             strBuilder.appendLine("    /**\n     * Represents db column ${column.schemaName.value}.${column.tableName.value}.${column.columnName}$fk\n     */")
-            strBuilder.appendLine("    val ${column.asFieldName()} = ${column.asFactoryMethod()}")
+            strBuilder.appendLine("    val ${column.columnName.fieldName} = ${column.asFactoryMethod()}")
         }
 
         importLineBuilder.addClasses(
@@ -54,14 +54,14 @@ internal class TableSourcesBuilder(
 
         val columnNames = model.columns.map {
             importLineBuilder.addClasses(it.column.javaClass)
-            it.asFieldName()
+            it.columnName.fieldName
         }.joinToString(",")
 
         strBuilder.appendLine(importLineBuilder.build())
         strBuilder.appendLine()
         val tbl = model.asClassName()
         strBuilder.appendLine(detailedSourceBuilder.sourceForTableComment())
-        strBuilder.appendLine("""object $tbl:Table<${tbl}Row>("${model.tableName}"), $updateBuilderInterface<${tbl}UpdateBuilder, ${tbl}InsertBuilder> {""".trimMargin())
+        strBuilder.appendLine("""object $tbl:Table<${tbl}Row>("${model.tableName.value}"), $updateBuilderInterface<${tbl}UpdateBuilder, ${tbl}InsertBuilder> {""".trimMargin())
         model.columns.forEach {
             generateField(it)
         }
@@ -69,9 +69,7 @@ internal class TableSourcesBuilder(
         strBuilder.appendLine("    override val columns: List<AnyColumn> = listOf($columnNames)")
         strBuilder.appendLine(detailedSourceBuilder.sourceForToValue())
         strBuilder.appendLine(detailedSourceBuilder.sourceForMetaDataVal())
-        //strBuilder.appendLine(detailedSourceBuilder.sourceForJoinMethods())
         strBuilder.appendLine("}")
-        //strBuilder.appendLine(detailedSourceBuilder.sourceForJoinChainClass())
         strBuilder.appendLine(detailedSourceBuilder.sourceForBuilderClasses())
         strBuilder.appendLine(detailedSourceBuilder.sourceForRowDataClass())
         return strBuilder.toString()

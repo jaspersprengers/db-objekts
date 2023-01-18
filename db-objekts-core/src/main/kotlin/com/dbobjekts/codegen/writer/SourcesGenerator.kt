@@ -23,7 +23,8 @@ class SourcesGenerator(
             fileName: String,
             source: String
         ) {
-            val forMattedFileName = StringUtil.snakeToCamel(fileName, true)
+            val forMattedFileName =
+                if (StringUtil.isCamelCase(fileName)) StringUtil.initUpperCase(fileName) else StringUtil.snakeToCamel(fileName, true)
 
             val pkg = schema?.let { basePackage.concat(schema.asPackage) } ?: basePackage
 
@@ -48,7 +49,7 @@ class SourcesGenerator(
             schemaDefinition.tables.forEach { tableDefinition ->
                 val builder = TableSourcesBuilder(catalog.packageName, tableDefinition)
                 val source = builder.build()
-                writeSourceFile(schemaDefinition, tableDefinition.tableName.value, source)
+                writeSourceFile(schemaDefinition, tableDefinition.tableName.metaDataObjectName, source)
             }
         }
 

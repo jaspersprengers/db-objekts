@@ -2,17 +2,13 @@ package com.dbobjekts.codegen
 
 import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.api.exception.CodeGenerationException
-import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
-import com.dbobjekts.codegen.configbuilders.ColumnTypeMappingConfigurer
-import com.dbobjekts.codegen.configbuilders.OutputConfigurer
-import com.dbobjekts.codegen.configbuilders.PrimaryKeySequenceConfigurer
+import com.dbobjekts.codegen.configbuilders.*
 import com.dbobjekts.codegen.exclusionfilters.ExclusionConfigurer
 import com.dbobjekts.codegen.metadata.DBCatalogDefinition
 import com.dbobjekts.codegen.parsers.CatalogParser
 import com.dbobjekts.codegen.parsers.ParserConfig
 import com.dbobjekts.codegen.writer.SourcesGenerator
 import com.dbobjekts.metadata.Catalog
-import com.dbobjekts.metadata.DefaultNoVendorCatalog
 import org.slf4j.LoggerFactory
 import javax.sql.DataSource
 
@@ -38,6 +34,7 @@ class CodeGenerator {
     private var exclusionConfigurer: ExclusionConfigurer = ExclusionConfigurer()
     private lateinit var dataSource: DataSource
     private val outputConfigurer = OutputConfigurer()
+    private val objectNamingConfigurer = ObjectNamingConfigurer()
     private val columnTypeMappingConfigurer = ColumnTypeMappingConfigurer()
     private val primaryKeySequenceConfigurer = PrimaryKeySequenceConfigurer()
 
@@ -52,6 +49,11 @@ class CodeGenerator {
      * Provides further settings to configure the output of the code generator
      */
     fun configureOutput(): OutputConfigurer = outputConfigurer
+
+    /**
+     * Provides optional settings to override default behavior for naming metadata objects and fields.
+     */
+    fun configureObjectNaming(): ObjectNamingConfigurer = objectNamingConfigurer
 
     /**
      * Provides optional settings to fine-tune the mapping of [com.dbobjekts.metadata.column.Column] types to SQL types
@@ -86,9 +88,16 @@ class CodeGenerator {
         logger.info("Source files were generated OK.")
     }
 
-    internal fun createCatalogDefinition(): DBCatalogDefinition {
+    /**
+     * FOR DEBUGGING PURPOSES
+     *
+     * Returns the metamodel used for code generation. Can be useful for validation prior to writing code
+     *
+     * @return [DBCatalogDefinition]
+     */
+    fun createCatalogDefinition(): DBCatalogDefinition {
         logger.info("Running code generation tool. Validating configuration settings.")
-        val generatorConfig: CodeGeneratorConfig = build()
+        val generatorConfig: CodeGeneratorConfig = createConfig()
         return createCatalogParser(generatorConfig).parseCatalog()
     }
 
@@ -97,19 +106,20 @@ class CodeGenerator {
             .withDataSource(codeGeneratorConfig.dataSource)
             .build()
         val vendor = transactionManager.vendor
-        val config = ParserConfig.fromCodeGeneratorConfig(vendor, codeGeneratorConfig)
-        return CatalogParser(config, transactionManager, vendor.metadataExtractor)
+        val parserConfig = ParserConfig.fromCodeGeneratorConfig(vendor, codeGeneratorConfig)
+        return CatalogParser(parserConfig, transactionManager, vendor.metadataExtractor)
     }
 
     fun differencesWithCatalog(catalog: Catalog): List<String> = createCatalogDefinition().diff(catalog)
 
-    private fun build(): CodeGeneratorConfig {
+    private fun createConfig(): CodeGeneratorConfig {
         return CodeGeneratorConfig(
             dataSource = dataSource,
             exclusionConfigurer = exclusionConfigurer,
             basePackage = outputConfigurer.basePackage
                 ?: throw CodeGenerationException("Missing mandatory setting basePackageForSources on outputConfigurer"),
             customColumnMappers = columnTypeMappingConfigurer.mappers.toList(),
+            objectNamingConfigurer = objectNamingConfigurer,
             sequenceResolvers = primaryKeySequenceConfigurer.resolvers
         )
     }

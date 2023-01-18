@@ -34,7 +34,7 @@ class TableDetailsSourceBuilder(val tableDefinition: DBTableDefinition) {
     init {
         fields = tableDefinition.columns.map { colDef ->
             val fieldName =
-                ReservedKeywords.prependIfReserved(StringUtil.snakeToCamel(colDef.columnName.value.lowercase()))
+                ReservedKeywords.prependIfReserved(colDef.columnName.fieldName)
             val isNullable = colDef.column is NullableColumn<*>
             val dataType = StringUtil.classToString(colDef.column.valueClass) + (if (isNullable) "?" else "")
             val defaultClause: String = getDefaultValue(colDef)?.let { " = $it" } ?: ""
@@ -215,33 +215,6 @@ $insertRowMethodSource
         }
     }
 
-    fun sourceForJoinMethods(): String {
-        val allMethods = tableDefinition.linkedTables.map { (schema, table) ->
-            val name = table.capitalCamelCase()
-            """
-    fun leftJoin(table: $name): ${name}JoinChain = ${name}JoinChain(this)._join(table, JoinType.LEFT)
-    fun innerJoin(table: $name): ${name}JoinChain = ${name}JoinChain(this)._join(table, JoinType.INNER)
-    fun rightJoin(table: $name): ${name}JoinChain = ${name}JoinChain(this)._join(table, JoinType.RIGHT)                      
-       """
-        }
-        return allMethods.joinToString("\n")
-    }
-
-    fun sourceForJoinChainClass(): String {
-        val allMethods = tableDefinition.linkedTables.map { (schema, table) ->
-            val name = table.capitalCamelCase()
-            """
-    fun leftJoin(table: $name): ${name}JoinChain = ${name}JoinChain(this.table, this.joins)._join(table, JoinType.LEFT)
-    fun innerJoin(table: $name): ${name}JoinChain = ${name}JoinChain(this.table, this.joins)._join(table, JoinType.INNER)
-    fun rightJoin(table: $name): ${name}JoinChain = ${name}JoinChain(this.table, this.joins)._join(table, JoinType.RIGHT)"""
-
-        }
-        return """
-class ${tableName}JoinChain(table: AnyTable, joins: List<JoinBase> = listOf()) : DerivedJoin(table, joins) {
-    ${allMethods.joinToString("\n    ")}
-}
-"""
-    }
 
 
 }

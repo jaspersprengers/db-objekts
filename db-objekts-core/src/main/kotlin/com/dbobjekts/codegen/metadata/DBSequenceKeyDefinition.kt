@@ -11,7 +11,7 @@ class DBSequenceKeyDefinition(schema: SchemaName,
                               val sequence: String,
                               columnType: AnyColumn,
                               comment: String? = null)
-   : DBColumnDefinition(schema, table, name, columnType, true, false, comment), DBPrimaryKeyDefinition, DBGeneratedPrimaryKey {
+   : DBColumnDefinition(schema, table, name, columnType, true, false, comment), DBGeneratedPrimaryKeyDefinition, DBGeneratedPrimaryKey {
 
     override fun asFactoryMethod(): String = """${column::class.java.simpleName}(this, "$columnName", "$sequence")"""
 

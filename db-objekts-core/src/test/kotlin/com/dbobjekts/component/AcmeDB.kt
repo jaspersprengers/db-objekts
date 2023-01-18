@@ -4,8 +4,8 @@ import com.dbobjekts.api.Transaction
 import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.testdb.acme.core.*
 import com.dbobjekts.testdb.acme.hr.Certificate
-import com.dbobjekts.testdb.acme.hr.Hobby
 import com.dbobjekts.testdb.acme.CatalogDefinition
+import com.dbobjekts.testdb.acme.hr.Hobby
 import com.dbobjekts.util.HikariDataSourceFactory
 import org.slf4j.LoggerFactory
 import javax.sql.DataSource
@@ -36,15 +36,19 @@ object AcmeDB {
             tr.sql("CREATE SEQUENCE IF NOT EXISTS core.DEPARTMENT_SEQ START WITH 100").execute()
 
             tr.sql("create table IF NOT EXISTS hr.HOBBY(id varchar(10) primary key, name varchar(50) not null)").execute()
+
+            //That should not be allowed under the same name!
+            //tr.sql("create table IF NOT EXISTS core.HOBBY(id varchar(10) primary key, name varchar(50) not null)").execute()
+
             tr.sql(
                 "create table IF NOT EXISTS core.EMPLOYEE(id BIGINT primary key, name varchar(50) not null, salary double not null, " +
-                        "married boolean null, date_of_birth DATE not null, children SMALLINT null, hobby_id varchar(10) null," +
+                        "MARRIED boolean null, date_of_birth DATE not null, children SMALLINT null, hobby_id varchar(10) null," +
                         "foreign key(hobby_id) references hr.HOBBY(id))"
             ).execute()
             tr.sql("create table IF NOT EXISTS hr.CERTIFICATE(id BIGINT primary key auto_increment, name varchar(50) not null, employee_id BIGINT not null, foreign key(employee_id) references core.employee(id) on DELETE CASCADE)").execute()
             tr.sql("create table IF NOT EXISTS core.COUNTRY(id varchar(10) primary key, name varchar(50) not null)").execute()
 
-            tr.sql("create table IF NOT EXISTS core.ADDRESS(id BIGINT primary key, street varchar(50) not null, postcode varchar(10) null, country_id varchar(10) not null, foreign key(country_id) references core.country(id)  on DELETE CASCADE)").execute()
+            tr.sql("create table IF NOT EXISTS core.ADDRESS(id BIGINT primary key, street varchar(50) not null, postcode varchar(10) null, country_id varchar(10) not null, foreign key(country_id) references core.COUNTRY(id)  on DELETE CASCADE)").execute()
             tr.sql("create table if not exists core.EMPLOYEE_ADDRESS(employee_id BIGINT not null, address_id BIGINT not null,kind varchar(10) not null, primary key (employee_id, address_id), foreign key(employee_id) references core.employee(id)  on DELETE CASCADE, foreign key(address_id) references core.ADDRESS(id)  on DELETE CASCADE)").execute()
 
             tr.sql("create table IF NOT EXISTS core.DEPARTMENT(id BIGINT primary key, name varchar(50) not null)").execute()

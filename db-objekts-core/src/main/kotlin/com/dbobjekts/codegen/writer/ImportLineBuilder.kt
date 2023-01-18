@@ -11,7 +11,7 @@ internal class ImportLineBuilder(private val basePackage: PackageName) {
 
     fun addImportsForForeignKeys(schema: SchemaName, linkedTables: List<DBForeignKeyDefinition>) {
         linkedTables.filter { fk -> fk.parentSchema != schema }.forEach {
-            addClass(it.parentSchema, it.parentTable.capitalCamelCase())
+            addClass(it.parentSchema, it.parentTable.metaDataObjectName)
         }
     }
 

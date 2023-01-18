@@ -70,9 +70,6 @@ class TableAliasesBuilder {
         return ret
     }
 
-    private fun validate(str: String) =
-        if (str.contains("_")) throw DBObjektsException("value must be camel case") else str
-
     private fun tryWithIncrement(alias: String, counter: Int): String {
         val concat = "$alias$counter"
         return if (!aliasCache.contains(concat)) concat else tryWithIncrement(alias, counter + 1)

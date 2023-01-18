@@ -3,13 +3,12 @@ package com.dbobjekts.component
 import com.dbobjekts.fixture.columns.AddressType
 import com.dbobjekts.testdb.acme.core.*
 import com.dbobjekts.testdb.acme.hr.Hobby
-import com.dbobjekts.testdb.acme.hr.HobbyRow
-import com.dbobjekts.testdb.acme.library.*
-import org.assertj.core.api.Assertions
+import com.dbobjekts.testdb.acme.library.AuthorRow
+import com.dbobjekts.testdb.acme.library.Book
+import com.dbobjekts.testdb.acme.library.BookRow
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
 class RowBasedComponentTest {

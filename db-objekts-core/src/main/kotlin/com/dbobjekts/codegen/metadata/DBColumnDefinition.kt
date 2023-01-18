@@ -23,18 +23,20 @@ open class DBColumnDefinition(
 
     override fun fullyQualifiedClassName(): String = packageName.concat(column::class.java.simpleName).toString()
 
+    override  fun asFieldName(): String = columnName.fieldName
+
     override fun toString(): String = columnName.value
 
     open fun prettyPrint(): String = "     Column $tableName.$columnName maps to ${fullyQualifiedClassName()}."
 
     fun diff(codeObject: AnyColumn): List<String> {
         val dbToStr = when (val dbColumn = this) {
-            is DBForeignKeyDefinition -> "${column.javaClass} to ${dbColumn.parentTable}.${dbColumn.parentColumn}"
+            is DBForeignKeyDefinition -> "${column.javaClass} to ${dbColumn.parentTable.value}.${dbColumn.parentColumn.value}"
             is DBSequenceKeyDefinition -> "${column.javaClass} with ${schemaName}.${dbColumn.sequence}"
             else -> column.javaClass.toString()
         }
         val codeToStr = when (val metadataCol = codeObject) {
-            is IsForeignKey<*, *> -> "${metadataCol.javaClass} to ${metadataCol.parentColumn.table.tableName}.${metadataCol.parentColumn.nameInTable}"
+            is IsForeignKey<*, *> -> "${metadataCol.javaClass} to ${metadataCol.parentColumn.table.dbName}.${metadataCol.parentColumn.nameInTable}"
             is SequenceKeyColumn<*> -> "${metadataCol.javaClass} with ${metadataCol.qualifiedSequence()}"
             else -> metadataCol.javaClass.toString()
         }

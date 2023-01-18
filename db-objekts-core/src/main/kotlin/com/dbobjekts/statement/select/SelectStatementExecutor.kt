@@ -64,7 +64,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
 
     private fun addOrderByClause(column: AnyColumn, ascending: Boolean) {
         val sameAsAggregate =
-            columns.filter { it.aggregateType != null && it.tableDotName == column.tableDotName }.firstOrNull()
+            columns.firstOrNull { it.aggregateType != null && it.tableDotName == column.tableDotName }
         orderByClauses.add(OrderByClause(sameAsAggregate ?: column, ascending))
     }
 

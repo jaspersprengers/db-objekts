@@ -19,16 +19,22 @@ data class DBSchemaDefinition(
            |Schema ${packageName.toString()}.${schemaName.value} has ${tables.size} tables.
            |${tables.map { it.prettyPrint() }.joinToString("\n")}"""
 
-    fun diff(codeObject: Schema): List<String> {
+    fun findTable(table: String): DBTableDefinition? =
+        tables.firstOrNull { it.tableName.value.equals(table, true) }
+
+
+    fun diff(schema: Schema): List<String> {
         val diffs = mutableListOf<String>()
-        if (tables.size != codeObject.tables.size){
+        if (tables.size != schema.tables.size) {
             val inDb = tables.map { it.tableName.value }.joinToString(",")
-            val inCatalog = codeObject.tables.map { it.tableName.value }.joinToString(",")
-            diffs += ("DB schema $codeObject has ${tables.size} tables ($inDb), but catalog has ${codeObject.tables.size} ($inCatalog)}")
+            val inCatalog = schema.tables.map { it.tableName.value }.joinToString(",")
+            diffs += ("DB schema $schema has ${tables.size} tables ($inDb), but catalog has ${schema.tables.size} ($inCatalog)}")
         }
-        diffs += tables.flatMap { sc: DBTableDefinition ->
-            val match = codeObject.tables.find { it.tableName.value.equals(sc.tableName.value, true) }
-            if (match == null) listOf("DB table ${codeObject.schemaName}.${sc.tableName} not found in catalog") else sc.diff(match)
+        diffs += tables.flatMap { dbTableDef: DBTableDefinition ->
+            val match = schema.tables.find { it.tableName.value.equals(dbTableDef.tableName.value, true) }
+            if (match == null) listOf("DB table ${dbTableDef.schema.value}.${dbTableDef.tableName.value} not found in catalog") else dbTableDef.diff(
+                match
+            )
         }
         return diffs
     }

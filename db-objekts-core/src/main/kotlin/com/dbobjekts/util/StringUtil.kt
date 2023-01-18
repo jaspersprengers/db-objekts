@@ -22,6 +22,17 @@ object StringUtil {
     else
         CaseUtils.toCamelCase(str, capitalizeFirst, '\u005f')
 
+    fun isCamelCase(s: String): Boolean {
+        if (s.isEmpty() || s.contains("_"))
+            return false
+        val arr = s.toCharArray()
+        return (1..arr.size - 1).any { i ->
+            val right = arr[i]
+            val left = arr[i - 1]
+            Character.isUpperCase(right) && Character.isLowerCase(left)
+        }
+    }
+
     fun lowerCamel(str: String): String = snakeToCamel(str, false)
 
     fun ensureLeadingSpace(str: String): String =

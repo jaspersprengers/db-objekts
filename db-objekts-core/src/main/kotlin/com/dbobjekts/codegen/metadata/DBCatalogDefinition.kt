@@ -17,11 +17,19 @@ data class DBCatalogDefinition(
         """${vendor} Database in package ${packageName} with ${schemas.size} schemas.
            |${schemas.map { it.prettyPrint() }.joinToString("\n")}"""
 
+    fun findSchema(schema: String): DBSchemaDefinition? =
+        schemas.firstOrNull { s -> s.schemaName.value.equals(schema, true) }
+
+
+    fun findTable(schema: String?, table: String): DBTableDefinition? {
+        return schemas.firstOrNull { s -> schema?.let { s.schemaName.value.equals(it, true) } ?: true }?.findTable(table)
+    }
+
     internal fun diff(codeObject: Catalog): List<String> {
         val diffs = mutableListOf<String>()
-        if (!codeObject.vendor.equals(vendor.name, true)){
+        if (!codeObject.vendor.equals(vendor.name, true)) {
             diffs += ("DB vendor $vendor does not match catalog vendor ${codeObject.vendor}")
-        } else if (schemas.size != codeObject.schemas.size){
+        } else if (schemas.size != codeObject.schemas.size) {
             val inDb = schemas.map { it.schemaName.value }.joinToString(",")
             val inCatalog = codeObject.schemas.map { it.schemaName.value }.joinToString(",")
             diffs += ("DB has ${schemas.size} schemas ($inDb), but catalog has ${codeObject.schemas.size} ($inCatalog)}")
