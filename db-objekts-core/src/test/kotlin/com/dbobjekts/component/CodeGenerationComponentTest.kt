@@ -17,21 +17,7 @@ class CodeGenerationComponentTest {
     @Test
     fun `validate acme catalog`() {
 
-        AcmeDB.transactionManager {
-            //add some stuff to the test db that wel will ignore for the code generator
-            it.sql("CREATE SCHEMA if not exists finance").execute()
-            it.sql("alter table core.employee add date_created DATETIME not null default now()").execute()
-            it.sql("alter table core.country add date_created DATETIME not null default now()").execute()
-            it.sql("alter table core.country add audit_pending DATETIME null").execute()
-        }
-
         val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
-
-        generator.configureExclusions()
-            .ignoreColumnPattern("audit")
-            .ignoreColumn("date_created")
-            .ignoreSchemas("finance")
-            .ignoreTable("country", schema = "hr") // important to specify schema, because there is a core.country as well
 
         generator.configurePrimaryKeySequences()
             .addCustomResolver(LibrarySchemaResolver)
@@ -76,6 +62,32 @@ class CodeGenerationComponentTest {
         val addressId = def.findTable("trial", "adres")?.findForeignKey("adres_id") ?: throw IllegalStateException()
         assertThat(employeeId.columnName.fieldName).isEqualTo("primaryKey")
         assertThat(addressId.columnName.fieldName).isEqualTo("addressId")
+    }
+
+    @Test
+    fun `with custom exclusions`() {
+        val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
+        AcmeDB.transactionManager {
+            //add some stuff to the test db that wel will ignore for the code generator
+            it.sql("CREATE SCHEMA if not exists finance").execute()
+            it.sql("create table if not exists hr.country").execute()
+            it.sql("alter table core.employee add date_created DATETIME not null default now()").execute()
+            it.sql("alter table core.country add date_created DATETIME not null default now()").execute()
+            it.sql("alter table core.country add audit_pending DATETIME null").execute()
+        }
+        generator.configureExclusions()
+            .ignoreColumnPattern("audit")
+            .ignoreColumn("date_created")
+            .ignoreSchemas("finance")
+            .ignoreTable("country", schema = "hr") // important to specify schema, because there is a core.country as well
+        generator.configureOutput()
+            .basePackageForSources("com.dbobjekts.testdb.acme")
+        val def = generator.createCatalogDefinition()
+        assertThat(def.findSchema("finance")).isNull()
+        assertThat(def.findTable("core", "employee")?.findColumn("date_created")).isNull()
+        assertThat(def.findTable("core", "country")?.findColumn("date_created")).isNull()
+        assertThat(def.findTable("hr", "country")).isNull()
+
     }
 
     object LibrarySchemaResolver : SequenceForPrimaryKeyResolver {

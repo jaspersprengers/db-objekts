@@ -447,7 +447,7 @@ For the next examples we have a more meaty test database which has tables in a `
 image:acme-datamodel.png[]]
 
 [#queries-insert]
-=== Inserting data
+=== Insert statements
 The `insert(..)` method takes a `Table` implementation and returns a corresponding builder instance on which to set values. https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/InsertStatementComponentTest.kt[InsertStatementComponentTest]
 
 Insert builders contain setter methods for all columns. In addition, they have a `mandatoryColumns(..)` convenience method (provided the table has at least one non-nullable column) to make sure you provide all the required values.
@@ -483,7 +483,7 @@ The `save(..)` method does the same. xref:save-method[Read more].
 NOTE: About auto-generated primary keys. `EmployeeRow` has a non-null `id` field, which is auto-generated, hence unavailable until after the `insert(...)` call. Making such numeric PKs nullable (`Long?` or `Int?`), might make sense for inserts, but means ugly `!!` when the id is guaranteed to be non-null, after a fetch. The compromise is to provide a default value of zero. db-Objekts assumes that zero is equivalent to null for generated numeric keys. You should never set such ids to a positive value. It will be rejected in an `insert()` statement.
 
 [#queries-select]
-=== Selecting data
+=== Select statements
 Let's move on to select statements. These consist of the following parts:
 
 * At least one column or data row reference in the `select(..)` call.
@@ -700,7 +700,7 @@ This selects the names of employees who have one or two certificates. db-Objekts
 Native SQL provides more possibilities with aggregate queries (some of them vendor-specific) than are supported by db-Objekts. As with everything else in this library, it is a conscious design decision to balance usability and complexity. You can always resort to creating a native SQL query if the default behavior doesn't cut it.
 
 [#queries-update]
-=== Updating
+=== Update statements
 The `update(..)` method, like the `insert(..)`, takes a table and returns an `*UpdateBuilder`. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/UpdateStatementComponentTest.kt[UpdateStatementComponentTest]
 
 ```kotlin
@@ -732,7 +732,7 @@ The row data object retrieved is immutable, so we need to make a copy with an up
 * Rows without a primary key are delegated to `insert()` without any checks.
 
 [#queries-delete]
-=== Deleting
+=== Delete statements
 The statement to delete rows has the fewest options. See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/DeleteStatementComponentTest.kt[DeleteStatementComponentTest]
 ```kotlin
 tr.deleteFrom(Employee).where(Employee.id.eq(id))

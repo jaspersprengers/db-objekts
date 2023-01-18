@@ -23,8 +23,6 @@ open class DBColumnDefinition(
 
     override fun fullyQualifiedClassName(): String = packageName.concat(column::class.java.simpleName).toString()
 
-    override  fun asFieldName(): String = columnName.fieldName
-
     override fun toString(): String = columnName.value
 
     open fun prettyPrint(): String = "     Column $tableName.$columnName maps to ${fullyQualifiedClassName()}."
