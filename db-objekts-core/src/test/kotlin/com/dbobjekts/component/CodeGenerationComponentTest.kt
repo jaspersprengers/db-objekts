@@ -8,6 +8,7 @@ import com.dbobjekts.fixture.columns.AddressTypeAsStringColumn
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
 import com.dbobjekts.testdb.acme.CatalogDefinition
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
 import java.lang.IllegalStateException
 import java.nio.file.Paths
@@ -87,7 +88,24 @@ class CodeGenerationComponentTest {
         assertThat(def.findTable("core", "employee")?.findColumn("date_created")).isNull()
         assertThat(def.findTable("core", "country")?.findColumn("date_created")).isNull()
         assertThat(def.findTable("hr", "country")).isNull()
+    }
 
+    @Test
+    fun `with duplicate column names`() {
+        val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
+        generator.configureObjectNaming().setFieldNameForColumn("core","employee","married","salary")
+        generator.configureOutput()
+            .basePackageForSources("com.dbobjekts.testdb.acme")
+        assertThatThrownBy { generator.createCatalogDefinition() }.hasMessageStartingWith("The following column names are found more than once in table EMPLOYEE")
+    }
+
+    @Test
+    fun `with duplicate table names`() {
+        val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
+        generator.configureObjectNaming().setObjectNameForTable("core","employee","country")
+        generator.configureOutput()
+            .basePackageForSources("com.dbobjekts.testdb.acme")
+        assertThatThrownBy { generator.createCatalogDefinition() }.hasMessageStartingWith("The following table names  [Country] are found multiple times across schemas. This is not allowed.")
     }
 
     object LibrarySchemaResolver : SequenceForPrimaryKeyResolver {

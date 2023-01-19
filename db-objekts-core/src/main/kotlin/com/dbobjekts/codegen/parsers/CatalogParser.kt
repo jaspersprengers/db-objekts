@@ -62,19 +62,35 @@ class CatalogParser(
 
     private fun validateNoDuplicateTableNames(metaData: List<TableMetaData>): List<TableMetaData> {
         val duplicates = metaData
-            .groupBy { md -> md.tableName }
+            .groupBy { md -> md.tableName.metaDataObjectName }
             .entries
             .filter { e -> e.value.size > 1 }
         return if (duplicates.isNotEmpty()) {
             throw CodeGenerationException(
                 """
-                The following table names are found multiple times across schemas. This is not allowed. " +
-                ${duplicates.map { it.key }}
-                You must provide a unique mapping in the code generator like in the following example:
+                The following table names  ${duplicates.map { it.key }} are found multiple times across schemas. This is not allowed.          
+                If the same table is defined in multiple schemas, you must provide a unique mapping in the code generator.
+                Another cause of this error could be when you set a custom object name for a table to one that already exists in the same schema.
                 generator.configureObjectNaming()
                     .setObjectNameForTable("core", "employee", "core_employee")
                     .setObjectNameForTable("hr", "employee", "hr_employee")
                     """.trimIndent()
+            )
+        } else metaData
+    }
+
+    private fun validateNoDuplicateColumnNames(table: String, metaData: List<ColumnMetaData>): List<ColumnMetaData> {
+        val duplicates = metaData
+            .groupBy { md -> md.columnName.fieldName }
+            .entries
+            .filter { e -> e.value.size > 1 }
+        return if (duplicates.isNotEmpty()) {
+            throw CodeGenerationException(
+                """
+                The following column names are found more than once in table $table
+                ${duplicates.map { it.key }}
+                This is probably caused by a manual misconfiguration in CodeGenerator.configureObjectNaming()
+                """.trimIndent()
             )
         } else metaData
     }
@@ -101,7 +117,7 @@ class CatalogParser(
     ): List<TableMetaData> {
         val perTable: Map<String, List<TableMetaDataRow>> = metaData.groupBy({ it.table })
         return perTable.flatMap({ (table, rows) ->
-            val cols = rows.map {
+            val cols: List<ColumnMetaData> = rows.map {
                 val columnName = parserConfig.objectNamingConfigurer.getColumnName(it.schema, it.table, it.column)
                 ColumnMetaData(
                     columnName = columnName,
@@ -112,6 +128,7 @@ class CatalogParser(
                     nullable = if (it.isPrimaryKey) false else it.defaultValue != null || it.nullable
                 )
             }
+            validateNoDuplicateColumnNames(table, cols)
             val tableName = parserConfig.objectNamingConfigurer.getTableName(schema, table)
             val foreignKeys = foreignKeyProperties.filter { it.table.value.equals(table, true) && it.schema.value.equals(schema, true) }
             val tmd = TableMetaData(schema = SchemaName(schema), tableName = tableName, columns = cols, foreignKeys = foreignKeys)
