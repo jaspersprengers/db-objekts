@@ -495,14 +495,21 @@ Let's move on to select statements. These consist of the following parts:
 
 See https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/test/kotlin/com/dbobjekts/component/SelectStatementComponentTest.kt[SelectStatementComponentTest]
 
-This query selects name and salary for all rows in the employee table. Notice we have imported the 'e' alias from the generated https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/generated-sources/kotlin/com/dbobjekts/testdb/acme/Aliases.kt[Aliases] object. This is a handy shortcut that refers to the exact same Employee object.
+This query selects name and salary for all rows in the employee table. The result is always a Tuple* object that corresponds in size and type to the columns you specified in the `.select(..)` call.
+
 ```kotlin
  val asList: List<Tuple2<Long, String>> = it.select(e.id, e.name).asList() // potentially empty
  val asOption: Tuple2<Long, String>? = it.select(e.id, e.name).firstOrNull() // None if no row can be retrieved
  val singleResult: Tuple2<Long, String> = it.select(e.id, e.name).first() //Will throw an exception if no row can be found
 ```
 
-The result is always a Tuple* object that corresponds in size and type to the columns you specified in the `.select(..)` call.
+Notice we use the 'e' alias from the generated https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/generated-sources/kotlin/com/dbobjekts/testdb/acme/Aliases.kt[Aliases] object. This is a handy shortcut that refers to the same Employee object. It implements a corresponding `HasAliases` interface, so you can import all the shortcuts in one go, using delegation.
+
+```kotlin
+class SelectStatementComponentTest : HasAliases by Aliases
+```
+
+Since all Tables are singleton objects, you can also define your own shortcuts as class members: `val emp = Employee`.
 
 The `Employee` and `Address` tables are linked via the `EmployeeAddress` table in a many-to-many fashion. Since the foreign key relations are explicit in the source code, db-Objekts can build the joins for you:
 
