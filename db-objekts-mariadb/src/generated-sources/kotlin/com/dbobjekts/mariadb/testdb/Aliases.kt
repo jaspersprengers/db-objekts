@@ -28,7 +28,7 @@ import com.dbobjekts.mariadb.testdb.nation.Vips
  * You can import the individual values of in this object in your code to use them as convenient shortcuts.
  *
  * ```
- * import com.dbobjekts.mariadb.testdb.Aliases.e
+ * import com.dbobjekts.mariadb.testdb.HasAliases.e
  * [...]
  * transaction.select(e.name)
  *```
@@ -55,4 +55,3 @@ object Aliases {
     val ra = RegionAreas
     val v = Vips
 }
-     

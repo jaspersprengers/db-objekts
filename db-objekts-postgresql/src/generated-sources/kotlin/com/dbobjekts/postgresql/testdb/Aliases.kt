@@ -19,7 +19,7 @@ import com.dbobjekts.postgresql.testdb.hr.Hobby
  * You can import the individual values of in this object in your code to use them as convenient shortcuts.
  *
  * ```
- * import com.dbobjekts.postgresql.testdb.Aliases.e
+ * import com.dbobjekts.postgresql.testdb.HasAliases.e
  * [...]
  * transaction.select(e.name)
  *```
@@ -37,4 +37,3 @@ object Aliases {
     val c2 = Certificate
     val h = Hobby
 }
-     

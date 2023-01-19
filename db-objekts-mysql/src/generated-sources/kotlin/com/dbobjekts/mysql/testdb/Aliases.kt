@@ -25,7 +25,7 @@ import com.dbobjekts.mysql.testdb.hr.Hobby
  * You can import the individual values of in this object in your code to use them as convenient shortcuts.
  *
  * ```
- * import com.dbobjekts.mysql.testdb.Aliases.e
+ * import com.dbobjekts.mysql.testdb.HasAliases.e
  * [...]
  * transaction.select(e.name)
  *```
@@ -49,4 +49,3 @@ object Aliases {
     val c2 = Certificate
     val h = Hobby
 }
-     

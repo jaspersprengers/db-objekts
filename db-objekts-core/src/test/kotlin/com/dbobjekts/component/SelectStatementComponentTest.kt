@@ -3,6 +3,8 @@ package com.dbobjekts.component
 import com.dbobjekts.api.Tuple6
 import com.dbobjekts.fixture.columns.AddressType
 import com.dbobjekts.statement.select.SelectStatementExecutor
+import com.dbobjekts.testdb.acme.Aliases
+import com.dbobjekts.testdb.acme.HasAliases
 import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
@@ -12,21 +14,12 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import com.dbobjekts.testdb.acme.core.*
 import com.dbobjekts.testdb.acme.hr.Certificate
-import com.dbobjekts.testdb.acme.Aliases.e
-import com.dbobjekts.testdb.acme.Aliases.a
-import com.dbobjekts.testdb.acme.Aliases.h
-import com.dbobjekts.testdb.acme.Aliases.ea
-import com.dbobjekts.testdb.acme.Aliases.d
-import com.dbobjekts.testdb.acme.Aliases.ed
-import com.dbobjekts.testdb.acme.Aliases.c1
 
-class SelectStatementComponentTest {
+class SelectStatementComponentTest : HasAliases by Aliases {
 
 
     companion object {
-
         val tm = AcmeDB.transactionManager
-
         @BeforeAll
         @JvmStatic
         fun setup() {
