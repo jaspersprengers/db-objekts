@@ -1,5 +1,9 @@
 = Release notes
 
+== 0.4.1-alpha
+* Support for setting custom mappings for table and column names in generated code.
+* Stricter validation when class and field names in generated code resolve to Java/Kotlin reserved keywords.
+
 == 0.4.0-alpha
 * Added PostgreSQL and MySQL vendor types
 * Support for fully manual join syntax
