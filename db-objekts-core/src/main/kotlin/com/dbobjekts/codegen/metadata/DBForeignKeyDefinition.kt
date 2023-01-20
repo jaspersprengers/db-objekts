@@ -6,12 +6,13 @@ class DBForeignKeyDefinition(schema: SchemaName,
                              table: TableName,
                              columnName: ColumnName,
                              columnType: AnyColumn,
+                             jdbcType: String,
                              val parentSchema: SchemaName,
                              val parentTable: TableName,
                              val parentColumn: ColumnName,
                              partOfCompositePrimaryKey: Boolean = false,
                              comment: String? = null)
-   : DBColumnDefinition(schema, table, columnName, columnType, false, partOfCompositePrimaryKey, comment) {
+   : DBColumnDefinition(schema, table, columnName, columnType, jdbcType, false, partOfCompositePrimaryKey, comment) {
 
     val tableAndColumn = "${parentTable.metaDataObjectName}.${parentColumn.fieldName}"
 

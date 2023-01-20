@@ -6,6 +6,7 @@ import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.fixture.columns.AddressTypeAsIntegerColumn
 import com.dbobjekts.fixture.columns.AddressTypeAsStringColumn
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
+import com.dbobjekts.metadata.column.SequenceKeyLongColumn
 import com.dbobjekts.testdb.acme.CatalogDefinition
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -58,8 +59,10 @@ class CodeGenerationComponentTest {
         generator.configureOutput()
             .basePackageForSources("com.dbobjekts.testdb.acme")
         val def = generator.createCatalogDefinition()
+
         val employeeTable = def.findTable("trial", "emploiee")?:throw IllegalStateException("no employee table found")
         val employeeId = employeeTable.findPrimaryKey("id") ?: throw IllegalStateException()
+
         val addressId = def.findTable("trial", "adres")?.findForeignKey("adres_id") ?: throw IllegalStateException()
         assertThat(employeeId.columnName.fieldName).isEqualTo("primaryKey")
         assertThat(addressId.columnName.fieldName).isEqualTo("addressId")
@@ -84,6 +87,9 @@ class CodeGenerationComponentTest {
         generator.configureOutput()
             .basePackageForSources("com.dbobjekts.testdb.acme")
         val def = generator.createCatalogDefinition()
+
+        assertThat(def.findColumnsForType(SequenceKeyLongColumn::class.java)).hasSize(7)
+
         assertThat(def.findSchema("finance")).isNull()
         assertThat(def.findTable("core", "employee")?.findColumn("date_created")).isNull()
         assertThat(def.findTable("core", "country")?.findColumn("date_created")).isNull()

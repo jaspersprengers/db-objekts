@@ -1,14 +1,13 @@
-package com.dbobjekts.mariadb.testdb.core
+package com.dbobjekts.demo.db.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.api.exception.StatementBuilderException
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.ForeignKeyLongColumn
 import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table core.EMPLOYEE_DEPARTMENT.
@@ -17,7 +16,8 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: none
  *
- * Foreign keys: [employee_id to core.EMPLOYEE.id, department_id to core.DEPARTMENT.id] 
+ * Foreign keys to: 
+ * References by: core.EMPLOYEE,core.DEPARTMENT
  */
 object EmployeeDepartment:Table<EmployeeDepartmentRow>("EMPLOYEE_DEPARTMENT"), HasUpdateBuilder<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder> {
     /**
@@ -25,13 +25,13 @@ object EmployeeDepartment:Table<EmployeeDepartmentRow>("EMPLOYEE_DEPARTMENT"), H
      *
      * Foreign key to core.EMPLOYEE.id
      */
-    val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "employee_id", Employee.id)
+    val employeeId = ForeignKeyLongColumn(this, "employee_id", Employee.id)
     /**
      * Represents db column core.EMPLOYEE_DEPARTMENT.department_id
      *
      * Foreign key to core.DEPARTMENT.id
      */
-    val departmentId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "department_id", Department.id)
+    val departmentId = ForeignKeyLongColumn(this, "department_id", Department.id)
     override val columns: List<AnyColumn> = listOf(employeeId,departmentId)
     override fun toValue(values: List<Any?>) = EmployeeDepartmentRow(values[0] as Long,values[1] as Long)
     override fun metadata(): WriteQueryAccessors<EmployeeDepartmentUpdateBuilder, EmployeeDepartmentInsertBuilder> = WriteQueryAccessors(EmployeeDepartmentUpdateBuilder(), EmployeeDepartmentInsertBuilder())
@@ -42,10 +42,10 @@ class EmployeeDepartmentUpdateBuilder() : UpdateBuilderBase(EmployeeDepartment) 
     fun departmentId(value: Long): EmployeeDepartmentUpdateBuilder = put(EmployeeDepartment.departmentId, value)
 
     /**
-     * Warning: this method will throw a StatementBuilderException at runtime because EmployeeDepartment does not have a primary key, or has a composite one.
+     * Warning: this method will throw a StatementBuilderException at runtime because EmployeeDepartment does not have a primary key.
      */
     override fun updateRow(rowData: TableRowData<*, *>): Long = 
-      throw StatementBuilderException("Sorry, but you cannot use row-based updates for table EmployeeDepartment. There must be exactly one column marked as primary key.")                
+      throw com.dbobjekts.api.exception.StatementBuilderException("Sorry, but you cannot use row-based updates for table EmployeeDepartment. At least one column must be marked as primary key.")                
             
 }
 

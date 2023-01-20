@@ -1,16 +1,13 @@
-package com.dbobjekts.mariadbdemo
+package com.dbobjekts.springdemo
 
-import com.dbobjekts.util.HikariDataSourceFactory
 import org.testcontainers.containers.BindMode
-import org.testcontainers.containers.MariaDBContainer
+import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.utility.DockerImageName
-import java.lang.IllegalArgumentException
-import javax.sql.DataSource
 
 class MariaDBWrapper(
     version: String,
     files: List<String>,
-) : MariaDBContainer<MariaDBWrapper>(DockerImageName.parse("mariadb:$version")) {
+) : MySQLContainer<MariaDBWrapper>(DockerImageName.parse("mariadb:$version")) {
     init {
         withDatabaseName("test")
         withEnv("MARIADB_ROOT_PASSWORD", "test")

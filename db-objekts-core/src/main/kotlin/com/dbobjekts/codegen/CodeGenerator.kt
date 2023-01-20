@@ -72,7 +72,7 @@ class CodeGenerator {
     fun configureExclusions(): ExclusionConfigurer = exclusionConfigurer
 
     /**
-     * When all is properly set up, this outputs the code
+     * When all mandatory settings have been provided, this writes generated metadata source code to the designated folder.
      */
     fun generateSourceFiles() {
         val catalogDefinition: DBCatalogDefinition = createCatalogDefinition()

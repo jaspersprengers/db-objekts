@@ -17,6 +17,7 @@ ENV MYSQL_PASSWORD=test
 USER mysql
 
 COPY acme.sql /docker-entrypoint-initdb.d/
+COPY classicmodels.sql /docker-entrypoint-initdb.d/
 
 # Need to change the datadir to something else that /var/lib/mysql because the parent docker file defines it as a volume.
 # https://docs.docker.com/engine/reference/builder/#volume :

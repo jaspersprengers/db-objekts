@@ -19,9 +19,11 @@ data class DBSchemaDefinition(
            |Schema ${packageName.toString()}.${schemaName.value} has ${tables.size} tables.
            |${tables.map { it.prettyPrint() }.joinToString("\n")}"""
 
+    /**
+     * Searches the current schema for a table by name.
+     */
     fun findTable(table: String): DBTableDefinition? =
         tables.firstOrNull { it.tableName.value.equals(table, true) }
-
 
     fun diff(schema: Schema): List<String> {
         val diffs = mutableListOf<String>()

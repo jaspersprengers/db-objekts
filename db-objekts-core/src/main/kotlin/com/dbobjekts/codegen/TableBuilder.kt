@@ -37,6 +37,7 @@ internal class TableBuilder(
                 table = tableName,
                 columnName = it.col,
                 columnType = foreignKey,
+                jdbcType = columnMetaData.columnType,
                 parentSchema = it.parentSchema,
                 parentTable = it.parentTable,
                 parentColumn = it.parentColumn,
@@ -56,6 +57,7 @@ internal class TableBuilder(
                 table = tableName,
                 columnName = props.columnName,
                 columnType = columnTypeResolver.mapAutoIncrementColumn(columnMappingProperties),
+                jdbcType = props.columnType,
                 comment = props.remarks
             )
         }
@@ -67,12 +69,13 @@ internal class TableBuilder(
                 table = tableName,
                 name = props.columnName,
                 columnType = columnTypeResolver.determineSequenceColumn(defaultType),
+                jdbcType = props.columnType,
                 sequence = sequence,
                 comment = props.remarks
             )
         } else if (props.isPrimaryKey && !hasCompositePK) {
             val colType = columnTypeResolver.mapDataType(columnMappingProperties)
-            DBColumnDefinition(schema, tableName, props.columnName, colType, true, false, props.remarks)
+            DBColumnDefinition(schema, tableName, props.columnName, colType, props.columnType, true, false, props.remarks)
         } else
             null
     }
@@ -95,6 +98,7 @@ internal class TableBuilder(
                     tableName,
                     props.columnName,
                     colType,
+                    props.columnType,
                     false,
                     tableHasCompositePK && props.isPrimaryKey,
                     props.remarks)

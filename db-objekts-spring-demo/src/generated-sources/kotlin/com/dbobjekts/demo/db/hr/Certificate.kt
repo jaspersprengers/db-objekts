@@ -1,15 +1,16 @@
-package com.dbobjekts.mariadb.testdb.hr
+package com.dbobjekts.demo.db.hr
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
+import com.dbobjekts.demo.db.core.Employee
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.AutoKeyLongColumn
+import com.dbobjekts.metadata.column.ForeignKeyLongColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-import com.dbobjekts.mariadb.testdb.core.Employee
-
-
 
 /**           
  * Auto-generated metadata object for db table hr.CERTIFICATE.
@@ -18,23 +19,24 @@ import com.dbobjekts.mariadb.testdb.core.Employee
  *
  * Primary keys: id
  *
- * Foreign keys: [employee_id to core.EMPLOYEE.id] 
+ * Foreign keys to: 
+ * References by: core.EMPLOYEE
  */
 object Certificate:Table<CertificateRow>("CERTIFICATE"), HasUpdateBuilder<CertificateUpdateBuilder, CertificateInsertBuilder> {
     /**
      * Represents db column hr.CERTIFICATE.id
      */
-    val id = com.dbobjekts.metadata.column.AutoKeyLongColumn(this, "id")
+    val id = AutoKeyLongColumn(this, "id")
     /**
      * Represents db column hr.CERTIFICATE.name
      */
-    val name = com.dbobjekts.metadata.column.VarcharColumn(this, "name")
+    val name = VarcharColumn(this, "name")
     /**
      * Represents db column hr.CERTIFICATE.employee_id
      *
      * Foreign key to core.EMPLOYEE.id
      */
-    val employeeId = com.dbobjekts.metadata.column.ForeignKeyLongColumn(this, "employee_id", Employee.id)
+    val employeeId = ForeignKeyLongColumn(this, "employee_id", Employee.id)
     override val columns: List<AnyColumn> = listOf(id,name,employeeId)
     override fun toValue(values: List<Any?>) = CertificateRow(values[0] as Long,values[1] as String,values[2] as Long)
     override fun metadata(): WriteQueryAccessors<CertificateUpdateBuilder, CertificateInsertBuilder> = WriteQueryAccessors(CertificateUpdateBuilder(), CertificateInsertBuilder())
@@ -52,7 +54,7 @@ class CertificateUpdateBuilder() : UpdateBuilderBase(Certificate) {
       add(Certificate.id, rowData.id)
       add(Certificate.name, rowData.name)
       add(Certificate.employeeId, rowData.employeeId)
-      return where (Certificate.id.eq(rowData.id))
+      return where(Certificate.id.eq(rowData.id))
     }    
         
 }

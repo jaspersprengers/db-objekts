@@ -1,13 +1,13 @@
-package com.dbobjekts.mariadb.testdb.core
+package com.dbobjekts.demo.db.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table core.COUNTRY.
@@ -16,17 +16,18 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: id
  *
- * Foreign keys: [] 
+ * Foreign keys to: 
+ * References by: core.ADDRESS
  */
 object Country:Table<CountryRow>("COUNTRY"), HasUpdateBuilder<CountryUpdateBuilder, CountryInsertBuilder> {
     /**
      * Represents db column core.COUNTRY.id
      */
-    val id = com.dbobjekts.metadata.column.VarcharColumn(this, "id")
+    val id = VarcharColumn(this, "id")
     /**
      * Represents db column core.COUNTRY.name
      */
-    val name = com.dbobjekts.metadata.column.VarcharColumn(this, "name")
+    val name = VarcharColumn(this, "name")
     override val columns: List<AnyColumn> = listOf(id,name)
     override fun toValue(values: List<Any?>) = CountryRow(values[0] as String,values[1] as String)
     override fun metadata(): WriteQueryAccessors<CountryUpdateBuilder, CountryInsertBuilder> = WriteQueryAccessors(CountryUpdateBuilder(), CountryInsertBuilder())
@@ -43,7 +44,7 @@ class CountryUpdateBuilder() : UpdateBuilderBase(Country) {
       rowData as CountryRow
       add(Country.id, rowData.id)
       add(Country.name, rowData.name)
-      return where (Country.id.eq(rowData.id))
+      return where(Country.id.eq(rowData.id))
     }    
         
 }

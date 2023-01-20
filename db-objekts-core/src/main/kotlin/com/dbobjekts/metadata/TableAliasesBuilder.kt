@@ -1,9 +1,8 @@
 package com.dbobjekts.metadata
 
-import com.dbobjekts.api.DBObjectName
 import com.dbobjekts.api.SchemaName
 import com.dbobjekts.api.TableName
-import com.dbobjekts.api.exception.DBObjektsException
+import com.dbobjekts.api.exception.CodeGenerationException
 import com.dbobjekts.util.ObjectNameValidator
 
 class SchemaAndTable(val schema: SchemaName, val table: TableName) : Comparable<SchemaAndTable> {
@@ -21,7 +20,8 @@ class TableAliases(private val data: Map<String, String>) {
     fun aliasForSchemaAndTable(schema: SchemaName, name: TableName): String = aliasForSchemaAndTable(SchemaAndTable(schema, name))
 
 
-    fun aliasForSchemaAndTable(schemaAndTable: SchemaAndTable): String = data.getOrDefault(schemaAndTable.toString(), schemaAndTable.toString())
+    fun aliasForSchemaAndTable(schemaAndTable: SchemaAndTable): String =
+        data.getOrDefault(schemaAndTable.toString(), schemaAndTable.toString())
 
 }
 
@@ -37,8 +37,8 @@ class TableAliasesBuilder {
     }
 
     fun addSchemaAndTables(schema: SchemaName, tableNames: List<TableName>): TableAliasesBuilder {
-        val entries = tableNames.map  {SchemaAndTable (schema, it)}
-        entries.forEach {add(it)}
+        val entries = tableNames.map { SchemaAndTable(schema, it) }
+        entries.forEach { add(it) }
         return this
     }
 
@@ -53,19 +53,19 @@ class TableAliasesBuilder {
     }
 
     fun build(): TableAliases {
-        val map = cache.sorted().map  {
-                Pair(it.toString(), createAlias(it))
-            }.toMap()
+        val map = cache.sorted().map {
+            Pair(it.toString(), createAlias(it))
+        }.toMap()
         return TableAliases(map)
     }
 
-    private fun createAlias(schemaAndTable: SchemaAndTable): String  {
+    private fun createAlias(schemaAndTable: SchemaAndTable): String {
         val tableAsClassName = schemaAndTable.table.capitalCamelCase()
         val alias = tableAsClassName.indices
-            .map { Pair(it, tableAsClassName.toCharArray().get(it) )}
+            .map { Pair(it, tableAsClassName.toCharArray().get(it)) }
             .filter { it.first == 0 || it.second.isUpperCase() }
             .map { it.second.toString().lowercase() }
-        .joinToString("")
+            .joinToString("")
 
         val ret = if (!ObjectNameValidator.validate(alias) || aliasCache.contains(alias))
             tryWithIncrement(alias, 1) else alias
@@ -74,8 +74,9 @@ class TableAliasesBuilder {
     }
 
     private fun tryWithIncrement(alias: String, counter: Int): String {
-        val concat = "$alias$counter"
-        return if (!aliasCache.contains(concat)) concat else tryWithIncrement(alias, counter + 1)
+        if (counter == 100)
+            throw CodeGenerationException("Probable infinite loop detected in alias generation.")
+        return "$alias$counter".let { if (!aliasCache.contains(it)) it else tryWithIncrement(alias, counter + 1) }
     }
 
 }

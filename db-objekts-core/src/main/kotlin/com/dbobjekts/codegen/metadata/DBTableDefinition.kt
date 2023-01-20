@@ -26,12 +26,21 @@ data class DBTableDefinition(
            |${columns.map { it.prettyPrint() }.joinToString(", ")}"""
 
 
+    /**
+     * Searches the current table for a [DBColumnDefinition] by name.
+     */
     fun findColumn(column: String): DBColumnDefinition? =
         columns.firstOrNull { it.columnName.value.equals(column, true) }
 
+    /**
+     * Searches the current table for a [DBForeignKeyDefinition] by name.
+     */
     fun findForeignKey(column: String): DBForeignKeyDefinition? =
         columns.firstOrNull { it.columnName.value.equals(column, true) && it is DBForeignKeyDefinition} as DBForeignKeyDefinition?
 
+    /**
+     * Searches the current table for a [DBGeneratedPrimaryKeyDefinition] by name.
+     */
     fun findPrimaryKey(column: String): DBGeneratedPrimaryKeyDefinition? =
         columns.firstOrNull { it.columnName.value.equals(column, true) && it is DBGeneratedPrimaryKeyDefinition} as DBGeneratedPrimaryKeyDefinition?
 

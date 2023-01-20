@@ -1,13 +1,14 @@
-package com.dbobjekts.mariadb.testdb.core
+package com.dbobjekts.demo.db.core
 
 import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.api.TableRowData
+import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.AutoKeyLongColumn
+import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.statement.WriteQueryAccessors
-import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.insert.InsertBuilderBase
+import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
-
 
 /**           
  * Auto-generated metadata object for db table core.DEPARTMENT.
@@ -16,17 +17,18 @@ import com.dbobjekts.statement.update.UpdateBuilderBase
  *
  * Primary keys: id
  *
- * Foreign keys: [] 
+ * Foreign keys to: 
+ * References by: core.EMPLOYEE_DEPARTMENT
  */
 object Department:Table<DepartmentRow>("DEPARTMENT"), HasUpdateBuilder<DepartmentUpdateBuilder, DepartmentInsertBuilder> {
     /**
      * Represents db column core.DEPARTMENT.id
      */
-    val id = com.dbobjekts.metadata.column.AutoKeyLongColumn(this, "id")
+    val id = AutoKeyLongColumn(this, "id")
     /**
      * Represents db column core.DEPARTMENT.name
      */
-    val name = com.dbobjekts.metadata.column.VarcharColumn(this, "name")
+    val name = VarcharColumn(this, "name")
     override val columns: List<AnyColumn> = listOf(id,name)
     override fun toValue(values: List<Any?>) = DepartmentRow(values[0] as Long,values[1] as String)
     override fun metadata(): WriteQueryAccessors<DepartmentUpdateBuilder, DepartmentInsertBuilder> = WriteQueryAccessors(DepartmentUpdateBuilder(), DepartmentInsertBuilder())
@@ -42,7 +44,7 @@ class DepartmentUpdateBuilder() : UpdateBuilderBase(Department) {
       rowData as DepartmentRow
       add(Department.id, rowData.id)
       add(Department.name, rowData.name)
-      return where (Department.id.eq(rowData.id))
+      return where(Department.id.eq(rowData.id))
     }    
         
 }

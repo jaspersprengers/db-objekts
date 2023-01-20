@@ -9,6 +9,7 @@ open class DBColumnDefinition(
     val tableName: TableName,
     val columnName: ColumnName,
     val column: AnyColumn,
+    val jdbcType: String,
     val isSinglePrimaryKey: Boolean = false,
     val isCompositePrimaryKey: Boolean = false,
     val comment: String? = null

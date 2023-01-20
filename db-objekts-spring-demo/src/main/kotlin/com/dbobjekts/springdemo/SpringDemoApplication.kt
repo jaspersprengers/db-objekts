@@ -1,14 +1,14 @@
-package com.dbobjekts.mariadbdemo
+package com.dbobjekts.springdemo
 
 import org.springframework.boot.Banner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
 @SpringBootApplication
-class MariadbSpringDemoApplication {
+open class SpringDemoApplication {
 
     fun main(args: Array<String>) {
-        runApplication<MariadbSpringDemoApplication>(*args) {
+        runApplication<SpringDemoApplication>(*args) {
             setBannerMode(Banner.Mode.OFF)
         }
     }
