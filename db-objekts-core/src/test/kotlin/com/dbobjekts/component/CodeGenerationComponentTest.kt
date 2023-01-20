@@ -91,6 +91,22 @@ class CodeGenerationComponentTest {
     }
 
     @Test
+    fun `with illegal identifiers`() {
+        val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
+        val conf = generator.configureObjectNaming()
+        assertThatThrownBy { conf.setFieldNameForColumn("core", "employee", "married", "true") }
+            .hasMessage("true cannot be used as an override. It is a restricted Java/Kotlin keyword.")
+        assertThatThrownBy { conf.setFieldNameForColumn("core", "employee", "married", "hello world") }
+            .hasMessage("hello world cannot be used as an override. It is not a valid Java/Kotlin identifier.")
+
+        assertThatThrownBy { conf.setObjectNameForTable("core", "employee", "true") }
+            .hasMessage("true cannot be used as an override. It is a restricted Java/Kotlin keyword.")
+        assertThatThrownBy { conf.setObjectNameForTable("core", "employee", "hello world") }
+            .hasMessage("hello world cannot be used as an override. It is not a valid Java/Kotlin identifier.")
+
+    }
+
+    @Test
     fun `with duplicate column names`() {
         val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
         generator.configureObjectNaming().setFieldNameForColumn("core","employee","married","salary")

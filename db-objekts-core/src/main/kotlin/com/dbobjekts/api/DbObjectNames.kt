@@ -1,6 +1,7 @@
 package com.dbobjekts.api
 
 import com.dbobjekts.util.StringUtil
+import com.dbobjekts.util.ObjectNameValidator
 import java.io.File
 import java.util.regex.Pattern
 
@@ -20,6 +21,7 @@ class DBObjectNameBase(val value: String) : DBObjectName {
 data class SchemaName(val value: String) : DBObjectName by DBObjectNameBase(value) {
     init {
         require(value.isNotBlank(), { "Schema name cannot be blank" })
+        ObjectNameValidator.validate(capitalCamelCase(), "$value for schema $value is not a valid identifier.")
     }
 
     fun asPackage(): String = value.lowercase()
@@ -40,6 +42,7 @@ data class TableName(
             require(it.isNotBlank(), { "Custom table name cannot be blank" })
             StringUtil.initUpperCase(it)
         } ?: capitalCamelCase()
+        ObjectNameValidator.validate(metaDataObjectName, "$metaDataObjectName for table $value is not a valid identifier.")
     }
 
     override fun toString(): String = value
@@ -57,6 +60,7 @@ data class ColumnName(
             require(it.isNotBlank(), { "Custom column name cannot be blank" })
             StringUtil.initLowerCase(it)
         } ?: lowerCamelCase()
+        ObjectNameValidator.validate(fieldName, "$fieldName for column $value is not a valid column identifier.")
     }
 
     override fun toString(): String = value

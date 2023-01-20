@@ -47,5 +47,5 @@ object ReservedKeywords {
         "setparam",
         "where")
 
-        fun prependIfReserved(str: String): String = if (KEYWORDS.contains(str)) ("_" + str) else str
+        fun isKeyword(str: String): Boolean = KEYWORDS.contains(str)
 }

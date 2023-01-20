@@ -1,8 +1,10 @@
 package com.dbobjekts.metadata
 
+import com.dbobjekts.api.DBObjectName
 import com.dbobjekts.api.SchemaName
 import com.dbobjekts.api.TableName
 import com.dbobjekts.api.exception.DBObjektsException
+import com.dbobjekts.util.ObjectNameValidator
 
 class SchemaAndTable(val schema: SchemaName, val table: TableName) : Comparable<SchemaAndTable> {
 
@@ -65,7 +67,8 @@ class TableAliasesBuilder {
             .map { it.second.toString().lowercase() }
         .joinToString("")
 
-        val ret = if (aliasCache.contains(alias)) tryWithIncrement(alias, 1) else alias
+        val ret = if (!ObjectNameValidator.validate(alias) || aliasCache.contains(alias))
+            tryWithIncrement(alias, 1) else alias
         aliasCache += ret
         return ret
     }

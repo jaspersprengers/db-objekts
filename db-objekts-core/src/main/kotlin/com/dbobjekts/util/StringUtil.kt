@@ -6,8 +6,6 @@ import kotlin.reflect.KClass
 
 object StringUtil {
 
-    val TAB = "    "
-
     fun nonEmpty(str: String?): String? = if (str == null || str.isBlank()) null else str
 
     fun initLowerCase(str: String): String =

@@ -2,13 +2,12 @@ package com.dbobjekts.metadata.column
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.api.exception.DBObjektsException
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.statement.And
 import com.dbobjekts.statement.ValueOrColumn
 import com.dbobjekts.statement.whereclause.SubClause
-import com.dbobjekts.util.ValidateDBObjectName
+import com.dbobjekts.util.ObjectNameValidator
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 
@@ -27,8 +26,7 @@ abstract class Column<I>(
 ) : Selectable<I> {
 
     init {
-        if (!ValidateDBObjectName(nameInTable))
-            throw DBObjektsException("Not a valid column name: '$nameInTable'")
+        ObjectNameValidator.validate(nameInTable, "Not a valid column name: '$nameInTable'")
     }
 
     fun count(): LongColumn = LongColumn(table, nameInTable, AggregateType.COUNT)
@@ -45,12 +43,12 @@ abstract class Column<I>(
         )
 
 
-    fun eq(column: AnyColumn): SubClause = createColumnCondition(column,"=")
-    fun ne(column: AnyColumn): SubClause = createColumnCondition(column,"!=")
-    fun lt(column: AnyColumn): SubClause = createColumnCondition(column,"<")
-    fun gt(column: AnyColumn): SubClause = createColumnCondition(column,">")
-    fun le(column: AnyColumn): SubClause = createColumnCondition(column,"<=")
-    fun ge(column: AnyColumn): SubClause = createColumnCondition(column,">=")
+    fun eq(column: AnyColumn): SubClause = createColumnCondition(column, "=")
+    fun ne(column: AnyColumn): SubClause = createColumnCondition(column, "!=")
+    fun lt(column: AnyColumn): SubClause = createColumnCondition(column, "<")
+    fun gt(column: AnyColumn): SubClause = createColumnCondition(column, ">")
+    fun le(column: AnyColumn): SubClause = createColumnCondition(column, "<=")
+    fun ge(column: AnyColumn): SubClause = createColumnCondition(column, ">=")
 
     /**
      * operator for nullability check. Results in SQL my_column IS NULL
@@ -73,22 +71,22 @@ abstract class Column<I>(
     /**
      * Less-than comparison operator. Results in SQL: my_column < ?
      */
-    fun lt(value: I): SubClause= createSimpleCondition(value, "<")
+    fun lt(value: I): SubClause = createSimpleCondition(value, "<")
 
     /**
      * Less than or equal comparison operator. Results in SQL: my_column <= ?
      */
-    fun le(value: I): SubClause= createSimpleCondition(value, "<=")
+    fun le(value: I): SubClause = createSimpleCondition(value, "<=")
 
     /**
      * Greater-than comparison operator. Results in SQL: my_column1 > ?
      */
-    fun gt(value: I): SubClause= createSimpleCondition(value, ">")
+    fun gt(value: I): SubClause = createSimpleCondition(value, ">")
 
     /**
      * Greater than or equal comparison operator. Results in SQL: my_column1 >= ?
      */
-    fun ge(value: I): SubClause= createSimpleCondition(value, ">=")
+    fun ge(value: I): SubClause = createSimpleCondition(value, ">=")
 
     /**
      * IN operator. Results in SQL: my_column1 IN (1,3,5)

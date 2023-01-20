@@ -12,7 +12,8 @@ class TableAliasesBuilderTest {
 
     val s1 = Schema("s1", listOf(Members, Address, MemberAddress))
     val s2 = Schema("s2", listOf(Members2, Address2))
-    val c = Catalog(1, "vendor", listOf(s1, s2))
+    val s3 = Schema("s3", listOf(AssetSize, AddressSign, FirstUnitName))
+    val c = Catalog(1, "vendor", listOf(s1, s2, s3))
 
     fun doAssert(tables: List<String>, tableToTest: String, field: String) {
         val map = TableAliasesBuilder()
@@ -71,6 +72,13 @@ class TableAliasesBuilderTest {
         assertEquals("a1", Address2.alias())
     }
 
+    @Test
+    fun `reserved words use increment`(){
+        assertEquals("as1", AddressSign.alias())
+        assertEquals("as2", AssetSize.alias())
+        assertEquals("fun1", FirstUnitName.alias())
+    }
+
     object Members : Table<String>("members") {
         override val columns = listOf<AnyColumn>()
         override fun toValue(values: List<Any?>): String = ""
@@ -92,6 +100,22 @@ class TableAliasesBuilderTest {
     }
 
     object Address2 : Table<String>("address") {
+        override val columns = listOf<AnyColumn>()
+        override fun toValue(values: List<Any?>): String = ""
+    }
+
+    //resolves to 'as', which is a reserved word, hence becomes as1
+    object AssetSize : Table<String>("asset_size") {
+        override val columns = listOf<AnyColumn>()
+        override fun toValue(values: List<Any?>): String = ""
+    }
+
+    object AddressSign : Table<String>("address_sign") {
+        override val columns = listOf<AnyColumn>()
+        override fun toValue(values: List<Any?>): String = ""
+    }
+
+    object FirstUnitName : Table<String>("first_unit_name") {
         override val columns = listOf<AnyColumn>()
         override fun toValue(values: List<Any?>): String = ""
     }

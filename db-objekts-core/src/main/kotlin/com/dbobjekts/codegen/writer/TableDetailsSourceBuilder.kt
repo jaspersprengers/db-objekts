@@ -33,8 +33,7 @@ class TableDetailsSourceBuilder(val tableDefinition: DBTableDefinition) {
 
     init {
         fields = tableDefinition.columns.map { colDef ->
-            val fieldName =
-                ReservedKeywords.prependIfReserved(colDef.columnName.fieldName)
+            val fieldName = colDef.columnName.fieldName
             val isNullable = colDef.column is NullableColumn<*>
             val dataType = StringUtil.classToString(colDef.column.valueClass) + (if (isNullable) "?" else "")
             val defaultClause: String = getDefaultValue(colDef)?.let { " = $it" } ?: ""

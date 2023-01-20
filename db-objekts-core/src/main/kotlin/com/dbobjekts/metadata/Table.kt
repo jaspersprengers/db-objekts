@@ -9,7 +9,7 @@ import com.dbobjekts.metadata.joins.JoinType
 import com.dbobjekts.statement.SQLOptions
 import com.dbobjekts.statement.SQLOptions.Companion.ALIAS
 import com.dbobjekts.util.Errors
-import com.dbobjekts.util.ValidateDBObjectName
+import com.dbobjekts.util.ObjectNameValidator
 
 /**
  * Parent of all the generated [Table] objects that represent the tables in the database and act as metadata for the query engine.
@@ -26,8 +26,7 @@ abstract class Table<I>(
     internal val tableName: TableName = TableName(dbName)
 
     init {
-        if (!ValidateDBObjectName(tableName.value))
-            throw DBObjektsException("Not a valid table name: " + tableName)
+        ObjectNameValidator.validate(tableName.value, "Not a valid table name: " + tableName)
     }
 
     fun leftJoin(table: AnyTable): DerivedJoin = DerivedJoin(this).join(table, JoinType.LEFT)
@@ -79,7 +78,8 @@ abstract class Table<I>(
     /**
      * @return the schema and table, e.g. hr.certificate
      */
-    internal fun toSQL(options: SQLOptions = ALIAS): String = if(options.includeAlias) "${schema.dottedName}$tableName ${alias()}" else "${schema.dottedName}$tableName"
+    internal fun toSQL(options: SQLOptions = ALIAS): String =
+        if (options.includeAlias) "${schema.dottedName}$tableName ${alias()}" else "${schema.dottedName}$tableName"
 
     override fun toString(): String = toSQL()
 

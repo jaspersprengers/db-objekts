@@ -352,10 +352,10 @@ db-Objekts uses the following rules to convert table and column names to common 
 * Snake case is converted to camel case: `employee_table` becomes `Employee`
 * Table names are always capitalized: `Employee`
 * Column names are always lower camel case: `addressId`
-* Any name that resolves to a reserved Java/Kotlin word is rejected.
+* Any name that is a reserved Java/Kotlin word (e.g. fun, public, true) is rejected, because generated code would not compile. Since keywords are case-sensitive, `Public` is allowed -- which is a common name for the default schema.
 * Table names must be unique across schemas.
 
-Because of these rules it may be necessary to set an explicit name mapping for a table or column. Another reason could be that the naming scheme in the db is inconsistent, or confusing, and you don't want to copy that as-is to the metamodel. For this purpose there's the  `configureObjectNaming()` option.
+Because of the last two rules it may be necessary to set an explicit name mapping for a table or column. Another reason could be that the naming scheme in the db is inconsistent or confusing, and you want a clean metamodel. For this purpose there's the  `configureObjectNaming()` option.
 
 In this example there's a database with all tables and columns in Dutch, and there are two employee tables in separate schemas.
 
