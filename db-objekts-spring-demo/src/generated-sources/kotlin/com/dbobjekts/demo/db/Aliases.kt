@@ -8,7 +8,6 @@ import com.dbobjekts.demo.db.classicmodels.Payments
 import com.dbobjekts.demo.db.classicmodels.Productlines
 import com.dbobjekts.demo.db.classicmodels.Products
 import com.dbobjekts.demo.db.core.Address
-import com.dbobjekts.demo.db.core.AllTypesNil
 import com.dbobjekts.demo.db.core.Country
 import com.dbobjekts.demo.db.core.Department
 import com.dbobjekts.demo.db.core.Employee
@@ -40,7 +39,6 @@ object Aliases : HasAliases {
     override val p1 = Productlines
     override val p2 = Products
     override val a = Address
-    override val atn = AllTypesNil
     override val c1 = Country
     override val d = Department
     override val e1 = Employee
@@ -76,7 +74,6 @@ interface HasAliases {
     val p1 : Productlines
     val p2 : Products
     val a : Address
-    val atn : AllTypesNil
     val c1 : Country
     val d : Department
     val e1 : Employee
