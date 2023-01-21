@@ -48,7 +48,7 @@ class MysqlIntegrationTest {
         gen.withDataSource(dataSource)
         gen.configureColumnTypeMapping().setColumnTypeForJDBCType("TINYINT", NumberAsBooleanColumn::class.java)
         gen.configureOutput()
-            .basePackageForSources("com.dbobjekts.mysql.testdb2")
+            .basePackageForSources("com.dbobjekts.mysql.testdb")
         .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         assertThat(gen.differencesWithCatalog(CatalogDefinition)).isEmpty()
         gen.generateSourceFiles()
