@@ -24,7 +24,7 @@ object Offices:Table<OfficesRow>("offices"), HasUpdateBuilder<OfficesUpdateBuild
     /**
      * Represents db column classicmodels.offices.officeCode
      */
-    val officecode = VarcharColumn(this, "officeCode")
+    val officeCode = VarcharColumn(this, "officeCode")
     /**
      * Represents db column classicmodels.offices.city
      */
@@ -36,11 +36,11 @@ object Offices:Table<OfficesRow>("offices"), HasUpdateBuilder<OfficesUpdateBuild
     /**
      * Represents db column classicmodels.offices.addressLine1
      */
-    val addressline1 = VarcharColumn(this, "addressLine1")
+    val addressLine1 = VarcharColumn(this, "addressLine1")
     /**
      * Represents db column classicmodels.offices.addressLine2
      */
-    val addressline2 = NullableVarcharColumn(this, "addressLine2")
+    val addressLine2 = NullableVarcharColumn(this, "addressLine2")
     /**
      * Represents db column classicmodels.offices.state
      */
@@ -52,25 +52,25 @@ object Offices:Table<OfficesRow>("offices"), HasUpdateBuilder<OfficesUpdateBuild
     /**
      * Represents db column classicmodels.offices.postalCode
      */
-    val postalcode = VarcharColumn(this, "postalCode")
+    val postalCode = VarcharColumn(this, "postalCode")
     /**
      * Represents db column classicmodels.offices.territory
      */
     val territory = VarcharColumn(this, "territory")
-    override val columns: List<AnyColumn> = listOf(officecode,city,phone,addressline1,addressline2,state,country,postalcode,territory)
+    override val columns: List<AnyColumn> = listOf(officeCode,city,phone,addressLine1,addressLine2,state,country,postalCode,territory)
     override fun toValue(values: List<Any?>) = OfficesRow(values[0] as String,values[1] as String,values[2] as String,values[3] as String,values[4] as String?,values[5] as String?,values[6] as String,values[7] as String,values[8] as String)
     override fun metadata(): WriteQueryAccessors<OfficesUpdateBuilder, OfficesInsertBuilder> = WriteQueryAccessors(OfficesUpdateBuilder(), OfficesInsertBuilder())
 }
 
 class OfficesUpdateBuilder() : UpdateBuilderBase(Offices) {
-    fun officecode(value: String): OfficesUpdateBuilder = put(Offices.officecode, value)
+    fun officeCode(value: String): OfficesUpdateBuilder = put(Offices.officeCode, value)
     fun city(value: String): OfficesUpdateBuilder = put(Offices.city, value)
     fun phone(value: String): OfficesUpdateBuilder = put(Offices.phone, value)
-    fun addressline1(value: String): OfficesUpdateBuilder = put(Offices.addressline1, value)
-    fun addressline2(value: String?): OfficesUpdateBuilder = put(Offices.addressline2, value)
+    fun addressLine1(value: String): OfficesUpdateBuilder = put(Offices.addressLine1, value)
+    fun addressLine2(value: String?): OfficesUpdateBuilder = put(Offices.addressLine2, value)
     fun state(value: String?): OfficesUpdateBuilder = put(Offices.state, value)
     fun country(value: String): OfficesUpdateBuilder = put(Offices.country, value)
-    fun postalcode(value: String): OfficesUpdateBuilder = put(Offices.postalcode, value)
+    fun postalCode(value: String): OfficesUpdateBuilder = put(Offices.postalCode, value)
     fun territory(value: String): OfficesUpdateBuilder = put(Offices.territory, value)
     
     /**
@@ -78,38 +78,38 @@ class OfficesUpdateBuilder() : UpdateBuilderBase(Offices) {
      */
     override fun updateRow(rowData: TableRowData<*, *>): Long {
       rowData as OfficesRow
-      add(Offices.officecode, rowData.officecode)
+      add(Offices.officeCode, rowData.officeCode)
       add(Offices.city, rowData.city)
       add(Offices.phone, rowData.phone)
-      add(Offices.addressline1, rowData.addressline1)
-      add(Offices.addressline2, rowData.addressline2)
+      add(Offices.addressLine1, rowData.addressLine1)
+      add(Offices.addressLine2, rowData.addressLine2)
       add(Offices.state, rowData.state)
       add(Offices.country, rowData.country)
-      add(Offices.postalcode, rowData.postalcode)
+      add(Offices.postalCode, rowData.postalCode)
       add(Offices.territory, rowData.territory)
-      return where(Offices.officecode.eq(rowData.officecode))
+      return where(Offices.officeCode.eq(rowData.officeCode))
     }    
         
 }
 
 class OfficesInsertBuilder():InsertBuilderBase(){
-    fun officecode(value: String): OfficesInsertBuilder = put(Offices.officecode, value)
+    fun officeCode(value: String): OfficesInsertBuilder = put(Offices.officeCode, value)
     fun city(value: String): OfficesInsertBuilder = put(Offices.city, value)
     fun phone(value: String): OfficesInsertBuilder = put(Offices.phone, value)
-    fun addressline1(value: String): OfficesInsertBuilder = put(Offices.addressline1, value)
-    fun addressline2(value: String?): OfficesInsertBuilder = put(Offices.addressline2, value)
+    fun addressLine1(value: String): OfficesInsertBuilder = put(Offices.addressLine1, value)
+    fun addressLine2(value: String?): OfficesInsertBuilder = put(Offices.addressLine2, value)
     fun state(value: String?): OfficesInsertBuilder = put(Offices.state, value)
     fun country(value: String): OfficesInsertBuilder = put(Offices.country, value)
-    fun postalcode(value: String): OfficesInsertBuilder = put(Offices.postalcode, value)
+    fun postalCode(value: String): OfficesInsertBuilder = put(Offices.postalCode, value)
     fun territory(value: String): OfficesInsertBuilder = put(Offices.territory, value)
 
-    fun mandatoryColumns(officecode: String, city: String, phone: String, addressline1: String, country: String, postalcode: String, territory: String) : OfficesInsertBuilder {
-      mandatory(Offices.officecode, officecode)
+    fun mandatoryColumns(officeCode: String, city: String, phone: String, addressLine1: String, country: String, postalCode: String, territory: String) : OfficesInsertBuilder {
+      mandatory(Offices.officeCode, officeCode)
       mandatory(Offices.city, city)
       mandatory(Offices.phone, phone)
-      mandatory(Offices.addressline1, addressline1)
+      mandatory(Offices.addressLine1, addressLine1)
       mandatory(Offices.country, country)
-      mandatory(Offices.postalcode, postalcode)
+      mandatory(Offices.postalCode, postalCode)
       mandatory(Offices.territory, territory)
       return this
     }
@@ -117,14 +117,14 @@ class OfficesInsertBuilder():InsertBuilderBase(){
 
     override fun insertRow(rowData: TableRowData<*, *>): Long {
       rowData as OfficesRow
-      add(Offices.officecode, rowData.officecode)
+      add(Offices.officeCode, rowData.officeCode)
       add(Offices.city, rowData.city)
       add(Offices.phone, rowData.phone)
-      add(Offices.addressline1, rowData.addressline1)
-      add(Offices.addressline2, rowData.addressline2)
+      add(Offices.addressLine1, rowData.addressLine1)
+      add(Offices.addressLine2, rowData.addressLine2)
       add(Offices.state, rowData.state)
       add(Offices.country, rowData.country)
-      add(Offices.postalcode, rowData.postalcode)
+      add(Offices.postalCode, rowData.postalCode)
       add(Offices.territory, rowData.territory)
       return execute()
     }    
@@ -133,16 +133,16 @@ class OfficesInsertBuilder():InsertBuilderBase(){
 
 
 data class OfficesRow(
-  val officecode: String,
+  val officeCode: String,
   val city: String,
   val phone: String,
-  val addressline1: String,
-  val addressline2: String?,
+  val addressLine1: String,
+  val addressLine2: String?,
   val state: String?,
   val country: String,
-  val postalcode: String,
+  val postalCode: String,
   val territory: String    
 ) : TableRowData<OfficesUpdateBuilder, OfficesInsertBuilder>(Offices.metadata()){
-     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Offices.officecode, officecode))
+     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Offices.officeCode, officeCode))
 }
         

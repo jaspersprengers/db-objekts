@@ -25,28 +25,28 @@ object Productlines:Table<ProductlinesRow>("productlines"), HasUpdateBuilder<Pro
     /**
      * Represents db column classicmodels.productlines.productLine
      */
-    val productline = VarcharColumn(this, "productLine")
+    val productLine = VarcharColumn(this, "productLine")
     /**
      * Represents db column classicmodels.productlines.textDescription
      */
-    val textdescription = NullableVarcharColumn(this, "textDescription")
+    val textDescription = NullableVarcharColumn(this, "textDescription")
     /**
      * Represents db column classicmodels.productlines.htmlDescription
      */
-    val htmldescription = NullableVarcharColumn(this, "htmlDescription")
+    val htmlDescription = NullableVarcharColumn(this, "htmlDescription")
     /**
      * Represents db column classicmodels.productlines.image
      */
     val image = NullableByteArrayColumn(this, "image")
-    override val columns: List<AnyColumn> = listOf(productline,textdescription,htmldescription,image)
+    override val columns: List<AnyColumn> = listOf(productLine,textDescription,htmlDescription,image)
     override fun toValue(values: List<Any?>) = ProductlinesRow(values[0] as String,values[1] as String?,values[2] as String?,values[3] as ByteArray?)
     override fun metadata(): WriteQueryAccessors<ProductlinesUpdateBuilder, ProductlinesInsertBuilder> = WriteQueryAccessors(ProductlinesUpdateBuilder(), ProductlinesInsertBuilder())
 }
 
 class ProductlinesUpdateBuilder() : UpdateBuilderBase(Productlines) {
-    fun productline(value: String): ProductlinesUpdateBuilder = put(Productlines.productline, value)
-    fun textdescription(value: String?): ProductlinesUpdateBuilder = put(Productlines.textdescription, value)
-    fun htmldescription(value: String?): ProductlinesUpdateBuilder = put(Productlines.htmldescription, value)
+    fun productLine(value: String): ProductlinesUpdateBuilder = put(Productlines.productLine, value)
+    fun textDescription(value: String?): ProductlinesUpdateBuilder = put(Productlines.textDescription, value)
+    fun htmlDescription(value: String?): ProductlinesUpdateBuilder = put(Productlines.htmlDescription, value)
     fun image(value: ByteArray?): ProductlinesUpdateBuilder = put(Productlines.image, value)
     
     /**
@@ -54,32 +54,32 @@ class ProductlinesUpdateBuilder() : UpdateBuilderBase(Productlines) {
      */
     override fun updateRow(rowData: TableRowData<*, *>): Long {
       rowData as ProductlinesRow
-      add(Productlines.productline, rowData.productline)
-      add(Productlines.textdescription, rowData.textdescription)
-      add(Productlines.htmldescription, rowData.htmldescription)
+      add(Productlines.productLine, rowData.productLine)
+      add(Productlines.textDescription, rowData.textDescription)
+      add(Productlines.htmlDescription, rowData.htmlDescription)
       add(Productlines.image, rowData.image)
-      return where(Productlines.productline.eq(rowData.productline))
+      return where(Productlines.productLine.eq(rowData.productLine))
     }    
         
 }
 
 class ProductlinesInsertBuilder():InsertBuilderBase(){
-    fun productline(value: String): ProductlinesInsertBuilder = put(Productlines.productline, value)
-    fun textdescription(value: String?): ProductlinesInsertBuilder = put(Productlines.textdescription, value)
-    fun htmldescription(value: String?): ProductlinesInsertBuilder = put(Productlines.htmldescription, value)
+    fun productLine(value: String): ProductlinesInsertBuilder = put(Productlines.productLine, value)
+    fun textDescription(value: String?): ProductlinesInsertBuilder = put(Productlines.textDescription, value)
+    fun htmlDescription(value: String?): ProductlinesInsertBuilder = put(Productlines.htmlDescription, value)
     fun image(value: ByteArray?): ProductlinesInsertBuilder = put(Productlines.image, value)
 
-    fun mandatoryColumns(productline: String) : ProductlinesInsertBuilder {
-      mandatory(Productlines.productline, productline)
+    fun mandatoryColumns(productLine: String) : ProductlinesInsertBuilder {
+      mandatory(Productlines.productLine, productLine)
       return this
     }
 
 
     override fun insertRow(rowData: TableRowData<*, *>): Long {
       rowData as ProductlinesRow
-      add(Productlines.productline, rowData.productline)
-      add(Productlines.textdescription, rowData.textdescription)
-      add(Productlines.htmldescription, rowData.htmldescription)
+      add(Productlines.productLine, rowData.productLine)
+      add(Productlines.textDescription, rowData.textDescription)
+      add(Productlines.htmlDescription, rowData.htmlDescription)
       add(Productlines.image, rowData.image)
       return execute()
     }    
@@ -88,11 +88,11 @@ class ProductlinesInsertBuilder():InsertBuilderBase(){
 
 
 data class ProductlinesRow(
-  val productline: String,
-  val textdescription: String?,
-  val htmldescription: String?,
+  val productLine: String,
+  val textDescription: String?,
+  val htmlDescription: String?,
   val image: ByteArray?    
 ) : TableRowData<ProductlinesUpdateBuilder, ProductlinesInsertBuilder>(Productlines.metadata()){
-     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Productlines.productline, productline))
+     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Productlines.productLine, productLine))
 }
         

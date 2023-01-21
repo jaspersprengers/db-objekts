@@ -29,76 +29,76 @@ object Orderdetails:Table<OrderdetailsRow>("orderdetails"), HasUpdateBuilder<Ord
      *
      * Foreign key to classicmodels.orders.orderNumber
      */
-    val ordernumber = ForeignKeyLongColumn(this, "orderNumber", Orders.ordernumber)
+    val orderNumber = ForeignKeyLongColumn(this, "orderNumber", Orders.orderNumber)
     /**
      * Represents db column classicmodels.orderdetails.productCode
      *
      * Foreign key to classicmodels.products.productCode
      */
-    val productcode = ForeignKeyVarcharColumn(this, "productCode", Products.productcode)
+    val productCode = ForeignKeyVarcharColumn(this, "productCode", Products.productCode)
     /**
      * Represents db column classicmodels.orderdetails.quantityOrdered
      */
-    val quantityordered = LongColumn(this, "quantityOrdered")
+    val quantityOrdered = LongColumn(this, "quantityOrdered")
     /**
      * Represents db column classicmodels.orderdetails.priceEach
      */
-    val priceeach = BigDecimalColumn(this, "priceEach")
+    val priceEach = BigDecimalColumn(this, "priceEach")
     /**
      * Represents db column classicmodels.orderdetails.orderLineNumber
      */
-    val orderlinenumber = IntegerColumn(this, "orderLineNumber")
-    override val columns: List<AnyColumn> = listOf(ordernumber,productcode,quantityordered,priceeach,orderlinenumber)
+    val orderLineNumber = IntegerColumn(this, "orderLineNumber")
+    override val columns: List<AnyColumn> = listOf(orderNumber,productCode,quantityOrdered,priceEach,orderLineNumber)
     override fun toValue(values: List<Any?>) = OrderdetailsRow(values[0] as Long,values[1] as String,values[2] as Long,values[3] as java.math.BigDecimal,values[4] as Int)
     override fun metadata(): WriteQueryAccessors<OrderdetailsUpdateBuilder, OrderdetailsInsertBuilder> = WriteQueryAccessors(OrderdetailsUpdateBuilder(), OrderdetailsInsertBuilder())
 }
 
 class OrderdetailsUpdateBuilder() : UpdateBuilderBase(Orderdetails) {
-    fun ordernumber(value: Long): OrderdetailsUpdateBuilder = put(Orderdetails.ordernumber, value)
-    fun productcode(value: String): OrderdetailsUpdateBuilder = put(Orderdetails.productcode, value)
-    fun quantityordered(value: Long): OrderdetailsUpdateBuilder = put(Orderdetails.quantityordered, value)
-    fun priceeach(value: java.math.BigDecimal): OrderdetailsUpdateBuilder = put(Orderdetails.priceeach, value)
-    fun orderlinenumber(value: Int): OrderdetailsUpdateBuilder = put(Orderdetails.orderlinenumber, value)
+    fun orderNumber(value: Long): OrderdetailsUpdateBuilder = put(Orderdetails.orderNumber, value)
+    fun productCode(value: String): OrderdetailsUpdateBuilder = put(Orderdetails.productCode, value)
+    fun quantityOrdered(value: Long): OrderdetailsUpdateBuilder = put(Orderdetails.quantityOrdered, value)
+    fun priceEach(value: java.math.BigDecimal): OrderdetailsUpdateBuilder = put(Orderdetails.priceEach, value)
+    fun orderLineNumber(value: Int): OrderdetailsUpdateBuilder = put(Orderdetails.orderLineNumber, value)
     
     /**
      * FOR INTERNAL USE ONLY
      */
     override fun updateRow(rowData: TableRowData<*, *>): Long {
       rowData as OrderdetailsRow
-      add(Orderdetails.ordernumber, rowData.ordernumber)
-      add(Orderdetails.productcode, rowData.productcode)
-      add(Orderdetails.quantityordered, rowData.quantityordered)
-      add(Orderdetails.priceeach, rowData.priceeach)
-      add(Orderdetails.orderlinenumber, rowData.orderlinenumber)
-      return where(Orderdetails.ordernumber.eq(rowData.ordernumber).and(Orderdetails.productcode.eq(rowData.productcode)))
+      add(Orderdetails.orderNumber, rowData.orderNumber)
+      add(Orderdetails.productCode, rowData.productCode)
+      add(Orderdetails.quantityOrdered, rowData.quantityOrdered)
+      add(Orderdetails.priceEach, rowData.priceEach)
+      add(Orderdetails.orderLineNumber, rowData.orderLineNumber)
+      return where(Orderdetails.orderNumber.eq(rowData.orderNumber).and(Orderdetails.productCode.eq(rowData.productCode)))
     }    
         
 }
 
 class OrderdetailsInsertBuilder():InsertBuilderBase(){
-    fun ordernumber(value: Long): OrderdetailsInsertBuilder = put(Orderdetails.ordernumber, value)
-    fun productcode(value: String): OrderdetailsInsertBuilder = put(Orderdetails.productcode, value)
-    fun quantityordered(value: Long): OrderdetailsInsertBuilder = put(Orderdetails.quantityordered, value)
-    fun priceeach(value: java.math.BigDecimal): OrderdetailsInsertBuilder = put(Orderdetails.priceeach, value)
-    fun orderlinenumber(value: Int): OrderdetailsInsertBuilder = put(Orderdetails.orderlinenumber, value)
+    fun orderNumber(value: Long): OrderdetailsInsertBuilder = put(Orderdetails.orderNumber, value)
+    fun productCode(value: String): OrderdetailsInsertBuilder = put(Orderdetails.productCode, value)
+    fun quantityOrdered(value: Long): OrderdetailsInsertBuilder = put(Orderdetails.quantityOrdered, value)
+    fun priceEach(value: java.math.BigDecimal): OrderdetailsInsertBuilder = put(Orderdetails.priceEach, value)
+    fun orderLineNumber(value: Int): OrderdetailsInsertBuilder = put(Orderdetails.orderLineNumber, value)
 
-    fun mandatoryColumns(ordernumber: Long, productcode: String, quantityordered: Long, priceeach: java.math.BigDecimal, orderlinenumber: Int) : OrderdetailsInsertBuilder {
-      mandatory(Orderdetails.ordernumber, ordernumber)
-      mandatory(Orderdetails.productcode, productcode)
-      mandatory(Orderdetails.quantityordered, quantityordered)
-      mandatory(Orderdetails.priceeach, priceeach)
-      mandatory(Orderdetails.orderlinenumber, orderlinenumber)
+    fun mandatoryColumns(orderNumber: Long, productCode: String, quantityOrdered: Long, priceEach: java.math.BigDecimal, orderLineNumber: Int) : OrderdetailsInsertBuilder {
+      mandatory(Orderdetails.orderNumber, orderNumber)
+      mandatory(Orderdetails.productCode, productCode)
+      mandatory(Orderdetails.quantityOrdered, quantityOrdered)
+      mandatory(Orderdetails.priceEach, priceEach)
+      mandatory(Orderdetails.orderLineNumber, orderLineNumber)
       return this
     }
 
 
     override fun insertRow(rowData: TableRowData<*, *>): Long {
       rowData as OrderdetailsRow
-      add(Orderdetails.ordernumber, rowData.ordernumber)
-      add(Orderdetails.productcode, rowData.productcode)
-      add(Orderdetails.quantityordered, rowData.quantityordered)
-      add(Orderdetails.priceeach, rowData.priceeach)
-      add(Orderdetails.orderlinenumber, rowData.orderlinenumber)
+      add(Orderdetails.orderNumber, rowData.orderNumber)
+      add(Orderdetails.productCode, rowData.productCode)
+      add(Orderdetails.quantityOrdered, rowData.quantityOrdered)
+      add(Orderdetails.priceEach, rowData.priceEach)
+      add(Orderdetails.orderLineNumber, rowData.orderLineNumber)
       return execute()
     }    
         
@@ -106,12 +106,12 @@ class OrderdetailsInsertBuilder():InsertBuilderBase(){
 
 
 data class OrderdetailsRow(
-  val ordernumber: Long,
-  val productcode: String,
-  val quantityordered: Long,
-  val priceeach: java.math.BigDecimal,
-  val orderlinenumber: Int    
+  val orderNumber: Long,
+  val productCode: String,
+  val quantityOrdered: Long,
+  val priceEach: java.math.BigDecimal,
+  val orderLineNumber: Int    
 ) : TableRowData<OrderdetailsUpdateBuilder, OrderdetailsInsertBuilder>(Orderdetails.metadata()){
-     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Orderdetails.ordernumber, ordernumber),Pair(Orderdetails.productcode, productcode))
+     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Orderdetails.orderNumber, orderNumber),Pair(Orderdetails.productCode, productCode))
 }
         

@@ -28,19 +28,19 @@ object Orders:Table<OrdersRow>("orders"), HasUpdateBuilder<OrdersUpdateBuilder, 
     /**
      * Represents db column classicmodels.orders.orderNumber
      */
-    val ordernumber = LongColumn(this, "orderNumber")
+    val orderNumber = LongColumn(this, "orderNumber")
     /**
      * Represents db column classicmodels.orders.orderDate
      */
-    val orderdate = DateColumn(this, "orderDate")
+    val orderDate = DateColumn(this, "orderDate")
     /**
      * Represents db column classicmodels.orders.requiredDate
      */
-    val requireddate = DateColumn(this, "requiredDate")
+    val requiredDate = DateColumn(this, "requiredDate")
     /**
      * Represents db column classicmodels.orders.shippedDate
      */
-    val shippeddate = NullableDateColumn(this, "shippedDate")
+    val shippedDate = NullableDateColumn(this, "shippedDate")
     /**
      * Represents db column classicmodels.orders.status
      */
@@ -54,66 +54,66 @@ object Orders:Table<OrdersRow>("orders"), HasUpdateBuilder<OrdersUpdateBuilder, 
      *
      * Foreign key to classicmodels.customers.customerNumber
      */
-    val customernumber = ForeignKeyLongColumn(this, "customerNumber", Customers.customernumber)
-    override val columns: List<AnyColumn> = listOf(ordernumber,orderdate,requireddate,shippeddate,status,comments,customernumber)
+    val customerNumber = ForeignKeyLongColumn(this, "customerNumber", Customers.customerNumber)
+    override val columns: List<AnyColumn> = listOf(orderNumber,orderDate,requiredDate,shippedDate,status,comments,customerNumber)
     override fun toValue(values: List<Any?>) = OrdersRow(values[0] as Long,values[1] as java.time.LocalDate,values[2] as java.time.LocalDate,values[3] as java.time.LocalDate?,values[4] as String,values[5] as String?,values[6] as Long)
     override fun metadata(): WriteQueryAccessors<OrdersUpdateBuilder, OrdersInsertBuilder> = WriteQueryAccessors(OrdersUpdateBuilder(), OrdersInsertBuilder())
 }
 
 class OrdersUpdateBuilder() : UpdateBuilderBase(Orders) {
-    fun ordernumber(value: Long): OrdersUpdateBuilder = put(Orders.ordernumber, value)
-    fun orderdate(value: java.time.LocalDate): OrdersUpdateBuilder = put(Orders.orderdate, value)
-    fun requireddate(value: java.time.LocalDate): OrdersUpdateBuilder = put(Orders.requireddate, value)
-    fun shippeddate(value: java.time.LocalDate?): OrdersUpdateBuilder = put(Orders.shippeddate, value)
+    fun orderNumber(value: Long): OrdersUpdateBuilder = put(Orders.orderNumber, value)
+    fun orderDate(value: java.time.LocalDate): OrdersUpdateBuilder = put(Orders.orderDate, value)
+    fun requiredDate(value: java.time.LocalDate): OrdersUpdateBuilder = put(Orders.requiredDate, value)
+    fun shippedDate(value: java.time.LocalDate?): OrdersUpdateBuilder = put(Orders.shippedDate, value)
     fun status(value: String): OrdersUpdateBuilder = put(Orders.status, value)
     fun comments(value: String?): OrdersUpdateBuilder = put(Orders.comments, value)
-    fun customernumber(value: Long): OrdersUpdateBuilder = put(Orders.customernumber, value)
+    fun customerNumber(value: Long): OrdersUpdateBuilder = put(Orders.customerNumber, value)
     
     /**
      * FOR INTERNAL USE ONLY
      */
     override fun updateRow(rowData: TableRowData<*, *>): Long {
       rowData as OrdersRow
-      add(Orders.ordernumber, rowData.ordernumber)
-      add(Orders.orderdate, rowData.orderdate)
-      add(Orders.requireddate, rowData.requireddate)
-      add(Orders.shippeddate, rowData.shippeddate)
+      add(Orders.orderNumber, rowData.orderNumber)
+      add(Orders.orderDate, rowData.orderDate)
+      add(Orders.requiredDate, rowData.requiredDate)
+      add(Orders.shippedDate, rowData.shippedDate)
       add(Orders.status, rowData.status)
       add(Orders.comments, rowData.comments)
-      add(Orders.customernumber, rowData.customernumber)
-      return where(Orders.ordernumber.eq(rowData.ordernumber))
+      add(Orders.customerNumber, rowData.customerNumber)
+      return where(Orders.orderNumber.eq(rowData.orderNumber))
     }    
         
 }
 
 class OrdersInsertBuilder():InsertBuilderBase(){
-    fun ordernumber(value: Long): OrdersInsertBuilder = put(Orders.ordernumber, value)
-    fun orderdate(value: java.time.LocalDate): OrdersInsertBuilder = put(Orders.orderdate, value)
-    fun requireddate(value: java.time.LocalDate): OrdersInsertBuilder = put(Orders.requireddate, value)
-    fun shippeddate(value: java.time.LocalDate?): OrdersInsertBuilder = put(Orders.shippeddate, value)
+    fun orderNumber(value: Long): OrdersInsertBuilder = put(Orders.orderNumber, value)
+    fun orderDate(value: java.time.LocalDate): OrdersInsertBuilder = put(Orders.orderDate, value)
+    fun requiredDate(value: java.time.LocalDate): OrdersInsertBuilder = put(Orders.requiredDate, value)
+    fun shippedDate(value: java.time.LocalDate?): OrdersInsertBuilder = put(Orders.shippedDate, value)
     fun status(value: String): OrdersInsertBuilder = put(Orders.status, value)
     fun comments(value: String?): OrdersInsertBuilder = put(Orders.comments, value)
-    fun customernumber(value: Long): OrdersInsertBuilder = put(Orders.customernumber, value)
+    fun customerNumber(value: Long): OrdersInsertBuilder = put(Orders.customerNumber, value)
 
-    fun mandatoryColumns(ordernumber: Long, orderdate: java.time.LocalDate, requireddate: java.time.LocalDate, status: String, customernumber: Long) : OrdersInsertBuilder {
-      mandatory(Orders.ordernumber, ordernumber)
-      mandatory(Orders.orderdate, orderdate)
-      mandatory(Orders.requireddate, requireddate)
+    fun mandatoryColumns(orderNumber: Long, orderDate: java.time.LocalDate, requiredDate: java.time.LocalDate, status: String, customerNumber: Long) : OrdersInsertBuilder {
+      mandatory(Orders.orderNumber, orderNumber)
+      mandatory(Orders.orderDate, orderDate)
+      mandatory(Orders.requiredDate, requiredDate)
       mandatory(Orders.status, status)
-      mandatory(Orders.customernumber, customernumber)
+      mandatory(Orders.customerNumber, customerNumber)
       return this
     }
 
 
     override fun insertRow(rowData: TableRowData<*, *>): Long {
       rowData as OrdersRow
-      add(Orders.ordernumber, rowData.ordernumber)
-      add(Orders.orderdate, rowData.orderdate)
-      add(Orders.requireddate, rowData.requireddate)
-      add(Orders.shippeddate, rowData.shippeddate)
+      add(Orders.orderNumber, rowData.orderNumber)
+      add(Orders.orderDate, rowData.orderDate)
+      add(Orders.requiredDate, rowData.requiredDate)
+      add(Orders.shippedDate, rowData.shippedDate)
       add(Orders.status, rowData.status)
       add(Orders.comments, rowData.comments)
-      add(Orders.customernumber, rowData.customernumber)
+      add(Orders.customerNumber, rowData.customerNumber)
       return execute()
     }    
         
@@ -121,14 +121,14 @@ class OrdersInsertBuilder():InsertBuilderBase(){
 
 
 data class OrdersRow(
-  val ordernumber: Long,
-  val orderdate: java.time.LocalDate,
-  val requireddate: java.time.LocalDate,
-  val shippeddate: java.time.LocalDate?,
+  val orderNumber: Long,
+  val orderDate: java.time.LocalDate,
+  val requiredDate: java.time.LocalDate,
+  val shippedDate: java.time.LocalDate?,
   val status: String,
   val comments: String?,
-  val customernumber: Long    
+  val customerNumber: Long    
 ) : TableRowData<OrdersUpdateBuilder, OrdersInsertBuilder>(Orders.metadata()){
-     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Orders.ordernumber, ordernumber))
+     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Orders.orderNumber, orderNumber))
 }
         

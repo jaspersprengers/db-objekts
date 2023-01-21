@@ -28,28 +28,28 @@ object Payments:Table<PaymentsRow>("payments"), HasUpdateBuilder<PaymentsUpdateB
      *
      * Foreign key to classicmodels.customers.customerNumber
      */
-    val customernumber = ForeignKeyLongColumn(this, "customerNumber", Customers.customernumber)
+    val customerNumber = ForeignKeyLongColumn(this, "customerNumber", Customers.customerNumber)
     /**
      * Represents db column classicmodels.payments.checkNumber
      */
-    val checknumber = VarcharColumn(this, "checkNumber")
+    val checkNumber = VarcharColumn(this, "checkNumber")
     /**
      * Represents db column classicmodels.payments.paymentDate
      */
-    val paymentdate = DateColumn(this, "paymentDate")
+    val paymentDate = DateColumn(this, "paymentDate")
     /**
      * Represents db column classicmodels.payments.amount
      */
     val amount = BigDecimalColumn(this, "amount")
-    override val columns: List<AnyColumn> = listOf(customernumber,checknumber,paymentdate,amount)
+    override val columns: List<AnyColumn> = listOf(customerNumber,checkNumber,paymentDate,amount)
     override fun toValue(values: List<Any?>) = PaymentsRow(values[0] as Long,values[1] as String,values[2] as java.time.LocalDate,values[3] as java.math.BigDecimal)
     override fun metadata(): WriteQueryAccessors<PaymentsUpdateBuilder, PaymentsInsertBuilder> = WriteQueryAccessors(PaymentsUpdateBuilder(), PaymentsInsertBuilder())
 }
 
 class PaymentsUpdateBuilder() : UpdateBuilderBase(Payments) {
-    fun customernumber(value: Long): PaymentsUpdateBuilder = put(Payments.customernumber, value)
-    fun checknumber(value: String): PaymentsUpdateBuilder = put(Payments.checknumber, value)
-    fun paymentdate(value: java.time.LocalDate): PaymentsUpdateBuilder = put(Payments.paymentdate, value)
+    fun customerNumber(value: Long): PaymentsUpdateBuilder = put(Payments.customerNumber, value)
+    fun checkNumber(value: String): PaymentsUpdateBuilder = put(Payments.checkNumber, value)
+    fun paymentDate(value: java.time.LocalDate): PaymentsUpdateBuilder = put(Payments.paymentDate, value)
     fun amount(value: java.math.BigDecimal): PaymentsUpdateBuilder = put(Payments.amount, value)
     
     /**
@@ -57,25 +57,25 @@ class PaymentsUpdateBuilder() : UpdateBuilderBase(Payments) {
      */
     override fun updateRow(rowData: TableRowData<*, *>): Long {
       rowData as PaymentsRow
-      add(Payments.customernumber, rowData.customernumber)
-      add(Payments.checknumber, rowData.checknumber)
-      add(Payments.paymentdate, rowData.paymentdate)
+      add(Payments.customerNumber, rowData.customerNumber)
+      add(Payments.checkNumber, rowData.checkNumber)
+      add(Payments.paymentDate, rowData.paymentDate)
       add(Payments.amount, rowData.amount)
-      return where(Payments.customernumber.eq(rowData.customernumber).and(Payments.checknumber.eq(rowData.checknumber)))
+      return where(Payments.customerNumber.eq(rowData.customerNumber).and(Payments.checkNumber.eq(rowData.checkNumber)))
     }    
         
 }
 
 class PaymentsInsertBuilder():InsertBuilderBase(){
-    fun customernumber(value: Long): PaymentsInsertBuilder = put(Payments.customernumber, value)
-    fun checknumber(value: String): PaymentsInsertBuilder = put(Payments.checknumber, value)
-    fun paymentdate(value: java.time.LocalDate): PaymentsInsertBuilder = put(Payments.paymentdate, value)
+    fun customerNumber(value: Long): PaymentsInsertBuilder = put(Payments.customerNumber, value)
+    fun checkNumber(value: String): PaymentsInsertBuilder = put(Payments.checkNumber, value)
+    fun paymentDate(value: java.time.LocalDate): PaymentsInsertBuilder = put(Payments.paymentDate, value)
     fun amount(value: java.math.BigDecimal): PaymentsInsertBuilder = put(Payments.amount, value)
 
-    fun mandatoryColumns(customernumber: Long, checknumber: String, paymentdate: java.time.LocalDate, amount: java.math.BigDecimal) : PaymentsInsertBuilder {
-      mandatory(Payments.customernumber, customernumber)
-      mandatory(Payments.checknumber, checknumber)
-      mandatory(Payments.paymentdate, paymentdate)
+    fun mandatoryColumns(customerNumber: Long, checkNumber: String, paymentDate: java.time.LocalDate, amount: java.math.BigDecimal) : PaymentsInsertBuilder {
+      mandatory(Payments.customerNumber, customerNumber)
+      mandatory(Payments.checkNumber, checkNumber)
+      mandatory(Payments.paymentDate, paymentDate)
       mandatory(Payments.amount, amount)
       return this
     }
@@ -83,9 +83,9 @@ class PaymentsInsertBuilder():InsertBuilderBase(){
 
     override fun insertRow(rowData: TableRowData<*, *>): Long {
       rowData as PaymentsRow
-      add(Payments.customernumber, rowData.customernumber)
-      add(Payments.checknumber, rowData.checknumber)
-      add(Payments.paymentdate, rowData.paymentdate)
+      add(Payments.customerNumber, rowData.customerNumber)
+      add(Payments.checkNumber, rowData.checkNumber)
+      add(Payments.paymentDate, rowData.paymentDate)
       add(Payments.amount, rowData.amount)
       return execute()
     }    
@@ -94,11 +94,11 @@ class PaymentsInsertBuilder():InsertBuilderBase(){
 
 
 data class PaymentsRow(
-  val customernumber: Long,
-  val checknumber: String,
-  val paymentdate: java.time.LocalDate,
+  val customerNumber: Long,
+  val checkNumber: String,
+  val paymentDate: java.time.LocalDate,
   val amount: java.math.BigDecimal    
 ) : TableRowData<PaymentsUpdateBuilder, PaymentsInsertBuilder>(Payments.metadata()){
-     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Payments.customernumber, customernumber),Pair(Payments.checknumber, checknumber))
+     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Payments.customerNumber, customerNumber),Pair(Payments.checkNumber, checkNumber))
 }
         

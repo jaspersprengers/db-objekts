@@ -26,55 +26,55 @@ object Products:Table<ProductsRow>("products"), HasUpdateBuilder<ProductsUpdateB
     /**
      * Represents db column classicmodels.products.productCode
      */
-    val productcode = VarcharColumn(this, "productCode")
+    val productCode = VarcharColumn(this, "productCode")
     /**
      * Represents db column classicmodels.products.productName
      */
-    val productname = VarcharColumn(this, "productName")
+    val productName = VarcharColumn(this, "productName")
     /**
      * Represents db column classicmodels.products.productLine
      *
      * Foreign key to classicmodels.productlines.productLine
      */
-    val productline = ForeignKeyVarcharColumn(this, "productLine", Productlines.productline)
+    val productLine = ForeignKeyVarcharColumn(this, "productLine", Productlines.productLine)
     /**
      * Represents db column classicmodels.products.productScale
      */
-    val productscale = VarcharColumn(this, "productScale")
+    val productScale = VarcharColumn(this, "productScale")
     /**
      * Represents db column classicmodels.products.productVendor
      */
-    val productvendor = VarcharColumn(this, "productVendor")
+    val productVendor = VarcharColumn(this, "productVendor")
     /**
      * Represents db column classicmodels.products.productDescription
      */
-    val productdescription = VarcharColumn(this, "productDescription")
+    val productDescription = VarcharColumn(this, "productDescription")
     /**
      * Represents db column classicmodels.products.quantityInStock
      */
-    val quantityinstock = IntegerColumn(this, "quantityInStock")
+    val quantityInStock = IntegerColumn(this, "quantityInStock")
     /**
      * Represents db column classicmodels.products.buyPrice
      */
-    val buyprice = BigDecimalColumn(this, "buyPrice")
+    val buyPrice = BigDecimalColumn(this, "buyPrice")
     /**
      * Represents db column classicmodels.products.MSRP
      */
     val msrp = BigDecimalColumn(this, "MSRP")
-    override val columns: List<AnyColumn> = listOf(productcode,productname,productline,productscale,productvendor,productdescription,quantityinstock,buyprice,msrp)
+    override val columns: List<AnyColumn> = listOf(productCode,productName,productLine,productScale,productVendor,productDescription,quantityInStock,buyPrice,msrp)
     override fun toValue(values: List<Any?>) = ProductsRow(values[0] as String,values[1] as String,values[2] as String,values[3] as String,values[4] as String,values[5] as String,values[6] as Int,values[7] as java.math.BigDecimal,values[8] as java.math.BigDecimal)
     override fun metadata(): WriteQueryAccessors<ProductsUpdateBuilder, ProductsInsertBuilder> = WriteQueryAccessors(ProductsUpdateBuilder(), ProductsInsertBuilder())
 }
 
 class ProductsUpdateBuilder() : UpdateBuilderBase(Products) {
-    fun productcode(value: String): ProductsUpdateBuilder = put(Products.productcode, value)
-    fun productname(value: String): ProductsUpdateBuilder = put(Products.productname, value)
-    fun productline(value: String): ProductsUpdateBuilder = put(Products.productline, value)
-    fun productscale(value: String): ProductsUpdateBuilder = put(Products.productscale, value)
-    fun productvendor(value: String): ProductsUpdateBuilder = put(Products.productvendor, value)
-    fun productdescription(value: String): ProductsUpdateBuilder = put(Products.productdescription, value)
-    fun quantityinstock(value: Int): ProductsUpdateBuilder = put(Products.quantityinstock, value)
-    fun buyprice(value: java.math.BigDecimal): ProductsUpdateBuilder = put(Products.buyprice, value)
+    fun productCode(value: String): ProductsUpdateBuilder = put(Products.productCode, value)
+    fun productName(value: String): ProductsUpdateBuilder = put(Products.productName, value)
+    fun productLine(value: String): ProductsUpdateBuilder = put(Products.productLine, value)
+    fun productScale(value: String): ProductsUpdateBuilder = put(Products.productScale, value)
+    fun productVendor(value: String): ProductsUpdateBuilder = put(Products.productVendor, value)
+    fun productDescription(value: String): ProductsUpdateBuilder = put(Products.productDescription, value)
+    fun quantityInStock(value: Int): ProductsUpdateBuilder = put(Products.quantityInStock, value)
+    fun buyPrice(value: java.math.BigDecimal): ProductsUpdateBuilder = put(Products.buyPrice, value)
     fun msrp(value: java.math.BigDecimal): ProductsUpdateBuilder = put(Products.msrp, value)
     
     /**
@@ -82,40 +82,40 @@ class ProductsUpdateBuilder() : UpdateBuilderBase(Products) {
      */
     override fun updateRow(rowData: TableRowData<*, *>): Long {
       rowData as ProductsRow
-      add(Products.productcode, rowData.productcode)
-      add(Products.productname, rowData.productname)
-      add(Products.productline, rowData.productline)
-      add(Products.productscale, rowData.productscale)
-      add(Products.productvendor, rowData.productvendor)
-      add(Products.productdescription, rowData.productdescription)
-      add(Products.quantityinstock, rowData.quantityinstock)
-      add(Products.buyprice, rowData.buyprice)
+      add(Products.productCode, rowData.productCode)
+      add(Products.productName, rowData.productName)
+      add(Products.productLine, rowData.productLine)
+      add(Products.productScale, rowData.productScale)
+      add(Products.productVendor, rowData.productVendor)
+      add(Products.productDescription, rowData.productDescription)
+      add(Products.quantityInStock, rowData.quantityInStock)
+      add(Products.buyPrice, rowData.buyPrice)
       add(Products.msrp, rowData.msrp)
-      return where(Products.productcode.eq(rowData.productcode))
+      return where(Products.productCode.eq(rowData.productCode))
     }    
         
 }
 
 class ProductsInsertBuilder():InsertBuilderBase(){
-    fun productcode(value: String): ProductsInsertBuilder = put(Products.productcode, value)
-    fun productname(value: String): ProductsInsertBuilder = put(Products.productname, value)
-    fun productline(value: String): ProductsInsertBuilder = put(Products.productline, value)
-    fun productscale(value: String): ProductsInsertBuilder = put(Products.productscale, value)
-    fun productvendor(value: String): ProductsInsertBuilder = put(Products.productvendor, value)
-    fun productdescription(value: String): ProductsInsertBuilder = put(Products.productdescription, value)
-    fun quantityinstock(value: Int): ProductsInsertBuilder = put(Products.quantityinstock, value)
-    fun buyprice(value: java.math.BigDecimal): ProductsInsertBuilder = put(Products.buyprice, value)
+    fun productCode(value: String): ProductsInsertBuilder = put(Products.productCode, value)
+    fun productName(value: String): ProductsInsertBuilder = put(Products.productName, value)
+    fun productLine(value: String): ProductsInsertBuilder = put(Products.productLine, value)
+    fun productScale(value: String): ProductsInsertBuilder = put(Products.productScale, value)
+    fun productVendor(value: String): ProductsInsertBuilder = put(Products.productVendor, value)
+    fun productDescription(value: String): ProductsInsertBuilder = put(Products.productDescription, value)
+    fun quantityInStock(value: Int): ProductsInsertBuilder = put(Products.quantityInStock, value)
+    fun buyPrice(value: java.math.BigDecimal): ProductsInsertBuilder = put(Products.buyPrice, value)
     fun msrp(value: java.math.BigDecimal): ProductsInsertBuilder = put(Products.msrp, value)
 
-    fun mandatoryColumns(productcode: String, productname: String, productline: String, productscale: String, productvendor: String, productdescription: String, quantityinstock: Int, buyprice: java.math.BigDecimal, msrp: java.math.BigDecimal) : ProductsInsertBuilder {
-      mandatory(Products.productcode, productcode)
-      mandatory(Products.productname, productname)
-      mandatory(Products.productline, productline)
-      mandatory(Products.productscale, productscale)
-      mandatory(Products.productvendor, productvendor)
-      mandatory(Products.productdescription, productdescription)
-      mandatory(Products.quantityinstock, quantityinstock)
-      mandatory(Products.buyprice, buyprice)
+    fun mandatoryColumns(productCode: String, productName: String, productLine: String, productScale: String, productVendor: String, productDescription: String, quantityInStock: Int, buyPrice: java.math.BigDecimal, msrp: java.math.BigDecimal) : ProductsInsertBuilder {
+      mandatory(Products.productCode, productCode)
+      mandatory(Products.productName, productName)
+      mandatory(Products.productLine, productLine)
+      mandatory(Products.productScale, productScale)
+      mandatory(Products.productVendor, productVendor)
+      mandatory(Products.productDescription, productDescription)
+      mandatory(Products.quantityInStock, quantityInStock)
+      mandatory(Products.buyPrice, buyPrice)
       mandatory(Products.msrp, msrp)
       return this
     }
@@ -123,14 +123,14 @@ class ProductsInsertBuilder():InsertBuilderBase(){
 
     override fun insertRow(rowData: TableRowData<*, *>): Long {
       rowData as ProductsRow
-      add(Products.productcode, rowData.productcode)
-      add(Products.productname, rowData.productname)
-      add(Products.productline, rowData.productline)
-      add(Products.productscale, rowData.productscale)
-      add(Products.productvendor, rowData.productvendor)
-      add(Products.productdescription, rowData.productdescription)
-      add(Products.quantityinstock, rowData.quantityinstock)
-      add(Products.buyprice, rowData.buyprice)
+      add(Products.productCode, rowData.productCode)
+      add(Products.productName, rowData.productName)
+      add(Products.productLine, rowData.productLine)
+      add(Products.productScale, rowData.productScale)
+      add(Products.productVendor, rowData.productVendor)
+      add(Products.productDescription, rowData.productDescription)
+      add(Products.quantityInStock, rowData.quantityInStock)
+      add(Products.buyPrice, rowData.buyPrice)
       add(Products.msrp, rowData.msrp)
       return execute()
     }    
@@ -139,16 +139,16 @@ class ProductsInsertBuilder():InsertBuilderBase(){
 
 
 data class ProductsRow(
-  val productcode: String,
-  val productname: String,
-  val productline: String,
-  val productscale: String,
-  val productvendor: String,
-  val productdescription: String,
-  val quantityinstock: Int,
-  val buyprice: java.math.BigDecimal,
+  val productCode: String,
+  val productName: String,
+  val productLine: String,
+  val productScale: String,
+  val productVendor: String,
+  val productDescription: String,
+  val quantityInStock: Int,
+  val buyPrice: java.math.BigDecimal,
   val msrp: java.math.BigDecimal    
 ) : TableRowData<ProductsUpdateBuilder, ProductsInsertBuilder>(Products.metadata()){
-     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Products.productcode, productcode))
+     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Products.productCode, productCode))
 }
         

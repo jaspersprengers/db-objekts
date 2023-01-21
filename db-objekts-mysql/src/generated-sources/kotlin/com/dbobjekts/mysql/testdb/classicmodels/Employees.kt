@@ -26,15 +26,15 @@ object Employees:Table<EmployeesRow>("employees"), HasUpdateBuilder<EmployeesUpd
     /**
      * Represents db column classicmodels.employees.employeeNumber
      */
-    val employeenumber = LongColumn(this, "employeeNumber")
+    val employeeNumber = LongColumn(this, "employeeNumber")
     /**
      * Represents db column classicmodels.employees.lastName
      */
-    val lastname = VarcharColumn(this, "lastName")
+    val lastName = VarcharColumn(this, "lastName")
     /**
      * Represents db column classicmodels.employees.firstName
      */
-    val firstname = VarcharColumn(this, "firstName")
+    val firstName = VarcharColumn(this, "firstName")
     /**
      * Represents db column classicmodels.employees.extension
      */
@@ -48,82 +48,82 @@ object Employees:Table<EmployeesRow>("employees"), HasUpdateBuilder<EmployeesUpd
      *
      * Foreign key to classicmodels.offices.officeCode
      */
-    val officecode = ForeignKeyVarcharColumn(this, "officeCode", Offices.officecode)
+    val officeCode = ForeignKeyVarcharColumn(this, "officeCode", Offices.officeCode)
     /**
      * Represents db column classicmodels.employees.reportsTo
      *
      * Foreign key to classicmodels.employees.employeeNumber
      */
-    val reportsto = OptionalForeignKeyLongColumn(this, "reportsTo", Employees.employeenumber)
+    val reportsTo = OptionalForeignKeyLongColumn(this, "reportsTo", Employees.employeeNumber)
     /**
      * Represents db column classicmodels.employees.jobTitle
      */
-    val jobtitle = VarcharColumn(this, "jobTitle")
-    override val columns: List<AnyColumn> = listOf(employeenumber,lastname,firstname,extension,email,officecode,reportsto,jobtitle)
+    val jobTitle = VarcharColumn(this, "jobTitle")
+    override val columns: List<AnyColumn> = listOf(employeeNumber,lastName,firstName,extension,email,officeCode,reportsTo,jobTitle)
     override fun toValue(values: List<Any?>) = EmployeesRow(values[0] as Long,values[1] as String,values[2] as String,values[3] as String,values[4] as String,values[5] as String,values[6] as Long?,values[7] as String)
     override fun metadata(): WriteQueryAccessors<EmployeesUpdateBuilder, EmployeesInsertBuilder> = WriteQueryAccessors(EmployeesUpdateBuilder(), EmployeesInsertBuilder())
 }
 
 class EmployeesUpdateBuilder() : UpdateBuilderBase(Employees) {
-    fun employeenumber(value: Long): EmployeesUpdateBuilder = put(Employees.employeenumber, value)
-    fun lastname(value: String): EmployeesUpdateBuilder = put(Employees.lastname, value)
-    fun firstname(value: String): EmployeesUpdateBuilder = put(Employees.firstname, value)
+    fun employeeNumber(value: Long): EmployeesUpdateBuilder = put(Employees.employeeNumber, value)
+    fun lastName(value: String): EmployeesUpdateBuilder = put(Employees.lastName, value)
+    fun firstName(value: String): EmployeesUpdateBuilder = put(Employees.firstName, value)
     fun extension(value: String): EmployeesUpdateBuilder = put(Employees.extension, value)
     fun email(value: String): EmployeesUpdateBuilder = put(Employees.email, value)
-    fun officecode(value: String): EmployeesUpdateBuilder = put(Employees.officecode, value)
-    fun reportsto(value: Long?): EmployeesUpdateBuilder = put(Employees.reportsto, value)
-    fun jobtitle(value: String): EmployeesUpdateBuilder = put(Employees.jobtitle, value)
+    fun officeCode(value: String): EmployeesUpdateBuilder = put(Employees.officeCode, value)
+    fun reportsTo(value: Long?): EmployeesUpdateBuilder = put(Employees.reportsTo, value)
+    fun jobTitle(value: String): EmployeesUpdateBuilder = put(Employees.jobTitle, value)
     
     /**
      * FOR INTERNAL USE ONLY
      */
     override fun updateRow(rowData: TableRowData<*, *>): Long {
       rowData as EmployeesRow
-      add(Employees.employeenumber, rowData.employeenumber)
-      add(Employees.lastname, rowData.lastname)
-      add(Employees.firstname, rowData.firstname)
+      add(Employees.employeeNumber, rowData.employeeNumber)
+      add(Employees.lastName, rowData.lastName)
+      add(Employees.firstName, rowData.firstName)
       add(Employees.extension, rowData.extension)
       add(Employees.email, rowData.email)
-      add(Employees.officecode, rowData.officecode)
-      add(Employees.reportsto, rowData.reportsto)
-      add(Employees.jobtitle, rowData.jobtitle)
-      return where(Employees.employeenumber.eq(rowData.employeenumber))
+      add(Employees.officeCode, rowData.officeCode)
+      add(Employees.reportsTo, rowData.reportsTo)
+      add(Employees.jobTitle, rowData.jobTitle)
+      return where(Employees.employeeNumber.eq(rowData.employeeNumber))
     }    
         
 }
 
 class EmployeesInsertBuilder():InsertBuilderBase(){
-    fun employeenumber(value: Long): EmployeesInsertBuilder = put(Employees.employeenumber, value)
-    fun lastname(value: String): EmployeesInsertBuilder = put(Employees.lastname, value)
-    fun firstname(value: String): EmployeesInsertBuilder = put(Employees.firstname, value)
+    fun employeeNumber(value: Long): EmployeesInsertBuilder = put(Employees.employeeNumber, value)
+    fun lastName(value: String): EmployeesInsertBuilder = put(Employees.lastName, value)
+    fun firstName(value: String): EmployeesInsertBuilder = put(Employees.firstName, value)
     fun extension(value: String): EmployeesInsertBuilder = put(Employees.extension, value)
     fun email(value: String): EmployeesInsertBuilder = put(Employees.email, value)
-    fun officecode(value: String): EmployeesInsertBuilder = put(Employees.officecode, value)
-    fun reportsto(value: Long?): EmployeesInsertBuilder = put(Employees.reportsto, value)
-    fun jobtitle(value: String): EmployeesInsertBuilder = put(Employees.jobtitle, value)
+    fun officeCode(value: String): EmployeesInsertBuilder = put(Employees.officeCode, value)
+    fun reportsTo(value: Long?): EmployeesInsertBuilder = put(Employees.reportsTo, value)
+    fun jobTitle(value: String): EmployeesInsertBuilder = put(Employees.jobTitle, value)
 
-    fun mandatoryColumns(employeenumber: Long, lastname: String, firstname: String, extension: String, email: String, officecode: String, jobtitle: String) : EmployeesInsertBuilder {
-      mandatory(Employees.employeenumber, employeenumber)
-      mandatory(Employees.lastname, lastname)
-      mandatory(Employees.firstname, firstname)
+    fun mandatoryColumns(employeeNumber: Long, lastName: String, firstName: String, extension: String, email: String, officeCode: String, jobTitle: String) : EmployeesInsertBuilder {
+      mandatory(Employees.employeeNumber, employeeNumber)
+      mandatory(Employees.lastName, lastName)
+      mandatory(Employees.firstName, firstName)
       mandatory(Employees.extension, extension)
       mandatory(Employees.email, email)
-      mandatory(Employees.officecode, officecode)
-      mandatory(Employees.jobtitle, jobtitle)
+      mandatory(Employees.officeCode, officeCode)
+      mandatory(Employees.jobTitle, jobTitle)
       return this
     }
 
 
     override fun insertRow(rowData: TableRowData<*, *>): Long {
       rowData as EmployeesRow
-      add(Employees.employeenumber, rowData.employeenumber)
-      add(Employees.lastname, rowData.lastname)
-      add(Employees.firstname, rowData.firstname)
+      add(Employees.employeeNumber, rowData.employeeNumber)
+      add(Employees.lastName, rowData.lastName)
+      add(Employees.firstName, rowData.firstName)
       add(Employees.extension, rowData.extension)
       add(Employees.email, rowData.email)
-      add(Employees.officecode, rowData.officecode)
-      add(Employees.reportsto, rowData.reportsto)
-      add(Employees.jobtitle, rowData.jobtitle)
+      add(Employees.officeCode, rowData.officeCode)
+      add(Employees.reportsTo, rowData.reportsTo)
+      add(Employees.jobTitle, rowData.jobTitle)
       return execute()
     }    
         
@@ -131,15 +131,15 @@ class EmployeesInsertBuilder():InsertBuilderBase(){
 
 
 data class EmployeesRow(
-  val employeenumber: Long,
-  val lastname: String,
-  val firstname: String,
+  val employeeNumber: Long,
+  val lastName: String,
+  val firstName: String,
   val extension: String,
   val email: String,
-  val officecode: String,
-  val reportsto: Long?,
-  val jobtitle: String    
+  val officeCode: String,
+  val reportsTo: Long?,
+  val jobTitle: String    
 ) : TableRowData<EmployeesUpdateBuilder, EmployeesInsertBuilder>(Employees.metadata()){
-     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Employees.employeenumber, employeenumber))
+     override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Employees.employeeNumber, employeeNumber))
 }
         
