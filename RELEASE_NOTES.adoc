@@ -2,6 +2,7 @@
 
 == 0.4.2-alpha
 * Minor refactoring and documentation
+* Fixed critical bug in maven configuration that prevented correct deployment to maven central
 
 == 0.4.1-alpha
 * Support for setting custom mappings for table and column names in generated code.

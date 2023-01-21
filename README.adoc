@@ -6,8 +6,8 @@ image::logo.png[logo, 600]
 
 == Preliminaries
 
-NOTE: db-Objekts is currently in alpha. The API is subject to change and not ready for production. At present, it only supports H2 and MariaDB.
-A beta is planned for early 2023 and a first stable release later that year. This will at least support MySQL, PostgreSQL and Oracle. xref:roadmap[Roadmap]
+NOTE: db-Objekts is currently in alpha. The API is subject to change and not ready for production. At present, it supports H2, MariaDB, MySQL and PostrgreSQL.
+A beta is planned for early 2023 and a first stable release later that year. xref:roadmap[Roadmap]
 
 == db-Objekts in a nutshell
 db-Objekts is a Kotlin library to query relational databases. It uses generated metadata objects in a DSL that produces type-safe and fluent queries while the engine takes care of join syntax and type conversions. The project was conceived by https://jaspersprengers.eu[Jasper Sprengers]. I am a software developer living in the Netherlands.
@@ -36,7 +36,7 @@ image::autocomplete.png[autocomplete, 600]
 
 So, how is this different from other offerings, notably object relational mapping (ORM)?
 
-To begin with, db-Objekts centers around queries and static metadata, not stateful managed entities. ORMs abstracts away tables and foreign keys. This works fine at the level of individual entities, but batch performance at scale is hard. They are neither lightweight nor easy to master in-depth. Each query in db-Objekts always results in a single SQL statement. It is more transparent and predictable in that regard.
+db-Objekts centers around queries and static metadata, not stateful managed entities. ORMs abstract away tables and foreign keys. This works fine at the level of individual entities, but makes batch performance at scale hard. They are neither lightweight nor easy to master in-depth. Queries in db-Objekts always result in a single SQL statement and are easier to debug.
 
 Other DSL alternatives target similar use cases, so the similarities __seem__ obvious at first glance. I want to stress the design decisions that drove this project because I believe the details matter.
 
