@@ -4,7 +4,6 @@ import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.demo.db.Aliases
 import com.dbobjekts.demo.db.CatalogDefinition
 import com.dbobjekts.demo.db.HasAliases
-import com.dbobjekts.metadata.column.BigDecimalColumn
 import com.dbobjekts.metadata.column.DoubleColumn
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
 import org.assertj.core.api.Assertions.assertThat
@@ -13,16 +12,18 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.DynamicPropertyRegistry
 import org.springframework.test.context.DynamicPropertySource
+import org.testcontainers.junit.jupiter.Container
+import org.testcontainers.junit.jupiter.Testcontainers
 import java.nio.file.Paths
 import javax.sql.DataSource
 
 @SpringBootTest
-//@Testcontainers
+@Testcontainers
 class SpringDemoIntegrationTest : HasAliases by Aliases {
 
     companion object {
-        //@Container
-        //val container: MariaDBWrapper = MariaDBWrapper("10.10", listOf("acme.sql", "classicmodels.sql"))
+        @Container
+        val container: MysqlContainer = MysqlContainer("8.0", listOf("acme.sql", "classicmodels.sql"))
 
         /**
          * The host port on which the dockerized db is available is not known until after container is live.
@@ -31,12 +32,12 @@ class SpringDemoIntegrationTest : HasAliases by Aliases {
         @JvmStatic
         @DynamicPropertySource
         fun updateDbProperties(registry: DynamicPropertyRegistry) {
-            /*registry.add("spring.datasource.url") {
+            registry.add("spring.datasource.url") {
                 String.format(
-                    "jdbc:mariadb://localhost:%d/test",
+                    "jdbc:mysql://localhost:%d/test",
                     container.getFirstMappedPort()
                 )
-            }*/
+            }
         }
     }
 

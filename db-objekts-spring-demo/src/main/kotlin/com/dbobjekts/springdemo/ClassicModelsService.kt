@@ -1,13 +1,13 @@
 package com.dbobjekts.springdemo
 
-import com.dbobjekts.api.*
+import com.dbobjekts.api.TransactionManager
+import com.dbobjekts.api.Tuple2
+import com.dbobjekts.api.Tuple3
 import com.dbobjekts.demo.db.Aliases
 import com.dbobjekts.demo.db.HasAliases
 import com.dbobjekts.demo.db.classicmodels.*
 import com.dbobjekts.metadata.column.Aggregate
 import org.springframework.stereotype.Service
-import java.math.BigDecimal
-import java.time.LocalDate
 
 @Service
 class ClassicModelsService(val transactionManager: TransactionManager) : HasAliases by Aliases {

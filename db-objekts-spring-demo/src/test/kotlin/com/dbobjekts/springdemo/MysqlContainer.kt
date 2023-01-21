@@ -4,13 +4,13 @@ import org.testcontainers.containers.BindMode
 import org.testcontainers.containers.MySQLContainer
 import org.testcontainers.utility.DockerImageName
 
-class MariaDBWrapper(
+class MysqlContainer(
     version: String,
     files: List<String>,
-) : MySQLContainer<MariaDBWrapper>(DockerImageName.parse("mariadb:$version")) {
+) : MySQLContainer<MysqlContainer>(DockerImageName.parse("mysql:$version")) {
     init {
         withDatabaseName("test")
-        withEnv("MARIADB_ROOT_PASSWORD", "test")
+        withEnv("MYSQL_ROOT_PASSWORD", "test")
         if (files.isEmpty())
             throw IllegalArgumentException("Provide at least one sql file")
         files.forEach {
