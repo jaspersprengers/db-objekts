@@ -19,8 +19,14 @@ import java.sql.ResultSet
  * @tparam I the Kotlin type that the db data type maps to
  */
 abstract class Column<I>(
-    internal val nameInTable: String,
-    internal val table: AnyTable,
+    /**
+     * The name of this column in the database table
+     */
+    val nameInTable: String,
+    /**
+     * Reference to the containing [Table]
+     */
+    val table: AnyTable,
     internal val valueClass: Class<*>,
     internal val aggregateType: AggregateType?
 ) : Selectable<I> {

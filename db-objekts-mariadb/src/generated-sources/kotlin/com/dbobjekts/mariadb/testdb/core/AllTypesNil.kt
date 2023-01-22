@@ -20,6 +20,7 @@ import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
 import com.dbobjekts.statement.update.UpdateBuilderBase
+import com.dbobjekts.vendors.mariadb.NullableUUIDColumn
 
 /**           
  * Auto-generated metadata object for db table core.ALL_TYPES_NIL.
@@ -164,8 +165,12 @@ object AllTypesNil:Table<AllTypesNilRow>("ALL_TYPES_NIL"), HasUpdateBuilder<AllT
      * Represents db column core.ALL_TYPES_NIL.YEAR_COL
      */
     val yearCol = NullableIntegerColumn(this, "YEAR_COL")
-    override val columns: List<AnyColumn> = listOf(id,decimalCol,decCol,numericCol,fixedCol,int1Col,tinyintCol,smallintCol,int2Col,mediumintCol,int3Col,intCol,int4Col,bigintCol,int8Col,floatCol,doubleCol,doublePrecisionCol,bitCol,binaryCol,blobCol,charCol,charByteCol,enumCol,jsonCol,textCol,varcharCol,setCol,dateCol,timeCol,datetimeCol,timestampCol,yearCol)
-    override fun toValue(values: List<Any?>) = AllTypesNilRow(values[0] as Long,values[1] as java.math.BigDecimal?,values[2] as java.math.BigDecimal?,values[3] as java.math.BigDecimal?,values[4] as java.math.BigDecimal?,values[5] as Boolean?,values[6] as Boolean?,values[7] as Int?,values[8] as Int?,values[9] as Int?,values[10] as Int?,values[11] as Long?,values[12] as Long?,values[13] as Long?,values[14] as Long?,values[15] as Float?,values[16] as Double?,values[17] as Double?,values[18] as Boolean?,values[19] as ByteArray?,values[20] as ByteArray?,values[21] as String?,values[22] as ByteArray?,values[23] as String?,values[24] as String?,values[25] as String?,values[26] as String?,values[27] as String?,values[28] as java.time.LocalDate?,values[29] as java.time.LocalTime?,values[30] as java.time.LocalDateTime?,values[31] as java.time.LocalDateTime?,values[32] as Int?)
+    /**
+     * Represents db column core.ALL_TYPES_NIL.UUID_COL
+     */
+    val uuidCol = NullableUUIDColumn(this, "UUID_COL")
+    override val columns: List<AnyColumn> = listOf(id,decimalCol,decCol,numericCol,fixedCol,int1Col,tinyintCol,smallintCol,int2Col,mediumintCol,int3Col,intCol,int4Col,bigintCol,int8Col,floatCol,doubleCol,doublePrecisionCol,bitCol,binaryCol,blobCol,charCol,charByteCol,enumCol,jsonCol,textCol,varcharCol,setCol,dateCol,timeCol,datetimeCol,timestampCol,yearCol,uuidCol)
+    override fun toValue(values: List<Any?>) = AllTypesNilRow(values[0] as Long,values[1] as java.math.BigDecimal?,values[2] as java.math.BigDecimal?,values[3] as java.math.BigDecimal?,values[4] as java.math.BigDecimal?,values[5] as Boolean?,values[6] as Boolean?,values[7] as Int?,values[8] as Int?,values[9] as Int?,values[10] as Int?,values[11] as Long?,values[12] as Long?,values[13] as Long?,values[14] as Long?,values[15] as Float?,values[16] as Double?,values[17] as Double?,values[18] as Boolean?,values[19] as ByteArray?,values[20] as ByteArray?,values[21] as String?,values[22] as ByteArray?,values[23] as String?,values[24] as String?,values[25] as String?,values[26] as String?,values[27] as String?,values[28] as java.time.LocalDate?,values[29] as java.time.LocalTime?,values[30] as java.time.LocalDateTime?,values[31] as java.time.LocalDateTime?,values[32] as Int?,values[33] as java.util.UUID?)
     override fun metadata(): WriteQueryAccessors<AllTypesNilUpdateBuilder, AllTypesNilInsertBuilder> = WriteQueryAccessors(AllTypesNilUpdateBuilder(), AllTypesNilInsertBuilder())
 }
 
@@ -202,6 +207,7 @@ class AllTypesNilUpdateBuilder() : UpdateBuilderBase(AllTypesNil) {
     fun datetimeCol(value: java.time.LocalDateTime?): AllTypesNilUpdateBuilder = put(AllTypesNil.datetimeCol, value)
     fun timestampCol(value: java.time.LocalDateTime?): AllTypesNilUpdateBuilder = put(AllTypesNil.timestampCol, value)
     fun yearCol(value: Int?): AllTypesNilUpdateBuilder = put(AllTypesNil.yearCol, value)
+    fun uuidCol(value: java.util.UUID?): AllTypesNilUpdateBuilder = put(AllTypesNil.uuidCol, value)
     
     /**
      * FOR INTERNAL USE ONLY
@@ -241,6 +247,7 @@ class AllTypesNilUpdateBuilder() : UpdateBuilderBase(AllTypesNil) {
       add(AllTypesNil.datetimeCol, rowData.datetimeCol)
       add(AllTypesNil.timestampCol, rowData.timestampCol)
       add(AllTypesNil.yearCol, rowData.yearCol)
+      add(AllTypesNil.uuidCol, rowData.uuidCol)
       return where(AllTypesNil.id.eq(rowData.id))
     }    
         
@@ -279,6 +286,7 @@ class AllTypesNilInsertBuilder():InsertBuilderBase(){
     fun datetimeCol(value: java.time.LocalDateTime?): AllTypesNilInsertBuilder = put(AllTypesNil.datetimeCol, value)
     fun timestampCol(value: java.time.LocalDateTime?): AllTypesNilInsertBuilder = put(AllTypesNil.timestampCol, value)
     fun yearCol(value: Int?): AllTypesNilInsertBuilder = put(AllTypesNil.yearCol, value)
+    fun uuidCol(value: java.util.UUID?): AllTypesNilInsertBuilder = put(AllTypesNil.uuidCol, value)
 
 
     override fun insertRow(rowData: TableRowData<*, *>): Long {
@@ -315,6 +323,7 @@ class AllTypesNilInsertBuilder():InsertBuilderBase(){
       add(AllTypesNil.datetimeCol, rowData.datetimeCol)
       add(AllTypesNil.timestampCol, rowData.timestampCol)
       add(AllTypesNil.yearCol, rowData.yearCol)
+      add(AllTypesNil.uuidCol, rowData.uuidCol)
       return execute()
     }    
         
@@ -354,7 +363,8 @@ val id: Long = 0,
   val timeCol: java.time.LocalTime?,
   val datetimeCol: java.time.LocalDateTime?,
   val timestampCol: java.time.LocalDateTime?,
-  val yearCol: Int?    
+  val yearCol: Int?,
+  val uuidCol: java.util.UUID?    
 ) : TableRowData<AllTypesNilUpdateBuilder, AllTypesNilInsertBuilder>(AllTypesNil.metadata()){
      override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(AllTypesNil.id, id))
 }

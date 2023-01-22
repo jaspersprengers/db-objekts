@@ -3,7 +3,7 @@ package com.dbobjekts.mysql.testdb.classicmodels
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.metadata.column.NullableByteArrayColumn
+import com.dbobjekts.metadata.column.NullableBlobColumn
 import com.dbobjekts.metadata.column.NullableVarcharColumn
 import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.statement.WriteQueryAccessors
@@ -37,9 +37,9 @@ object Productlines:Table<ProductlinesRow>("productlines"), HasUpdateBuilder<Pro
     /**
      * Represents db column classicmodels.productlines.image
      */
-    val image = NullableByteArrayColumn(this, "image")
+    val image = NullableBlobColumn(this, "image")
     override val columns: List<AnyColumn> = listOf(productLine,textDescription,htmlDescription,image)
-    override fun toValue(values: List<Any?>) = ProductlinesRow(values[0] as String,values[1] as String?,values[2] as String?,values[3] as ByteArray?)
+    override fun toValue(values: List<Any?>) = ProductlinesRow(values[0] as String,values[1] as String?,values[2] as String?,values[3] as java.sql.Blob?)
     override fun metadata(): WriteQueryAccessors<ProductlinesUpdateBuilder, ProductlinesInsertBuilder> = WriteQueryAccessors(ProductlinesUpdateBuilder(), ProductlinesInsertBuilder())
 }
 
@@ -47,7 +47,7 @@ class ProductlinesUpdateBuilder() : UpdateBuilderBase(Productlines) {
     fun productLine(value: String): ProductlinesUpdateBuilder = put(Productlines.productLine, value)
     fun textDescription(value: String?): ProductlinesUpdateBuilder = put(Productlines.textDescription, value)
     fun htmlDescription(value: String?): ProductlinesUpdateBuilder = put(Productlines.htmlDescription, value)
-    fun image(value: ByteArray?): ProductlinesUpdateBuilder = put(Productlines.image, value)
+    fun image(value: java.sql.Blob?): ProductlinesUpdateBuilder = put(Productlines.image, value)
     
     /**
      * FOR INTERNAL USE ONLY
@@ -67,7 +67,7 @@ class ProductlinesInsertBuilder():InsertBuilderBase(){
     fun productLine(value: String): ProductlinesInsertBuilder = put(Productlines.productLine, value)
     fun textDescription(value: String?): ProductlinesInsertBuilder = put(Productlines.textDescription, value)
     fun htmlDescription(value: String?): ProductlinesInsertBuilder = put(Productlines.htmlDescription, value)
-    fun image(value: ByteArray?): ProductlinesInsertBuilder = put(Productlines.image, value)
+    fun image(value: java.sql.Blob?): ProductlinesInsertBuilder = put(Productlines.image, value)
 
     fun mandatoryColumns(productLine: String) : ProductlinesInsertBuilder {
       mandatory(Productlines.productLine, productLine)
@@ -91,7 +91,7 @@ data class ProductlinesRow(
   val productLine: String,
   val textDescription: String?,
   val htmlDescription: String?,
-  val image: ByteArray?    
+  val image: java.sql.Blob?    
 ) : TableRowData<ProductlinesUpdateBuilder, ProductlinesInsertBuilder>(Productlines.metadata()){
      override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Productlines.productLine, productLine))
 }

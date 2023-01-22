@@ -68,7 +68,6 @@ class PostgreSQLIntegrationTest {
             val ret = builder.execute()
             it.select(at).where(at.id.eq(ret.toInt())).first()
         }
-
     }
 
     @Test

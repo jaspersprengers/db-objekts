@@ -95,7 +95,8 @@ create table IF NOT EXISTS core.ALL_TYPES_NIL
     TIME_COL             TIME,
     DATETIME_COL         DATETIME,
     TIMESTAMP_COL        TIMESTAMP,
-    YEAR_COL             YEAR
+    YEAR_COL             YEAR,
+    UUID_COL             UUID
 );
 
 

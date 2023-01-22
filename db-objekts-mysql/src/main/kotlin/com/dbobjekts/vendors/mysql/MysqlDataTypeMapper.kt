@@ -4,9 +4,11 @@ import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.codegen.datatypemapper.VendorDefaultColumnTypeMapper
 import com.dbobjekts.metadata.ColumnFactory
+import com.dbobjekts.metadata.DefaultTable
 
 
 class MysqlDataTypeMapper : VendorDefaultColumnTypeMapper {
+    // See https://dev.mysql.com/doc/refman/8.0/en/data-types.html
     override fun map(properties: ColumnMappingProperties): AnyColumn? {
         val nullable = properties.isNullable
 
@@ -31,7 +33,7 @@ class MysqlDataTypeMapper : VendorDefaultColumnTypeMapper {
             col.contains("BINARY") -> ColumnFactory.byteArrayColumn(nullable)
             col == "CHAR BYTE" -> ColumnFactory.byteArrayColumn(nullable)//alias for binary
 
-            col.contains("BLOB") -> ColumnFactory.byteArrayColumn(nullable)
+            col.contains("BLOB") -> ColumnFactory.blobColumn(nullable)
             col.startsWith("CHAR") -> ColumnFactory.varcharColumn(nullable)
             col == "ENUM" -> ColumnFactory.varcharColumn(nullable)
             //col == "INET4" -> .integerColumn(nullable)

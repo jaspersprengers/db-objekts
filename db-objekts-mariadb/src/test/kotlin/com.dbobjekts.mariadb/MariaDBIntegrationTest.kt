@@ -27,6 +27,7 @@ import com.dbobjekts.mariadb.testdb.nation.Countries
 import com.dbobjekts.mariadb.testdb.nation.CountryStats
 import com.dbobjekts.mariadb.testdb.nation.Regions
 import com.dbobjekts.metadata.column.Aggregate
+import java.util.*
 
 @Testcontainers
 class MariaDBIntegrationTest {
@@ -76,329 +77,118 @@ class MariaDBIntegrationTest {
         }
     }
 
-    @Test
-    fun test_decimalCol() {
-        tm {
-            val value = BigDecimal.valueOf(345)
-            val id = it.insert(AllTypesNil).decimalCol(value).execute()
-            val retrieved = it.select(AllTypesNil.decimalCol).where(AllTypesNil.decimalCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-
-    @Test
-    fun test_decCol() {
-        tm {
-            val value = BigDecimal.valueOf(345)
-            it.insert(AllTypesNil).decCol(value).execute()
-            val retrieved = it.select(AllTypesNil.decCol).where(AllTypesNil.decCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
+    private fun insertAndRetrieve(fct: (AllTypesNilInsertBuilder) -> Unit): AllTypesNilRow {
+        return tm {
+            val builder = it.insert(AllTypesNil)
+            fct(builder)
+            val ret = builder.execute()
+            it.select(AllTypesNil).where(AllTypesNil.id.eq(ret)).first()
         }
     }
 
     @Test
     fun test_numericCol() {
-        tm {
-            val value = BigDecimal.valueOf(345)
-            it.insert(AllTypesNil).numericCol(value).execute()
-            val retrieved = it.select(AllTypesNil.numericCol).where(AllTypesNil.numericCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
+        val threeMillion = BigDecimal.valueOf(3_000_000)
+        val retrieved = insertAndRetrieve {
+            it.decimalCol(threeMillion)
+                .decCol(threeMillion)
+                .numericCol(threeMillion)
+                .fixedCol(threeMillion)
+                .intCol(200L)
+                .int1Col(true)
+                .bitCol(true)
+                .int2Col(200)
+                .int3Col(200_000)
+                .int4Col(200_000L)
+                .tinyintCol(true)
+                .smallintCol(100)
+                .bigintCol(1234567L)
+                .int8Col(1234567L)
+                .floatCol(12345.123f)
+                .doubleCol(12345.12345)
+                .doublePrecisionCol(23456.23456)
         }
+        assertThat(retrieved.decimalCol).isEqualTo(threeMillion)
+        assertThat(retrieved.decCol).isEqualTo(threeMillion)
+        assertThat(retrieved.numericCol).isEqualTo(threeMillion)
+        assertThat(retrieved.fixedCol).isEqualTo(threeMillion)
+        assertThat(retrieved.intCol).isEqualTo(200L)
+        assertThat(retrieved.int1Col).isTrue()
+        assertThat(retrieved.tinyintCol).isTrue()
+        assertThat(retrieved.bitCol).isTrue()
+        assertThat(retrieved.smallintCol).isEqualTo(100)
+        assertThat(retrieved.int2Col).isEqualTo(200)
+        assertThat(retrieved.int3Col).isEqualTo(200_000)
+        assertThat(retrieved.int4Col).isEqualTo(200_000)
+        assertThat(retrieved.bigintCol).isEqualTo(1234567L)
+        assertThat(retrieved.int8Col).isEqualTo(1234567L)
+        assertThat(retrieved.floatCol).isEqualTo(12345.1f)
+        assertThat(retrieved.doubleCol).isEqualTo(12345.12345)
+        assertThat(retrieved.doublePrecisionCol).isEqualTo(23456.23456)
+
     }
 
-    @Test
-    fun test_fixedCol() {
-        tm {
-            val value = BigDecimal.valueOf(345)
-            it.insert(AllTypesNil).fixedCol(value).execute()
-            val retrieved = it.select(AllTypesNil.fixedCol).where(AllTypesNil.fixedCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
 
-    @Test
-    fun test_int1Col() {
-        tm {
-            val value = true
-            it.insert(AllTypesNil).int1Col(value).execute()
-            val retrieved = it.select(AllTypesNil.int1Col).where(AllTypesNil.int1Col.eq(value)).first()
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
 
-    @Test
-    fun test_tinyintCol() {
-        tm {
-            val value = true
-            it.insert(AllTypesNil).tinyintCol(value).execute()
-            val retrieved = it.select(AllTypesNil.tinyintCol).where(AllTypesNil.tinyintCol.eq(value)).first()
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_smallintCol() {
-        tm {
-            val value = 100
-            it.insert(AllTypesNil).smallintCol(value).execute()
-            val retrieved = it.select(AllTypesNil.smallintCol).where(AllTypesNil.smallintCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_int2Col() {
-        tm {
-            val value = 200
-            it.insert(AllTypesNil).int2Col(value).execute()
-            val retrieved = it.select(AllTypesNil.int2Col).where(AllTypesNil.int2Col.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_mediumintCol() {
-        tm {
-            val value = 100_000
-            it.insert(AllTypesNil).mediumintCol(value).execute()
-            val retrieved = it.select(AllTypesNil.mediumintCol).where(AllTypesNil.mediumintCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_int3Col() {
-        tm {
-            val value = 200_000
-            it.insert(AllTypesNil).int3Col(value).execute()
-            val retrieved = it.select(AllTypesNil.int3Col).where(AllTypesNil.int3Col.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_intCol() {
-        tm {
-            val value = 200L
-            it.insert(AllTypesNil).intCol(value).execute()
-            val retrieved = it.select(AllTypesNil.intCol).where(AllTypesNil.intCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_int4Col() {
-        tm {
-            val value = 300L
-            it.insert(AllTypesNil).int4Col(value).execute()
-            val retrieved = it.select(AllTypesNil.int4Col).where(AllTypesNil.int4Col.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_bigintCol() {
-        tm {
-            val value = 1234567L
-            it.insert(AllTypesNil).bigintCol(value).execute()
-            val retrieved = it.select(AllTypesNil.bigintCol).where(AllTypesNil.bigintCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_int8Col() {
-        tm {
-            val value = 1234567L
-            it.insert(AllTypesNil).int8Col(value).execute()
-            val retrieved = it.select(AllTypesNil.int8Col).where(AllTypesNil.int8Col.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_floatCol() {
-        tm {
-            val value = 123456f
-            it.insert(AllTypesNil).floatCol(value).execute()
-            val retrieved = it.select(AllTypesNil.floatCol).where(AllTypesNil.floatCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_doubleCol() {
-        tm {
-            val value = 12345.12345
-            it.insert(AllTypesNil).doubleCol(value).execute()
-            val retrieved = it.select(AllTypesNil.doubleCol).where(AllTypesNil.doubleCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_doublePrecisionCol() {
-        tm {
-            val value = 23456.23456
-            it.insert(AllTypesNil).doublePrecisionCol(value).execute()
-            val retrieved = it.select(AllTypesNil.doublePrecisionCol).where(AllTypesNil.doublePrecisionCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_bitCol() {
-        tm {
-            val value = true
-            it.insert(AllTypesNil).bitCol(value).execute()
-            val retrieved = it.select(AllTypesNil.bitCol).where(AllTypesNil.bitCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    //fixme result set is empty
     @Test
     fun test_binaryCol() {
-        tm {
-            val value = "hello".encodeToByteArray()
-            val id = it.insert(AllTypesNil).binaryCol(value).execute()
-            val retrieved = it.select(AllTypesNil.binaryCol).where(AllTypesNil.id.eq(id)).first()!!
-            assertThat(String(retrieved)).startsWith(String(value))
+        val value = "hello".encodeToByteArray()
+        val retrieved = insertAndRetrieve {
+            it.binaryCol(value)
+                .charByteCol("1".encodeToByteArray())
+                .blobCol(value)
+
         }
+        assertThat(String(retrieved.binaryCol!!)).startsWith("hello")
+        assertThat(String(retrieved.blobCol!!)).startsWith("hello")
+        assertThat(retrieved.charByteCol).isEqualTo("1".encodeToByteArray())
     }
 
     @Test
-    fun test_blobCol() {
-        tm {
-            val value = "hello".encodeToByteArray()
-            it.insert(AllTypesNil).blobCol(value).execute()
-            val retrieved = it.select(AllTypesNil.blobCol).where(AllTypesNil.blobCol.eq(value)).first()!!
-            assertThat(String(retrieved)).isEqualTo(String(value))
+    fun test_text_columns() {
+        val json = "[{\"hello\": 42}]"
+        val uuid = UUID.randomUUID()
+
+        val retrieved = insertAndRetrieve {
+            it.charCol("hello")
+                .enumCol("MAYBE")
+                .uuidCol(uuid)
+                .setCol("chess")
+                .jsonCol(json)
+                .varcharCol("hello")
+                .textCol("The quick brown fox")
+
         }
+        assertThat(retrieved.uuidCol).isEqualTo(uuid)
+        assertThat(retrieved.charCol).isEqualTo("hello")
+        assertThat(retrieved.enumCol).isEqualTo("MAYBE")
+        assertThat(retrieved.setCol).isEqualTo("chess")
+        assertThat(retrieved.jsonCol).isEqualTo(json)
+        assertThat(retrieved.textCol).isEqualTo("The quick brown fox")
+        assertThat(retrieved.varcharCol).isEqualTo("hello")
+
     }
 
     @Test
-    fun test_charCol() {
-        tm {
-            val value = "hello"
-            it.insert(AllTypesNil).charCol(value).execute()
-            val retrieved = it.select(AllTypesNil.charCol).where(AllTypesNil.charCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
+    fun test_date_columns() {
+        val date_1980 = LocalDate.of(1980, 10, 10)
+        val time = LocalTime.of(15, 30)
+        val dateTime = LocalDateTime.of(1980, 10, 10, 14, 30)
+        val retrieved = insertAndRetrieve {
+            it.dateCol(date_1980)
+                .timeCol(time)
+                .datetimeCol(dateTime)
+                .timestampCol(dateTime)
+                .yearCol(1990)
 
-    @Test
-    fun test_charByteCol() {
-        tm {
-            val value = "1".encodeToByteArray()
-            it.insert(AllTypesNil).charByteCol(value).execute()
-            val retrieved = it.select(AllTypesNil.charByteCol).where(AllTypesNil.charByteCol.eq(value)).first()!!
-            assertThat(String(retrieved)).isEqualTo(String(value))
         }
-    }
+        assertThat(retrieved.dateCol).isEqualTo(date_1980)
+        assertThat(retrieved.timeCol).isEqualTo(time)
+        assertThat(retrieved.datetimeCol).isEqualTo(dateTime)
+        assertThat(retrieved.timestampCol).isEqualTo(dateTime)
+        assertThat(retrieved.yearCol).isEqualTo(1990)
 
-    @Test
-    fun test_enumCol() {
-        tm {
-            val value = "MAYBE"
-            it.insert(AllTypesNil).enumCol(value).execute()
-            val retrieved = it.select(AllTypesNil.enumCol).where(AllTypesNil.enumCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
     }
-
-    @Test
-    fun test_jsonCol() {
-        tm {
-            val value = "[{\"hello\": 42}]"
-            it.insert(AllTypesNil).jsonCol(value).execute()
-            val retrieved = it.select(AllTypesNil.jsonCol).where(AllTypesNil.jsonCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_textCol() {
-        tm {
-            val value = "The quick brown fox"
-            it.insert(AllTypesNil).textCol(value).execute()
-            val retrieved = it.select(AllTypesNil.textCol).where(AllTypesNil.textCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_varcharCol() {
-        tm {
-            val value = "text"
-            it.insert(AllTypesNil).varcharCol(value).execute()
-            val retrieved = it.select(AllTypesNil.varcharCol).where(AllTypesNil.varcharCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_setCol() {
-        tm {
-            val value = "chess"
-            it.insert(AllTypesNil).setCol(value).execute()
-            val retrieved = it.select(AllTypesNil.setCol).where(AllTypesNil.setCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_dateCol() {
-        tm {
-            val value = LocalDate.of(1980, 10, 10)
-            it.insert(AllTypesNil).dateCol(value).execute()
-            val retrieved = it.select(AllTypesNil.dateCol).where(AllTypesNil.dateCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_timeCol() {
-        tm {
-            val value = LocalTime.of(15, 30)
-            it.insert(AllTypesNil).timeCol(value).execute()
-            val retrieved = it.select(AllTypesNil.timeCol).where(AllTypesNil.timeCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_datetimeCol() {
-        tm {
-            val value = LocalDateTime.of(1980, 10, 10, 14, 30)
-            it.insert(AllTypesNil).datetimeCol(value).execute()
-            val retrieved = it.select(AllTypesNil.datetimeCol).where(AllTypesNil.datetimeCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    //fixme Incorrect datetime value: '15:30:00.000' for column `core`.`ALL_TYPES_NIL`.`TIMESTAMP_COL`
-    @Test
-    fun test_timestampCol() {
-        tm {
-            val value = LocalDateTime.of(1980, 10, 10, 14, 30)
-            it.insert(AllTypesNil).timestampCol(value).execute()
-            val retrieved = it.select(AllTypesNil.timestampCol).where(AllTypesNil.timestampCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
-    @Test
-    fun test_yearCol() {
-        tm {
-            val value = 1990
-            it.insert(AllTypesNil).yearCol(value).execute()
-            val retrieved = it.select(AllTypesNil.yearCol).where(AllTypesNil.yearCol.eq(value)).first()!!
-            assertThat(retrieved).isEqualTo(value)
-        }
-    }
-
 
     @Test
     fun `selection and updates`() {

@@ -50,7 +50,9 @@ Other DSL alternatives target similar use cases, so the similarities __seem__ ob
 In striking a balance between feature-completeness and usability, db-Objekts always favors the latter. It aims to cover 80% of query needs with 20% of the complexity. It does not emulate all you can do in native SQL, although it facilitates xref:queries-customsql[native queries] as well.
 
 == A bird's eye view of features
-Let's start with a feature overview. We have a simple in-memory H2 database that models a lending library with five tables:
+Feel free to start with the xref:_getting_started if you can't wait to try it out, or take a few minutes for a quick overview of the major features.
+
+We have a simple in-memory H2 database that models a lending library with five tables:
 
 image::datamodel.png[datamodel,600]
 
@@ -223,16 +225,16 @@ class DataService(val transactionManager: TransactionManager) {
 === Generating metadata objects
 Before we dive into the details of code generation, some clarification is in order.
 
-Generating code is an established practice for various services. You can create richly annotated interfaces from an `openapi.yaml` file that specify REST endpoints and the expected messages. By implementing these interfaces you create a compile-time dependency on the generated code.
+Generating code is an established practice to implement service specification. You can create richly annotated interfaces from an `openapi.yaml` file that specify REST endpoints and the expected messages. By implementing these interfaces you create a compile-time dependency on the generated code.
 
-db-Objekts is similar in that its generated metadata objects become tightly coupled to the business source code. If the db structure changes, the (re)generated code must change. This may introduce compiler errors in the application code that uses it. That is not a bad thing, because the database _is_ already an integral part of the application logic, whatever way you interact with the database. If you only use raw SQL in your code, structural changes to the db go unnoticed unless you have extensive integration tests (unit tests won't catch it). Otherwise, defects pop up only in production. Not good.
+db-Objekts is similar in that its generated metadata objects become tightly coupled to the business source code. If the db structure changes, the (re)generated code must also change. This may introduce compiler errors in the application code that uses it. That is not a bad thing, because the database _is_ already an integral part of the application logic, in whatever way you interact with the database. If you only use raw SQL in your code, structural changes to the db go unnoticed unless you have extensive integration tests (unit tests won't catch it). Otherwise, defects pop up only in production. Not good.
 
 When a component implements a service, it often owns the specification (or rather the team does). Such files belong to the source repository and since _you_ manage them, it's fine to re-generate the code whenever you do a fresh build .
 
-A database creation script serves the same purpose as an openapi.yaml file. However, the difference is often one of ownership: your project may not own the db. Even if you keep a dump file in source control and can create a containerized db from it, it matters whether that dump file is the single source of truth. If not, unannounced changes may mess up the status quo. So, we need regular and automatic validation.
+A database creation script serves a similar purpose as an openapi.yaml file. However, the difference is often one of ownership: your project may not own the db. Even if you create a containerized db from a dump file, it matters whether that file is the single source of truth. If not, unannounced changes may mess up the status quo. So, we need regular and automatic validation.
 
 ==== Code generation during the development life cycle
-When there's no application code yet that uses the metadata, generating code can do no harm. But when there is, it makes sense to compare the current db structure to the generated metadata, before you overwrite it. The following practices are recommended:
+When the generated code is used by application code, it makes sense to compare the current db structure to the generated metadata before you overwrite anything. The following practices are recommended:
 
 * Always write generated code to a separate source folder, called `gen` or `generated-sources`. Never alter this code manually. All the tweaks you need are possible through configuration of the `CodeGenerator`.
 * Put the generated kotlin sources under version control -- yes, even though they are generated. Remember, the state of the database may not be under your control and you must be able to revert unexpected changes.

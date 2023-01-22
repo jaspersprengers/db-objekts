@@ -4,6 +4,7 @@ import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.codegen.datatypemapper.VendorDefaultColumnTypeMapper
 import com.dbobjekts.metadata.ColumnFactory
+import com.dbobjekts.metadata.DefaultTable
 
 
 class MariaDBDataTypeMapper : VendorDefaultColumnTypeMapper {
@@ -35,12 +36,9 @@ class MariaDBDataTypeMapper : VendorDefaultColumnTypeMapper {
             col.contains("BLOB") -> ColumnFactory.byteArrayColumn(nullable)
             col.startsWith("CHAR") -> ColumnFactory.varcharColumn(nullable)
             col == "ENUM" -> ColumnFactory.varcharColumn(nullable)
-            //col == "INET4" -> .integerColumn(nullable)
-            //col == "INET6" -> .integerColumn(nullable)
             col == "JSON" -> ColumnFactory.varcharColumn(nullable)
             col.contains("TEXT") -> ColumnFactory.varcharColumn(nullable)
 
-            //col == "ROW" -> .varcharColumn(nullable)
             col.startsWith("VARCHAR") -> ColumnFactory.varcharColumn(nullable)
             col == "SET" -> ColumnFactory.varcharColumn(nullable)
             //col == "UUID" -> .varcharColumn(nullable)
@@ -50,6 +48,8 @@ class MariaDBDataTypeMapper : VendorDefaultColumnTypeMapper {
             col.startsWith("TIME") -> ColumnFactory.timeColumn(nullable)
             col.startsWith("DATETIME") -> ColumnFactory.dateTimeColumn(nullable)
             col.startsWith("YEAR") -> ColumnFactory.integerColumn(nullable)
+
+            col.startsWith("UUID") -> if (nullable) NullableUUIDColumn(DefaultTable, "dummy") else UUIDColumn(DefaultTable, "dummy")
 
             else -> null
         }
