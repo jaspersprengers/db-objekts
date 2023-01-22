@@ -44,14 +44,14 @@ class MysqlIntegrationTest {
 
     @Test
     fun validateCodeGeneration() {
-        val gen = CodeGenerator()
-        gen.withDataSource(dataSource)
-        gen.configureColumnTypeMapping().setColumnTypeForJDBCType("TINYINT", NumberAsBooleanColumn::class.java)
-        gen.configureOutput()
+        val generator = CodeGenerator()
+        generator.withDataSource(dataSource)
+        generator.configureColumnTypeMapping().setColumnTypeForJDBCType("TINYINT", NumberAsBooleanColumn::class.java)
+        generator.configureOutput()
             .basePackageForSources("com.dbobjekts.mysql.testdb")
         .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
-        assertThat(gen.differencesWithCatalog(CatalogDefinition)).isEmpty()
-        gen.generateSourceFiles()
+        generator.validateCatalog(com.dbobjekts.testdb.acme.CatalogDefinition).assertNoDifferences()
+        generator.generateSourceFiles()
     }
 
     @Test

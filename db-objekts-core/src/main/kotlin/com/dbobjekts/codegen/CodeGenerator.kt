@@ -7,6 +7,7 @@ import com.dbobjekts.codegen.exclusionfilters.ExclusionConfigurer
 import com.dbobjekts.codegen.metadata.DBCatalogDefinition
 import com.dbobjekts.codegen.parsers.CatalogParser
 import com.dbobjekts.codegen.parsers.ParserConfig
+import com.dbobjekts.codegen.validation.ValidationResult
 import com.dbobjekts.codegen.writer.SourcesGenerator
 import com.dbobjekts.metadata.Catalog
 import org.slf4j.LoggerFactory
@@ -89,10 +90,29 @@ class CodeGenerator {
     }
 
     /**
-     * FOR DEBUGGING PURPOSES
+     * Creates the metamodel for the current CodeGenerator configuration and compares it to an existing [Catalog].
      *
-     * Returns the metamodel used for code generation. Can be useful for validation prior to writing code
+     * @return a [ValidationResult] that you can query for mismatches between the existing Catalog and the code to be generated.
      *
+     * Usage:
+     * ```kotlin
+     * val report = generator.validateCatalog(CatalogDefinition)
+     * report.assertNoDifferences()
+     * ```
+     */
+    fun validateCatalog(catalog: Catalog) = ValidationResult(catalog, createCatalogDefinition())
+
+    /**
+     *
+     * Returns the metamodel used for code generation without (over)writing any files.
+     *
+     * Useful for manual validation as it contains utility methods to look up tables and columns and determine if the resulting mapping is as desired.
+     *
+     * Example:
+     * ```kotlin
+     * val model = generator.createCatalogDefinition()
+     * assertThat(model.findColumnsForType(SequenceKeyLongColumn::class.java)).hasSize(7)
+     * ```
      * @return [DBCatalogDefinition]
      */
     fun createCatalogDefinition(): DBCatalogDefinition {
@@ -110,6 +130,7 @@ class CodeGenerator {
         return CatalogParser(parserConfig, transactionManager, vendor.metadataExtractor)
     }
 
+    @Deprecated("Use validateCatalog instead", replaceWith = ReplaceWith("validateCatalog"))
     fun differencesWithCatalog(catalog: Catalog): List<String> = createCatalogDefinition().diff(catalog)
 
     private fun createConfig(): CodeGeneratorConfig {

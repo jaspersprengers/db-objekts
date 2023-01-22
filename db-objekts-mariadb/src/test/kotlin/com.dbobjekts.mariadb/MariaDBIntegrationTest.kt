@@ -51,15 +51,14 @@ class MariaDBIntegrationTest {
 
     @Test
     fun validateCodeGeneration() {
-        val gen = CodeGenerator()
-        gen.withDataSource(dataSource)
-        gen.configureColumnTypeMapping().setColumnTypeForJDBCType("TINYINT", NumberAsBooleanColumn::class.java)
-        gen.configureOutput()
+        val generator = CodeGenerator()
+        generator.withDataSource(dataSource)
+        generator.configureColumnTypeMapping().setColumnTypeForJDBCType("TINYINT", NumberAsBooleanColumn::class.java)
+        generator.configureOutput()
             .basePackageForSources("com.dbobjekts.mariadb.testdb")
             .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
-        val diff = gen.differencesWithCatalog(CatalogDefinition)
-        assertThat(diff).isEmpty()
-        gen.generateSourceFiles()
+        generator.validateCatalog(com.dbobjekts.testdb.acme.CatalogDefinition).assertNoDifferences()
+        generator.generateSourceFiles()
     }
 
    @Test

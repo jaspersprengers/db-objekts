@@ -2,11 +2,9 @@ package com.dbobjekts.springdemo
 
 import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.demo.db.Aliases
-import com.dbobjekts.demo.db.CatalogDefinition
 import com.dbobjekts.demo.db.HasAliases
 import com.dbobjekts.metadata.column.DoubleColumn
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -49,17 +47,16 @@ class SpringDemoIntegrationTest : HasAliases by Aliases {
 
     @Test
     fun `validate generated code`() {
-        val gen = CodeGenerator()
-        gen.withDataSource(dataSource)
-        gen.configureColumnTypeMapping()
+        val generator = CodeGenerator()
+        generator.withDataSource(dataSource)
+        generator.configureColumnTypeMapping()
             .setColumnTypeForJDBCType("DECIMAL", DoubleColumn::class.java)
             .setColumnTypeForJDBCType("TINYINT", NumberAsBooleanColumn::class.java)
-        gen.configureOutput()
+        generator.configureOutput()
             .basePackageForSources("com.dbobjekts.demo.db")
             .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
-        val diff = gen.differencesWithCatalog(CatalogDefinition)
-        assertThat(diff).isEmpty()
-        gen.generateSourceFiles()
+        generator.validateCatalog(com.dbobjekts.testdb.acme.CatalogDefinition).assertNoDifferences()
+        generator.generateSourceFiles()
     }
 
     @Test

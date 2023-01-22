@@ -2,9 +2,9 @@
 :toc: left
 image::logo.png[logo, 600]
 
-= Fluent, type-safe query DSL for Kotlin
+== Fluent, type-safe query DSL for Kotlin
 
-== Preliminaries
+=== Preliminaries
 
 NOTE: db-Objekts is currently in alpha. The API is subject to change and not ready for production. At present, it supports H2, MariaDB, MySQL and PostrgreSQL.
 A beta is planned for early 2023 and a first stable release later that year. xref:roadmap[Roadmap]

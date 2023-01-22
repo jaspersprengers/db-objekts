@@ -10,7 +10,6 @@ import com.dbobjekts.postgresql.testdb.core.AllTypesNilRow
 import com.dbobjekts.postgresql.testdb.core.Employee
 import com.dbobjekts.postgresql.testdb.hr.Hobby
 import com.dbobjekts.statement.select.SelectStatementExecutor
-import com.dbobjekts.util.HikariDataSourceFactory
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
@@ -51,16 +50,15 @@ class PostgreSQLIntegrationTest {
 
     @Test
     fun validateCodeGeneration() {
-        val gen = CodeGenerator()
-        gen.withDataSource(dataSource)
-        gen.configureColumnTypeMapping().setColumnTypeForJDBCType("mood", VarcharColumn::class.java)
-        gen.configurePrimaryKeySequences().setSequenceNameForPrimaryKey("core","EMPLOYEE", "id", "EMPLOYEE_SEQ")
-        gen.configureOutput()
+        val generator = CodeGenerator()
+        generator.withDataSource(dataSource)
+        generator.configureColumnTypeMapping().setColumnTypeForJDBCType("mood", VarcharColumn::class.java)
+        generator.configurePrimaryKeySequences().setSequenceNameForPrimaryKey("core","EMPLOYEE", "id", "EMPLOYEE_SEQ")
+        generator.configureOutput()
             .basePackageForSources("com.dbobjekts.postgresql.testdb")
             .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
-        val diff = gen.differencesWithCatalog(CatalogDefinition)
-        assertThat(diff).isEmpty()
-        gen.generateSourceFiles()
+        generator.validateCatalog(com.dbobjekts.testdb.acme.CatalogDefinition).assertNoDifferences()
+        generator.generateSourceFiles()
     }
 
     private fun insertAndRetrieve(fct: (AllTypesNilInsertBuilder) -> Unit): AllTypesNilRow {
