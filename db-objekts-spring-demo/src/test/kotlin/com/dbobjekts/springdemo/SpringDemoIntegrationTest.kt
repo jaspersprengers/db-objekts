@@ -2,6 +2,7 @@ package com.dbobjekts.springdemo
 
 import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.demo.db.Aliases
+import com.dbobjekts.demo.db.CatalogDefinition
 import com.dbobjekts.demo.db.HasAliases
 import com.dbobjekts.metadata.column.DoubleColumn
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
@@ -55,7 +56,7 @@ class SpringDemoIntegrationTest : HasAliases by Aliases {
         generator.configureOutput()
             .basePackageForSources("com.dbobjekts.demo.db")
             .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
-        generator.validateCatalog(com.dbobjekts.testdb.acme.CatalogDefinition).assertNoDifferences()
+        generator.validateCatalog(CatalogDefinition).assertNoDifferences()
         generator.generateSourceFiles()
     }
 

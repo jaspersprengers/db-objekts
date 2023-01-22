@@ -1,5 +1,8 @@
 = Release notes
 
+== 0.4.3-alpha
+* Simplified validation of generated code against an existing schema
+
 == 0.4.2-alpha
 * Minor refactoring and documentation
 * Fixed critical bug in maven configuration that prevented correct deployment to maven central

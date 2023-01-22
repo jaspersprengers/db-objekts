@@ -6,7 +6,9 @@ image::logo.png[logo, 600]
 
 === Preliminaries
 
-NOTE: db-Objekts is currently in alpha. The API is subject to change and not ready for production. At present, it supports H2, MariaDB, MySQL and PostrgreSQL.
+NOTE: db-Objekts is currently in alpha. The API is subject to change and not ready for production.
+Starting from release `0.4.3.-alpha`, deprecated API behavior will be marked as such and become breaking from the first beta. These changes will however be minor and should not deter you from trying the software in its current state.
+At present, it supports H2, MariaDB, MySQL and PostrgreSQL.
 A beta is planned for early 2023 and a first stable release later that year. xref:roadmap[Roadmap]
 
 == db-Objekts in a nutshell
@@ -390,10 +392,12 @@ If all is well, you now have a bunch of files and packages under the designated 
 
 However, after you have done your first code generation run, we need to build in validation to ensure there are no unexpected db changes in the future. We want to do a regular dry-run of the code generation and compare the output to the current state of the metadata. If there are no differences there is no point to overwrite the generated source files. And if there _are_ differences you probably want to inspect them first.
 ```kotlin
-val diff: List<String> = generator.differencesWithCatalog(CatalogDefinition)
-assertThat(diff).describedAs("acme catalog differs from database definition").isEmpty()
+generator.validateCatalog(CatalogDefinition).assertNoDifferences()
 ```
-This call runs the code generation without writing anything to file. It compares the results to the target `CatalogDefinition` (that would normally be overwritten), and for each detected difference with the current status quo of the db structure, a line is added to the output. So, if the employee table suddenly has a non-null column `shoe_size` added to it, the test will fail with `DB column EMPLOYEE.SHOE_SIZE not found in catalog`.
+This call runs the code generation without writing anything to file. It compares the results to the target `CatalogDefinition` (that would normally be overwritten). Now, if the employee table suddenly has a non-null column `shoe_size` added to it, the assertion will throw with `DB column EMPLOYEE.SHOE_SIZE not found in catalog`. If you want to inspect the differences manually, you can:
+```kotlin
+val differences : List<String> = generator.validateCatalog(CatalogDefinition).differences
+```
 
 If you have investigated the impact of such changes, you can generate the catalog again and make appropriate changes to the application code, because now the `Employee` metadata object has an extra mandatory column and calls to `mandatoryColumns` will have compiler errors.
 

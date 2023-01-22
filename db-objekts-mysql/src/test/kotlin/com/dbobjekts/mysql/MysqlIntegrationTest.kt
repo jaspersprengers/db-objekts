@@ -50,7 +50,7 @@ class MysqlIntegrationTest {
         generator.configureOutput()
             .basePackageForSources("com.dbobjekts.mysql.testdb")
         .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
-        generator.validateCatalog(com.dbobjekts.testdb.acme.CatalogDefinition).assertNoDifferences()
+        generator.validateCatalog(CatalogDefinition).assertNoDifferences()
         generator.generateSourceFiles()
     }
 

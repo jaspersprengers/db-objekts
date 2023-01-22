@@ -9,8 +9,8 @@ import java.lang.StringBuilder
  * Information container of a code generation validation result.
  */
 data class ValidationResult(
-    val catalog: Catalog,
-    val definition: DBCatalogDefinition
+    private val catalog: Catalog,
+    private val definition: DBCatalogDefinition
 ) {
     val differences: List<String>
 
