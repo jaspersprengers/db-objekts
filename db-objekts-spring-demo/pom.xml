@@ -9,7 +9,7 @@
         <version>0.4.2-alpha</version>
     </parent>
 
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <artifactId>db-objekts-spring-demo</artifactId>
 
     <properties>
