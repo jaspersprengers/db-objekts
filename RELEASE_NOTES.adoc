@@ -7,6 +7,7 @@
 
 == 0.4.3-alpha
 * Simplified validation of generated code against an existing schema
+* Added UUID column type for MariaDB
 
 == 0.4.2-alpha
 * Minor refactoring and documentation
