@@ -11,8 +11,9 @@ Starting from release `0.4.3.-alpha`, deprecated API behavior will be marked as 
 At present, it supports H2, MariaDB, MySQL and PostrgreSQL.
 A beta is planned for early 2023 and a first stable release later that year. xref:roadmap[Roadmap]
 
+
 == db-Objekts in a nutshell
-db-Objekts is a Kotlin library to query relational databases. It uses generated metadata objects in a DSL that produces type-safe and fluent queries while the engine takes care of join syntax and type conversions. The project was conceived by https://jaspersprengers.eu[Jasper Sprengers]. I am a software developer living in the Netherlands.
+db-Objekts is a Kotlin library to query relational databases. It uses generated metadata objects in a DSL that produces type-safe and fluent queries while the engine takes care of join syntax and type conversions. The project was conceived by Jasper Sprengers, a software developer living in the Netherlands. xref:contact[Contact]
 
 In short, db-Objekts lets you do things like this:
 ```kotlin
@@ -1061,3 +1062,13 @@ This is the very first alpha release. The API may change slightly, so it is not 
 ** Addition of PostgreSQL and MySQL as vendor types
 ** Rigorous integration tests on dockerized images of all database vendors as part of the build
 ** No more API changes are to be expected.
+
+[#contact]
+== Contact
+db-Objekts grew from a hobby project (originally started in Scala) by myself, Jasper Sprengers. I have been working in IT as a developer since 1999 and am also an active blogger. You can read more about me on https://jaspersprengers.eu[my site].
+
+Remarks, questions and suggestions are very welcome. Please contact me via any of the following channels:
+
+* https://www.linkedin.com/in/jaspersprengers/[LinkedIn]
+* mailto:jaspersprengers@outlook.com[Email]
+* https://mastodon.nl/@JasperSprengers[Mastodon]
