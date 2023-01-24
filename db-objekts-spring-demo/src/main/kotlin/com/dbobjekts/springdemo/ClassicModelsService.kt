@@ -13,21 +13,23 @@ import org.springframework.stereotype.Service
 class ClassicModelsService(val transactionManager: TransactionManager) : HasAliases by Aliases {
 
     val cu = Customers
-    val or = Orders
+    val ord = Orders
     val od = Orderdetails
     val pr = Products
     val pl = Productlines
 
     fun getCustomersWithMinimumOrderCount(minimum: Int): List<Tuple2<CustomersRow, Long>> =
         transactionManager {
-            it.select(cu, or.orderNumber.count()).having(Aggregate.ge(minimum.toLong())).asList()
+            it.select(cu, ord.orderNumber.count())
+                .where(ord.status.eq(""))
+                .having(Aggregate.ge(minimum.toLong())).asList()
         }
 
 
     fun getOrderForCustomer(customerNumber: Long): List<Tuple3<String, Double, String>> =
         transactionManager {
-            it.select(or.status, od.priceEach, pr.productName)
-                .where(or.customerNumber.eq(customerNumber)).asList()
+            it.select(ord.status, od.priceEach, pr.productName)
+                .where(ord.customerNumber.eq(customerNumber)).asList()
         }
 
 

@@ -51,6 +51,7 @@ class SpringDemoIntegrationTest : HasAliases by Aliases {
         val generator = CodeGenerator()
         generator.withDataSource(dataSource)
         generator.configureColumnTypeMapping()
+            .setColumnTypeForName(table = "orders", column = "status", columnType = OrderStatusColumn::class.java)
             .setColumnTypeForJDBCType("DECIMAL", DoubleColumn::class.java)
             .setColumnTypeForJDBCType("TINYINT", NumberAsBooleanColumn::class.java)
         generator.configureOutput()

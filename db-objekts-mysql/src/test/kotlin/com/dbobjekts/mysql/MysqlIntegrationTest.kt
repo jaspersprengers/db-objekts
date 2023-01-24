@@ -112,7 +112,7 @@ class MysqlIntegrationTest {
 
 
     @Test
-    fun test_binaryCol() {
+    fun `binary and blob`() {
         val value = "hello".encodeToByteArray()
         val retrieved = insertAndRetrieve {
             it.binaryCol(value)
@@ -121,7 +121,7 @@ class MysqlIntegrationTest {
 
         }
         assertThat(String(retrieved.binaryCol!!)).startsWith("hello")
-        assertThat(retrieved.blobCol).isEqualTo(BlobColumn.ofString("blob"))
+        assertThat(retrieved.blobCol?.let { BlobColumn.serialize(it) }).isEqualTo("blob")
         assertThat(retrieved.charByteCol).isEqualTo("1".encodeToByteArray())
     }
 
