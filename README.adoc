@@ -436,6 +436,19 @@ There is a third, optional method if you want complete control over the way `Con
 ```
 In this example you override the default setting for autocommit, which is usually configured at the level of the DataSource.
 
+=== Overview of Transaction methods
+`Transaction` is the primary class you interact with and here's a short overview of what it offers.
+
+* Methods to start a query
+** `select` to start a select query
+** `insert` to start an insert query
+** `save` to persist a stateful`TableRowData` object
+** `update` to start an update query
+** `deleteFrom` to start a delete query
+** `sql` to start a native sql query.
+* Low-level control of the underlying `java.sql.Connection` with `commit`, `rollback` and `close`. You should not need these often.
+* Inspect detailed execution results with `transactionExecutionLog()`
+
 ==== Transaction lifecycle
 Every query against db-Objekts is executed through a call to `TransactionManager.newTransaction` or its shortcut `invoke` method. This takes a lambda that provides a fresh `Transaction` object. In the body of the lambda you execute queries. The `TransactionManager` then commits the underlying `Connection` and returns whatever was returned by the lambda.
 ```kotlin

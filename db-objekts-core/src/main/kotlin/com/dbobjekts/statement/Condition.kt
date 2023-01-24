@@ -46,11 +46,34 @@ data class Condition<I, W : WhereClauseComponent>(
             "="
         )
 
+    /**
+     * operator for equality condition. Results in SQL: my_column = my_column2
+     */
     fun eq(column: AnyColumn): W = createColumnCondition(column,"=")
+
+    /**
+     * operator for not-equality condition. Results in SQL: my_column <> my_column2
+     */
     fun ne(column: AnyColumn): W = createColumnCondition(column,"!=")
+
+    /**
+     * operator for less-than condition. Results in SQL: my_column < my_column2
+     */
     fun lt(column: AnyColumn): W = createColumnCondition(column,"<")
+
+    /**
+     * operator for greater-than condition. Results in SQL: my_column > my_column2
+     */
     fun gt(column: AnyColumn): W = createColumnCondition(column,">")
+
+    /**
+     * operator for less-than-or-equal condition. Results in SQL: my_column <= my_column2
+     */
     fun le(column: AnyColumn): W = createColumnCondition(column,"<=")
+
+    /**
+     * operator for greater-than-or-equal condition. Results in SQL: my_column >= my_column2
+     */
     fun ge(column: AnyColumn): W = createColumnCondition(column,">=")
 
     /**
