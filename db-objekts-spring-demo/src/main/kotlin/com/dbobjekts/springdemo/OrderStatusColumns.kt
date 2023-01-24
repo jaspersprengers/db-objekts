@@ -8,21 +8,21 @@ enum class OrderStatus(val desc: String) {
     CANCELLED("Cancelled"),
     ON_HOLD("On Hold"),
     SHIPPED("Shipped"),
-    DISPUT("Disputed");
+    DISPUTED("Disputed");
 
     companion object {
-        fun parse(desc: String): OrderStatus = OrderStatus.values().find { it.desc == desc }?:
+        fun fromDescription(desc: String): OrderStatus = OrderStatus.values().find { it.desc == desc }?:
         throw IllegalArgumentException("Not a valid order status: $desc")
     }
 }
 
 class OrderStatusColumn(table: AnyTable, name: String) : EnumAsStringColumn<OrderStatus>(table, name, OrderStatus::class.java) {
     override val nullable = NullableOrderStatusColumn(table, name)
-    override fun toEnum(name: String): OrderStatus = OrderStatus.parse(name)
+    override fun toEnum(value: String): OrderStatus = OrderStatus.fromDescription(value)
 }
 
 
 class NullableOrderStatusColumn(table: AnyTable, name: String) :
     NullableEnumAsStringColumn<OrderStatus>(table, name, OrderStatus::class.java) {
-    override fun toEnum(name: String): OrderStatus = OrderStatus.parse(name)
+    override fun toEnum(value: String): OrderStatus = OrderStatus.fromDescription(value)
 }

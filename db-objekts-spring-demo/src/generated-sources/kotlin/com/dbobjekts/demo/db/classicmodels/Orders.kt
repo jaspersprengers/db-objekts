@@ -8,7 +8,7 @@ import com.dbobjekts.metadata.column.ForeignKeyLongColumn
 import com.dbobjekts.metadata.column.LongColumn
 import com.dbobjekts.metadata.column.NullableDateColumn
 import com.dbobjekts.metadata.column.NullableVarcharColumn
-import com.dbobjekts.metadata.column.VarcharColumn
+import com.dbobjekts.springdemo.OrderStatusColumn
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
 import com.dbobjekts.statement.update.HasUpdateBuilder
@@ -44,7 +44,7 @@ object Orders:Table<OrdersRow>("orders"), HasUpdateBuilder<OrdersUpdateBuilder, 
     /**
      * Represents db column classicmodels.orders.status
      */
-    val status = VarcharColumn(this, "status")
+    val status = OrderStatusColumn(this, "status")
     /**
      * Represents db column classicmodels.orders.comments
      */
@@ -56,7 +56,7 @@ object Orders:Table<OrdersRow>("orders"), HasUpdateBuilder<OrdersUpdateBuilder, 
      */
     val customerNumber = ForeignKeyLongColumn(this, "customerNumber", Customers.customerNumber)
     override val columns: List<AnyColumn> = listOf(orderNumber,orderDate,requiredDate,shippedDate,status,comments,customerNumber)
-    override fun toValue(values: List<Any?>) = OrdersRow(values[0] as Long,values[1] as java.time.LocalDate,values[2] as java.time.LocalDate,values[3] as java.time.LocalDate?,values[4] as String,values[5] as String?,values[6] as Long)
+    override fun toValue(values: List<Any?>) = OrdersRow(values[0] as Long,values[1] as java.time.LocalDate,values[2] as java.time.LocalDate,values[3] as java.time.LocalDate?,values[4] as com.dbobjekts.springdemo.OrderStatus,values[5] as String?,values[6] as Long)
     override fun metadata(): WriteQueryAccessors<OrdersUpdateBuilder, OrdersInsertBuilder> = WriteQueryAccessors(OrdersUpdateBuilder(), OrdersInsertBuilder())
 }
 
@@ -65,7 +65,7 @@ class OrdersUpdateBuilder() : UpdateBuilderBase(Orders) {
     fun orderDate(value: java.time.LocalDate): OrdersUpdateBuilder = put(Orders.orderDate, value)
     fun requiredDate(value: java.time.LocalDate): OrdersUpdateBuilder = put(Orders.requiredDate, value)
     fun shippedDate(value: java.time.LocalDate?): OrdersUpdateBuilder = put(Orders.shippedDate, value)
-    fun status(value: String): OrdersUpdateBuilder = put(Orders.status, value)
+    fun status(value: com.dbobjekts.springdemo.OrderStatus): OrdersUpdateBuilder = put(Orders.status, value)
     fun comments(value: String?): OrdersUpdateBuilder = put(Orders.comments, value)
     fun customerNumber(value: Long): OrdersUpdateBuilder = put(Orders.customerNumber, value)
     
@@ -91,11 +91,11 @@ class OrdersInsertBuilder():InsertBuilderBase(){
     fun orderDate(value: java.time.LocalDate): OrdersInsertBuilder = put(Orders.orderDate, value)
     fun requiredDate(value: java.time.LocalDate): OrdersInsertBuilder = put(Orders.requiredDate, value)
     fun shippedDate(value: java.time.LocalDate?): OrdersInsertBuilder = put(Orders.shippedDate, value)
-    fun status(value: String): OrdersInsertBuilder = put(Orders.status, value)
+    fun status(value: com.dbobjekts.springdemo.OrderStatus): OrdersInsertBuilder = put(Orders.status, value)
     fun comments(value: String?): OrdersInsertBuilder = put(Orders.comments, value)
     fun customerNumber(value: Long): OrdersInsertBuilder = put(Orders.customerNumber, value)
 
-    fun mandatoryColumns(orderNumber: Long, orderDate: java.time.LocalDate, requiredDate: java.time.LocalDate, status: String, customerNumber: Long) : OrdersInsertBuilder {
+    fun mandatoryColumns(orderNumber: Long, orderDate: java.time.LocalDate, requiredDate: java.time.LocalDate, status: com.dbobjekts.springdemo.OrderStatus, customerNumber: Long) : OrdersInsertBuilder {
       mandatory(Orders.orderNumber, orderNumber)
       mandatory(Orders.orderDate, orderDate)
       mandatory(Orders.requiredDate, requiredDate)
@@ -125,7 +125,7 @@ data class OrdersRow(
   val orderDate: java.time.LocalDate,
   val requiredDate: java.time.LocalDate,
   val shippedDate: java.time.LocalDate?,
-  val status: String,
+  val status: com.dbobjekts.springdemo.OrderStatus,
   val comments: String?,
   val customerNumber: Long    
 ) : TableRowData<OrdersUpdateBuilder, OrdersInsertBuilder>(Orders.metadata()){

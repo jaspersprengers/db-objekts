@@ -1,12 +1,13 @@
 package com.dbobjekts.springdemo
 
 import com.dbobjekts.codegen.CodeGenerator
-import com.dbobjekts.demo.db.Aliases
 import com.dbobjekts.demo.db.CatalogDefinition
-import com.dbobjekts.demo.db.HasAliases
 import com.dbobjekts.metadata.column.DoubleColumn
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.DynamicPropertyRegistry
@@ -18,7 +19,7 @@ import javax.sql.DataSource
 
 @SpringBootTest
 @Testcontainers
-class SpringDemoIntegrationTest : HasAliases by Aliases {
+class SpringDemoIntegrationTest {
 
     companion object {
         @Container
@@ -70,6 +71,13 @@ class SpringDemoIntegrationTest : HasAliases by Aliases {
                 println("$status $price $name")
             }
         }
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = ["SHIPPED,303","CANCELLED,6","ON_HOLD,0","DISPUTED,3"])
+    fun `validate orders by size`(status: String, size: Int) {
+        val orders = service.getOrdersWithStatus(OrderStatus.valueOf(status))
+        Assertions.assertThat(orders.size).isEqualTo(size)
     }
 
 }
