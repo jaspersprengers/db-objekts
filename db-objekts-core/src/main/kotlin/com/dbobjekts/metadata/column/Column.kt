@@ -31,10 +31,6 @@ abstract class Column<I>(
     internal val aggregateType: AggregateType?
 ) : Selectable<I> {
 
-    init {
-        ObjectNameValidator.validate(nameInTable, "Not a valid column name: '$nameInTable'")
-    }
-
     fun count(): LongColumn = LongColumn(table, nameInTable, AggregateType.COUNT)
 
     fun countDistinct(): LongColumn = LongColumn(table, nameInTable, AggregateType.COUNT_DISTINCT)
