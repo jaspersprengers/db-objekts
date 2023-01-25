@@ -35,7 +35,7 @@ class CodeGenerationComponentTest {
         generator.configureOutput()
             .basePackageForSources("com.dbobjekts.testdb.acme")
             .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
-        //generator.validateCatalog(CatalogDefinition).assertNoDifferences()
+        generator.validateCatalog(CatalogDefinition).assertNoDifferences()
         generator.generateSourceFiles()
     }
 
