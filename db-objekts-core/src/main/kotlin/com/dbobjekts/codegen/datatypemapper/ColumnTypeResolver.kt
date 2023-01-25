@@ -3,6 +3,7 @@ package com.dbobjekts.codegen.datatypemapper
 import com.dbobjekts.api.*
 import com.dbobjekts.api.exception.CodeGenerationException
 import com.dbobjekts.codegen.metadata.ColumnMetaData
+import com.dbobjekts.codegen.metadata.DBColumnDefinition
 import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.metadata.column.*
 import org.slf4j.LoggerFactory
@@ -14,11 +15,32 @@ class ColumnTypeResolver(
 ) {
     private val logger = LoggerFactory.getLogger(ColumnTypeResolver::class.java)
 
-    fun mapDataType(props: ColumnMappingProperties): AnyColumn =
-        getCustomMapping(props)?.let {
+    fun createColumnDefinition(schema: SchemaName,
+                               tableName: TableName,
+                               isSinglePrimaryKey: Boolean,
+                               tableHasCompositePK : Boolean,
+                               props: ColumnMetaData): DBColumnDefinition {
+        return mapDataType(ColumnMappingProperties.fromMetaData(schema, tableName, props)).let { colType ->
+            DBColumnDefinition(
+                schema,
+                tableName,
+                props.columnName,
+                colType,
+                props.columnType,
+                isSinglePrimaryKey,
+                tableHasCompositePK && props.isPrimaryKey,
+                props.remarks
+            )
+        }
+    }
+
+    internal fun mapDataType(props: ColumnMappingProperties): AnyColumn {
+        val defaultMapping = defaultMapper.map(props)
+        return getCustomMapping(props.copy(defaultMappingType = defaultMapping))?.let {
             logger.debug("Using custom datatype for ${props.schema}.${props.table}.${props.column}")
             it
         } ?: getDefaultMapping(props)
+    }
 
     fun mapAutoIncrementColumn(props: ColumnMappingProperties): AnyColumn {
         val defaultColumn = getDefaultMapping(props)
@@ -44,7 +66,7 @@ class ColumnTypeResolver(
         defaultMapper.map(props)
             ?: throw CodeGenerationException("""
                 Unable to find matching datatype for column ${props.schema}.${props.table}.${props.column} of type ${props.jdbcType}.
-                There is no custom mapping and no vendor default ${defaultMapper.javaClass.name}.
+                There is no custom mapping and nothing in the vendor default ${defaultMapper.javaClass.name}.
                 You must provide a custom mapping before you can proceed with code generation, as in the following examples:
                  generator.configureColumnTypeMapping()
                     .setColumnTypeForJDBCType("${props.jdbcType}", SomeNonNullableColumn::class.java)

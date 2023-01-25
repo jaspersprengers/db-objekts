@@ -17,8 +17,6 @@ class DateColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NonNullableColumn<LocalDate>(table,name, LocalDate::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    //override //override fun distinct() = DateColumn(table, nameInTable, AggregateType.DISTINCT)
-
     fun of(year: Int, month: Int, day: Int): ColumnAndValue<LocalDate> = create(LocalDate.of(year, month, day))
     override fun getValue(position: Int, resultSet: ResultSet): LocalDate? = resultSet.getDate(position)?.let {
         DateUtil.toLocalDate(DateUtil.toUtilDate(it))
@@ -31,8 +29,6 @@ class DateColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
 class NullableDateColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<LocalDate?>(table,name, Types.DATE, LocalDate::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
-
-    //override //override fun distinct() = NullableDateColumn(table, nameInTable, AggregateType.DISTINCT)
 
     fun of(year: Int, month: Int, day: Int): ColumnAndValue<LocalDate?> = create(LocalDate.of(year, month, day))
     override fun getValue(position: Int, resultSet: ResultSet): LocalDate? = resultSet.getDate(position)?.let {

@@ -107,12 +107,14 @@ object ColumnFactory {
     fun dateTimeColumn(nullable: Boolean = false): Column<out LocalDateTime?> = if (nullable) DATETIME_NIL else DATETIME
     fun timeColumn(nullable: Boolean = false): Column<out LocalTime?> = if (nullable) TIME_NIL else TIME
     fun timeStampColumn(nullable: Boolean = false): Column<out Instant?> = if (nullable) TIMESTAMP_NIL else TIMESTAMP
-    fun offsetDateTimeColumn(nullable: Boolean = false): Column<out OffsetDateTime?> = if (nullable) OFFSET_DATETIME_NIL else OFFSET_DATETIME
+    fun offsetDateTimeColumn(nullable: Boolean = false): Column<out OffsetDateTime?> =
+        if (nullable) OFFSET_DATETIME_NIL else OFFSET_DATETIME
+
     fun xmlColumn(nullable: Boolean = false): Column<out SQLXML?> = if (nullable) SQLXML_NIL else SQLXML
 
     @Suppress("UNCHECKED_CAST")
     fun <C : NonNullableColumn<*>> forClass(clz: Class<C>): C =
-         getConstructor(clz).newInstance(table, DUMMY, null) as C
+        getConstructor(clz).newInstance(table, DUMMY, null) as C
 
 
     @Suppress("UNCHECKED_CAST")
@@ -133,34 +135,37 @@ object ColumnFactory {
         return createColumnInstance(col, "$pkg.${clz.simpleName}", AggregateType.DISTINCT) as Column<T?>
     }
 
-    private fun createColumnInstance(col: AnyColumn, newName: String, aggregateType: AggregateType? = null): Any{
+    private fun createColumnInstance(col: AnyColumn, newName: String, aggregateType: AggregateType? = null): Any {
+        val nullableClass = getColumnClass(newName)
+        val constructor = getConstructor(nullableClass)
         try {
-            val nullableClass = Class.forName(newName)
-            try {
-                val constructor = nullableClass.getConstructor(Table::class.java, String::class.java, AggregateType::class.java)
-                try {
-                    return constructor.newInstance(col.table, col.nameInTable, aggregateType ?: col.aggregateType)
-                } catch(e: Exception){
-                    throw CodeGenerationException("Error generating new instance of $newName", e)
-                }
-            } catch (e: Exception){
-                throw CodeGenerationException("Unable to get a suitable constructor for $newName. " +
-                        "Make sure it has a constructor for (table: AnyTable, name: String, aggregateType: AggregateType?) ${col.javaClass}")
-            }
-        } catch (e: Exception){
-            throw CodeGenerationException("Unable to obtain Class reference for $newName. " +
-                    "Make sure a nullable counterpart exists for ${col.javaClass}", e)
+            return constructor.newInstance(col.table, col.nameInTable, aggregateType ?: col.aggregateType)
+        } catch (e: Exception) {
+            throw CodeGenerationException("Error generating new instance of $newName", e)
+        }
+    }
+
+    private fun getColumnClass(newName: String): Class<*> {
+        try {
+            return Class.forName(newName)
+        } catch (e: Exception) {
+            throw CodeGenerationException(
+                "Unable to obtain Class reference for $newName. " +
+                        "Make sure it exists", e
+            )
         }
     }
 
     private fun getConstructor(clz: Class<*>): Constructor<*> {
         return clz.constructors
-            .filter { it.parameterCount == 3
-                    && it.parameters[0].type == Table::class.java
-                    && it.parameters[1].type == String::class.java
-                    && it.parameters[2].type == AggregateType::class.java
+            .filter {
+                it.parameterCount == 3
+                        && it.parameters[0].type == Table::class.java
+                        && it.parameters[1].type == String::class.java
+                        && it.parameters[2].type == AggregateType::class.java
             }
-            .firstOrNull() ?: throw CodeGenerationException("Class $clz does not define a constructor with (table: Table, name: String, aggregateType: AggregateType")
+            .firstOrNull()
+            ?: throw CodeGenerationException("Class $clz does not define a constructor with (table: Table, name: String, aggregateType: AggregateType")
     }
 
     @Suppress("UNCHECKED_CAST")

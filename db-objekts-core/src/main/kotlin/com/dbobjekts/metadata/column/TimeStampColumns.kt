@@ -17,8 +17,6 @@ class TimeStampColumn(table: AnyTable, name: String, aggregateType: AggregateTyp
     NonNullableColumn<Instant>(table,name, Instant::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    //override //override fun distinct() = TimeStampColumn(table, nameInTable, AggregateType.DISTINCT)
-
     override fun getValue(position: Int, resultSet: ResultSet): Instant? = resultSet.getTimestamp(position)?.let { DateUtil.toInstant(it) }
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Instant) =
@@ -28,8 +26,6 @@ class TimeStampColumn(table: AnyTable, name: String, aggregateType: AggregateTyp
 class NullableTimeStampColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<Instant?>(table,name, Types.TIMESTAMP, Instant::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
-
-    //override //override fun distinct() = NullableTimeStampColumn(table, nameInTable, AggregateType.DISTINCT)
 
     override fun getValue(position: Int, resultSet: ResultSet): Instant? = resultSet.getTimestamp(position)?.let { DateUtil.toInstant(it) }
 

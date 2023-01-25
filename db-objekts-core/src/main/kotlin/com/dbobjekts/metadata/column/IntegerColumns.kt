@@ -17,8 +17,6 @@ open class NullableIntegerColumn(table: AnyTable, name: String, aggregateType: A
     NullableColumn<Int?>(table,name, Types.INTEGER, Int::class.java, aggregateType), IntegerNumericColumn by IntegerNumericColumnCloner(table,  name){
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    //override //override fun distinct() = NullableIntegerColumn(table, nameInTable, AggregateType.DISTINCT)
-
     override fun setValue(position: Int, statement: PreparedStatement, value: Int?) = statement.setInt(position, value!!)
     override fun getValue(position: Int, resultSet: ResultSet): Int? = resultSet.getInt(position)
 }

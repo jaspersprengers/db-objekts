@@ -14,8 +14,6 @@ class FloatColumn(table: AnyTable, name: String, aggregateType: AggregateType?) 
     NonNullableColumn<Float>(table,name, Float::class.java, aggregateType), FloatingPointNumericColumn by FloatingPointNumericColumnCloner(table, name){
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    //override //override fun distinct() = FloatColumn(table, nameInTable, AggregateType.DISTINCT)
-
     override fun getValue(position: Int, resultSet: ResultSet): Float = resultSet.getFloat(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Float) =
@@ -25,8 +23,6 @@ class FloatColumn(table: AnyTable, name: String, aggregateType: AggregateType?) 
 class NullableFloatColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<Float?>(table,name, Types.FLOAT, Float::class.java, aggregateType), FloatingPointNumericColumn by FloatingPointNumericColumnCloner(table, name){
     constructor(table: AnyTable, name: String) : this(table, name, null)
-
-    //override //override fun distinct() = NullableFloatColumn(table, nameInTable, AggregateType.DISTINCT)
 
     override fun getValue(position: Int, resultSet: ResultSet): Float? = resultSet.getFloat(position)
 

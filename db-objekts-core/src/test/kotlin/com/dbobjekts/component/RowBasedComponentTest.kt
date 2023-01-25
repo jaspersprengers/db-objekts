@@ -62,12 +62,6 @@ class RowBasedComponentTest {
             it.save(retrieved.copy(published = date))
             val updated = it.select(b).where(b.isbn.eq("ISBN")).first()
             assertThat(updated.published).isEqualTo(date)
-
-        /*    val review = BookReviewRow("ISBN", "Scary!")
-            it.save(BookReviewRow("ISBN", "Scary!"))
-            assertThat(it.select(BookReview.review).where(b.isbn.eq("ISBN")).first()).isEqualTo("Scary!")
-            assertThatThrownBy {it.update(review)}.hasMessage("Sorry, but you cannot use row-based updates for table BookReview. At least one column must be marked as primary key.")
-*/
         }
     }
 

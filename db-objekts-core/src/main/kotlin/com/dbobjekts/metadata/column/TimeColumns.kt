@@ -17,8 +17,6 @@ class TimeColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NonNullableColumn<LocalTime>(table,name, LocalTime::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    //override //override fun distinct() = TimeColumn(table, nameInTable, AggregateType.DISTINCT)
-
     fun of(hour: Int, minutes: Int, seconds: Int): ColumnAndValue<LocalTime> = create(LocalTime.of(hour, minutes, seconds))
     override fun getValue(position: Int, resultSet: ResultSet): LocalTime? = resultSet.getTime(position)?.let { DateUtil.toLocalTime(it) }
 
@@ -29,8 +27,6 @@ class TimeColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
 class NullableTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<LocalTime?>(table,name, Types.TIME, LocalTime::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
-
-    //override //override fun distinct() = NullableTimeColumn(table, nameInTable, AggregateType.DISTINCT)
 
     fun of(hour: Int, minutes: Int, seconds: Int): ColumnAndValue<LocalTime?> = create(LocalTime.of(hour, minutes, seconds))
     override fun getValue(position: Int, resultSet: ResultSet): LocalTime? = resultSet.getTime(position)?.let { DateUtil.toLocalTime(it) }

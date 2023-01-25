@@ -6,45 +6,24 @@ import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Types
 
-interface NumericEnumColumn<E> {
-    /**
-     * Provides a concrete Enum element for an ordinal value. Example:
-     * ```kotlin
-     * override fun toEnum(ordinal: Int): AddressType = AddressType.values()[ordinal]
-     * ```
-     */
-  fun toEnum(ordinal: Int): E
-}
-
-interface StringEnumColumn<E> {
-    /**
-     * Provides a concrete Enum element for an ordinal value. Example:
-     * ```kotlin
-     * override fun toEnum(ordinal: Int): AddressType = AddressType.values()[ordinal]
-     * ```
-     */
-    fun toEnum(value: String): E
-}
-
 /**
  * Abstract [NonNullableColumn] that converts between instances of a custom Enum and an Int through the Enum's ordinal value.
  */
-abstract class EnumAsIntColumn<E : Enum<E>>(
+open class EnumAsIntColumn<E : Enum<E>>(
     table: AnyTable,
     name: String,
     private val enumClass: Class<E>,
-    aggregateType: AggregateType?
-) : NonNullableColumn<E>(table,name, enumClass, aggregateType), NumericEnumColumn<E> {
-    constructor(table: AnyTable, name: String, enumClass: Class<E>) : this(table, name, enumClass, null)
+    aggregateType: AggregateType?= null
+) : NonNullableColumn<E>(table,name, enumClass, aggregateType){
 
     override fun getValue(position: Int, resultSet: ResultSet): E? = toEnum(resultSet.getInt(position))
-
     override fun setValue(position: Int, statement: PreparedStatement, value: E) = statement.setInt(position, value.ordinal)
 
     @Suppress("UNCHECKED_CAST")
-    override fun toEnum(ordinal: Int) = enumClass.enumConstants.filterIsInstance(Enum::class.java).first { it.name == "HOME" } as E
-
+    internal fun toEnum(ordinal: Int) = enumClass.enumConstants[ordinal] as E
 }
+
+
 
 /**
  * Abstract [NullableColumn] that converts between instances of a custom Enum and an Int through the Enum's ordinal value.
@@ -53,17 +32,14 @@ open class NullableEnumAsIntColumn<E : Enum<E>>(
     table: AnyTable,
     name: String,
     private val enumClass: Class<E>,
-    aggregateType: AggregateType?
-) : NullableColumn<E?>(table,name, Types.VARCHAR, enumClass, aggregateType), NumericEnumColumn<E> {
-    constructor(table: AnyTable, name: String, enumClass: Class<E>) : this(table, name, enumClass, null)
+    aggregateType: AggregateType?= null
+) : NullableColumn<E?>(table,name, Types.VARCHAR, enumClass, aggregateType){
 
     override fun getValue(position: Int, resultSet: ResultSet): E? = toEnum(resultSet.getInt(position))
-
     override fun setValue(position: Int, statement: PreparedStatement, value: E?) = statement.setInt(position, value?.ordinal ?: -1)
 
     @Suppress("UNCHECKED_CAST")
-    override fun toEnum(ordinal: Int) = enumClass.enumConstants.filterIsInstance(Enum::class.java).first { it.name == "HOME" } as E
-
+    internal fun toEnum(ordinal: Int) = enumClass.enumConstants[ordinal] as E
 }
 
 /**
@@ -74,20 +50,19 @@ open class NullableEnumAsIntColumn<E : Enum<E>>(
  *
  * To convert a String to an Enum, you override the toEnum() method
  */
-abstract class EnumAsStringColumn<E : Enum<E>>(
+open class EnumAsStringColumn<E : Enum<E>>(
     table: AnyTable,
     name: String,
     private val enumClass: Class<E>,
-    aggregateType: AggregateType?
-) : NonNullableColumn<E>(table,name, enumClass, aggregateType), StringEnumColumn<E> {
-    constructor(table: AnyTable, name: String, enumClass: Class<E>) : this(table, name, enumClass, null)
+    aggregateType: AggregateType? = null
+) : NonNullableColumn<E>(table,name, enumClass, aggregateType){
 
     override fun getValue(position: Int, resultSet: ResultSet): E? = toEnum(resultSet.getString(position))
 
     override fun setValue(position: Int, statement: PreparedStatement, value: E) = statement.setString(position, value.toString())
 
     @Suppress("UNCHECKED_CAST")
-    override fun toEnum(value: String) = enumClass.enumConstants.filterIsInstance(Enum::class.java).first { it.name == value } as E
+    internal fun toEnum(value: String) = enumClass.enumConstants.filterIsInstance(Enum::class.java).first { it.name == value } as E
 
 }
 
@@ -102,15 +77,14 @@ open class NullableEnumAsStringColumn<E : Enum<E>>(
     table: AnyTable,
     name: String,
     private val enumClass: Class<E>,
-    aggregateType: AggregateType?
-) : NullableColumn<E?>(table,name, Types.VARCHAR, enumClass, aggregateType), StringEnumColumn<E> {
-    constructor(table: AnyTable, name: String, enumClass: Class<E>) : this(table, name, enumClass, null)
+    aggregateType: AggregateType? = null
+) : NullableColumn<E?>(table,name, Types.VARCHAR, enumClass, aggregateType){
 
     override fun getValue(position: Int, resultSet: ResultSet): E? = resultSet.getString(position)?.let { toEnum(it) }
 
     override fun setValue(position: Int, statement: PreparedStatement, value: E?) = statement.setString(position, value.toString())
 
     @Suppress("UNCHECKED_CAST")
-    override fun toEnum(value: String): E = enumClass.enumConstants.filterIsInstance(Enum::class.java).first { it.name == value } as E
+    internal fun toEnum(value: String): E = enumClass.enumConstants.filterIsInstance(Enum::class.java).first { it.name == value } as E
 
 }

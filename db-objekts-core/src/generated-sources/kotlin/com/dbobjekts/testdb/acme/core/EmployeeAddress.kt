@@ -36,7 +36,7 @@ object EmployeeAddress:Table<EmployeeAddressRow>("EMPLOYEE_ADDRESS"), HasUpdateB
     /**
      * Represents db column CORE.EMPLOYEE_ADDRESS.KIND
      */
-    val kind = AddressTypeAsStringColumn(this, "KIND", null)
+    val kind = AddressTypeAsStringColumn(this, "KIND")
     override val columns: List<AnyColumn> = listOf(employeeId,addressId,kind)
     override fun toValue(values: List<Any?>) = EmployeeAddressRow(values[0] as Long,values[1] as Long,values[2] as com.dbobjekts.fixture.columns.AddressType)
     override fun metadata(): WriteQueryAccessors<EmployeeAddressUpdateBuilder, EmployeeAddressInsertBuilder> = WriteQueryAccessors(EmployeeAddressUpdateBuilder(), EmployeeAddressInsertBuilder())

@@ -19,8 +19,6 @@ class LegacyDateColumn(table: AnyTable, name: String, aggregateType: AggregateTy
     NonNullableColumn<Date>(table,name, Date::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    //override //override fun distinct() = LegacyDateColumn(table, nameInTable, AggregateType.DISTINCT)
-
     override fun getValue(position: Int, resultSet: ResultSet): Date? = resultSet.getDate(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Date) =

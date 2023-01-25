@@ -18,7 +18,6 @@ abstract class NullableColumn<I>(
     @Suppress("UNCHECKED_CAST")
     open fun distinct(): NullableColumn<I> = ColumnFactory.distinctClone(this) as NullableColumn<I>
 
-
     internal fun setNull(): ColumnAndValue<I> = NullableColumnAndValue(this, null)
 
     override fun retrieveValue(position: Int, rs: ResultSet): I? {

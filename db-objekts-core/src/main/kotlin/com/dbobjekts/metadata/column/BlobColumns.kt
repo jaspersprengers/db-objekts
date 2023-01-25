@@ -18,7 +18,6 @@ class BlobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
 
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    //override //override fun distinct() = BlobColumn(table, nameInTable, AggregateType.DISTINCT)
     override fun getValue(position: Int, resultSet: ResultSet): Blob? = resultSet.getBlob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Blob) =
         statement.setBlob(position, value)
@@ -35,8 +34,6 @@ class BlobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
 class NullableBlobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<Blob?>(table,name, Types.BLOB, Blob::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
-
-    //override //override fun distinct() = NullableBlobColumn(table, nameInTable, AggregateType.DISTINCT)
 
     override fun getValue(position: Int, resultSet: ResultSet): Blob? = resultSet.getBlob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Blob?) =

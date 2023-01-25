@@ -160,7 +160,6 @@ class CatalogParser(
             val allowedColumns = table.columns.filterNot {
                 parserConfig.exclusionConfigurer.columnIsExcluded(table, it)
             }
-
             tableBuilder.withColumns(table.schema, table.tableName, allowedColumns)
         })
         if (tableBuilders.isEmpty()) {

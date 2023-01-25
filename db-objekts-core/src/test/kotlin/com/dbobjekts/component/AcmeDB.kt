@@ -37,8 +37,7 @@ object AcmeDB {
 
             tr.sql("create table IF NOT EXISTS hr.HOBBY(id varchar(10) primary key, name varchar(50) not null)").execute()
 
-            //That should not be allowed under the same name!
-            //tr.sql("create table IF NOT EXISTS core.HOBBY(id varchar(10) primary key, name varchar(50) not null)").execute()
+            tr.sql("create table IF NOT EXISTS hr.NATIVE(id varchar(10) primary key, native varchar(50) not null)").execute()
 
             tr.sql(
                 "create table IF NOT EXISTS core.EMPLOYEE(id BIGINT primary key, name varchar(50) not null, salary double not null, " +

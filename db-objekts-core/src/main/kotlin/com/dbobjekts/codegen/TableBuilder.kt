@@ -27,7 +27,8 @@ internal class TableBuilder(
         return this
     }
 
-    fun build(): DBTableDefinition = DBTableDefinition(packageName, schema, tableName, alias, columns, foreignKeyManager.findLinkedTables(schema, tableName))
+    fun build(): DBTableDefinition =
+        DBTableDefinition(packageName, schema, tableName, alias, columns, foreignKeyManager.findLinkedTables(schema, tableName))
 
     private fun getForeignKeyDefinition(columnMetaData: ColumnMetaData): DBForeignKeyDefinition? =
         foreignKeyManager.findForeignKey(schema, tableName, columnMetaData.columnName)?.let {
@@ -74,8 +75,7 @@ internal class TableBuilder(
                 comment = props.remarks
             )
         } else if (props.isPrimaryKey && !hasCompositePK) {
-            val colType = columnTypeResolver.mapDataType(columnMappingProperties)
-            DBColumnDefinition(schema, tableName, props.columnName, colType, props.columnType, true, false, props.remarks)
+            columnTypeResolver.createColumnDefinition(schema, tableName, true, hasCompositePK, props)
         } else
             null
     }
@@ -93,15 +93,8 @@ internal class TableBuilder(
             } ?: getForeignKeyDefinition(props)?.let { fk ->
                 log.debug("Adding foreign key for ${fk.tableName}.${fk.columnName}")
                 columns += fk
-            } ?: columnTypeResolver.mapDataType(ColumnMappingProperties.fromMetaData(schema, table, props)).let { colType ->
-                columns += DBColumnDefinition(schema,
-                    tableName,
-                    props.columnName,
-                    colType,
-                    props.columnType,
-                    false,
-                    tableHasCompositePK && props.isPrimaryKey,
-                    props.remarks)
+            } ?: columnTypeResolver.createColumnDefinition(schema, table, false, tableHasCompositePK, props).also {
+                columns += it
             }
         }
         return this

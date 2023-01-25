@@ -11,8 +11,6 @@ class DateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType
     NonNullableColumn<LocalDateTime>(table,name, LocalDateTime::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    //override //override fun distinct() = DateTimeColumn(table, nameInTable, AggregateType.DISTINCT)
-
     override fun getValue(position: Int, resultSet: ResultSet): LocalDateTime? =
         resultSet.getTimestamp(position)?.let { DateUtil.toLocalDateTime(it) }
 
@@ -23,8 +21,6 @@ class DateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType
 class NullableDateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<LocalDateTime?>(table,name, Types.TIMESTAMP, LocalDateTime::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
-
-    //override //override fun distinct() = NullableDateTimeColumn(table, nameInTable, AggregateType.DISTINCT)
 
     override fun getValue(position: Int, resultSet: ResultSet): LocalDateTime? =
         resultSet.getTimestamp(position)?.let { DateUtil.toLocalDateTime(it) }

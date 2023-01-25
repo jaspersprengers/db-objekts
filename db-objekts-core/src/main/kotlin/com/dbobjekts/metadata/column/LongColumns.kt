@@ -10,8 +10,6 @@ open class LongColumn(table: AnyTable, name: String, aggregateType: AggregateTyp
     NonNullableColumn<Long>(table,name, Long::class.java, aggregateType), IntegerNumericColumn by IntegerNumericColumnCloner(table, name){
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    //override //override fun distinct() = LongColumn(table, nameInTable, AggregateType.DISTINCT)
-
     override fun setValue(position: Int, statement: PreparedStatement, value: Long) = statement.setLong(position, value)
     override fun getValue(position: Int, resultSet: ResultSet): Long = resultSet.getLong(position)
 

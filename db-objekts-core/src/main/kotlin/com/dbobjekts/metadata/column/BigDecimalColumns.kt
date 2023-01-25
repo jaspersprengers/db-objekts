@@ -15,8 +15,6 @@ class BigDecimalColumn(table: AnyTable, name: String, aggregateType: AggregateTy
     NonNullableColumn<BigDecimal>(table,name, BigDecimal::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    //override //override fun distinct() = BigDecimalColumn(table, nameInTable, AggregateType.DISTINCT)
-
     fun sum() = BigDecimalColumn(table, nameInTable, AggregateType.SUM)
     fun avg() = BigDecimalColumn(table, nameInTable, AggregateType.AVG)
     fun min() = BigDecimalColumn(table, nameInTable, AggregateType.MIN)
@@ -32,8 +30,6 @@ class BigDecimalColumn(table: AnyTable, name: String, aggregateType: AggregateTy
 class NullableBigDecimalColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<BigDecimal?>(table,name, Types.NUMERIC, BigDecimal::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
-
-    //override //override fun distinct() = NullableBigDecimalColumn(table, nameInTable, AggregateType.DISTINCT)
 
     fun sum() = BigDecimalColumn(table, nameInTable, AggregateType.SUM)
     fun avg() = BigDecimalColumn(table, nameInTable, AggregateType.AVG)

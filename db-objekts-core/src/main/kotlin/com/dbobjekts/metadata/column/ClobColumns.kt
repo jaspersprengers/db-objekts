@@ -16,8 +16,6 @@ class ClobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NonNullableColumn<Clob>(table,name, Clob::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    //override //override fun distinct() = ClobColumn(table, nameInTable, AggregateType.DISTINCT)
-
     override fun getValue(position: Int, resultSet: ResultSet): Clob? = resultSet.getClob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Clob) =
         statement.setClob(position, value)
@@ -32,8 +30,6 @@ class ClobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
 class NullableClobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<Clob?>(table,name, Types.CLOB, Clob::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
-
-    //override //override fun distinct() = NullableClobColumn(table, nameInTable, AggregateType.DISTINCT)
 
     override fun getValue(position: Int, resultSet: ResultSet): Clob? = resultSet.getClob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Clob?) =

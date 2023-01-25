@@ -14,7 +14,10 @@ class SequenceNameResolverStrategyTest {
         schema = SchemaName("hr"),
         table = TableName("employees"),
         column = ColumnName("address"),
-        isNullable = true, isPrimaryKey = true, jdbcType = "VARCHAR"
+        isNullable = true,
+        isPrimaryKey = true,
+        jdbcType = "VARCHAR",
+        defaultMappingType = null
     )
 
     @Test

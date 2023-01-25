@@ -17,8 +17,6 @@ class OffsetDateTimeColumn(table: AnyTable, name: String, aggregateType: Aggrega
     NonNullableColumn<OffsetDateTime>(table,name, OffsetDateTime::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    //override //override fun distinct() = OffsetDateTimeColumn(table, nameInTable, AggregateType.DISTINCT)
-
     override fun getValue(position: Int, resultSet: ResultSet): OffsetDateTime? = resultSet.getObject(position, OffsetDateTime::class.java)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: OffsetDateTime) {
@@ -29,8 +27,6 @@ class OffsetDateTimeColumn(table: AnyTable, name: String, aggregateType: Aggrega
 class NullableOffsetDateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<OffsetDateTime?>(table,name, Types.TIMESTAMP, OffsetDateTime::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
-
-    //override //override fun distinct() = NullableOffsetDateTimeColumn(table, nameInTable, AggregateType.DISTINCT)
 
     override fun getValue(position: Int, resultSet: ResultSet): OffsetDateTime? = resultSet.getObject(position, OffsetDateTime::class.java)
 

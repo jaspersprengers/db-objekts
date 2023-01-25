@@ -15,8 +15,6 @@ class DoubleColumn(table: AnyTable, name: String, aggregateType: AggregateType?)
 
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    //override //override fun distinct() = DoubleColumn(table, nameInTable, AggregateType.DISTINCT)
-
     override fun getValue(position: Int, resultSet: ResultSet): Double = resultSet.getDouble(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Double) =
@@ -27,9 +25,6 @@ class DoubleColumn(table: AnyTable, name: String, aggregateType: AggregateType?)
 class NullableDoubleColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<Double?>(table,name, Types.DOUBLE, Double::class.java, aggregateType), FloatingPointNumericColumn by FloatingPointNumericColumnCloner(table, name) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
-
-    //override //override fun distinct() = NullableDoubleColumn(table, nameInTable, AggregateType.DISTINCT)
-
 
     override fun getValue(position: Int, resultSet: ResultSet): Double? = resultSet.getDouble(position)
 
