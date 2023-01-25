@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory
 
 class ColumnTypeResolver(
     val defaultMapper: VendorDefaultColumnTypeMapper,
-    val customMappers: List<CustomColumnTypeMapper<*>> = listOf(),
+    val customMappers: List<ColumnTypeMapper> = listOf(),
     val sequenceMappers: List<SequenceForPrimaryKeyResolver> = listOf()
 ) {
     private val logger = LoggerFactory.getLogger(ColumnTypeResolver::class.java)
@@ -37,7 +37,7 @@ class ColumnTypeResolver(
         when (column) {
             is LongColumn -> ColumnFactory.SEQUENCE_LONG
             is IntegerColumn -> ColumnFactory.SEQUENCE_INTEGER
-            else -> throw CodeGenerationException("${column.javaClass} cannot be used as a sequence-generated primary key: only LongColumn or IntegerColumn are allowed.")
+            else -> throw CodeGenerationException("${column.qualifiedClassName()} cannot be used as a sequence-generated primary key: only LongColumn or IntegerColumn are allowed.")
         }
 
     fun getDefaultMapping(props: ColumnMappingProperties): AnyColumn =
@@ -68,7 +68,7 @@ class ColumnTypeResolver(
             is NullableLongColumn -> ColumnFactory.FOREIGN_KEY_LONG_NIL
             is VarcharColumn -> ColumnFactory.FOREIGN_KEY_VARCHAR
             is NullableVarcharColumn -> ColumnFactory.FOREIGN_KEY_VARCHAR_NIL
-            else -> throw CodeGenerationException("Column type ${column.javaClass.simpleName} cannot be used as a foreign key. It has to be Int, Long or String type")
+            else -> throw CodeGenerationException("Column type ${column.simpleClassName()} cannot be used as a foreign key. It has to be Int, Long or String type")
         }
     }
 

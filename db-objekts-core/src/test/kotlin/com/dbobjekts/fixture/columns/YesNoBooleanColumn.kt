@@ -1,7 +1,6 @@
 package com.dbobjekts.fixture.columns
 
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.AggregateType
 import com.dbobjekts.metadata.column.NonNullableColumn
 import com.dbobjekts.metadata.column.NullableColumn
@@ -10,11 +9,9 @@ import java.sql.ResultSet
 import java.sql.Types
 
 class YesNoBooleanColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NonNullableColumn<Boolean>(name, table, Boolean::class.java, aggregateType) {
-    constructor(table: AnyTable, name: String) : this(table, name, null)
+    NonNullableColumn<Boolean>(table,name, Boolean::class.java, aggregateType) {
 
-    override val nullable: NullableColumn<Boolean?> = NullableYesNoBooleanColumn(table, name)
-    override fun distinct(): YesNoBooleanColumn = YesNoBooleanColumn(table, nameInTable, AggregateType.DISTINCT)
+    //override //override fun distinct(): YesNoBooleanColumn = YesNoBooleanColumn(table, nameInTable, AggregateType.DISTINCT)
 
     override fun getValue(position: Int, resultSet: ResultSet): Boolean = resultSet.getString(position).equals("Y", true)
 
@@ -24,10 +21,9 @@ class YesNoBooleanColumn(table: AnyTable, name: String, aggregateType: Aggregate
 }
 
 class NullableYesNoBooleanColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NullableColumn<Boolean?>(name, table, Types.VARCHAR, Boolean::class.java, aggregateType) {
-    constructor(table: AnyTable, name: String) : this(table, name, null)
+    NullableColumn<Boolean?>(table,name, Types.VARCHAR, Boolean::class.java, aggregateType) {
 
-    override fun distinct(): NullableYesNoBooleanColumn = NullableYesNoBooleanColumn(table, nameInTable, AggregateType.DISTINCT)
+    //override //override fun distinct(): NullableYesNoBooleanColumn = NullableYesNoBooleanColumn(table, nameInTable, AggregateType.DISTINCT)
 
 
     override fun getValue(position: Int, resultSet: ResultSet): Boolean = resultSet.getString(position).equals("Y", true)

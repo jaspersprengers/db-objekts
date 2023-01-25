@@ -1020,7 +1020,6 @@ H2 supports a data type for storing UUIDs (universally unique identifiers), whic
 package com.dbobjekts.vendors.h2
 import java.util.UUID
 class UUIDColumn(table: Table, name: String) : ObjectColumn<UUID>(table, name, UUID::class.java) {
-    override val nullable: NullableColumn<UUID?> = NullableUUIDColumn(table, name)
 }
 class NullableUUIDColumn(table: Table, name: String) : NullableObjectColumn<UUID?>(table, name, UUID::class.java) {
 }

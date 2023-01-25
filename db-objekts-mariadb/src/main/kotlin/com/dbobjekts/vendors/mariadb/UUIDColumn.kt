@@ -8,11 +8,9 @@ import java.sql.Types
 import java.util.*
 
 
-class UUIDColumn(table: AnyTable, name: String, aggregateType: AggregateType? = null) : NonNullableColumn<UUID>(name,table, UUID::class.java, aggregateType) {
+class UUIDColumn(table: AnyTable, name: String, aggregateType: AggregateType? = null) : NonNullableColumn<UUID>(table,name, UUID::class.java, aggregateType) {
 
-    override val nullable: NullableColumn<UUID?> = NullableUUIDColumn(table, name, aggregateType)
-
-    override fun distinct() = UUIDColumn(table, nameInTable, AggregateType.DISTINCT)
+    //override //override fun distinct() = UUIDColumn(table, nameInTable, AggregateType.DISTINCT)
 
     override fun getValue(position: Int, resultSet: ResultSet): UUID? = UUID.fromString(resultSet.getString(position))
 
@@ -21,9 +19,9 @@ class UUIDColumn(table: AnyTable, name: String, aggregateType: AggregateType? = 
 }
 
 
-class NullableUUIDColumn(table: AnyTable, name: String, aggregateType: AggregateType? = null) : NullableColumn<UUID?>(name, table, Types.VARCHAR, UUID::class.java, aggregateType) {
+class NullableUUIDColumn(table: AnyTable, name: String, aggregateType: AggregateType? = null) : NullableColumn<UUID?>(table,name, Types.VARCHAR, UUID::class.java, aggregateType) {
 
-    override fun distinct() = NullableUUIDColumn(table, nameInTable, AggregateType.DISTINCT)
+    //override //override fun distinct() = NullableUUIDColumn(table, nameInTable, AggregateType.DISTINCT)
 
     override fun getValue(position: Int, resultSet: ResultSet): UUID? = resultSet.getString(position)?.let { UUID.fromString(it) }
 

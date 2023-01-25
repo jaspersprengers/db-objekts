@@ -2,25 +2,29 @@ package com.dbobjekts.metadata.column
 
 import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.exception.StatementExecutionException
+import com.dbobjekts.metadata.ColumnFactory
 import java.lang.IllegalStateException
 import java.sql.PreparedStatement
 import java.sql.ResultSet
 import java.sql.Types
 
 abstract class NonNullableColumn<I>(
-    name: String,
     table: AnyTable,
+    name: String,
     valueClass: Class<*>,
     aggregateType: AggregateType?
-) : Column<I>(name, table, valueClass, aggregateType) {
-    abstract val nullable: NullableColumn<I?>
+) : Column<I>(table,name, valueClass, aggregateType) {
+
+    open val nullable: NullableColumn<I?> by lazy {
+        ColumnFactory.nullableColumn(this)
+    }
+
     override fun create(value: I?): ColumnAndValue<I> = NonNullableColumnAndValue(
         this, value ?: throw StatementExecutionException("Value cannot be null in non-null column")
     )
 
-    abstract fun distinct(): NonNullableColumn<I>
-
-    fun of(value: I): ColumnAndValue<I> = create(value)
+    @Suppress("UNCHECKED_CAST")
+    open fun distinct(): NonNullableColumn<I> = ColumnFactory.distinctClone(this) as NonNullableColumn<I>
 
     override fun retrieveValue(
         position: Int,

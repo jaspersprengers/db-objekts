@@ -1,5 +1,6 @@
 package com.dbobjekts.metadata
 
+import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.exception.CodeGenerationException
 import com.dbobjekts.api.exception.StatementExecutionException
 import com.dbobjekts.metadata.column.*
@@ -111,20 +112,55 @@ object ColumnFactory {
 
     @Suppress("UNCHECKED_CAST")
     fun <C : NonNullableColumn<*>> forClass(clz: Class<C>): C =
-         getConstructor(clz).newInstance(table, DUMMY) as C
+         getConstructor(clz).newInstance(table, DUMMY, null) as C
 
 
     @Suppress("UNCHECKED_CAST")
     fun <C : NullableColumn<*>> forClassAsNullable(clz: Class<C>): C =
-        getConstructor(clz).newInstance(table, DUMMY) as C
+        getConstructor(clz).newInstance(table, DUMMY, null) as C
 
+    @Suppress("UNCHECKED_CAST")
+    internal fun <T> nullableColumn(col: NonNullableColumn<T>): NullableColumn<T?> {
+        val clz = col.javaClass
+        val pkg = clz.packageName
+        return createColumnInstance(col, "$pkg.Nullable${clz.simpleName}") as NullableColumn<T?>
+    }
 
+    @Suppress("UNCHECKED_CAST")
+    internal fun <T> distinctClone(col: Column<T>): Column<T?> {
+        val clz = col.javaClass
+        val pkg = clz.packageName
+        return createColumnInstance(col, "$pkg.${clz.simpleName}", AggregateType.DISTINCT) as Column<T?>
+    }
 
+    private fun createColumnInstance(col: AnyColumn, newName: String, aggregateType: AggregateType? = null): Any{
+        try {
+            val nullableClass = Class.forName(newName)
+            try {
+                val constructor = nullableClass.getConstructor(Table::class.java, String::class.java, AggregateType::class.java)
+                try {
+                    return constructor.newInstance(col.table, col.nameInTable, aggregateType ?: col.aggregateType)
+                } catch(e: Exception){
+                    throw CodeGenerationException("Error generating new instance of $newName", e)
+                }
+            } catch (e: Exception){
+                throw CodeGenerationException("Unable to get a suitable constructor for $newName. " +
+                        "Make sure it has a constructor for (table: AnyTable, name: String, aggregateType: AggregateType?) ${col.javaClass}")
+            }
+        } catch (e: Exception){
+            throw CodeGenerationException("Unable to obtain Class reference for $newName. " +
+                    "Make sure a nullable counterpart exists for ${col.javaClass}", e)
+        }
+    }
 
     private fun getConstructor(clz: Class<*>): Constructor<*> {
         return clz.constructors
-            .filter { it.parameterCount == 2 && it.parameters[0].type == Table::class.java && it.parameters[1].type == String::class.java }
-            .firstOrNull() ?: throw CodeGenerationException("Class does not define a constructor with (table: Table, name: String")
+            .filter { it.parameterCount == 3
+                    && it.parameters[0].type == Table::class.java
+                    && it.parameters[1].type == String::class.java
+                    && it.parameters[2].type == AggregateType::class.java
+            }
+            .firstOrNull() ?: throw CodeGenerationException("Class $clz does not define a constructor with (table: Table, name: String, aggregateType: AggregateType")
     }
 
     @Suppress("UNCHECKED_CAST")

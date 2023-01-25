@@ -20,13 +20,13 @@ import java.sql.ResultSet
  */
 abstract class Column<I>(
     /**
-     * The name of this column in the database table
-     */
-    val nameInTable: String,
-    /**
      * Reference to the containing [Table]
      */
     val table: AnyTable,
+    /**
+     * The name of this column in the database table
+     */
+    val nameInTable: String,
     internal val valueClass: Class<*>,
     internal val aggregateType: AggregateType?
 ) : Selectable<I> {
@@ -200,6 +200,10 @@ abstract class Column<I>(
         result = 31 * result + table.hashCode()
         return result
     }
+
+    open internal fun simpleClassName(): String = javaClass.simpleName
+
+    open internal fun qualifiedClassName(): String = javaClass.packageName + "." + javaClass.simpleName
 
     override fun toString() = "${table.tableName}.$nameInTable"
 

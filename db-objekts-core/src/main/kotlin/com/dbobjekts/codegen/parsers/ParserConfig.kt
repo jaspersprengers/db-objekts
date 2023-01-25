@@ -1,5 +1,6 @@
 package com.dbobjekts.codegen.parsers
 
+import com.dbobjekts.api.ColumnTypeMapper
 import com.dbobjekts.api.CustomColumnTypeMapper
 import com.dbobjekts.api.PackageName
 import com.dbobjekts.api.SequenceForPrimaryKeyResolver
@@ -14,7 +15,7 @@ data class ParserConfig(
     val exclusionConfigurer: ExclusionConfigurer,
     val basePackage: PackageName,
     val objectNamingConfigurer: ObjectNamingConfigurer,
-    val customColumnMappers: List<CustomColumnTypeMapper<*>> = listOf(),
+    val customColumnMappers: List<ColumnTypeMapper> = listOf(),
     val sequenceMappers: List<SequenceForPrimaryKeyResolver> = listOf()
 ) {
     companion object {

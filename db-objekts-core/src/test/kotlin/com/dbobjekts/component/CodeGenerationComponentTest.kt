@@ -33,7 +33,7 @@ class CodeGenerationComponentTest {
             .setColumnTypeForNamePattern(columnPattern = "address_string", columnType = AddressTypeAsStringColumn::class.java)
             .setColumnTypeForNamePattern(columnPattern = "address_int", columnType = AddressTypeAsIntegerColumn::class.java)
         generator.configureOutput()
-            .basePackageForSources("com.dbobjekts.testdb.acme")
+            .basePackageForSources("com.dbobjekts.testdb2.acme")
             .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         generator.validateCatalog(CatalogDefinition).assertNoDifferences()
         generator.generateSourceFiles()

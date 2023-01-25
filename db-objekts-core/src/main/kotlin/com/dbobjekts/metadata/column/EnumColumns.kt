@@ -34,35 +34,35 @@ abstract class EnumAsIntColumn<E : Enum<E>>(
     name: String,
     private val enumClass: Class<E>,
     aggregateType: AggregateType?
-) : NonNullableColumn<E>(name, table, enumClass, aggregateType), NumericEnumColumn<E> {
+) : NonNullableColumn<E>(table,name, enumClass, aggregateType), NumericEnumColumn<E> {
     constructor(table: AnyTable, name: String, enumClass: Class<E>) : this(table, name, enumClass, null)
-
-    override fun distinct() =
-        throw DBObjektsException("Missing override for distinct() method in concrete class. You must override it and return a copy of the column with AggregateType.DISTINCT")
 
     override fun getValue(position: Int, resultSet: ResultSet): E? = toEnum(resultSet.getInt(position))
 
     override fun setValue(position: Int, statement: PreparedStatement, value: E) = statement.setInt(position, value.ordinal)
+
+    @Suppress("UNCHECKED_CAST")
+    override fun toEnum(ordinal: Int) = enumClass.enumConstants.filterIsInstance(Enum::class.java).first { it.name == "HOME" } as E
 
 }
 
 /**
  * Abstract [NullableColumn] that converts between instances of a custom Enum and an Int through the Enum's ordinal value.
  */
-abstract class NullableEnumAsIntColumn<E : Enum<E>>(
+open class NullableEnumAsIntColumn<E : Enum<E>>(
     table: AnyTable,
     name: String,
-    enumClass: Class<E>,
+    private val enumClass: Class<E>,
     aggregateType: AggregateType?
-) : NullableColumn<E?>(name, table, Types.VARCHAR, enumClass, aggregateType), NumericEnumColumn<E> {
+) : NullableColumn<E?>(table,name, Types.VARCHAR, enumClass, aggregateType), NumericEnumColumn<E> {
     constructor(table: AnyTable, name: String, enumClass: Class<E>) : this(table, name, enumClass, null)
-
-    override fun distinct() =
-        throw DBObjektsException("Missing override for distinct() method in concrete class. You must override it and return a copy of the column with AggregateType.DISTINCT")
 
     override fun getValue(position: Int, resultSet: ResultSet): E? = toEnum(resultSet.getInt(position))
 
     override fun setValue(position: Int, statement: PreparedStatement, value: E?) = statement.setInt(position, value?.ordinal ?: -1)
+
+    @Suppress("UNCHECKED_CAST")
+    override fun toEnum(ordinal: Int) = enumClass.enumConstants.filterIsInstance(Enum::class.java).first { it.name == "HOME" } as E
 
 }
 
@@ -77,17 +77,17 @@ abstract class NullableEnumAsIntColumn<E : Enum<E>>(
 abstract class EnumAsStringColumn<E : Enum<E>>(
     table: AnyTable,
     name: String,
-    enumClass: Class<E>,
+    private val enumClass: Class<E>,
     aggregateType: AggregateType?
-) : NonNullableColumn<E>(name, table, enumClass, aggregateType), StringEnumColumn<E> {
+) : NonNullableColumn<E>(table,name, enumClass, aggregateType), StringEnumColumn<E> {
     constructor(table: AnyTable, name: String, enumClass: Class<E>) : this(table, name, enumClass, null)
-
-    override fun distinct() =
-        throw DBObjektsException("Missing override for distinct() method in concrete class. You must override it and return a copy of the column with AggregateType.DISTINCT")
 
     override fun getValue(position: Int, resultSet: ResultSet): E? = toEnum(resultSet.getString(position))
 
     override fun setValue(position: Int, statement: PreparedStatement, value: E) = statement.setString(position, value.toString())
+
+    @Suppress("UNCHECKED_CAST")
+    override fun toEnum(value: String) = enumClass.enumConstants.filterIsInstance(Enum::class.java).first { it.name == value } as E
 
 }
 
@@ -98,19 +98,19 @@ abstract class EnumAsStringColumn<E : Enum<E>>(
  *
  * To convert a String to an Enum, you override the toEnum() method
  */
-abstract class NullableEnumAsStringColumn<E : Enum<E>>(
+open class NullableEnumAsStringColumn<E : Enum<E>>(
     table: AnyTable,
     name: String,
-    enumClass: Class<E>,
+    private val enumClass: Class<E>,
     aggregateType: AggregateType?
-) : NullableColumn<E?>(name, table, Types.VARCHAR, enumClass, aggregateType), StringEnumColumn<E> {
+) : NullableColumn<E?>(table,name, Types.VARCHAR, enumClass, aggregateType), StringEnumColumn<E> {
     constructor(table: AnyTable, name: String, enumClass: Class<E>) : this(table, name, enumClass, null)
-
-    override fun distinct() =
-        throw DBObjektsException("Missing override for distinct() method in concrete class. You must override it and return a copy of the column with AggregateType.DISTINCT")
 
     override fun getValue(position: Int, resultSet: ResultSet): E? = resultSet.getString(position)?.let { toEnum(it) }
 
     override fun setValue(position: Int, statement: PreparedStatement, value: E?) = statement.setString(position, value.toString())
+
+    @Suppress("UNCHECKED_CAST")
+    override fun toEnum(value: String): E = enumClass.enumConstants.filterIsInstance(Enum::class.java).first { it.name == value } as E
 
 }

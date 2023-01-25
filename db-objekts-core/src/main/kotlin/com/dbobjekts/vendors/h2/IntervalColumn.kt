@@ -9,7 +9,6 @@ import org.h2.api.Interval
 
 class IntervalColumn(table: AnyTable, name: String) : ObjectColumn<Interval>(table, name, Interval::class.java) {
 
-    override val nullable: NullableColumn<Interval?> = NullableIntervalColumn(table, name)
 }
 
 

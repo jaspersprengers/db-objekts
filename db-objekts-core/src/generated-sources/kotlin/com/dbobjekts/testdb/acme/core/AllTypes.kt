@@ -277,7 +277,7 @@ object AllTypes:Table<AllTypesRow>("ALL_TYPES"), HasUpdateBuilder<AllTypesUpdate
     /**
      * Represents db column CORE.ALL_TYPES.ADDRESS_INT
      */
-    val addressInt = AddressTypeAsIntegerColumn(this, "ADDRESS_INT")
+    val addressInt = AddressTypeAsIntegerColumn(this, "ADDRESS_INT", null)
     /**
      * Represents db column CORE.ALL_TYPES.ADDRESS_INT_NIL
      */
@@ -285,7 +285,7 @@ object AllTypes:Table<AllTypesRow>("ALL_TYPES"), HasUpdateBuilder<AllTypesUpdate
     /**
      * Represents db column CORE.ALL_TYPES.ADDRESS_STRING
      */
-    val addressString = AddressTypeAsStringColumn(this, "ADDRESS_STRING")
+    val addressString = AddressTypeAsStringColumn(this, "ADDRESS_STRING", null)
     /**
      * Represents db column CORE.ALL_TYPES.ADDRESS_STRING_NIL
      */

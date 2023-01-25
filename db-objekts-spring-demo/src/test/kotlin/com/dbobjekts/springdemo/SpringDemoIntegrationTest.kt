@@ -74,7 +74,7 @@ class SpringDemoIntegrationTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = ["SHIPPED,303","CANCELLED,6","ON_HOLD,0","DISPUTED,3"])
+    @CsvSource(value = ["Shipped,303","Resolved,4","On Hold,4","Shipped,303", "In Process,6","Resolved,4"])
     fun `validate orders by size`(status: String, size: Int) {
         val orders = service.getOrdersWithStatus(OrderStatus.valueOf(status))
         Assertions.assertThat(orders.size).isEqualTo(size)

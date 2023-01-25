@@ -16,6 +16,8 @@ class SequenceKeyLongColumn(
 ) : LongColumn(table, name, aggregateType), SequenceKeyColumn<Long> {
     constructor(table: AnyTable, name: String, sequence: String) : this(table, name, sequence, null)
 
+    override val nullable: NullableColumn<Long?> = NullableLongColumn(table, name, aggregateType)
+
     override fun distinct() =
         throw DBObjektsException("distinct() operation is not supported on an auto-generated key, as this is most certainly not what you want. All values will be distinct.")
 
@@ -34,6 +36,8 @@ class SequenceKeyIntegerColumn(
 ) :
     IntegerColumn(table, name, aggregateType), SequenceKeyColumn<Int> {
     constructor(table: AnyTable, name: String, sequence: String) : this(table, name, sequence, null)
+
+    override val nullable: NullableColumn<Int?> = NullableIntegerColumn(table, name, aggregateType)
 
     override fun distinct() =
         throw DBObjektsException("distinct() operation is not supported on an auto-generated key, as this is most certainly not what you want. All values will be distinct.")

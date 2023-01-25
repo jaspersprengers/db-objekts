@@ -26,7 +26,7 @@ class ClassicModelsService(val transactionManager: TransactionManager) : HasAlia
     fun getCustomersWithMinimumOrderCount(minimum: Int): List<Tuple2<CustomersRow, Long>> =
         transactionManager {
             it.select(cu, ord.orderNumber.count())
-                .where(ord.status.eq(OrderStatus.SHIPPED))
+                .where(ord.status.eq(OrderStatus.Shipped))
                 .having(Aggregate.ge(minimum.toLong())).asList()
         }
 

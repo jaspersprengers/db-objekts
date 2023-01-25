@@ -16,12 +16,10 @@ import java.time.LocalTime
  * @param name The column name in the corresponding database table
  */
 class LegacyDateColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NonNullableColumn<Date>(name, table, Date::class.java, aggregateType) {
+    NonNullableColumn<Date>(table,name, Date::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    override fun distinct() = LegacyDateColumn(table, nameInTable, AggregateType.DISTINCT)
-
-    override val nullable: NullableColumn<Date?> = NullableLegacyDateColumn(table, name, aggregateType)
+    //override //override fun distinct() = LegacyDateColumn(table, nameInTable, AggregateType.DISTINCT)
 
     override fun getValue(position: Int, resultSet: ResultSet): Date? = resultSet.getDate(position)
 
@@ -30,10 +28,10 @@ class LegacyDateColumn(table: AnyTable, name: String, aggregateType: AggregateTy
 }
 
 class NullableLegacyDateColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NullableColumn<Date?>(name, table, Types.DATE, Date::class.java, aggregateType) {
+    NullableColumn<Date?>(table,name, Types.DATE, Date::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    override fun distinct() = NullableLegacyDateColumn(table, nameInTable, AggregateType.DISTINCT)
+    //override //override fun distinct() = NullableLegacyDateColumn(table, nameInTable, AggregateType.DISTINCT)
 
     override fun getValue(position: Int, resultSet: ResultSet): Date? = resultSet.getDate(position)
 

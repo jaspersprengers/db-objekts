@@ -11,17 +11,12 @@ import java.sql.Types
  * @param name    The column name in the corresponding database table
  */
 class DoubleColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NonNullableColumn<Double>(name, table, Double::class.java, aggregateType), FloatingPointNumericColumn {
+    NonNullableColumn<Double>(table,name, Double::class.java, aggregateType), FloatingPointNumericColumn by FloatingPointNumericColumnCloner(table, name){
 
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    override fun distinct() = DoubleColumn(table, nameInTable, AggregateType.DISTINCT)
-    override fun sum() = DoubleColumn(table, nameInTable, AggregateType.SUM)
-    override fun avg() = DoubleColumn(table, nameInTable, AggregateType.AVG)
-    override fun min() = DoubleColumn(table, nameInTable, AggregateType.MIN)
-    override fun max() = DoubleColumn(table, nameInTable, AggregateType.MAX)
+    //override //override fun distinct() = DoubleColumn(table, nameInTable, AggregateType.DISTINCT)
 
-    override val nullable: NullableColumn<Double?> = NullableDoubleColumn(table, name, aggregateType)
     override fun getValue(position: Int, resultSet: ResultSet): Double = resultSet.getDouble(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Double) =
@@ -30,14 +25,11 @@ class DoubleColumn(table: AnyTable, name: String, aggregateType: AggregateType?)
 }
 
 class NullableDoubleColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NullableColumn<Double?>(name, table, Types.DOUBLE, Double::class.java, aggregateType), FloatingPointNumericColumn {
+    NullableColumn<Double?>(table,name, Types.DOUBLE, Double::class.java, aggregateType), FloatingPointNumericColumn by FloatingPointNumericColumnCloner(table, name) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    override fun distinct() = NullableDoubleColumn(table, nameInTable, AggregateType.DISTINCT)
-    override fun sum() = DoubleColumn(table, nameInTable, AggregateType.SUM)
-    override fun avg() = DoubleColumn(table, nameInTable, AggregateType.AVG)
-    override fun min() = DoubleColumn(table, nameInTable, AggregateType.MIN)
-    override fun max() = DoubleColumn(table, nameInTable, AggregateType.MAX)
+    //override //override fun distinct() = NullableDoubleColumn(table, nameInTable, AggregateType.DISTINCT)
+
 
     override fun getValue(position: Int, resultSet: ResultSet): Double? = resultSet.getDouble(position)
 

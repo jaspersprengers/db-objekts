@@ -8,12 +8,11 @@ import java.sql.Types
 import java.time.LocalDateTime
 
 class DateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NonNullableColumn<LocalDateTime>(name, table, LocalDateTime::class.java, aggregateType) {
+    NonNullableColumn<LocalDateTime>(table,name, LocalDateTime::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    override fun distinct() = DateTimeColumn(table, nameInTable, AggregateType.DISTINCT)
+    //override //override fun distinct() = DateTimeColumn(table, nameInTable, AggregateType.DISTINCT)
 
-    override val nullable: NullableColumn<LocalDateTime?> = NullableDateTimeColumn(table, name, aggregateType)
     override fun getValue(position: Int, resultSet: ResultSet): LocalDateTime? =
         resultSet.getTimestamp(position)?.let { DateUtil.toLocalDateTime(it) }
 
@@ -22,10 +21,10 @@ class DateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType
 }
 
 class NullableDateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NullableColumn<LocalDateTime?>(name, table, Types.TIMESTAMP, LocalDateTime::class.java, aggregateType) {
+    NullableColumn<LocalDateTime?>(table,name, Types.TIMESTAMP, LocalDateTime::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    override fun distinct() = NullableDateTimeColumn(table, nameInTable, AggregateType.DISTINCT)
+    //override //override fun distinct() = NullableDateTimeColumn(table, nameInTable, AggregateType.DISTINCT)
 
     override fun getValue(position: Int, resultSet: ResultSet): LocalDateTime? =
         resultSet.getTimestamp(position)?.let { DateUtil.toLocalDateTime(it) }

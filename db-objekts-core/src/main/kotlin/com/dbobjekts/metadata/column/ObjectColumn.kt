@@ -12,11 +12,8 @@ abstract class ObjectColumn<E>(
     name: String,
     val clz: Class<*>,
     aggregateType: AggregateType?
-) : NonNullableColumn<E>(name, table, clz, aggregateType) {
+) : NonNullableColumn<E>(table,name, clz, aggregateType) {
     constructor(table: AnyTable, name: String, clz: Class<*>) : this(table, name, clz, null)
-
-    override fun distinct() =
-        throw DBObjektsException("Missing override for distinct() method in concrete class. You must override it and return a copy of the column with AggregateType.DISTINCT")
 
     @Suppress("UNCHECKED_CAST")
     override fun getValue(position: Int, resultSet: ResultSet): E? = resultSet.getObject(position, clz) as E
@@ -30,11 +27,8 @@ abstract class NullableObjectColumn<E>(
     name: String,
     val clz: Class<*>,
     aggregateType: AggregateType?
-) : NullableColumn<E?>(name, table, Types.VARCHAR, clz, aggregateType) {
+) : NullableColumn<E?>(table,name, Types.VARCHAR, clz, aggregateType) {
     constructor(table: AnyTable, name: String, clz: Class<*>) : this(table, name, clz, null)
-
-    override fun distinct() =
-        throw DBObjektsException("Missing override for distinct() method in concrete class. You must override it and return a copy of the column with AggregateType.DISTINCT")
 
     @Suppress("UNCHECKED_CAST")
     override fun getValue(position: Int, resultSet: ResultSet): E? = resultSet.getObject(position, clz) as E

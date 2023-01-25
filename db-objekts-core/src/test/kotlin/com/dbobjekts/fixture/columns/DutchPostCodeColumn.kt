@@ -1,8 +1,6 @@
 package com.dbobjekts.fixture.columns
 
 import com.dbobjekts.api.AnyTable
-import com.dbobjekts.metadata.Table
-import com.dbobjekts.metadata.column.NullableColumn
 import com.dbobjekts.metadata.column.NullableVarcharColumn
 import com.dbobjekts.metadata.column.VarcharColumn
 import java.sql.PreparedStatement
@@ -10,8 +8,6 @@ import java.util.regex.Pattern
 
 
 class DutchPostCodeColumn(table: AnyTable, name: String) : VarcharColumn(table, name) {
-    override val nullable: NullableColumn<String?> = NullableDutchPostCodeColumn(table, name)
-
 
     override fun setValue(position: Int, statement: PreparedStatement, value: String) {
         validate(value)

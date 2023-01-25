@@ -7,15 +7,10 @@ import java.sql.Types
 
 
 open class LongColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NonNullableColumn<Long>(name, table, Long::class.java, aggregateType), IntegerNumericColumn {
+    NonNullableColumn<Long>(table,name, Long::class.java, aggregateType), IntegerNumericColumn by IntegerNumericColumnCloner(table, name){
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    override fun distinct() = LongColumn(table, nameInTable, AggregateType.DISTINCT)
-    override fun sum() = LongColumn(table, nameInTable, AggregateType.SUM)
-    override fun avg() = DoubleColumn(table, nameInTable, AggregateType.AVG)
-    override fun min() = LongColumn(table, nameInTable, AggregateType.MIN)
-    override fun max() = LongColumn(table, nameInTable, AggregateType.MAX)
-    override val nullable: NullableColumn<Long?> = NullableLongColumn(table, name, aggregateType)
+    //override //override fun distinct() = LongColumn(table, nameInTable, AggregateType.DISTINCT)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: Long) = statement.setLong(position, value)
     override fun getValue(position: Int, resultSet: ResultSet): Long = resultSet.getLong(position)
@@ -23,15 +18,12 @@ open class LongColumn(table: AnyTable, name: String, aggregateType: AggregateTyp
 }
 
 open class NullableLongColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NullableColumn<Long?>(name, table, Types.NUMERIC, Long::class.java, aggregateType), IntegerNumericColumn {
+    NullableColumn<Long?>(table,name, Types.NUMERIC, Long::class.java, aggregateType), IntegerNumericColumn by IntegerNumericColumnCloner(table, name){
 
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    override fun distinct() = NullableLongColumn(table, nameInTable, AggregateType.DISTINCT)
-    override fun sum() = LongColumn(table, nameInTable, AggregateType.SUM)
-    override fun avg() = DoubleColumn(table, nameInTable, AggregateType.AVG)
-    override fun min() = LongColumn(table, nameInTable, AggregateType.MIN)
-    override fun max() = LongColumn(table, nameInTable, AggregateType.MAX)
+    //override //override fun distinct() = NullableLongColumn(table, nameInTable, AggregateType.DISTINCT)
+
     override fun setValue(position: Int, statement: PreparedStatement, value: Long?) = statement.setLong(position, value!!)
     override fun getValue(position: Int, resultSet: ResultSet): Long? = resultSet.getLong(position)
 }

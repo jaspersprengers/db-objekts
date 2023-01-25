@@ -13,12 +13,11 @@ import javax.sql.rowset.serial.SerialClob
  * @param name The column name in the corresponding database table
  */
 class ClobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NonNullableColumn<Clob>(name, table, Clob::class.java, aggregateType) {
+    NonNullableColumn<Clob>(table,name, Clob::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    override fun distinct() = ClobColumn(table, nameInTable, AggregateType.DISTINCT)
+    //override //override fun distinct() = ClobColumn(table, nameInTable, AggregateType.DISTINCT)
 
-    override val nullable: NullableColumn<Clob?> = NullableClobColumn(table, name, aggregateType)
     override fun getValue(position: Int, resultSet: ResultSet): Clob? = resultSet.getClob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Clob) =
         statement.setClob(position, value)
@@ -31,10 +30,10 @@ class ClobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
 }
 
 class NullableClobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NullableColumn<Clob?>(name, table, Types.CLOB, Clob::class.java, aggregateType) {
+    NullableColumn<Clob?>(table,name, Types.CLOB, Clob::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    override fun distinct() = NullableClobColumn(table, nameInTable, AggregateType.DISTINCT)
+    //override //override fun distinct() = NullableClobColumn(table, nameInTable, AggregateType.DISTINCT)
 
     override fun getValue(position: Int, resultSet: ResultSet): Clob? = resultSet.getClob(position)
     override fun setValue(position: Int, statement: PreparedStatement, value: Clob?) =

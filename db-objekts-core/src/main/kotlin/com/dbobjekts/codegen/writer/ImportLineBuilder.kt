@@ -2,7 +2,6 @@ package com.dbobjekts.codegen.writer
 
 import com.dbobjekts.api.PackageName
 import com.dbobjekts.api.SchemaName
-import com.dbobjekts.api.TableName
 import com.dbobjekts.codegen.metadata.DBForeignKeyDefinition
 
 internal class ImportLineBuilder(private val basePackage: PackageName) {
@@ -25,8 +24,8 @@ internal class ImportLineBuilder(private val basePackage: PackageName) {
         return this
     }
 
-    fun add(portion: String): ImportLineBuilder {
-        cache.add(portion)
+    fun add(classname: String): ImportLineBuilder {
+        cache.add(classname)
         return this
     }
 

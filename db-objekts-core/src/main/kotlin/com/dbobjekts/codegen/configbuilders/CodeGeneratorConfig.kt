@@ -1,5 +1,6 @@
 package com.dbobjekts.codegen.configbuilders
 
+import com.dbobjekts.api.ColumnTypeMapper
 import com.dbobjekts.api.PackageName
 import com.dbobjekts.api.CustomColumnTypeMapper
 import com.dbobjekts.api.SequenceForPrimaryKeyResolver
@@ -12,7 +13,7 @@ data class CodeGeneratorConfig(
     val exclusionConfigurer: ExclusionConfigurer,
     val basePackage: PackageName,
     val objectNamingConfigurer: ObjectNamingConfigurer,
-    val customColumnMappers: List<CustomColumnTypeMapper<*>> = listOf(),
+    val customColumnMappers: List<ColumnTypeMapper> = listOf(),
     val sequenceResolvers: List<SequenceForPrimaryKeyResolver> = listOf()
 ){
 

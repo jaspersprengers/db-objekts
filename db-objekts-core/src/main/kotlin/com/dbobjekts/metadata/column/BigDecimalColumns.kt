@@ -12,17 +12,16 @@ import java.sql.Types
  * @param name    The column name in the corresponding database table
  */
 class BigDecimalColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NonNullableColumn<BigDecimal>(name, table, BigDecimal::class.java, aggregateType) {
+    NonNullableColumn<BigDecimal>(table,name, BigDecimal::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    override fun distinct() = BigDecimalColumn(table, nameInTable, AggregateType.DISTINCT)
+    //override //override fun distinct() = BigDecimalColumn(table, nameInTable, AggregateType.DISTINCT)
 
     fun sum() = BigDecimalColumn(table, nameInTable, AggregateType.SUM)
     fun avg() = BigDecimalColumn(table, nameInTable, AggregateType.AVG)
     fun min() = BigDecimalColumn(table, nameInTable, AggregateType.MIN)
     fun max() = BigDecimalColumn(table, nameInTable, AggregateType.MAX)
 
-    override val nullable: NullableColumn<BigDecimal?> = NullableBigDecimalColumn(table, name, aggregateType)
     override fun getValue(position: Int, resultSet: ResultSet): BigDecimal = resultSet.getBigDecimal(position)
 
     override fun setValue(position: Int, statement: PreparedStatement, value: BigDecimal) =
@@ -31,10 +30,10 @@ class BigDecimalColumn(table: AnyTable, name: String, aggregateType: AggregateTy
 }
 
 class NullableBigDecimalColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NullableColumn<BigDecimal?>(name, table, Types.NUMERIC, BigDecimal::class.java, aggregateType) {
+    NullableColumn<BigDecimal?>(table,name, Types.NUMERIC, BigDecimal::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
-    override fun distinct() = NullableBigDecimalColumn(table, nameInTable, AggregateType.DISTINCT)
+    //override //override fun distinct() = NullableBigDecimalColumn(table, nameInTable, AggregateType.DISTINCT)
 
     fun sum() = BigDecimalColumn(table, nameInTable, AggregateType.SUM)
     fun avg() = BigDecimalColumn(table, nameInTable, AggregateType.AVG)

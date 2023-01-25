@@ -7,9 +7,6 @@ import com.dbobjekts.metadata.column.ObjectColumn
 import org.postgresql.util.PGInterval
 
 
-class IntervalColumn(table: AnyTable, name: String) : ObjectColumn<PGInterval>(table, name, PGInterval::class.java) {
-
-    override val nullable: NullableColumn<PGInterval?> = NullableIntervalColumn(table, name)
-}
+class IntervalColumn(table: AnyTable, name: String) : ObjectColumn<PGInterval>(table, name, PGInterval::class.java)
 
 class NullableIntervalColumn(table: AnyTable, name: String) : NullableObjectColumn<PGInterval?>(table, name, PGInterval::class.java)

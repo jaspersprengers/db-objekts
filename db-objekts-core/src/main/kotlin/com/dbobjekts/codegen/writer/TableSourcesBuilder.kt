@@ -53,7 +53,7 @@ internal class TableSourcesBuilder(
         importLineBuilder.addImportsForForeignKeys(model.schema, model.foreignKeys())
 
         val columnNames = model.columns.map {
-            importLineBuilder.addClasses(it.column.javaClass)
+            importLineBuilder.add(it.column.qualifiedClassName())
             it.columnName.fieldName
         }.joinToString(",")
 

@@ -16,7 +16,7 @@ class DBForeignKeyDefinition(schema: SchemaName,
 
     val tableAndColumn = "${parentTable.metaDataObjectName}.${parentColumn.fieldName}"
 
-    override fun asFactoryMethod(): String = """${column::class.java.simpleName}(this, "$columnName", $tableAndColumn)"""
+    override fun asFactoryMethod(): String = """${column.simpleClassName()}(this, "$columnName", $tableAndColumn)"""
 
     override fun prettyPrint(): String =
         "     Foreign key column $tableName.$columnName maps to ${fullyQualifiedClassName()}. Parent: $parentSchema.$parentTable.$parentColumn"
