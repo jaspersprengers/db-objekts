@@ -1,6 +1,8 @@
 package com.dbobjekts.metadata.column
 
-
+/**
+ * Optional property of [Column] to indicate whether it is involved in an aggregate operation.
+ */
 enum class AggregateType(val usesGroupBy: Boolean) {
     AVG(true), SUM(true), MIN(true), MAX(true), COUNT(true),
     DISTINCT(false) {

@@ -289,6 +289,12 @@ db-Objekts chooses a suitable implementation of https://github.com/jaspersprenge
 
 Sometimes you want to fine-tune this mapping. For example: in  MySQL a `TINYINT(1)` is mapped to a `Byte` by default, but as it is often used as a boolean value (with 1 or 0), it's more convenient to map it to Boolean. Another scenario is when you create a custom type to represent a String value by a business enum, e.g. your own `AddressType`.
 
+Another common scenario is using a business enum for a limited range of values. The permissible range can be hardcoded in the schema through an enum type, or expressed as a character or integer numeric type, in which case it is mapped to the enum literal name, or its ordinal value, respectively. In this example the `employee_address.kind` column will be mapped to an enum. db-Objekts detects that the underlying column type is varchar, so it will store the values as `HOME` and `WORK`. Had the column been numeric, addressType values would be stored as 0 or 1.
+```kotlin
+generator.configureColumnTypeMapping()
+    .setEnumForColumnName(column = "kind", table = "EMPLOYEE_ADDRESS", enumClass = AddressType::class.java)
+```
+
 While custom mapping are usually optional, sometimes you have to provide one. PostgreSQL, for example, supports enumeration types which are represented in the metadata as `gender` or `payment_type`. Naturally the default mechanism cannot help you out there.
 
 db-Objekts iterates through a list of https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/codegen/datatypemapper/ColumnTypeMapper.kt[ColumnTypeMapper] instances. These receive the metadata for a given column in a  https://github.com/jaspersprengers/db-objekts/blob/main/db-objekts-core/src/main/kotlin/com/dbobjekts/codegen/datatypemapper/ColumnMappingProperties.kt[ColumnMappingProperties] object and match it to an appropriate `Column`, or null if the mapping does not apply.
@@ -983,25 +989,34 @@ And a number of utility columns, most of them abstract, to serve as a basis for 
 |===
 
 ==== Creating an AddressTypeColumn
-Suppose we have a simple `AddressType` enum and we want to use it to read and write values stored in a varchar column.
+Remember the previous example where we mapped an `AddressType` enum to a varchar or numeric column. If you can use the literal values `HOME` and `WORK` in the database, there is no need for customization. Imagine however that the values are stored by their description as `Home address` and `Work address`, and there is a fallback to be used for null results. Now the default behavior won't work.
 
 ```kotlin
-enum class AddressType : Serializable {
-    HOME, WORK
+enum class AddressType(val description: String) : Serializable {
+    UNKNOWN("Unknown"), HOME("Home address"), WORK("Work address");
+    companion object {
+        fun fromDescription(desc: String) = AddressType.values().firstOrNull { it.description == desc }?:throw IllegalArgumentException("Invalid address type: $desc")
+    }
 }
 ```
 
-To make a compliant Column, you need to override `EnumAsStringColumn<AddressType>`. Unless you are absolutely positive that the value can never be null, you need to provide a Nullable counterpart as well:
+To make a compliant Column, you need to override `EnumAsStringColumn<AddressType>`. You need to provide a Nullable counterpart as well:
 ```kotlin
-class AddressTypeAsStringColumn(table: Table, name: String) : EnumAsStringColumn<AddressType>(table, name, AddressType::class.java) {
-    override val nullable = NullableAddressTypeAsStringColumn(table, name)
-    override fun toEnum(name: String): AddressType = AddressType.valueOf(name)
+class AddressTypeAsStringColumn(table: Table, name: String, aggregateType: AggregateType?) : EnumAsStringColumn<AddressType>(table, name, AddressType::class.java, aggregateType) {
+    override fun toEnum(name: String): AddressType = AddressType.fromDescription(value)
 }
-class NullableAddressTypeAsStringColumn(table: Table, name: String) :
-    NullableEnumAsStringColumn<AddressType>(table, name, AddressType::class.java) {
-    override fun toEnum(name: String): AddressType = AddressType.valueOf(name)
+class NullableAddressTypeAsStringColumn(table: Table, name: String, aggregateType: AggregateType?) :
+    NullableEnumAsStringColumn<AddressType>(table, name, AddressType::class.java, aggregateType) {
+
+    override fun setValue(position: Int, statement: PreparedStatement, value: AddressType?) {
+        super.setValue(position, statement, value?:AddressType.UNKNOWN)
+    }
+
+    override fun toEnum(value: String?) = value?.let { AddressType.fromDescription(it) } ?: AddressType.UNKNOWN
 }
 ```
+There is some mandatory boilerplate involved, but it gives you the opportunity for fine-grained handling, like mapping a null value to the `UNKNOWN` literal.
+
 You need to tell `CodeGenerator` where this custom column applies, generate the code, and then you can use it in queries.
 ```kotlin
 generator.configureColumnTypeMapping()

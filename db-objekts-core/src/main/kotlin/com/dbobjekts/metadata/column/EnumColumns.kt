@@ -39,7 +39,7 @@ open class NullableEnumAsIntColumn<E : Enum<E>>(
     override fun setValue(position: Int, statement: PreparedStatement, value: E?) = statement.setInt(position, value?.ordinal ?: -1)
 
     @Suppress("UNCHECKED_CAST")
-    internal fun toEnum(ordinal: Int) = enumClass.enumConstants[ordinal] as E
+    internal fun toEnum(ordinal: Int?): E? = ordinal?.let {  enumClass.enumConstants[it]}
 }
 
 /**
@@ -62,7 +62,7 @@ open class EnumAsStringColumn<E : Enum<E>>(
     override fun setValue(position: Int, statement: PreparedStatement, value: E) = statement.setString(position, value.toString())
 
     @Suppress("UNCHECKED_CAST")
-    internal fun toEnum(value: String) = enumClass.enumConstants.filterIsInstance(Enum::class.java).first { it.name == value } as E
+    open fun toEnum(value: String) = enumClass.enumConstants.filterIsInstance(Enum::class.java).first { it.name == value } as E
 
 }
 
@@ -80,11 +80,11 @@ open class NullableEnumAsStringColumn<E : Enum<E>>(
     aggregateType: AggregateType? = null
 ) : NullableColumn<E?>(table,name, Types.VARCHAR, enumClass, aggregateType), IsEnumColumn{
 
-    override fun getValue(position: Int, resultSet: ResultSet): E? = resultSet.getString(position)?.let { toEnum(it) }
+    override fun getValue(position: Int, resultSet: ResultSet): E? = toEnum(resultSet.getString(position))
 
     override fun setValue(position: Int, statement: PreparedStatement, value: E?) = statement.setString(position, value.toString())
 
     @Suppress("UNCHECKED_CAST")
-    internal fun toEnum(value: String): E = enumClass.enumConstants.filterIsInstance(Enum::class.java).first { it.name == value } as E
+    open fun toEnum(value: String?): E? = enumClass.enumConstants.filterIsInstance(Enum::class.java).first { it.name == value } as E?
 
 }
