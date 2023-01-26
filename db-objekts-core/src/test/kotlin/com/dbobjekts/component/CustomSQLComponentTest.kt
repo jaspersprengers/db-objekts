@@ -1,7 +1,7 @@
 package com.dbobjekts.component
 
 import com.dbobjekts.api.ColumnClasses
-import com.dbobjekts.fixture.columns.NullableAddressTypeAsStringColumn
+import com.dbobjekts.metadata.column.EnumAsStringColumn
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -48,7 +48,7 @@ class CustomSQLComponentTest {
                     """.trimIndent()
             ).withResultTypes()
                 .custom(ColumnClasses.NUMBER_AS_BOOLEAN)
-                .customNil(NullableAddressTypeAsStringColumn::class.java)
+
                 .asList()
             assertThat(rows).hasSize(20)
         })

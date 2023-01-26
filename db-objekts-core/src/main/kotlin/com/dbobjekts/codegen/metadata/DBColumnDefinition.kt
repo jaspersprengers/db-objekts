@@ -10,6 +10,7 @@ open class DBColumnDefinition(
     val columnName: ColumnName,
     val column: AnyColumn,
     val jdbcType: String,
+    val valueType: Class<*>? = null,
     val isSinglePrimaryKey: Boolean = false,
     val isCompositePrimaryKey: Boolean = false,
     val comment: String? = null
@@ -20,7 +21,10 @@ open class DBColumnDefinition(
     /**
      * @return com.dbobjekts.acme.AddressColumn(this, "address")
      */
-    open fun asFactoryMethod(): String = """${column.simpleClassName()}(this, "$columnName")"""
+    open fun asFactoryMethod(): String {
+        val optionalParam = valueType?.let { ", ${it.name}::class.java" } ?: ""
+        return """${column.simpleClassName()}(this, "$columnName"$optionalParam)"""
+    }
 
     override fun fullyQualifiedClassName(): String = packageName.concat(column.simpleClassName()).toString()
 

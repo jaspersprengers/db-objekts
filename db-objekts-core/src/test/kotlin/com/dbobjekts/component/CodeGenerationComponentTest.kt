@@ -3,8 +3,7 @@ package com.dbobjekts.component
 import com.dbobjekts.api.SequenceForPrimaryKeyResolver
 import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
-import com.dbobjekts.fixture.columns.AddressTypeAsIntegerColumn
-import com.dbobjekts.fixture.columns.AddressTypeAsStringColumn
+import com.dbobjekts.fixture.columns.AddressType
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
 import com.dbobjekts.metadata.column.SequenceKeyLongColumn
 import com.dbobjekts.testdb.acme.CatalogDefinition
@@ -29,9 +28,9 @@ class CodeGenerationComponentTest {
 
         generator.configureColumnTypeMapping()
             .setColumnTypeForJDBCType("TINYINT(1)", NumberAsBooleanColumn::class.java)
-            .setColumnTypeForName(table = "EMPLOYEE_ADDRESS", column = "KIND", columnType = AddressTypeAsStringColumn::class.java)
-            .setColumnTypeForNamePattern(columnPattern = "address_string", columnType = AddressTypeAsStringColumn::class.java)
-            .setColumnTypeForNamePattern(columnPattern = "address_int", columnType = AddressTypeAsIntegerColumn::class.java)
+            .setEnumForColumnName(column = "kind", table = "EMPLOYEE_ADDRESS", enumClass = AddressType::class.java)
+            .setEnumForColumnName(column = "address_string", enumClass = AddressType::class.java)
+            .setEnumForColumnName(column = "address_int", enumClass = AddressType::class.java)
         generator.configureOutput()
             .basePackageForSources("com.dbobjekts.testdb.acme")
             .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
@@ -45,14 +44,15 @@ class CodeGenerationComponentTest {
             //add some stuff to the test db that wel will ignore for the code generator
             it.sql("CREATE SCHEMA if not exists trial").execute()
             it.sql("create table trial.emploiee(id BIGINT primary key not null auto_increment)").execute()
-            it.sql("create table trial.adres(id BIGINT primary key not null, adres_id BIGINT not null, foreign key(adres_id) references trial.emploiee(id) )").execute()
+            it.sql("create table trial.adres(id BIGINT primary key not null, adres_id BIGINT not null, foreign key(adres_id) references trial.emploiee(id) )")
+                .execute()
         }
 
         val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
         generator.configureExclusions().ignoreSchemas("core", "hr", "library")
         generator.configureObjectNaming()
-            .setObjectNameForTable("trial","emploiee", "Employee")
-            .setObjectNameForTable("trial","adres", "Address")
+            .setObjectNameForTable("trial", "emploiee", "Employee")
+            .setObjectNameForTable("trial", "adres", "Address")
             .setFieldNameForColumn("trial", "emploiee", "id", "primaryKey")
             .setFieldNameForColumn("trial", "adres", "adres_id", "addressId")
         generator.configureOutput()
@@ -60,8 +60,7 @@ class CodeGenerationComponentTest {
         val def = generator.createCatalogDefinition()
 
 
-
-        val employeeTable = def.findTable("trial", "emploiee")?:throw IllegalStateException("no employee table found")
+        val employeeTable = def.findTable("trial", "emploiee") ?: throw IllegalStateException("no employee table found")
         val employeeId = employeeTable.findPrimaryKey("id") ?: throw IllegalStateException()
 
         val addressId = def.findTable("trial", "adres")?.findForeignKey("adres_id") ?: throw IllegalStateException()
@@ -116,7 +115,7 @@ class CodeGenerationComponentTest {
     @Test
     fun `with duplicate column names`() {
         val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
-        generator.configureObjectNaming().setFieldNameForColumn("core","employee","married","salary")
+        generator.configureObjectNaming().setFieldNameForColumn("core", "employee", "married", "salary")
         generator.configureOutput()
             .basePackageForSources("com.dbobjekts.testdb.acme")
         assertThatThrownBy { generator.createCatalogDefinition() }.hasMessageStartingWith("The following column names are found more than once in table EMPLOYEE")
@@ -125,7 +124,7 @@ class CodeGenerationComponentTest {
     @Test
     fun `with duplicate table names`() {
         val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
-        generator.configureObjectNaming().setObjectNameForTable("core","employee","country")
+        generator.configureObjectNaming().setObjectNameForTable("core", "employee", "country")
         generator.configureOutput()
             .basePackageForSources("com.dbobjekts.testdb.acme")
         assertThatThrownBy { generator.createCatalogDefinition() }.hasMessageStartingWith("The following table names  [Country] are found multiple times across schemas. This is not allowed.")

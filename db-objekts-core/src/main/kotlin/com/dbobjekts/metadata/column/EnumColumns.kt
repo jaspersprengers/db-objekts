@@ -14,7 +14,7 @@ open class EnumAsIntColumn<E : Enum<E>>(
     name: String,
     private val enumClass: Class<E>,
     aggregateType: AggregateType?= null
-) : NonNullableColumn<E>(table,name, enumClass, aggregateType){
+) : NonNullableColumn<E>(table,name, enumClass, aggregateType), IsEnumColumn{
 
     override fun getValue(position: Int, resultSet: ResultSet): E? = toEnum(resultSet.getInt(position))
     override fun setValue(position: Int, statement: PreparedStatement, value: E) = statement.setInt(position, value.ordinal)
@@ -33,7 +33,7 @@ open class NullableEnumAsIntColumn<E : Enum<E>>(
     name: String,
     private val enumClass: Class<E>,
     aggregateType: AggregateType?= null
-) : NullableColumn<E?>(table,name, Types.VARCHAR, enumClass, aggregateType){
+) : NullableColumn<E?>(table,name, Types.VARCHAR, enumClass, aggregateType), IsEnumColumn{
 
     override fun getValue(position: Int, resultSet: ResultSet): E? = toEnum(resultSet.getInt(position))
     override fun setValue(position: Int, statement: PreparedStatement, value: E?) = statement.setInt(position, value?.ordinal ?: -1)
@@ -55,7 +55,7 @@ open class EnumAsStringColumn<E : Enum<E>>(
     name: String,
     private val enumClass: Class<E>,
     aggregateType: AggregateType? = null
-) : NonNullableColumn<E>(table,name, enumClass, aggregateType){
+) : NonNullableColumn<E>(table,name, enumClass, aggregateType), IsEnumColumn{
 
     override fun getValue(position: Int, resultSet: ResultSet): E? = toEnum(resultSet.getString(position))
 
@@ -78,7 +78,7 @@ open class NullableEnumAsStringColumn<E : Enum<E>>(
     name: String,
     private val enumClass: Class<E>,
     aggregateType: AggregateType? = null
-) : NullableColumn<E?>(table,name, Types.VARCHAR, enumClass, aggregateType){
+) : NullableColumn<E?>(table,name, Types.VARCHAR, enumClass, aggregateType), IsEnumColumn{
 
     override fun getValue(position: Int, resultSet: ResultSet): E? = resultSet.getString(position)?.let { toEnum(it) }
 

@@ -21,12 +21,15 @@ class ColumnTypeResolver(
                                tableHasCompositePK : Boolean,
                                props: ColumnMetaData): DBColumnDefinition {
         return mapDataType(ColumnMappingProperties.fromMetaData(schema, tableName, props)).let { colType ->
+            //when present, this will be added as a constructor parameter
+            val explicitValueType = if(colType is IsEnumColumn) colType.valueClass else null
             DBColumnDefinition(
                 schema,
                 tableName,
                 props.columnName,
                 colType,
                 props.columnType,
+                explicitValueType,
                 isSinglePrimaryKey,
                 tableHasCompositePK && props.isPrimaryKey,
                 props.remarks

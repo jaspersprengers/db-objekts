@@ -2,8 +2,8 @@ package com.dbobjekts.testdb.acme.core
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.TableRowData
-import com.dbobjekts.fixture.columns.AddressTypeAsStringColumn
 import com.dbobjekts.metadata.Table
+import com.dbobjekts.metadata.column.EnumAsStringColumn
 import com.dbobjekts.metadata.column.ForeignKeyLongColumn
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
@@ -36,7 +36,7 @@ object EmployeeAddress:Table<EmployeeAddressRow>("EMPLOYEE_ADDRESS"), HasUpdateB
     /**
      * Represents db column CORE.EMPLOYEE_ADDRESS.KIND
      */
-    val kind = AddressTypeAsStringColumn(this, "KIND")
+    val kind = EnumAsStringColumn(this, "KIND", com.dbobjekts.fixture.columns.AddressType::class.java)
     override val columns: List<AnyColumn> = listOf(employeeId,addressId,kind)
     override fun toValue(values: List<Any?>) = EmployeeAddressRow(values[0] as Long,values[1] as Long,values[2] as com.dbobjekts.fixture.columns.AddressType)
     override fun metadata(): WriteQueryAccessors<EmployeeAddressUpdateBuilder, EmployeeAddressInsertBuilder> = WriteQueryAccessors(EmployeeAddressUpdateBuilder(), EmployeeAddressInsertBuilder())

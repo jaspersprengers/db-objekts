@@ -5,14 +5,25 @@ import com.dbobjekts.api.ColumnName
 import com.dbobjekts.api.SchemaName
 import com.dbobjekts.api.TableName
 
-class DBSequenceKeyDefinition(schema: SchemaName,
-                              table: TableName,
-                              name: ColumnName,
-                              val sequence: String,
-                              columnType: AnyColumn,
-                              jdbcType: String,
-                              comment: String? = null)
-   : DBColumnDefinition(schema, table, name, columnType, jdbcType, true, false, comment), DBGeneratedPrimaryKeyDefinition, DBGeneratedPrimaryKey {
+class DBSequenceKeyDefinition(
+    schema: SchemaName,
+    table: TableName,
+    name: ColumnName,
+    val sequence: String,
+    columnType: AnyColumn,
+    jdbcType: String,
+    comment: String? = null
+) : DBColumnDefinition(
+    schema,
+    table,
+    name,
+    columnType,
+    jdbcType = jdbcType,
+    valueType = null,
+    isSinglePrimaryKey = true,
+    isCompositePrimaryKey = false,
+    comment = comment
+), DBGeneratedPrimaryKeyDefinition, DBGeneratedPrimaryKey {
 
     override fun asFactoryMethod(): String = """${column.simpleClassName()}(this, "$columnName", "$sequence")"""
 
