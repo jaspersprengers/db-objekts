@@ -9,8 +9,14 @@ import com.dbobjekts.codegen.metadata.ColumnMetaData
 data class ColumnMappingProperties(val schema: SchemaName,
                                    val table: TableName,
                                    val column: ColumnName,
+                                   /**
+                                    * The JDBC type as returned for the DB's metadata
+                                    */
                                    val jdbcType: String,
-                                   val defaultMappingType: AnyColumn?,
+                                   /**
+                                    * The vendor-specific mapping for the jdbc type
+                                    */
+                                   val vendorDefault: AnyColumn?,
                                    val isNullable: Boolean,
                                    val isPrimaryKey: Boolean) {
 

@@ -17,7 +17,7 @@ class SequenceNameResolverStrategyTest {
         isNullable = true,
         isPrimaryKey = true,
         jdbcType = "VARCHAR",
-        defaultMappingType = null
+        vendorDefault = null
     )
 
     @Test

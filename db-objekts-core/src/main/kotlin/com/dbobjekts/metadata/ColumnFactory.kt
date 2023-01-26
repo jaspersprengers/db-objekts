@@ -112,17 +112,6 @@ object ColumnFactory {
 
     fun xmlColumn(nullable: Boolean = false): Column<out SQLXML?> = if (nullable) SQLXML_NIL else SQLXML
 
-    fun <T : Enum<T>> integerToEnumColumn(enumClass: Class<T>): NonNullableColumn<T> = EnumAsIntColumn(DefaultTable, DUMMY, enumClass)
-    fun <T : Enum<T>> nullableIntegerToEnumColumn(enumClass: Class<T>): NullableColumn<T?> =
-        NullableEnumAsIntColumn(DefaultTable, DUMMY, enumClass)
-
-    fun <T : Enum<T>> varcharToEnumColumn(enumClass: Class<T>): NonNullableColumn<T> =
-        EnumAsStringColumn(DefaultTable, DUMMY, enumClass)
-
-    fun <T : Enum<T>> nullableVarcharToEnumColumn(enumClass: Class<T>): NullableColumn<T?> =
-        NullableEnumAsStringColumn(DefaultTable, DUMMY, enumClass)
-
-
     @Suppress("UNCHECKED_CAST")
     fun <C : NonNullableColumn<*>> forClass(clz: Class<C>): C {
         return getConstructor(clz).newInstance(table, DUMMY, null) as C

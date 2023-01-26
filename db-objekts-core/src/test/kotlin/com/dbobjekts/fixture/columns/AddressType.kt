@@ -21,10 +21,6 @@ class AddressTypeColumn(table: AnyTable, name: String, aggregateType: AggregateT
 
 class NullableAddressTypeColumn(table: AnyTable, name: String, aggregateType: AggregateType? = null) :
     NullableEnumAsStringColumn<AddressType>(table, name, AddressType::class.java, aggregateType) {
-
-    override fun setValue(position: Int, statement: PreparedStatement, value: AddressType?) {
-        super.setValue(position, statement, value?:AddressType.UNKNOWN)
-    }
     override fun toEnum(value: String?) = value?.let { AddressType.fromDescription(it) } ?: AddressType.HOME
 }
 

@@ -19,7 +19,6 @@ class DBForeignKeyDefinition(
     columnName,
     columnType,
     jdbcType,
-    valueType = null,
     isSinglePrimaryKey = false,
     isCompositePrimaryKey = partOfCompositePrimaryKey,
     comment
