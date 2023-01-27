@@ -58,13 +58,13 @@ object Employee:Table<EmployeeRow>("EMPLOYEE"), HasUpdateBuilder<EmployeeUpdateB
      */
     val hobbyId = OptionalForeignKeyVarcharColumn(this, "hobby_id", Hobby.id)
     override val columns: List<AnyColumn> = listOf(id,name,salary,married,dateOfBirth,children,hobbyId)
-    override fun toValue(values: List<Any?>) = EmployeeRow(values[0] as Long,values[1] as String,values[2] as jvm.internal.DoubleCompanionObject,values[3] as Boolean?,values[4] as java.time.LocalDate,values[5] as Int?,values[6] as String?)
+    override fun toValue(values: List<Any?>) = EmployeeRow(values[0] as Long,values[1] as String,values[2] as Double,values[3] as Boolean?,values[4] as java.time.LocalDate,values[5] as Int?,values[6] as String?)
     override fun metadata(): WriteQueryAccessors<EmployeeUpdateBuilder, EmployeeInsertBuilder> = WriteQueryAccessors(EmployeeUpdateBuilder(), EmployeeInsertBuilder())
 }
 
 class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
     fun name(value: String): EmployeeUpdateBuilder = put(Employee.name, value)
-    fun salary(value: jvm.internal.DoubleCompanionObject): EmployeeUpdateBuilder = put(Employee.salary, value)
+    fun salary(value: Double): EmployeeUpdateBuilder = put(Employee.salary, value)
     fun married(value: Boolean?): EmployeeUpdateBuilder = put(Employee.married, value)
     fun dateOfBirth(value: java.time.LocalDate): EmployeeUpdateBuilder = put(Employee.dateOfBirth, value)
     fun children(value: Int?): EmployeeUpdateBuilder = put(Employee.children, value)
@@ -89,13 +89,13 @@ class EmployeeUpdateBuilder() : UpdateBuilderBase(Employee) {
 
 class EmployeeInsertBuilder():InsertBuilderBase(){
     fun name(value: String): EmployeeInsertBuilder = put(Employee.name, value)
-    fun salary(value: jvm.internal.DoubleCompanionObject): EmployeeInsertBuilder = put(Employee.salary, value)
+    fun salary(value: Double): EmployeeInsertBuilder = put(Employee.salary, value)
     fun married(value: Boolean?): EmployeeInsertBuilder = put(Employee.married, value)
     fun dateOfBirth(value: java.time.LocalDate): EmployeeInsertBuilder = put(Employee.dateOfBirth, value)
     fun children(value: Int?): EmployeeInsertBuilder = put(Employee.children, value)
     fun hobbyId(value: String?): EmployeeInsertBuilder = put(Employee.hobbyId, value)
 
-    fun mandatoryColumns(name: String, salary: jvm.internal.DoubleCompanionObject, dateOfBirth: java.time.LocalDate) : EmployeeInsertBuilder {
+    fun mandatoryColumns(name: String, salary: Double, dateOfBirth: java.time.LocalDate) : EmployeeInsertBuilder {
       mandatory(Employee.name, name)
       mandatory(Employee.salary, salary)
       mandatory(Employee.dateOfBirth, dateOfBirth)
@@ -120,7 +120,7 @@ class EmployeeInsertBuilder():InsertBuilderBase(){
 data class EmployeeRow(
 val id: Long = 0,
   val name: String,
-  val salary: jvm.internal.DoubleCompanionObject,
+  val salary: Double,
   val married: Boolean?,
   val dateOfBirth: java.time.LocalDate,
   val children: Int?,

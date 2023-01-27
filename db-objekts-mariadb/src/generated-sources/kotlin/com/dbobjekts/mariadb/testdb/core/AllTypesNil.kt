@@ -170,7 +170,7 @@ object AllTypesNil:Table<AllTypesNilRow>("ALL_TYPES_NIL"), HasUpdateBuilder<AllT
      */
     val uuidCol = NullableUUIDColumn(this, "UUID_COL")
     override val columns: List<AnyColumn> = listOf(id,decimalCol,decCol,numericCol,fixedCol,int1Col,tinyintCol,smallintCol,int2Col,mediumintCol,int3Col,intCol,int4Col,bigintCol,int8Col,floatCol,doubleCol,doublePrecisionCol,bitCol,binaryCol,blobCol,charCol,charByteCol,enumCol,jsonCol,textCol,varcharCol,setCol,dateCol,timeCol,datetimeCol,timestampCol,yearCol,uuidCol)
-    override fun toValue(values: List<Any?>) = AllTypesNilRow(values[0] as Long,values[1] as java.math.BigDecimal?,values[2] as java.math.BigDecimal?,values[3] as java.math.BigDecimal?,values[4] as java.math.BigDecimal?,values[5] as Boolean?,values[6] as Boolean?,values[7] as Int?,values[8] as Int?,values[9] as Int?,values[10] as Int?,values[11] as Long?,values[12] as Long?,values[13] as Long?,values[14] as Long?,values[15] as Float?,values[16] as jvm.internal.DoubleCompanionObject?,values[17] as jvm.internal.DoubleCompanionObject?,values[18] as Boolean?,values[19] as ByteArray?,values[20] as ByteArray?,values[21] as String?,values[22] as ByteArray?,values[23] as String?,values[24] as String?,values[25] as String?,values[26] as String?,values[27] as String?,values[28] as java.time.LocalDate?,values[29] as java.time.LocalTime?,values[30] as java.time.LocalDateTime?,values[31] as java.time.LocalDateTime?,values[32] as Int?,values[33] as java.util.UUID?)
+    override fun toValue(values: List<Any?>) = AllTypesNilRow(values[0] as Long,values[1] as java.math.BigDecimal?,values[2] as java.math.BigDecimal?,values[3] as java.math.BigDecimal?,values[4] as java.math.BigDecimal?,values[5] as Boolean?,values[6] as Boolean?,values[7] as Int?,values[8] as Int?,values[9] as Int?,values[10] as Int?,values[11] as Long?,values[12] as Long?,values[13] as Long?,values[14] as Long?,values[15] as Float?,values[16] as Double?,values[17] as Double?,values[18] as Boolean?,values[19] as ByteArray?,values[20] as ByteArray?,values[21] as String?,values[22] as ByteArray?,values[23] as String?,values[24] as String?,values[25] as String?,values[26] as String?,values[27] as String?,values[28] as java.time.LocalDate?,values[29] as java.time.LocalTime?,values[30] as java.time.LocalDateTime?,values[31] as java.time.LocalDateTime?,values[32] as Int?,values[33] as java.util.UUID?)
     override fun metadata(): WriteQueryAccessors<AllTypesNilUpdateBuilder, AllTypesNilInsertBuilder> = WriteQueryAccessors(AllTypesNilUpdateBuilder(), AllTypesNilInsertBuilder())
 }
 
@@ -190,8 +190,8 @@ class AllTypesNilUpdateBuilder() : UpdateBuilderBase(AllTypesNil) {
     fun bigintCol(value: Long?): AllTypesNilUpdateBuilder = put(AllTypesNil.bigintCol, value)
     fun int8Col(value: Long?): AllTypesNilUpdateBuilder = put(AllTypesNil.int8Col, value)
     fun floatCol(value: Float?): AllTypesNilUpdateBuilder = put(AllTypesNil.floatCol, value)
-    fun doubleCol(value: jvm.internal.DoubleCompanionObject?): AllTypesNilUpdateBuilder = put(AllTypesNil.doubleCol, value)
-    fun doublePrecisionCol(value: jvm.internal.DoubleCompanionObject?): AllTypesNilUpdateBuilder = put(AllTypesNil.doublePrecisionCol, value)
+    fun doubleCol(value: Double?): AllTypesNilUpdateBuilder = put(AllTypesNil.doubleCol, value)
+    fun doublePrecisionCol(value: Double?): AllTypesNilUpdateBuilder = put(AllTypesNil.doublePrecisionCol, value)
     fun bitCol(value: Boolean?): AllTypesNilUpdateBuilder = put(AllTypesNil.bitCol, value)
     fun binaryCol(value: ByteArray?): AllTypesNilUpdateBuilder = put(AllTypesNil.binaryCol, value)
     fun blobCol(value: ByteArray?): AllTypesNilUpdateBuilder = put(AllTypesNil.blobCol, value)
@@ -269,8 +269,8 @@ class AllTypesNilInsertBuilder():InsertBuilderBase(){
     fun bigintCol(value: Long?): AllTypesNilInsertBuilder = put(AllTypesNil.bigintCol, value)
     fun int8Col(value: Long?): AllTypesNilInsertBuilder = put(AllTypesNil.int8Col, value)
     fun floatCol(value: Float?): AllTypesNilInsertBuilder = put(AllTypesNil.floatCol, value)
-    fun doubleCol(value: jvm.internal.DoubleCompanionObject?): AllTypesNilInsertBuilder = put(AllTypesNil.doubleCol, value)
-    fun doublePrecisionCol(value: jvm.internal.DoubleCompanionObject?): AllTypesNilInsertBuilder = put(AllTypesNil.doublePrecisionCol, value)
+    fun doubleCol(value: Double?): AllTypesNilInsertBuilder = put(AllTypesNil.doubleCol, value)
+    fun doublePrecisionCol(value: Double?): AllTypesNilInsertBuilder = put(AllTypesNil.doublePrecisionCol, value)
     fun bitCol(value: Boolean?): AllTypesNilInsertBuilder = put(AllTypesNil.bitCol, value)
     fun binaryCol(value: ByteArray?): AllTypesNilInsertBuilder = put(AllTypesNil.binaryCol, value)
     fun blobCol(value: ByteArray?): AllTypesNilInsertBuilder = put(AllTypesNil.blobCol, value)
@@ -347,8 +347,8 @@ val id: Long = 0,
   val bigintCol: Long?,
   val int8Col: Long?,
   val floatCol: Float?,
-  val doubleCol: jvm.internal.DoubleCompanionObject?,
-  val doublePrecisionCol: jvm.internal.DoubleCompanionObject?,
+  val doubleCol: Double?,
+  val doublePrecisionCol: Double?,
   val bitCol: Boolean?,
   val binaryCol: ByteArray?,
   val blobCol: ByteArray?,
