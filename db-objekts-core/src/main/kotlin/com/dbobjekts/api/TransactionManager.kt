@@ -38,7 +38,7 @@ class TransactionManager private constructor(
     val catalog: Catalog,
     private val customConnectionProvider: ((DataSource) -> Connection)? = null
 ) {
-    private val log = LoggerFactory.getLogger(TransactionManager::class.java)
+    private val log = LoggerFactory.getLogger(TransactionManager.javaClass)
     private val dataSource: DataSourceAdapter
     internal val vendor: Vendor
 

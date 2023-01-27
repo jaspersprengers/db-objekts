@@ -1,13 +1,11 @@
 = Release notes
 
-== Backlog
-
-* Process todos
-*
-
 == 0.4.3-alpha
 * Simplified validation of generated code against an existing schema
 * Added UUID column type for MariaDB
+* Fix when using reserved words for column names
+* Possibility to declare standard enum column mapping on `name()` or `ordinal()` without the need to create a custom type
+* No need to implement `nullable()` for NonNullable columns. Nullable counterpart is obtained through reflection.
 
 == 0.4.2-alpha
 * Minor refactoring and documentation

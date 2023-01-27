@@ -32,7 +32,7 @@ class CodeGenerationComponentTest {
             .setEnumForColumnName(column = "address_string", enumClass = AddressType::class.java)
             .setEnumForColumnName(column = "address_int", enumClass = AddressType::class.java)
         generator.configureOutput()
-            .basePackageForSources("com.dbobjekts.testdb.acme")
+            .basePackageForSources("com.dbobjekts.testdb2.acme")
             .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         generator.validateCatalog(CatalogDefinition).assertNoDifferences()
         generator.generateSourceFiles()
