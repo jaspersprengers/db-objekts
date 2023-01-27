@@ -69,6 +69,21 @@ class CodeGenerationComponentTest {
     }
 
     @Test
+    fun `with reserved schema name`(){
+        val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
+        AcmeDB.transactionManager {
+            it.sql("CREATE SCHEMA if not exists string").execute()
+        }
+        generator.configureExclusions().ignoreSchemas("core", "hr", "library")
+
+        generator.configureOutput()
+            .basePackageForSources("com.dbobjekts.testdb.acme")
+        val def = generator.createCatalogDefinition()
+
+        assertThat(def.findSchema("core")?.schemaName?.).isEqualTo("Core")
+    }
+
+    @Test
     fun `with custom exclusions`() {
         val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
         AcmeDB.transactionManager {
