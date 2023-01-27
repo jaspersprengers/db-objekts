@@ -21,7 +21,6 @@ class TableDetailsSourceBuilderTest {
             ColumnName(colName),
             col,
             jdbcType = "INT",
-            valueType = null,
             isSinglePrimaryKey = false,
             isCompositePrimaryKey = false,
             null

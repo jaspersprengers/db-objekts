@@ -9,6 +9,7 @@ import com.dbobjekts.testdb.acme.hr.Certificate
 import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
@@ -33,7 +34,7 @@ class SelectAggregatesComponentTest {
     @Test
     fun `use aggregate in whereclause fails`() {
         tm {
-            Assertions.assertThatThrownBy { it.select(e.name, e.salary.avg()).where(e.salary.avg().gt(100.0)).asList() }
+            assertThatThrownBy { it.select(e.name, e.salary.avg()).where(e.salary.avg().gt(100.0)).asList() }
                 .hasMessage("Cannot use aggregate method AVG for column SALARY in a whereclause.")
         }
     }
@@ -41,7 +42,7 @@ class SelectAggregatesComponentTest {
     @Test
     fun `use two aggregates columns fails`() {
         tm {
-            Assertions.assertThatThrownBy { it.select(e.name, e.salary.avg(), e.children.sum()).asList() }
+            assertThatThrownBy { it.select(e.name, e.salary.avg(), e.children.sum()).asList() }
                 .hasMessage("You can only use one aggregation type (sum/min/max/avg/count) in a select query, but you used 2")
         }
     }
@@ -49,7 +50,7 @@ class SelectAggregatesComponentTest {
     @Test
     fun `use having clause without an aggregate fails`() {
         tm {
-            Assertions.assertThatThrownBy { it.select(e.name, e.children).having(Aggregate.gt(2)).asList() }
+            assertThatThrownBy { it.select(e.name, e.children).having(Aggregate.gt(2)).asList() }
                 .hasMessage("Use of the 'having' clause requires exactly one column to be designated as an aggregate with sum(), min(), max(), avg(), count() or distinct().")
         }
     }
@@ -82,19 +83,22 @@ class SelectAggregatesComponentTest {
     @Test
     fun `count employees per department`() {
         tm {
-            val highest = it.select(ed.departmentId.count(), Department.name).orderDesc(ed.departmentId).first()
-            assertThat(highest.v1).isEqualTo(5)
-            assertThat(highest.v2).isEqualTo("Information Technology")
+            val (count, name) = it.select(ed.departmentId.count(), Department.name).orderDesc(ed.departmentId).first()
+            assertThat(count).isEqualTo(5)
+            assertThat(name).isEqualTo("Information Technology")
+
+            val itCount = it.select(ed.departmentId.count()).where(Department.name.eq("Information Technology")).first()
+            assertThat(itCount).isEqualTo(5)
         }
     }
 
     @Test
     fun `get department with more than 2 and less than 5 employees `() {
         tm {
-            val highest = it.select(ed.departmentId.count(), Department.name)
+            val (count, name) = it.select(ed.departmentId.count(), Department.name)
                 .having(Aggregate.gt(2).and().lt(5)).first()
-            assertThat(highest.v1).isEqualTo(3)
-            assertThat(highest.v2).isEqualTo("Human Resources")
+            assertThat(count).isEqualTo(3)
+            assertThat(name).isEqualTo("Human Resources")
         }
     }
 
@@ -108,7 +112,7 @@ class SelectAggregatesComponentTest {
             val hobbies = tr.select(e.hobbyId.distinct()).where(e.hobbyId.isNotNull()).asList()
             assertThat(hobbies).containsExactlyInAnyOrder("c", "p", "f")
 
-            Assertions.assertThatThrownBy { tr.select(e.name.distinct()).having(Aggregate.gt(2)).asList() }
+            assertThatThrownBy { tr.select(e.name.distinct()).having(Aggregate.gt(2)).asList() }
         }
 
     }

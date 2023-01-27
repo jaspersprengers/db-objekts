@@ -22,14 +22,12 @@ class ColumnTypeResolver(
                                props: ColumnMetaData): DBColumnDefinition {
         return mapDataType(ColumnMappingProperties.fromMetaData(schema, tableName, props)).let { colType ->
             //when present, this will be added as a constructor parameter
-            val explicitValueType = if(colType is IsEnumColumn) colType.valueClass else null
             DBColumnDefinition(
                 schema,
                 tableName,
                 props.columnName,
                 colType,
                 props.columnType,
-                explicitValueType,
                 isSinglePrimaryKey,
                 tableHasCompositePK && props.isPrimaryKey,
                 props.remarks
@@ -39,7 +37,7 @@ class ColumnTypeResolver(
 
     internal fun mapDataType(props: ColumnMappingProperties): AnyColumn {
         val defaultMapping = defaultMapper.map(props)
-        return getCustomMapping(props.copy(defaultMappingType = defaultMapping))?.let {
+        return getCustomMapping(props.copy(vendorDefault = defaultMapping))?.let {
             logger.debug("Using custom datatype for ${props.schema}.${props.table}.${props.column}")
             it
         } ?: getDefaultMapping(props)

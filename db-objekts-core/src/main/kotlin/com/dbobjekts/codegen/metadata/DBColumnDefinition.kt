@@ -1,6 +1,7 @@
 package com.dbobjekts.codegen.metadata
 
 import com.dbobjekts.api.*
+import com.dbobjekts.metadata.column.IsEnumColumn
 import com.dbobjekts.metadata.column.IsForeignKey
 import com.dbobjekts.metadata.column.SequenceKeyColumn
 
@@ -10,7 +11,6 @@ open class DBColumnDefinition(
     val columnName: ColumnName,
     val column: AnyColumn,
     val jdbcType: String,
-    val valueType: Class<*>? = null,
     val isSinglePrimaryKey: Boolean = false,
     val isCompositePrimaryKey: Boolean = false,
     val comment: String? = null
@@ -22,7 +22,7 @@ open class DBColumnDefinition(
      * @return com.dbobjekts.acme.AddressColumn(this, "address")
      */
     open fun asFactoryMethod(): String {
-        val optionalParam = valueType?.let { ", ${it.name}::class.java" } ?: ""
+        val optionalParam = if ( column is IsEnumColumn) ", ${column.valueClass.name}::class.java" else ""
         return """${column.simpleClassName()}(this, "$columnName"$optionalParam)"""
     }
 

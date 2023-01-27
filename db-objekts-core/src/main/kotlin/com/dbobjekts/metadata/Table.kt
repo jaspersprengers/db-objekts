@@ -25,10 +25,6 @@ abstract class Table<I>(
 
     internal val tableName: TableName = TableName(dbName)
 
-    init {
-        ObjectNameValidator.validate(tableName.value, "Not a valid table name: " + tableName)
-    }
-
     fun leftJoin(table: AnyTable): DerivedJoin = DerivedJoin(this).join(table, JoinType.LEFT)
     fun innerJoin(table: AnyTable): DerivedJoin = DerivedJoin(this).join(table, JoinType.INNER)
     fun rightJoin(table: AnyTable): DerivedJoin = DerivedJoin(this).join(table, JoinType.RIGHT)

@@ -113,13 +113,14 @@ object ColumnFactory {
     fun xmlColumn(nullable: Boolean = false): Column<out SQLXML?> = if (nullable) SQLXML_NIL else SQLXML
 
     @Suppress("UNCHECKED_CAST")
-    fun <C : NonNullableColumn<*>> forClass(clz: Class<C>): C =
-        getConstructor(clz).newInstance(table, DUMMY, null) as C
-
+    fun <C : NonNullableColumn<*>> forClass(clz: Class<C>): C {
+        return getConstructor(clz).newInstance(table, DUMMY, null) as C
+    }
 
     @Suppress("UNCHECKED_CAST")
-    fun <C : NullableColumn<*>> forClassAsNullable(clz: Class<C>): C =
-        getConstructor(clz).newInstance(table, DUMMY, null) as C
+    fun <C : NullableColumn<*>> forClassAsNullable(clz: Class<C>): C {
+        return getConstructor(clz).newInstance(table, DUMMY, null) as C
+    }
 
     @Suppress("UNCHECKED_CAST")
     internal fun <T> nullableColumn(col: NonNullableColumn<T>): NullableColumn<T?> {

@@ -18,10 +18,15 @@ class DBObjectNameBase(val value: String) : DBObjectName {
         if (StringUtil.isCamelCase(value)) StringUtil.initLowerCase(value) else StringUtil.lowerCamel(value)
 }
 
-data class SchemaName(val value: String) : DBObjectName by DBObjectNameBase(value) {
+data class SchemaName(
+    val value: String,
+    private val custom: String? = null
+) : DBObjectName by DBObjectNameBase(value) {
+    val metaDataObjectName: String
+
     init {
         require(value.isNotBlank(), { "Schema name cannot be blank" })
-        ObjectNameValidator.validate(capitalCamelCase(), "$value for schema $value is not a valid identifier.")
+        metaDataObjectName = if (!ObjectNameValidator.validate(capitalCamelCase())) "_${capitalCamelCase()}" else capitalCamelCase()
     }
 
     fun asPackage(): String = value.lowercase()

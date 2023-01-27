@@ -29,15 +29,15 @@ class ColumnTypeMapperForEnum<C : Enum<C>>(
     }
 
     override fun map(properties: ColumnMappingProperties): AnyColumn? {
-        return invoke(properties)?.let {
+        return invoke(properties)?.let {clz ->
             val nullable = properties.isNullable
-            val defaultType: AnyColumn? = properties.defaultMappingType
+            val defaultType: AnyColumn? = properties.vendorDefault
             return if (defaultType == null) null else when {
-                defaultType is IntegerNumericColumn && nullable -> NullableEnumAsIntColumn(DefaultTable, "dummy", enumClass)
-                defaultType is IntegerNumericColumn && !nullable -> EnumAsIntColumn(DefaultTable, "dummy", enumClass)
-                defaultType is IsCharacterColumn && nullable -> NullableEnumAsStringColumn(DefaultTable, "dummy", enumClass)
-                defaultType is IsCharacterColumn && !nullable -> EnumAsStringColumn(DefaultTable, "dummy", enumClass)
-                else -> throw CodeGenerationException("Default column type ${defaultType!!::class.java} is not supported for mapping to an enum. It must be an integer numeric or varchar column.")
+                defaultType is IntegerNumericColumn && nullable -> NullableEnumAsIntColumn(DefaultTable, "dummy", clz)
+                defaultType is IntegerNumericColumn && !nullable -> EnumAsIntColumn(DefaultTable, "dummy", clz)
+                defaultType is IsCharacterColumn && nullable -> NullableEnumAsStringColumn(DefaultTable, "dummy", clz)
+                defaultType is IsCharacterColumn && !nullable -> EnumAsStringColumn(DefaultTable, "dummy", clz)
+                else -> throw CodeGenerationException("Default column type ${defaultType.javaClass} is not supported for mapping to an enum. It must be an integer numeric or varchar column.")
             }
         }
     }

@@ -10,7 +10,7 @@ class SchemaCodeBuilder(val schema: DBSchemaDefinition) {
         strBuilder.append("import com.dbobjekts.metadata.Schema\n")
         val tables = schema.tables.map { it.asClassName() }.joinToString(", ")
         val source = """
-           object ${schema.asClassName()} : Schema("${schema.schemaName.value}", listOf($tables))
+           object ${schema.schemaName.metaDataObjectName} : Schema("${schema.schemaName.value}", listOf($tables))
       """.trimIndent()
         strBuilder.append(source)
         return strBuilder.toString()

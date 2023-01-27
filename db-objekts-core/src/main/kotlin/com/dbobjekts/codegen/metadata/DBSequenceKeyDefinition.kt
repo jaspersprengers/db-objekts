@@ -19,7 +19,6 @@ class DBSequenceKeyDefinition(
     name,
     columnType,
     jdbcType = jdbcType,
-    valueType = null,
     isSinglePrimaryKey = true,
     isCompositePrimaryKey = false,
     comment = comment

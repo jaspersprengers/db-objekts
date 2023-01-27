@@ -1,6 +1,9 @@
 package com.dbobjekts.component
 
 import com.dbobjekts.api.ColumnClasses
+import com.dbobjekts.fixture.columns.AddressType
+import com.dbobjekts.fixture.columns.AddressTypeColumn
+import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.metadata.column.EnumAsStringColumn
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -48,7 +51,7 @@ class CustomSQLComponentTest {
                     """.trimIndent()
             ).withResultTypes()
                 .custom(ColumnClasses.NUMBER_AS_BOOLEAN)
-
+                .custom(AddressTypeColumn::class.java)
                 .asList()
             assertThat(rows).hasSize(20)
         })
