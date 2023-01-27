@@ -11,7 +11,7 @@ class ColumnReflectionTest {
     fun `check presence of nullable counterparts`(){
         fun <T> runChecks(col: NonNullableColumn<T>){
             assertThat(col.nullable).isInstanceOf(NullableColumn::class.java)
-            assertThat(col.distinct()).isInstanceOf(col.javaClass)
+            assertThat(col.distinct()).isInstanceOf(col::class.java)
             assertThat(col.count()).isInstanceOf(LongColumn::class.java)
         }
         runChecks(ColumnFactory.VARCHAR)

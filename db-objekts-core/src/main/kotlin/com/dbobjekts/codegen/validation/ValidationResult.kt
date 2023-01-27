@@ -25,7 +25,7 @@ data class ValidationResult(
     fun assertNoDifferences() {
         if (differences.isNotEmpty()) {
             val builder =
-                StringBuilder("A mismatch was detected between Catalog ${catalog.javaClass.name} and database metamodel ${definition.name}\n\n")
+                StringBuilder("A mismatch was detected between Catalog ${catalog::class.java.name} and database metamodel ${definition.name}\n\n")
             differences.forEach { builder.append(it).append('\n') }
             throw CodeGenerationException(builder.toString())
         }

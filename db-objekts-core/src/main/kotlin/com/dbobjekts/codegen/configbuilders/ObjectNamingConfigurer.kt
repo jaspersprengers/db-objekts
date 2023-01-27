@@ -1,6 +1,7 @@
 package com.dbobjekts.codegen.configbuilders
 
 import com.dbobjekts.api.ColumnName
+import com.dbobjekts.api.SchemaName
 import com.dbobjekts.api.TableName
 import com.dbobjekts.util.ObjectNameValidator
 
@@ -9,6 +10,7 @@ class ObjectNamingConfigurer {
 
     private val columnOverrides = mutableListOf<ColumnOverride>()
     private val tableOverrides = mutableListOf<TableOverride>()
+    private val schemaOverrides = mutableListOf<SchemaOverride>()
 
     internal fun getColumnName(schema: String, table: String, column: String): ColumnName {
         return columnOverrides.firstOrNull {
@@ -29,6 +31,15 @@ class ObjectNamingConfigurer {
             ?.let {
                 TableName(table, it.objectName)
             } ?: TableName(table)
+    }
+
+    internal fun getSchemaName(schema: String): SchemaName {
+        return schemaOverrides.firstOrNull {
+            it.schema.equals(schema, true)
+        }
+            ?.let {
+                SchemaName(schema, it.objectName)
+            } ?: SchemaName(schema)
     }
 
     /**
@@ -61,7 +72,22 @@ class ObjectNamingConfigurer {
         tableOverrides.add(TableOverride(schema, table, objectName))
         return this
     }
+
+    /**
+     * Sets an optional override for the name to be used for a generated Schema metadata object.
+     *
+     * Normally the name is converted to lower case, with underscores converted to camel case.
+     *
+     * @param schema the schema name, e.g. core
+     * @param objectName a valid Java method name, e.g. CoreSchema. Initial character will be upper-cased
+     */
+    fun setObjectNameForSchema(schema: String, objectName: String): ObjectNamingConfigurer {
+        ObjectNameValidator.validate(objectName, "$objectName cannot be used as an override.")
+        schemaOverrides.add(SchemaOverride(schema, objectName))
+        return this
+    }
 }
 
+internal data class SchemaOverride(val schema: String, val objectName: String)
 internal data class ColumnOverride(val schema: String, val table: String, val column: String, val fieldName: String)
 internal data class TableOverride(val schema: String, val table: String, val objectName: String)

@@ -282,7 +282,7 @@ object AllTypesNil:Table<AllTypesNilRow>("all_types_nil"), HasUpdateBuilder<AllT
      */
     val moodCol = NullableVarcharColumn(this, "mood_col")
     override val columns: List<AnyColumn> = listOf(id,bigIntCol,int8Col,bigserialCol,serial8Col,bit4Col,bitVaryingCol,varbitCol,booleanCol,boolCol,boxCol,byteaCol,characterCol,charCol,characterVaryingCol,varcharCol,cidrCol,circleCol,dateCol,doublePrecisionCol,float8Col,inetCol,integerCol,intCol,int4Col,internvalYearCol,jsonCol,jsonBinaryCol,lineCol,lsegCol,macaddressCol,macaddress8Col,moneyCol,numericCol,decimalCol,pathCol,pgLsnCol,pgSnapshotCol,pointCol,polygonCol,realCol,float4Col,smallIntCol,int2Col,smallSerialCol,serial2Col,serialCol,serial4Col,textCol,timeWithoutTzCol,timeWithTzCol,timeTzCol,timestampWihtoutTzCol,timestampWithTzCol,timestampTzCol,tsqueryCol,tsvectorCol,txidSnapshotCol,uuidCol,xmlCol,moodCol)
-    override fun toValue(values: List<Any?>) = AllTypesNilRow(values[0] as Int,values[1] as Long?,values[2] as Long?,values[3] as Long,values[4] as Long,values[5] as Boolean?,values[6] as ByteArray?,values[7] as ByteArray?,values[8] as Boolean?,values[9] as Boolean?,values[10] as String?,values[11] as ByteArray?,values[12] as String?,values[13] as String?,values[14] as String?,values[15] as String?,values[16] as String?,values[17] as String?,values[18] as java.time.LocalDate?,values[19] as Double?,values[20] as Double?,values[21] as String?,values[22] as Int?,values[23] as Int?,values[24] as Int?,values[25] as org.postgresql.util.PGInterval?,values[26] as String?,values[27] as String?,values[28] as String?,values[29] as String?,values[30] as String?,values[31] as String?,values[32] as org.postgresql.util.PGmoney?,values[33] as java.math.BigDecimal?,values[34] as java.math.BigDecimal?,values[35] as String?,values[36] as Long?,values[37] as Long?,values[38] as String?,values[39] as String?,values[40] as Float?,values[41] as Float?,values[42] as Int?,values[43] as Int?,values[44] as Int,values[45] as Int,values[46] as Int,values[47] as Int,values[48] as String?,values[49] as java.time.LocalTime?,values[50] as java.time.LocalTime?,values[51] as java.time.LocalTime?,values[52] as java.time.Instant?,values[53] as java.time.OffsetDateTime?,values[54] as java.time.OffsetDateTime?,values[55] as String?,values[56] as String?,values[57] as Long?,values[58] as String?,values[59] as java.sql.SQLXML?,values[60] as String?)
+    override fun toValue(values: List<Any?>) = AllTypesNilRow(values[0] as Int,values[1] as Long?,values[2] as Long?,values[3] as Long,values[4] as Long,values[5] as Boolean?,values[6] as ByteArray?,values[7] as ByteArray?,values[8] as Boolean?,values[9] as Boolean?,values[10] as String?,values[11] as ByteArray?,values[12] as String?,values[13] as String?,values[14] as String?,values[15] as String?,values[16] as String?,values[17] as String?,values[18] as java.time.LocalDate?,values[19] as jvm.internal.DoubleCompanionObject?,values[20] as jvm.internal.DoubleCompanionObject?,values[21] as String?,values[22] as Int?,values[23] as Int?,values[24] as Int?,values[25] as org.postgresql.util.PGInterval?,values[26] as String?,values[27] as String?,values[28] as String?,values[29] as String?,values[30] as String?,values[31] as String?,values[32] as org.postgresql.util.PGmoney?,values[33] as java.math.BigDecimal?,values[34] as java.math.BigDecimal?,values[35] as String?,values[36] as Long?,values[37] as Long?,values[38] as String?,values[39] as String?,values[40] as Float?,values[41] as Float?,values[42] as Int?,values[43] as Int?,values[44] as Int,values[45] as Int,values[46] as Int,values[47] as Int,values[48] as String?,values[49] as java.time.LocalTime?,values[50] as java.time.LocalTime?,values[51] as java.time.LocalTime?,values[52] as java.time.Instant?,values[53] as java.time.OffsetDateTime?,values[54] as java.time.OffsetDateTime?,values[55] as String?,values[56] as String?,values[57] as Long?,values[58] as String?,values[59] as java.sql.SQLXML?,values[60] as String?)
     override fun metadata(): WriteQueryAccessors<AllTypesNilUpdateBuilder, AllTypesNilInsertBuilder> = WriteQueryAccessors(AllTypesNilUpdateBuilder(), AllTypesNilInsertBuilder())
 }
 
@@ -305,8 +305,8 @@ class AllTypesNilUpdateBuilder() : UpdateBuilderBase(AllTypesNil) {
     fun cidrCol(value: String?): AllTypesNilUpdateBuilder = put(AllTypesNil.cidrCol, value)
     fun circleCol(value: String?): AllTypesNilUpdateBuilder = put(AllTypesNil.circleCol, value)
     fun dateCol(value: java.time.LocalDate?): AllTypesNilUpdateBuilder = put(AllTypesNil.dateCol, value)
-    fun doublePrecisionCol(value: Double?): AllTypesNilUpdateBuilder = put(AllTypesNil.doublePrecisionCol, value)
-    fun float8Col(value: Double?): AllTypesNilUpdateBuilder = put(AllTypesNil.float8Col, value)
+    fun doublePrecisionCol(value: jvm.internal.DoubleCompanionObject?): AllTypesNilUpdateBuilder = put(AllTypesNil.doublePrecisionCol, value)
+    fun float8Col(value: jvm.internal.DoubleCompanionObject?): AllTypesNilUpdateBuilder = put(AllTypesNil.float8Col, value)
     fun inetCol(value: String?): AllTypesNilUpdateBuilder = put(AllTypesNil.inetCol, value)
     fun integerCol(value: Int?): AllTypesNilUpdateBuilder = put(AllTypesNil.integerCol, value)
     fun intCol(value: Int?): AllTypesNilUpdateBuilder = put(AllTypesNil.intCol, value)
@@ -438,8 +438,8 @@ class AllTypesNilInsertBuilder():InsertBuilderBase(){
     fun cidrCol(value: String?): AllTypesNilInsertBuilder = put(AllTypesNil.cidrCol, value)
     fun circleCol(value: String?): AllTypesNilInsertBuilder = put(AllTypesNil.circleCol, value)
     fun dateCol(value: java.time.LocalDate?): AllTypesNilInsertBuilder = put(AllTypesNil.dateCol, value)
-    fun doublePrecisionCol(value: Double?): AllTypesNilInsertBuilder = put(AllTypesNil.doublePrecisionCol, value)
-    fun float8Col(value: Double?): AllTypesNilInsertBuilder = put(AllTypesNil.float8Col, value)
+    fun doublePrecisionCol(value: jvm.internal.DoubleCompanionObject?): AllTypesNilInsertBuilder = put(AllTypesNil.doublePrecisionCol, value)
+    fun float8Col(value: jvm.internal.DoubleCompanionObject?): AllTypesNilInsertBuilder = put(AllTypesNil.float8Col, value)
     fun inetCol(value: String?): AllTypesNilInsertBuilder = put(AllTypesNil.inetCol, value)
     fun integerCol(value: Int?): AllTypesNilInsertBuilder = put(AllTypesNil.integerCol, value)
     fun intCol(value: Int?): AllTypesNilInsertBuilder = put(AllTypesNil.intCol, value)
@@ -580,8 +580,8 @@ val id: Int = 0,
   val cidrCol: String?,
   val circleCol: String?,
   val dateCol: java.time.LocalDate?,
-  val doublePrecisionCol: Double?,
-  val float8Col: Double?,
+  val doublePrecisionCol: jvm.internal.DoubleCompanionObject?,
+  val float8Col: jvm.internal.DoubleCompanionObject?,
   val inetCol: String?,
   val integerCol: Int?,
   val intCol: Int?,

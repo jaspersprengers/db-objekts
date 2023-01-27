@@ -37,7 +37,7 @@ class ColumnTypeMapperForEnum<C : Enum<C>>(
                 defaultType is IntegerNumericColumn && !nullable -> EnumAsIntColumn(DefaultTable, "dummy", clz)
                 defaultType is IsCharacterColumn && nullable -> NullableEnumAsStringColumn(DefaultTable, "dummy", clz)
                 defaultType is IsCharacterColumn && !nullable -> EnumAsStringColumn(DefaultTable, "dummy", clz)
-                else -> throw CodeGenerationException("Default column type ${defaultType.javaClass} is not supported for mapping to an enum. It must be an integer numeric or varchar column.")
+                else -> throw CodeGenerationException("Default column type ${defaultType::class.java} is not supported for mapping to an enum. It must be an integer numeric or varchar column.")
             }
         }
     }

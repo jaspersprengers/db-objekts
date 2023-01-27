@@ -357,13 +357,13 @@ generator.mappingConfigurer()
     }
 ```
 
-==== Overriding default table and column naming
-db-Objekts uses the following rules to convert table and column names to common JVM patterns:
+==== Overriding default schema, table and column naming
+db-Objekts uses the following rules to convert schema, table and column names to common JVM patterns:
 
-* Snake case is converted to camel case: `employee_table` becomes `Employee`
-* Table names are always capitalized: `Employee`
+* Snake case is converted to camel case: `employee_table` becomes `Employee`. `core` becomes `Core`.
+* Schema/table names are always capitalized: `Employee`
 * Column names are always lower camel case: `addressId`
-* Any name that is a reserved Java/Kotlin word (e.g. fun, public, true) is rejected, because generated code would not compile. Since keywords are case-sensitive, `Public` is allowed -- which is a common name for the default schema.
+* Any name that is a reserved Java/Kotlin keyword or platform class (e.g. fun, public, true, String, Boolean) is rejected, because generated code would not compile. Since keywords are case-sensitive, `Public` is allowed -- which is a common name for the default schema.
 * Table names must be unique across schemas.
 
 Because of the last two rules it may be necessary to set an explicit name mapping for a table or column. Another reason could be that the naming scheme in the db is inconsistent or confusing, and you want a clean metamodel. For this purpose there's the  `configureObjectNaming()` option.
@@ -374,7 +374,8 @@ Now you can do `select(Employee.dateOfBirth)` without learning Dutch first.
 
 ```kotlin
 generator.configureObjectNaming()
-    //Sets the name of the Kotlin object
+    //Sets the name of the Kotlin object (why one would ever call a schema 'string' is not the point here)
+    .setObjectNameForSchema(schema = "string", objectName = "StringSchema")
     .setObjectNameForTable(schema = "core",table = "werknemer", objectName = "Employee")
     .setObjectNameForTable("hr","werknemer", "HrEmployee")
     //sets the field name to dateOfBirth in the Employee object

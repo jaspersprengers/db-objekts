@@ -197,13 +197,13 @@ abstract class Column<I>(
         return result
     }
 
-    open internal fun simpleClassName(): String = javaClass.simpleName
+    open internal fun simpleClassName(): String = this::class.java.simpleName
 
-    open internal fun qualifiedClassName(): String = javaClass.packageName + "." + javaClass.simpleName
+    open internal fun qualifiedClassName(): String = this::class.java.packageName + "." + this::class.java.simpleName
 
     override fun toString() = "${table.tableName}.$nameInTable"
 
-    internal fun serialize(): String = "$nameInTable ${javaClass.simpleName}"
+    internal fun serialize(): String = "$nameInTable ${this::class.java.simpleName}"
 
 }
 

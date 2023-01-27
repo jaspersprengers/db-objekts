@@ -11,7 +11,7 @@ import java.sql.Types
  * @param name    The column name in the corresponding database table
  */
 class DoubleColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NonNullableColumn<Double>(table,name, Double.javaClass, aggregateType), FloatingPointNumericColumn by FloatingPointNumericColumnCloner(table, name){
+    NonNullableColumn<Double>(table,name, Double::class.java, aggregateType), FloatingPointNumericColumn by FloatingPointNumericColumnCloner(table, name){
 
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
@@ -23,7 +23,7 @@ class DoubleColumn(table: AnyTable, name: String, aggregateType: AggregateType?)
 }
 
 class NullableDoubleColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
-    NullableColumn<Double?>(table,name, Types.DOUBLE, Double.javaClass, aggregateType), FloatingPointNumericColumn by FloatingPointNumericColumnCloner(table, name) {
+    NullableColumn<Double?>(table,name, Types.DOUBLE, Double::class.java, aggregateType), FloatingPointNumericColumn by FloatingPointNumericColumnCloner(table, name) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
     override fun getValue(position: Int, resultSet: ResultSet): Double? = resultSet.getDouble(position)

@@ -23,7 +23,7 @@ abstract class Table<I>(
 
     private lateinit var schema: Schema
 
-    internal val tableName: TableName = TableName(dbName)
+    internal val tableName: TableName = TableName(dbName, this::class.java.simpleName)
 
     fun leftJoin(table: AnyTable): DerivedJoin = DerivedJoin(this).join(table, JoinType.LEFT)
     fun innerJoin(table: AnyTable): DerivedJoin = DerivedJoin(this).join(table, JoinType.INNER)

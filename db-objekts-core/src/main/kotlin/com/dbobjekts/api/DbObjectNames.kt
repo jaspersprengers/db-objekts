@@ -26,7 +26,11 @@ data class SchemaName(
 
     init {
         require(value.isNotBlank(), { "Schema name cannot be blank" })
-        metaDataObjectName = if (!ObjectNameValidator.validate(capitalCamelCase())) "_${capitalCamelCase()}" else capitalCamelCase()
+        metaDataObjectName = custom?.let {
+            require(it.isNotBlank(), { "Custom schema name cannot be blank" })
+            StringUtil.initUpperCase(it)
+        } ?: capitalCamelCase()
+        ObjectNameValidator.validate(metaDataObjectName, "$metaDataObjectName for schema $value is not a valid identifier.")
     }
 
     fun asPackage(): String = value.lowercase()

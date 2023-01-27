@@ -3,7 +3,8 @@
 == 0.4.3-alpha
 * Simplified validation of generated code against an existing schema
 * Added UUID column type for MariaDB
-* Fix when using reserved words for column names
+* Fixed inappropriate validation of table and column names. Only metadata name should be validated.
+* Added support for custom schema names when the DB name conflicts with a reserved word of platform class, e.g. a schema called String
 * Possibility to declare standard enum column mapping on `name()` or `ordinal()` without the need to create a custom type
 * No need to implement `nullable()` for NonNullable columns. Nullable counterpart is obtained through reflection.
 

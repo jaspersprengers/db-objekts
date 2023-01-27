@@ -32,7 +32,7 @@ class CodeGenerationComponentTest {
             .setEnumForColumnName(column = "address_string", enumClass = AddressType::class.java)
             .setEnumForColumnName(column = "address_int", enumClass = AddressType::class.java)
         generator.configureOutput()
-            .basePackageForSources("com.dbobjekts.testdb2.acme")
+            .basePackageForSources("com.dbobjekts.testdb.acme")
             .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
         generator.validateCatalog(CatalogDefinition).assertNoDifferences()
         generator.generateSourceFiles()
@@ -73,14 +73,15 @@ class CodeGenerationComponentTest {
         val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
         AcmeDB.transactionManager {
             it.sql("CREATE SCHEMA if not exists string").execute()
+            it.sql("CREATE TABLE if not exists string.string(id int null)").execute()
         }
         generator.configureExclusions().ignoreSchemas("core", "hr", "library")
-
+        generator.configureObjectNaming().setObjectNameForSchema("string", "StringSchema")
         generator.configureOutput()
             .basePackageForSources("com.dbobjekts.testdb.acme")
         val def = generator.createCatalogDefinition()
 
-        assertThat(def.findSchema("core")?.schemaName?.).isEqualTo("Core")
+        assertThat(def.findSchema("string")?.schemaName?.metaDataObjectName).isEqualTo("StringSchema")
     }
 
     @Test
@@ -124,7 +125,6 @@ class CodeGenerationComponentTest {
             .hasMessage("true cannot be used as an override. It is a restricted Java/Kotlin keyword.")
         assertThatThrownBy { conf.setObjectNameForTable("core", "employee", "hello world") }
             .hasMessage("hello world cannot be used as an override. It is not a valid Java/Kotlin identifier.")
-
     }
 
     @Test

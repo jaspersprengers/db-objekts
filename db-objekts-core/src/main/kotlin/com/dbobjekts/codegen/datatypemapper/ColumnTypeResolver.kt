@@ -67,7 +67,7 @@ class ColumnTypeResolver(
         defaultMapper.map(props)
             ?: throw CodeGenerationException("""
                 Unable to find matching datatype for column ${props.schema}.${props.table}.${props.column} of type ${props.jdbcType}.
-                There is no custom mapping and nothing in the vendor default ${defaultMapper.javaClass.name}.
+                There is no custom mapping and nothing in the vendor default ${defaultMapper::class.java.name}.
                 You must provide a custom mapping before you can proceed with code generation, as in the following examples:
                  generator.configureColumnTypeMapping()
                     .setColumnTypeForJDBCType("${props.jdbcType}", SomeNonNullableColumn::class.java)

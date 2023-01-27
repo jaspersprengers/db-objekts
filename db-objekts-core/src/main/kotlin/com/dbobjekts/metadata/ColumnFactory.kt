@@ -124,14 +124,14 @@ object ColumnFactory {
 
     @Suppress("UNCHECKED_CAST")
     internal fun <T> nullableColumn(col: NonNullableColumn<T>): NullableColumn<T?> {
-        val clz = col.javaClass
+        val clz = col::class.java
         val pkg = clz.packageName
         return createColumnInstance(col, "$pkg.Nullable${clz.simpleName}") as NullableColumn<T?>
     }
 
     @Suppress("UNCHECKED_CAST")
     internal fun <T> distinctClone(col: Column<T>): Column<T?> {
-        val clz = col.javaClass
+        val clz = col::class.java
         val pkg = clz.packageName
         return createColumnInstance(col, "$pkg.${clz.simpleName}", AggregateType.DISTINCT) as Column<T?>
     }

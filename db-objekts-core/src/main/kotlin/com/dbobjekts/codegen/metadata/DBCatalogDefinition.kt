@@ -37,7 +37,7 @@ data class DBCatalogDefinition(
     fun <T : Column<*>> findColumnsForType(clz: Class<T>): List<String> {
         return schemas.flatMap { s ->
             s.tables.flatMap { t ->
-                t.columns.filter { col -> col.column.javaClass.isAssignableFrom(clz) }
+                t.columns.filter { col -> col.column::class.java.isAssignableFrom(clz) }
                     .map { col -> "${s.schemaName.value}.${t.tableName.value}.${col.columnName.value} ${col.jdbcType}" }
             }
         }

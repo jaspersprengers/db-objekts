@@ -24,6 +24,8 @@ class CatalogParser(
     }
     private val basePackage: PackageName = parserConfig.basePackage
 
+    private val namingConfigurer = parserConfig.objectNamingConfigurer
+
     private val columnTypeResolver: ColumnTypeResolver = ColumnTypeResolver(
         parserConfig.vendor.defaultMapper,
         parserConfig.customColumnMappers,
@@ -35,10 +37,11 @@ class CatalogParser(
         val tableDefinitions = createTableDefinitions(basePackage, tableMetaData)
         val schemas: List<DBSchemaDefinition> = tableDefinitions
             .groupBy { it.schema.value }
-            .map { entry ->
-                val schemaName = SchemaName(entry.key)
+            .map { (schema, definition) ->
+                val schemaName = namingConfigurer.getSchemaName(schema)
                 val packageForSchema = basePackage.createSubPackageForSchema(schemaName)
-                val (excluded, included) = parserConfig.exclusionConfigurer.partition(entry.value)
+                log.info("Parsing schema ${schemaName.value} with class name ${schemaName.metaDataObjectName} in package $packageForSchema")
+                val (excluded, included) = parserConfig.exclusionConfigurer.partition(definition)
                 DBSchemaDefinition(packageForSchema, schemaName, included, excluded)
             }
         return DBCatalogDefinition(basePackage, parserConfig.vendor, schemas, "catalog_definition")
@@ -96,16 +99,15 @@ class CatalogParser(
     }
 
     private fun parseForeignKeyMetaData(metadata: List<ForeignKeyMetaDataRow>): List<ForeignKeyProperties> {
-        val conf = parserConfig.objectNamingConfigurer
         return metadata.map { row ->
-            conf.getColumnName(row.schema, row.table, row.column)
+            namingConfigurer.getColumnName(row.schema, row.table, row.column)
             ForeignKeyProperties(
-                col = conf.getColumnName(row.schema, row.table, row.column),
-                table = conf.getTableName(row.schema, row.table),
-                schema = SchemaName(row.schema),
-                parentSchema = SchemaName(row.refSchema),
-                parentColumn = conf.getColumnName(row.refSchema, row.refTable, row.refColumn),
-                parentTable = conf.getTableName(row.refSchema, row.refTable)
+                col = namingConfigurer.getColumnName(row.schema, row.table, row.column),
+                table = namingConfigurer.getTableName(row.schema, row.table),
+                schema = namingConfigurer.getSchemaName(row.schema),
+                parentSchema = namingConfigurer.getSchemaName(row.refSchema),
+                parentColumn = namingConfigurer.getColumnName(row.refSchema, row.refTable, row.refColumn),
+                parentTable = namingConfigurer.getTableName(row.refSchema, row.refTable)
             )
         }
     }
@@ -118,7 +120,7 @@ class CatalogParser(
         val perTable: Map<String, List<TableMetaDataRow>> = metaData.groupBy({ it.table })
         return perTable.flatMap({ (table, rows) ->
             val cols: List<ColumnMetaData> = rows.map {
-                val columnName = parserConfig.objectNamingConfigurer.getColumnName(it.schema, it.table, it.column)
+                val columnName = namingConfigurer.getColumnName(it.schema, it.table, it.column)
                 ColumnMetaData(
                     columnName = columnName,
                     columnType = it.dataType,
@@ -129,9 +131,10 @@ class CatalogParser(
                 )
             }
             validateNoDuplicateColumnNames(table, cols)
-            val tableName = parserConfig.objectNamingConfigurer.getTableName(schema, table)
+            val tableName = namingConfigurer.getTableName(schema, table)
             val foreignKeys = foreignKeyProperties.filter { it.table.value.equals(table, true) && it.schema.value.equals(schema, true) }
-            val tmd = TableMetaData(schema = SchemaName(schema), tableName = tableName, columns = cols, foreignKeys = foreignKeys)
+            val tmd = TableMetaData(schema = namingConfigurer.getSchemaName(schema),
+                tableName = tableName, columns = cols, foreignKeys = foreignKeys)
             listOf(tmd)
         })
     }
@@ -166,14 +169,14 @@ class CatalogParser(
             log.warn("Found no eligible tables in catalog.")
         }
         val aliasesBuilder = TableAliasesBuilder()
-        tableBuilders.groupBy { it.schema }
+        tableBuilders.groupBy { it.schemaName }
             .forEach { schema, tables ->
                 aliasesBuilder.addSchemaAndTables(schema, tables.map { it.tableName })
             }
         val aliases: TableAliases = aliasesBuilder.build()
         return tableBuilders
             .map { tb ->
-                tb.withAlias(aliases.aliasForSchemaAndTable(tb.schema, tb.tableName)).build()
+                tb.withAlias(aliases.aliasForSchemaAndTable(tb.schemaName, tb.tableName)).build()
             }
     }
 
