@@ -74,14 +74,20 @@ class CodeGenerationComponentTest {
         AcmeDB.transactionManager {
             it.sql("CREATE SCHEMA if not exists string").execute()
             it.sql("CREATE TABLE if not exists string.string(id int null)").execute()
-        }
-        generator.configureExclusions().ignoreSchemas("core", "hr", "library")
-        generator.configureObjectNaming().setObjectNameForSchema("string", "StringSchema")
-        generator.configureOutput()
-            .basePackageForSources("com.dbobjekts.testdb.acme")
-        val def = generator.createCatalogDefinition()
+            generator.configureExclusions().ignoreSchemas("core", "hr", "library")
+            generator.configureObjectNaming()
+                .setObjectNameForSchema("string", "StringSchema")
+                .setObjectNameForTable("string","string", "StringTable")
+            generator.configureOutput()
+                .basePackageForSources("com.dbobjekts.testdb.acme")
+            val def = generator.createCatalogDefinition()
 
-        assertThat(def.findSchema("string")?.schemaName?.metaDataObjectName).isEqualTo("StringSchema")
+            assertThat(def.findSchema("string")?.schemaName?.metaDataObjectName).isEqualTo("StringSchema")
+            assertThat(def.findTable("string", "string")?.tableName?.metaDataObjectName).isEqualTo("StringTable")
+            it.sql("DROP TABLE string.string").execute()
+            it.sql("DROP SCHEMA string").execute()
+        }
+
     }
 
     @Test
