@@ -1,5 +1,6 @@
 package com.dbobjekts.component
 
+import com.dbobjekts.api.PathsUtil
 import com.dbobjekts.api.SequenceForPrimaryKeyResolver
 import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
@@ -33,7 +34,7 @@ class CodeGenerationComponentTest {
             .setEnumForColumnName(column = "address_int", enumClass = AddressType::class.java)
         generator.configureOutput()
             .basePackageForSources("com.dbobjekts.testdb.acme")
-            .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
+            .outputDirectoryForGeneratedSources(PathsUtil.getGeneratedSourcesDirectory())
         generator.validateCatalog(CatalogDefinition).assertNoDifferences()
         generator.generateSourceFiles()
     }

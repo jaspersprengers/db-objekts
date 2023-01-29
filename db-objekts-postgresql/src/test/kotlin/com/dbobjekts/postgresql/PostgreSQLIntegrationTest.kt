@@ -1,5 +1,6 @@
 package com.dbobjekts.postgresql
 
+import com.dbobjekts.api.PathsUtil
 import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.metadata.column.VarcharColumn
@@ -56,7 +57,7 @@ class PostgreSQLIntegrationTest {
         generator.configurePrimaryKeySequences().setSequenceNameForPrimaryKey("core","EMPLOYEE", "id", "EMPLOYEE_SEQ")
         generator.configureOutput()
             .basePackageForSources("com.dbobjekts.postgresql.testdb")
-            .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
+            .outputDirectoryForGeneratedSources(PathsUtil.getGeneratedSourcesDirectory())
         generator.validateCatalog(CatalogDefinition).assertNoDifferences()
         generator.generateSourceFiles()
     }

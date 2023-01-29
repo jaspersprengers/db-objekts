@@ -1,5 +1,6 @@
 package com.dbobjekts.integration.mariadb
 
+import com.dbobjekts.api.PathsUtil
 import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.mariadb.testdb.CatalogDefinition
@@ -57,7 +58,7 @@ class MariaDBIntegrationTest {
         generator.configureColumnTypeMapping().setColumnTypeForJDBCType("TINYINT", NumberAsBooleanColumn::class.java)
         generator.configureOutput()
             .basePackageForSources("com.dbobjekts.mariadb.testdb")
-            .outputDirectoryForGeneratedSources(Paths.get("src/generated-sources/kotlin").toAbsolutePath().toString())
+            .outputDirectoryForGeneratedSources(PathsUtil.getGeneratedSourcesDirectory())
         generator.validateCatalog(CatalogDefinition).assertNoDifferences()
         generator.generateSourceFiles()
     }

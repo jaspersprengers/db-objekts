@@ -60,6 +60,7 @@ object ReservedKeywords {
         "for",
         "fun",
         "if",
+        "it",
         "in",
         "interface",
         "is",

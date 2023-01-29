@@ -39,7 +39,7 @@ class SchemaTest {
     }
 
     @Test
-    fun `Alias for table is e`() {
-        assertEquals("e", Employee.alias())
+    fun `Alias for table is em`() {
+        assertEquals("em", Employee.alias())
     }
 }

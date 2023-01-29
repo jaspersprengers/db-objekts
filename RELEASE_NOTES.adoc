@@ -1,5 +1,8 @@
 = Release notes
 
+== 0.4.4-alpha
+* Aliases generator creates by default two-letter aliases for better usability.
+
 == 0.4.3-alpha
 * Simplified validation of generated code against an existing schema
 * Added UUID column type for MariaDB

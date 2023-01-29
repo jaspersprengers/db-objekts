@@ -30,7 +30,7 @@ class ManualJoinBuilderTest {
             .leftJoin(EmployeeAddress).on(e.id.eq(ea.employeeId))
             .leftJoin(Address).on(a.id.eq(ea.addressId))
             .leftJoin(Country).on(c.id.eq(a.countryId)).toSQL())
-            .isEqualTo("CORE.EMPLOYEE e LEFT JOIN CORE.EMPLOYEE_ADDRESS ea on e.ID = ea.EMPLOYEE_ID LEFT JOIN CORE.ADDRESS a on a.ID = ea.ADDRESS_ID LEFT JOIN CORE.COUNTRY c on c.ID = a.COUNTRY_ID")
+            .isEqualTo("CORE.EMPLOYEE em LEFT JOIN CORE.EMPLOYEE_ADDRESS ea on em.ID = ea.EMPLOYEE_ID LEFT JOIN CORE.ADDRESS ad on ad.ID = ea.ADDRESS_ID LEFT JOIN CORE.COUNTRY co on co.ID = ad.COUNTRY_ID")
     }
 
 }

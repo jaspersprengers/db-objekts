@@ -856,6 +856,22 @@ object Book:Table("BOOK"){
 ```
 All that is needed to create queries is expressed in the column types: how to create primary keys (auto generated, with a sequence, or manually), whether a type is nullable, and the parent table/column for primary keys.
 
+==== The Aliases object
+There is also an `Aliases.kt` file alongside the `CatalogDefinition` that contains unique placeholders for each table across all schemas. This contains an interface and implementation that you can import using delegation. This makes the values available to be used in your queries.
+```kotlin
+class MyRepository : HasAliases by Aliases {
+    [..]
+    tm { val rows = it.select(em.id, ad.name).where(ea.kind.eq(HOME)).asList()}
+}
+```
+Aliases are resolved according to the following rules:
+
+* When the table name is a single word, use the first two letters (unless the table name is only one character); `members` becomes `me`.
+* When the table name resolves to camel case, take the capital letters: `employee_address` becomes `ea`.
+* In case of naming conflicts, an incremental number is added. If we have three tables `member`, `measure` and `member_exemption`, the aliases become `me`, `me1` and `me2`, respectively.
+
+NOTE: Aliases are created for your convenience and not used by the query engine. You may edit the field names to better suit your taste. Move the file out of the generated directory in that case, as it will be overwritten when you run the generator.
+
 [#custom-column-types]
 === Creating custom column types
 db-Objekts lets you customize the way values are read from and written to the database. For this you need to know about the `Column` hierarchy.

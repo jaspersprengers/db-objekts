@@ -4,6 +4,7 @@ import com.dbobjekts.api.SchemaName
 import com.dbobjekts.api.TableName
 import com.dbobjekts.api.exception.CodeGenerationException
 import com.dbobjekts.util.ObjectNameValidator
+import com.dbobjekts.util.StringUtil
 
 class SchemaAndTable(val schema: SchemaName, val table: TableName) : Comparable<SchemaAndTable> {
 
@@ -60,13 +61,18 @@ class TableAliasesBuilder {
     }
 
     private fun createAlias(schemaAndTable: SchemaAndTable): String {
-        val tableAsClassName = schemaAndTable.table.capitalCamelCase()
-        val alias = tableAsClassName.indices
-            .map { Pair(it, tableAsClassName.toCharArray().get(it)) }
-            .filter { it.first == 0 || it.second.isUpperCase() }
-            .map { it.second.toString().lowercase() }
-            .joinToString("")
+        val tableAsClassName = schemaAndTable.table.metaDataObjectName
 
+        val length = tableAsClassName.length
+        val isCamelCase = StringUtil.isCamelCase(tableAsClassName)
+        val alias = when {
+            length <= 2 || !isCamelCase -> tableAsClassName.substring(0, length.coerceAtMost(2)).lowercase()
+            else -> tableAsClassName.mapIndexed { index, character -> Pair(index, character) }
+                .filter { it.first == 0 || it.second.isUpperCase() }
+                .map { it.second.toString().lowercase() }
+                .joinToString("")
+        }
+        println("alias: $alias table name: ${schemaAndTable.table.metaDataObjectName}")
         val ret = if (!ObjectNameValidator.validate(alias) || aliasCache.contains(alias))
             tryWithIncrement(alias, 1) else alias
         aliasCache += ret

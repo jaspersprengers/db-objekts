@@ -36,14 +36,14 @@ class DerivedJoinChainBuilderTest {
 
     @Test
     fun `one table in schema`() {
-        assertChain(DerivedJoinChainBuilder(CatalogDefinition, Employee, listOf(Employee)).build(), "CORE.EMPLOYEE e")
+        assertChain(DerivedJoinChainBuilder(CatalogDefinition, Employee, listOf(Employee)).build(), "CORE.EMPLOYEE em")
     }
 
     @Test
     fun `two joined tables in schema`() {
         assertChain(
             DerivedJoinChainBuilder(CatalogDefinition, Employee, listOf(Employee, Hobby)).build(),
-            "CORE.EMPLOYEE e join HR.HOBBY h on e.HOBBY_ID = h.ID"
+            "CORE.EMPLOYEE em join HR.HOBBY ho on em.HOBBY_ID = ho.ID"
         )
     }
 
@@ -51,7 +51,7 @@ class DerivedJoinChainBuilderTest {
     fun `two joined tables in schema with left join`() {
         assertChain(
             DerivedJoinChainBuilder(CatalogDefinition, Employee, listOf(Employee, Hobby), useOuterJoins = true).build(),
-            "CORE.EMPLOYEE e left join HR.HOBBY h on e.HOBBY_ID = h.ID"
+            "CORE.EMPLOYEE em left join HR.HOBBY ho on em.HOBBY_ID = ho.ID"
         )
     }
 
@@ -59,7 +59,7 @@ class DerivedJoinChainBuilderTest {
     fun `two tables joined through n-m table`() {
         assertChain(
             DerivedJoinChainBuilder(CatalogDefinition, Employee, listOf(Employee, Address, Hobby), useOuterJoins = true).build(),
-            "CORE.EMPLOYEE e left join CORE.EMPLOYEE_ADDRESS ea on e.ID = ea.EMPLOYEE_ID left join HR.HOBBY h on e.HOBBY_ID = h.ID left join CORE.ADDRESS a on ea.ADDRESS_ID = a.ID"
+            "CORE.EMPLOYEE em left join CORE.EMPLOYEE_ADDRESS ea on em.ID = ea.EMPLOYEE_ID left join HR.HOBBY ho on em.HOBBY_ID = ho.ID left join CORE.ADDRESS ad on ea.ADDRESS_ID = ad.ID"
         )
     }
 

@@ -31,23 +31,23 @@ import com.dbobjekts.testdb.acme.library.Member
  *```
  */        
 object Aliases : HasAliases {
-    override val a = Address
+    override val ad = Address
     override val at = AllTypes
-    override val c = Country
-    override val d = Department
-    override val e = Employee
+    override val co = Country
+    override val de = Department
+    override val em = Employee
     override val ea = EmployeeAddress
     override val ed = EmployeeDepartment
-    override val c1 = Certificate
-    override val h = Hobby
-    override val a1 = Author
-    override val b = Book
+    override val ce = Certificate
+    override val ho = Hobby
+    override val au = Author
+    override val bo = Book
     override val br = BookReview
-    override val c2 = Composite
+    override val co1 = Composite
     override val cfk = CompositeForeignKey
-    override val i = Item
-    override val l = Loan
-    override val m = Member
+    override val it1 = Item
+    override val lo = Loan
+    override val me = Member
 }
 
 /**  
@@ -67,22 +67,22 @@ object Aliases : HasAliases {
  *```
  */ 
 interface HasAliases {
-    val a : Address
+    val ad : Address
     val at : AllTypes
-    val c : Country
-    val d : Department
-    val e : Employee
+    val co : Country
+    val de : Department
+    val em : Employee
     val ea : EmployeeAddress
     val ed : EmployeeDepartment
-    val c1 : Certificate
-    val h : Hobby
-    val a1 : Author
-    val b : Book
+    val ce : Certificate
+    val ho : Hobby
+    val au : Author
+    val bo : Book
     val br : BookReview
-    val c2 : Composite
+    val co1 : Composite
     val cfk : CompositeForeignKey
-    val i : Item
-    val l : Loan
-    val m : Member
+    val it1 : Item
+    val lo : Loan
+    val me : Member
 }
      

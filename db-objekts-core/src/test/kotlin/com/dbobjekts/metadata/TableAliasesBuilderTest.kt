@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test
 class TableAliasesBuilderTest {
 
     val s1 = Schema("s1", listOf(Members, Address, MemberAddress))
-    val s2 = Schema("s2", listOf(Members2, Address2))
+    val s2 = Schema("s2", listOf(Members2, Address2, AddressDomain))
     val s3 = Schema("s3", listOf(AssetSize, AddressSign, FirstUnitName))
     val c = Catalog(1, "vendor", listOf(s1, s2, s3))
 
@@ -35,15 +35,15 @@ class TableAliasesBuilderTest {
     @Test
     fun `three tables names, no conflicts`() {
         fun myAssert(tbl: String, alias: String) = doAssert(listOf("members", "address", "member_address"), tbl, alias)
-        myAssert("members", "m")
-        myAssert("address", "a")
+        myAssert("members", "me")
+        myAssert("address", "ad")
         myAssert("member_address", "ma")
     }
 
     @Test
     fun `three tables, no conflicts`() {
-        assertEquals("m", Members.alias())
-        assertEquals("a", Address.alias())
+        assertEquals("me", Members.alias())
+        assertEquals("ad", Address.alias())
         assertEquals("ma", MemberAddress.alias())
     }
 
@@ -66,10 +66,11 @@ class TableAliasesBuilderTest {
 
     @Test
     fun `two tables with same names in different schemas`() {
-        assertEquals("m", Members.alias())
-        assertEquals("a", Address.alias())
-        assertEquals("m1", Members2.alias())
-        assertEquals("a1", Address2.alias())
+        assertEquals("me", Members.alias())
+        assertEquals("ad", Address.alias())
+        assertEquals("me1", Members2.alias())
+        assertEquals("ad1", Address2.alias())
+        assertEquals("ad2", AddressDomain.alias())
     }
 
     @Test
@@ -100,6 +101,11 @@ class TableAliasesBuilderTest {
     }
 
     object Address2 : Table<String>("address") {
+        override val columns = listOf<AnyColumn>()
+        override fun toValue(values: List<Any?>): String = ""
+    }
+
+    object AddressDomain : Table<String>("address_domain") {
         override val columns = listOf<AnyColumn>()
         override fun toValue(values: List<Any?>): String = ""
     }

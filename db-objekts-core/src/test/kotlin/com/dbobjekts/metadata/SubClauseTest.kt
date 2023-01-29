@@ -17,6 +17,6 @@ class SubClauseTest {
     @Test
     fun `create sub clause with column`(){
         val clause = Employee.name.eq(Hobby.name)
-        assertThat(SubClause.toSQL(clause, SQLOptions(true))).isEqualTo("e.NAME = h.NAME")
+        assertThat(SubClause.toSQL(clause, SQLOptions(true))).isEqualTo("em.NAME = ho.NAME")
     }
 }
