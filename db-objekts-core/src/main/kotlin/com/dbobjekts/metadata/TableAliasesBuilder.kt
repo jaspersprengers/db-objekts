@@ -72,7 +72,6 @@ class TableAliasesBuilder {
                 .map { it.second.toString().lowercase() }
                 .joinToString("")
         }
-        println("alias: $alias table name: ${schemaAndTable.table.metaDataObjectName}")
         val ret = if (!ObjectNameValidator.validate(alias) || aliasCache.contains(alias))
             tryWithIncrement(alias, 1) else alias
         aliasCache += ret

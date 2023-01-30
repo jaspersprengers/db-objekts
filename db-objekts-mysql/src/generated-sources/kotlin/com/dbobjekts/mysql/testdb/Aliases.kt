@@ -31,23 +31,23 @@ import com.dbobjekts.mysql.testdb.hr.Hobby
  *```
  */        
 object Aliases : HasAliases {
-    override val c = Customers
-    override val e = Employees
-    override val o = Offices
-    override val o1 = Orderdetails
-    override val o2 = Orders
-    override val p = Payments
-    override val p1 = Productlines
-    override val p2 = Products
-    override val a = Address
+    override val cu = Customers
+    override val em = Employees
+    override val of = Offices
+    override val or = Orderdetails
+    override val or1 = Orders
+    override val pa = Payments
+    override val pr = Productlines
+    override val pr1 = Products
+    override val ad = Address
     override val atn = AllTypesNil
-    override val c1 = Country
-    override val d = Department
-    override val e1 = Employee
+    override val co = Country
+    override val de = Department
+    override val em1 = Employee
     override val ea = EmployeeAddress
     override val ed = EmployeeDepartment
-    override val c2 = Certificate
-    override val h = Hobby
+    override val ce = Certificate
+    override val ho = Hobby
 }
 
 /**  
@@ -67,22 +67,22 @@ object Aliases : HasAliases {
  *```
  */ 
 interface HasAliases {
-    val c : Customers
-    val e : Employees
-    val o : Offices
-    val o1 : Orderdetails
-    val o2 : Orders
-    val p : Payments
-    val p1 : Productlines
-    val p2 : Products
-    val a : Address
+    val cu : Customers
+    val em : Employees
+    val of : Offices
+    val or : Orderdetails
+    val or1 : Orders
+    val pa : Payments
+    val pr : Productlines
+    val pr1 : Products
+    val ad : Address
     val atn : AllTypesNil
-    val c1 : Country
-    val d : Department
-    val e1 : Employee
+    val co : Country
+    val de : Department
+    val em1 : Employee
     val ea : EmployeeAddress
     val ed : EmployeeDepartment
-    val c2 : Certificate
-    val h : Hobby
+    val ce : Certificate
+    val ho : Hobby
 }
      
