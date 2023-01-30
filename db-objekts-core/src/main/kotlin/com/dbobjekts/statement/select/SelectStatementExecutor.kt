@@ -2,6 +2,7 @@ package com.dbobjekts.statement.select
 
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.ResultRow
+import com.dbobjekts.api.SortOrder
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Selectable
@@ -54,7 +55,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
     }
 
     /**
-     * Limits the number of rows fetched by adding a LIMIT clause to the sql statement.
+     * Limits the number of rows fetched by adding a vendor-specific clause to the sql statement.
      * @param the maximum number of rows to be returned
      */
     fun limit(maxRows: Int): SelectStatementExecutor<T, RSB> {
@@ -62,10 +63,23 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         return this
     }
 
-    private fun addOrderByClause(column: AnyColumn, ascending: Boolean) {
+    private fun addOrderByClause(column: AnyColumn, sortOrder: SortOrder) {
         val sameAsAggregate =
             columns.firstOrNull { it.aggregateType != null && it.tableDotName == column.tableDotName }
-        orderByClauses.add(OrderByClause(sameAsAggregate ?: column, ascending))
+        orderByClauses.add(OrderByClause(sameAsAggregate ?: column, sortOrder))
+    }
+
+    /**
+     * Sorts results based on the direction (ASC/DESC) the columns provided. Sorting is done in the where clause through an ORDER BY clause
+     * Can be combined with [orderAsc] or  [orderDesc]
+     * Example:
+     * ```kotlin
+     *  transaction.select(Employee.name).order(SortOrder.ASC, Employee.married, Employee.name)
+     * ```
+     */
+    fun order(sortOrder: SortOrder, vararg columns: AnyColumn): SelectStatementExecutor<T, RSB> {
+        columns.forEach { addOrderByClause(it, sortOrder) }
+        return this
     }
 
     /**
@@ -78,7 +92,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
      *
      */
     fun orderAsc(vararg columns: AnyColumn): SelectStatementExecutor<T, RSB> {
-        columns.forEach { addOrderByClause(it, ascending = true) }
+        columns.forEach { addOrderByClause(it, SortOrder.ASC) }
         return this
     }
 
@@ -92,7 +106,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
      *
      */
     fun orderDesc(vararg columns: AnyColumn): SelectStatementExecutor<T, RSB> {
-        columns.forEach { addOrderByClause(it, ascending = false) }
+        columns.forEach { addOrderByClause(it, SortOrder.DESC) }
         return this
     }
 
@@ -158,7 +172,37 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
      *
      * This can be useful for huge result sets that would run into memory problems when fetched at once into a list.
      */
+    @Deprecated("Use forEachRow with a BiPredicate")
     fun forEachRow(currentRow: (T) -> Boolean) {
+        val sql = toSQL()
+        val params = getWhereClause().getParameters()
+        semaphore.clear();
+        val iteratorFct: (Int, T) -> Boolean = { rowNum, row ->
+            currentRow.invoke(row)
+        }
+
+        connection.prepareAndExecuteForSelectWithRowIterator<T, RSB>(
+            sql,
+            params,
+            columnsToFetch(),
+            selectResultSet,
+            iteratorFct
+        )
+    }
+
+    /**
+     * Executes the select query and lets you step through the results with a custom function that receives the current row data
+     * and returns a Boolean to indicate whether to proceed or not. Example:
+     * ```kotlin
+     *     transaction.select(e.name).forEachRow({ rowNumber, row ->
+     *        buffer.add(row)
+     *        !buffer.memoryFull()
+     *     })
+     *  ```
+     *
+     * This can be useful for huge result sets that would run into memory problems when fetched at once into a list.
+     */
+    fun forEachRow(currentRow: (Int, T) -> Boolean) {
         val sql = toSQL()
         val params = getWhereClause().getParameters()
         semaphore.clear();

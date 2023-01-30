@@ -10,11 +10,13 @@ class JDBCResultSetAdapter(
     val resultSet: ResultSet
 ) {
 
-    fun <T, RS : ResultRow<T>> retrieveWithIterator(selectResultSet: RS, mapper: (T) -> Boolean) {
+    fun <T, RS : ResultRow<T>> retrieveWithIterator(selectResultSet: RS, mapper: (Int, T) -> Boolean) {
+        var rowNumber = 0
         while (advanceResultSet()) {
+            rowNumber += 1
             val proceed = selectResultSet.extractRow(resultSetColumns, resultSet).let { row ->
                 try {
-                    mapper.invoke(row)
+                    mapper.invoke(rowNumber, row)
                 } catch (e: Exception) {
                     false
                 }

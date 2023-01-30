@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import com.dbobjekts.testdb.acme.core.*
 import com.dbobjekts.testdb.acme.hr.Certificate
+import org.assertj.core.api.Assertions.assertThatThrownBy
 
 class SelectStatementComponentTest : HasAliases by Aliases {
 
@@ -67,7 +68,7 @@ class SelectStatementComponentTest : HasAliases by Aliases {
     @Test
     fun `do not use default value for null result in non-nullable column throws`() {
         tm({
-            Assertions.assertThatThrownBy { it.select(em.name, ho.name).where(em.name.eq("Bob")).useOuterJoins().firstOrNull() }
+            assertThatThrownBy { it.select(em.name, ho.name).where(em.name.eq("Bob")).useOuterJoins().firstOrNull() }
         })
     }
 
@@ -85,10 +86,10 @@ class SelectStatementComponentTest : HasAliases by Aliases {
     fun `test select two rows with custom mapper`() {
         tm({
             val buffer = mutableListOf<String?>()
-            it.select(em.name).where(em.id.lt(11)).orderAsc(em.name).forEachRow({ row ->
+            it.select(em.name).where(em.id.lt(11)).orderAsc(em.name).forEachRow({ num, row ->
                 buffer.add(row)
                 //there are three rows in the resultset, but we stop fetching after two
-                buffer.size != 2
+                num != 2
             })
             assertThat(buffer.size).isEqualTo(2)
             assertThat(buffer[0]).isEqualTo("Alice")

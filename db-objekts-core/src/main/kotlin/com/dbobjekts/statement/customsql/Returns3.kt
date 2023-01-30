@@ -196,7 +196,7 @@ class Returns3<T1, T2, T3>(
      *
      * This can be useful for huge result sets that would run into memory problems when fetched at once into a list.
      */
-    fun forEachRow(mapper: (Tuple3<T1, T2, T3>) -> Boolean) {
+    fun forEachRow(mapper: (Int, Tuple3<T1, T2, T3>) -> Boolean) {
         semaphore.clear()
         return execute().forEachRow(mapper)
     }

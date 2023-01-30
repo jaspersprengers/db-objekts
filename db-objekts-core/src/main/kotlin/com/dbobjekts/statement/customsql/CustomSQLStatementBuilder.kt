@@ -248,7 +248,7 @@ class Returns1<T1>(
      *
      * This can be useful for huge result sets that would run into memory problems when fetched at once into a list.
      */
-    fun forEachRow(mapper: (T1) -> Boolean) {
+    fun forEachRow(mapper: (Int, T1) -> Boolean) {
         semaphore.clear()
         return execute().forEachRow(mapper)
     }

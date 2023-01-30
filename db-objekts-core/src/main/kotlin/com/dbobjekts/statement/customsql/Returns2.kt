@@ -196,7 +196,7 @@ class Returns2<T1, T2>(
      *
      * This can be useful for huge result sets that would run into memory problems when fetched at once into a list.
      */
-    fun forEachRow(mapper: (Tuple2<T1, T2>) -> Boolean) {
+    fun forEachRow(mapper: (Int, Tuple2<T1, T2>) -> Boolean) {
         semaphore.clear()
         return execute().forEachRow(mapper)
     }

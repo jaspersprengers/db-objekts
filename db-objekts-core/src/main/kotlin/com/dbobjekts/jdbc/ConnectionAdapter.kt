@@ -68,7 +68,7 @@ data class ConnectionAdapter(
         parameters: List<AnySqlParameter>,
         columnsToFetch: List<ColumnInResultRow>,
         selectResultSet: RS,
-        iteratorFunction: (T) -> Boolean
+        iteratorFunction: (Int, T) -> Boolean
     ) {
         val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters))
         selectResultSet.initialize(resultSetAdapter)

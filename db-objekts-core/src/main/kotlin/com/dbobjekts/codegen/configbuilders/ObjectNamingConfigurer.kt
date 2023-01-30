@@ -53,7 +53,7 @@ class ObjectNamingConfigurer {
      * @param fieldName a valid Java method name, e.g. dateOfBirth. Initial character will be lower-cased
      */
     fun setFieldNameForColumn(schema: String, table: String, column: String, fieldName: String): ObjectNamingConfigurer {
-        ObjectNameValidator.validate(fieldName, "$fieldName cannot be used as an override.")
+        ObjectNameValidator.validate(fieldName, "$fieldName cannot be used as an override for column '$schema.$table.$column'.")
         columnOverrides.add(ColumnOverride(schema, table, column, fieldName))
         return this
     }
@@ -68,7 +68,7 @@ class ObjectNamingConfigurer {
      * @param objectName a valid Java method name, e.g. Employee. Initial character will be upper-cased
      */
     fun setObjectNameForTable(schema: String, table: String, objectName: String): ObjectNamingConfigurer {
-        ObjectNameValidator.validate(objectName, "$objectName cannot be used as an override.")
+        ObjectNameValidator.validate(objectName, "$objectName cannot be used as an override for table '$schema.$table'.")
         tableOverrides.add(TableOverride(schema, table, objectName))
         return this
     }
@@ -82,7 +82,7 @@ class ObjectNamingConfigurer {
      * @param objectName a valid Java method name, e.g. CoreSchema. Initial character will be upper-cased
      */
     fun setObjectNameForSchema(schema: String, objectName: String): ObjectNamingConfigurer {
-        ObjectNameValidator.validate(objectName, "$objectName cannot be used as an override.")
+        ObjectNameValidator.validate(objectName, "$objectName cannot be used as an override for schema '$schema'.")
         schemaOverrides.add(SchemaOverride(schema, objectName))
         return this
     }

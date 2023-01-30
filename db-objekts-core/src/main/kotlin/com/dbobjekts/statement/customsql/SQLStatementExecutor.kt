@@ -53,18 +53,18 @@ open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
     fun asList(): List<T> = executeForSelect().asList().also { semaphore.clear() }
 
     /**
-     * Executes the select query and lets you step through the results with a custom function that receives the current row data
+     * Executes the select query and lets you step through the results with a custom function that receives the current row number (one -based) and data
      * and returns a Boolean to indicate whether to proceed or not. Example:
      * ```kotlin
      * transaction.sql("select").withResultTypes().long().string()
-     *     .forEachRow { row: Tuple2<Long, String> ->
+     *     .forEachRow { rowNumber, row: Tuple2<Long, String> ->
      *          buffer.add(row)
      *          !buffer.memoryFull() }
      *  ```
      *
      * This can be useful for huge result sets that would run into memory problems when fetched at once into a list.
      */
-    fun forEachRow(mapper: (T) -> Boolean) {
+    fun forEachRow(mapper: (Int, T) -> Boolean) {
         semaphore.clear()
         connection.prepareAndExecuteForSelectWithRowIterator<T, RSB>(
             sql,
