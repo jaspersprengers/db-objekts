@@ -25,17 +25,17 @@ import com.dbobjekts.postgresql.testdb.hr.Hobby
  *```
  */        
 object Aliases : HasAliases {
-    override val a = Address
+    override val ad = Address
     override val atn = AllTypesNil
-    override val c = Composite
+    override val co = Composite
     override val cfk = CompositeForeignKey
-    override val c1 = Country
-    override val d = Department
-    override val e = Employee
+    override val co1 = Country
+    override val de = Department
+    override val em = Employee
     override val ea = EmployeeAddress
     override val ed = EmployeeDepartment
-    override val c2 = Certificate
-    override val h = Hobby
+    override val ce = Certificate
+    override val ho = Hobby
 }
 
 /**  
@@ -55,16 +55,16 @@ object Aliases : HasAliases {
  *```
  */ 
 interface HasAliases {
-    val a : Address
+    val ad : Address
     val atn : AllTypesNil
-    val c : Composite
+    val co : Composite
     val cfk : CompositeForeignKey
-    val c1 : Country
-    val d : Department
-    val e : Employee
+    val co1 : Country
+    val de : Department
+    val em : Employee
     val ea : EmployeeAddress
     val ed : EmployeeDepartment
-    val c2 : Certificate
-    val h : Hobby
+    val ce : Certificate
+    val ho : Hobby
 }
      

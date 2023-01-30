@@ -105,7 +105,6 @@ class TransactionManager private constructor(
             val schemas = mutableListOf<String>()
             while (rs.next()) {
                 val name = rs.getString(1)
-                log.info("Extracted catalog $name from mariadb")
                 schemas += StringUtil.initUpperCase(name)
             }
             return DBConnectionMetaData(vendor, schemas)

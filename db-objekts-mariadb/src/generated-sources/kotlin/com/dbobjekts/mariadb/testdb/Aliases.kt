@@ -34,26 +34,26 @@ import com.dbobjekts.mariadb.testdb.nation.Vips
  *```
  */        
 object Aliases : HasAliases {
-    override val a = Address
+    override val ad = Address
     override val atn = AllTypesNil
-    override val c1 = Composite
+    override val co1 = Composite
     override val cfk = CompositeForeignKey
-    override val c = Country
-    override val d = Department
-    override val e = Employee
+    override val co = Country
+    override val de = Department
+    override val em = Employee
     override val ea = EmployeeAddress
     override val ed = EmployeeDepartment
-    override val c2 = Certificate
-    override val h = Hobby
-    override val c3 = Continents
-    override val c4 = Countries
+    override val ce = Certificate
+    override val ho = Hobby
+    override val co2 = Continents
+    override val co3 = Countries
     override val cl = CountryLanguages
     override val cs = CountryStats
-    override val g = Guests
-    override val l = Languages
-    override val r = Regions
+    override val gu = Guests
+    override val la = Languages
+    override val re = Regions
     override val ra = RegionAreas
-    override val v = Vips
+    override val vi = Vips
 }
 
 /**  
@@ -73,25 +73,25 @@ object Aliases : HasAliases {
  *```
  */ 
 interface HasAliases {
-    val a : Address
+    val ad : Address
     val atn : AllTypesNil
-    val c1 : Composite
+    val co1 : Composite
     val cfk : CompositeForeignKey
-    val c : Country
-    val d : Department
-    val e : Employee
+    val co : Country
+    val de : Department
+    val em : Employee
     val ea : EmployeeAddress
     val ed : EmployeeDepartment
-    val c2 : Certificate
-    val h : Hobby
-    val c3 : Continents
-    val c4 : Countries
+    val ce : Certificate
+    val ho : Hobby
+    val co2 : Continents
+    val co3 : Countries
     val cl : CountryLanguages
     val cs : CountryStats
-    val g : Guests
-    val l : Languages
-    val r : Regions
+    val gu : Guests
+    val la : Languages
+    val re : Regions
     val ra : RegionAreas
-    val v : Vips
+    val vi : Vips
 }
      
