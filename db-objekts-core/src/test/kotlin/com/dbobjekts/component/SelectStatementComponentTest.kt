@@ -5,16 +5,15 @@ import com.dbobjekts.fixture.columns.AddressType
 import com.dbobjekts.statement.select.SelectStatementExecutor
 import com.dbobjekts.testdb.acme.Aliases
 import com.dbobjekts.testdb.acme.HasAliases
+import com.dbobjekts.testdb.acme.core.*
+import com.dbobjekts.testdb.acme.hr.Certificate
 import com.dbobjekts.testdb.acme.hr.Hobby
-import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import com.dbobjekts.testdb.acme.core.*
-import com.dbobjekts.testdb.acme.hr.Certificate
-import org.assertj.core.api.Assertions.assertThatThrownBy
 
 class SelectStatementComponentTest : HasAliases by Aliases {
 
@@ -83,17 +82,33 @@ class SelectStatementComponentTest : HasAliases by Aliases {
     }
 
     @Test
-    fun `test select two rows with custom mapper`() {
+    fun `test select all employees with iterator`() {
         tm({
             val buffer = mutableListOf<String?>()
-            it.select(em.name).where(em.id.lt(11)).orderAsc(em.name).forEachRow({ num, row ->
-                buffer.add(row)
-                //there are three rows in the resultset, but we stop fetching after two
-                num != 2
+            val iterator = it.select(em.name).where(em.id.lt(11))
+                .orderAsc(em.name).iterator()
+            while (iterator.hasNext()) {
+                buffer.add(iterator.next())
+            }
+            assertThat(buffer.size).isEqualTo(10)
+        })
+    }
+
+    @Test
+    fun `cannot return iterator from transaction block`() {
+        assertThatThrownBy {
+            val ret: Iterator<String> = tm({
+                it.select(em.name).where(em.id.lt(11)).iterator()
             })
-            assertThat(buffer.size).isEqualTo(2)
-            assertThat(buffer[0]).isEqualTo("Alice")
-            assertThat(buffer[1]).isEqualTo("Bob")
+        }.hasMessageEndingWith("An Iterator over a ResultSet must be consumed within the transaction block")
+    }
+
+    @Test
+    fun `select slice of all employees`() {
+        tm({
+            val two: List<String> = it.select(em.name).orderAsc(em.name).asSlice(2, 4)
+            //skipping Alice and Bob
+            assertThat(two).containsExactly("Charlie", "Diane", "Eve", "Fred")
         })
     }
 

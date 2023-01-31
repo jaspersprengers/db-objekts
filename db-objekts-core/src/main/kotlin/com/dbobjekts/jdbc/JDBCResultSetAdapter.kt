@@ -1,9 +1,11 @@
 package com.dbobjekts.jdbc
 
+import com.dbobjekts.api.Slice
 import com.dbobjekts.statement.ColumnInResultRow
 import com.dbobjekts.api.ResultRow
 import com.dbobjekts.api.exception.StatementExecutionException
 import java.sql.ResultSet
+import java.util.LinkedList
 
 class JDBCResultSetAdapter(
     val resultSetColumns: List<ColumnInResultRow>,
@@ -31,10 +33,16 @@ class JDBCResultSetAdapter(
         return resultSetColumns
     }
 
-    fun <T, RS : ResultRow<T>> retrieveAll(rrb: RS): List<T> {
-        val buffer = mutableListOf<T>()
+    fun <T, RS : ResultRow<T>> retrieveAll(
+        resultRow: RS,
+        slice: Slice?
+    ): List<T> {
+        val buffer = LinkedList<T>()
+        var rowNumber = 0
         while (advanceResultSet()) {
-            buffer.add(rrb.extractRow(resultSetColumns, resultSet))
+            if (slice == null || (slice.skip <= rowNumber && buffer.size < slice.limit))
+                buffer.add(resultRow.extractRow(resultSetColumns, resultSet))
+            rowNumber += 1
         }
         resultSet.close()
         return buffer.toList()

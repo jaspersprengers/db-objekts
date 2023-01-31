@@ -3,6 +3,7 @@ package com.dbobjekts.integration.mariadb
 import com.dbobjekts.api.PathsUtil
 import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.codegen.CodeGenerator
+import com.dbobjekts.mariadb.testdb.Aliases
 import com.dbobjekts.mariadb.testdb.CatalogDefinition
 import com.dbobjekts.mariadb.testdb.core.*
 import com.dbobjekts.mariadb.testdb.hr.Certificate
@@ -21,8 +22,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import javax.sql.DataSource
-import com.dbobjekts.mariadb.testdb.Aliases.e
-import com.dbobjekts.mariadb.testdb.Aliases.h
+import com.dbobjekts.mariadb.testdb.HasAliases
 import com.dbobjekts.mariadb.testdb.nation.Continents
 import com.dbobjekts.mariadb.testdb.nation.Countries
 import com.dbobjekts.mariadb.testdb.nation.CountryStats
@@ -31,7 +31,7 @@ import com.dbobjekts.metadata.column.Aggregate
 import java.util.*
 
 @Testcontainers
-class MariaDBIntegrationTest {
+class MariaDBIntegrationTest : HasAliases by Aliases {
 
     companion object {
 
@@ -206,7 +206,7 @@ class MariaDBIntegrationTest {
 
         fun insert(name: String, salary: Int) {
             val id = tm {
-                it.insert(e).name(name).salary(salary.toDouble()).dateOfBirth(LocalDate.of(1980, 3, 3)).married(true).execute()
+                it.insert(em).name(name).salary(salary.toDouble()).dateOfBirth(LocalDate.of(1980, 3, 3)).married(true).execute()
             }
             assert(id > 0)
         }
@@ -221,29 +221,29 @@ class MariaDBIntegrationTest {
         insert("Charlie", 30)
         insert("Fred", 38)
         insert("Jasper", 39)
-        assertThat(tm { it.select(e.salary).where(e.salary.notIn(31.0, 33.0, 35.0)).asList().size }).isEqualTo(7)
-        assertThat(tm { it.select(e.salary).where(e.salary.within(31.0, 33.0, 35.0)).asList().size }).isEqualTo(3)
-        assertThat(tm { it.select(e.salary).where(e.salary.gt(35.0)).asList().size }).isEqualTo(4)
-        assertThat(tm { it.select(e.salary).where(e.salary.ge(35.0)).asList().size }).isEqualTo(5)
-        assertThat(tm { it.select(e.salary).where(e.salary.lt(34.0)).asList().size }).isEqualTo(4)
-        assertThat(tm { it.select(e.salary).where(e.salary.le(34.0)).asList().size }).isEqualTo(5)
-        assertThat(tm { it.select(e.salary).where(e.salary.ge(33.0).and(e.salary).le(34.0)).asList().size }).isEqualTo(2)
-        assertThat(tm { it.select(e.salary).where(e.salary.within(31.0, 33.0, 35.0)).asList().size }).isEqualTo(3)
+        assertThat(tm { it.select(em.salary).where(em.salary.notIn(31.0, 33.0, 35.0)).asList().size }).isEqualTo(7)
+        assertThat(tm { it.select(em.salary).where(em.salary.within(31.0, 33.0, 35.0)).asList().size }).isEqualTo(3)
+        assertThat(tm { it.select(em.salary).where(em.salary.gt(35.0)).asList().size }).isEqualTo(4)
+        assertThat(tm { it.select(em.salary).where(em.salary.ge(35.0)).asList().size }).isEqualTo(5)
+        assertThat(tm { it.select(em.salary).where(em.salary.lt(34.0)).asList().size }).isEqualTo(4)
+        assertThat(tm { it.select(em.salary).where(em.salary.le(34.0)).asList().size }).isEqualTo(5)
+        assertThat(tm { it.select(em.salary).where(em.salary.ge(33.0).and(em.salary).le(34.0)).asList().size }).isEqualTo(2)
+        assertThat(tm { it.select(em.salary).where(em.salary.within(31.0, 33.0, 35.0)).asList().size }).isEqualTo(3)
 
-        assertThat(tm { it.select(e.salary).orderDesc(e.salary).first() }).isEqualTo(39.0)
-        assertThat(tm { it.select(e.salary).orderAsc(e.salary).first() }).isEqualTo(30.0)
-        assertThat(tm { it.select(e.salary).orderAsc(e.name).first() }).isEqualTo(36.0)
-        assertThat(tm { it.select(e.salary).orderDesc(e.name).first() }).isEqualTo(39.0)
+        assertThat(tm { it.select(em.salary).orderDesc(em.salary).first() }).isEqualTo(39.0)
+        assertThat(tm { it.select(em.salary).orderAsc(em.salary).first() }).isEqualTo(30.0)
+        assertThat(tm { it.select(em.salary).orderAsc(em.name).first() }).isEqualTo(36.0)
+        assertThat(tm { it.select(em.salary).orderDesc(em.name).first() }).isEqualTo(39.0)
 
         insert("Oliver", 31)
         insert("Karl", 30)
-        val entities = tm { it.select(e.name).orderAsc(e.salary).orderDesc(e.name).asList() }
+        val entities = tm { it.select(em.name).orderAsc(em.salary).orderDesc(em.name).asList() }
         assertThat(entities[0]).isEqualTo("Karl")
         assertThat(entities[1]).isEqualTo("Charlie")
         assertThat(entities[2]).isEqualTo("Oliver")
         assertThat(entities[3]).isEqualTo("Gina")
         val l2 = tm {
-            it.select(e.name).where(e.salary.le(31.0)).orderDesc(e.salary).orderAsc(e.name).asList()
+            it.select(em.name).where(em.salary.le(31.0)).orderDesc(em.salary).orderAsc(em.name).asList()
         }
         assertThat(l2[0]).isEqualTo("Gina")
         assertThat(l2[1]).isEqualTo("Oliver")
@@ -255,61 +255,61 @@ class MariaDBIntegrationTest {
             Assertions.assertThat(
                 tr.select(h.name.nullable)
                     .from(Employee.leftJoin(Hobby))
-                    .where(e.id.eq(id)).first()
+                    .where(em.id.eq(id)).first()
             )
-            assertThat(tr.select(e.children).where(e.id.eq(id)).first()).isNull()
+            assertThat(tr.select(e.children).where(em.id.eq(id)).first()).isNull()
         }
 */
         tm { tr ->
-            tr.update(e).name("Janet").where(e.name.eq("Bob"))
-            assertThat(tr.select(e.name).where(e.name.eq("Janet")).first()).isEqualTo("Janet")
+            tr.update(em).name("Janet").where(em.name.eq("Bob"))
+            assertThat(tr.select(em.name).where(em.name.eq("Janet")).first()).isEqualTo("Janet")
         }
 
         tm { tr ->
-            tr.update(e).dateOfBirth(LocalDate.of(1970, 10, 10)).where(e.name.eq("Janet"))
-            assertThat(tr.select(e.dateOfBirth).where(e.name.eq("Janet")).first().toString()).isEqualTo("1970-10-10")
+            tr.update(em).dateOfBirth(LocalDate.of(1970, 10, 10)).where(em.name.eq("Janet"))
+            assertThat(tr.select(em.dateOfBirth).where(em.name.eq("Janet")).first().toString()).isEqualTo("1970-10-10")
         }
 
         tm { tr ->
-            tr.update(e).salary(3300.50).where(e.name.eq("Janet"))
-            assertThat(tr.select(e.salary).where(e.name.eq("Janet")).first()).isEqualTo(3300.50)
+            tr.update(em).salary(3300.50).where(em.name.eq("Janet"))
+            assertThat(tr.select(em.salary).where(em.name.eq("Janet")).first()).isEqualTo(3300.50)
         }
 
         tm { tr ->
-            tr.update(e).married(false).where(e.name.eq("Janet"))
-            assertThat(tr.select(e.married).where(e.name.eq("Janet")).first() ?: false).isFalse()
+            tr.update(em).married(false).where(em.name.eq("Janet"))
+            assertThat(tr.select(em.married).where(em.name.eq("Janet")).first() ?: false).isFalse()
         }
 
         tm { tr ->
-            tr.update(e).children(2).where(e.name.eq("Janet"))
-            assertThat(tr.select(e.children).where(e.name.eq("Janet")).first()).isEqualTo(2)
+            tr.update(em).children(2).where(em.name.eq("Janet"))
+            assertThat(tr.select(em.children).where(em.name.eq("Janet")).first()).isEqualTo(2)
         }
 
         tm { tr ->
-            tr.update(e).children(0).where(e.name.eq("Janet"))
-            assertThat(tr.select(e.children).where(e.name.eq("Janet")).first()).isEqualTo(0)
+            tr.update(em).children(0).where(em.name.eq("Janet"))
+            assertThat(tr.select(em.children).where(em.name.eq("Janet")).first()).isEqualTo(0)
         }
 
         tm { tr ->
-            tr.update(e).children(null).where(e.name.eq("Janet"))
-            assertThat(tr.select(e.children).where(e.name.eq("Janet")).first()).isNull()
+            tr.update(em).children(null).where(em.name.eq("Janet"))
+            assertThat(tr.select(em.children).where(em.name.eq("Janet")).first()).isNull()
         }
 
         tm { tr ->
-            tr.insert(h).id("c").name("curling").execute()
-            tr.update(e).hobbyId("c").where(e.name.eq("Janet"))
-            assertThat(tr.select(h.name).where(e.name.eq("Janet")).first()).isEqualTo("curling")
+            tr.insert(ho).id("c").name("curling").execute()
+            tr.update(em).hobbyId("c").where(em.name.eq("Janet"))
+            assertThat(tr.select(ho.name).where(em.name.eq("Janet")).first()).isEqualTo("curling")
         }
 
         tm { tr ->
-            tr.update(e).hobbyId(null).where(e.name.eq("Janet"))
-            assertThat(tr.select(h.name).where(e.name.eq("Janet")).asList()).isEmpty()
+            tr.update(em).hobbyId(null).where(em.name.eq("Janet"))
+            assertThat(tr.select(ho.name).where(em.name.eq("Janet")).asList()).isEmpty()
         }
 
         tm { tr ->
             fun insert(name: String) {
                 val dob = LocalDate.of(1980, 1, 1)
-                tr.insert(e).name(name).dateOfBirth(dob).salary(3500.0).execute()
+                tr.insert(em).name(name).dateOfBirth(dob).salary(3500.0).execute()
             }
 
             fun checkCount(result: SelectStatementExecutor<*, *>, size: Int) {
@@ -319,19 +319,19 @@ class MariaDBIntegrationTest {
             insert("Arthur Matthew Dent")
             insert("Arthur Matthew Holmes")
 
-            checkCount(tr.select(e.id).where(e.name.startsWith("Arthur")), 3)
-            checkCount(tr.select(e.id).where(e.name.startsWith("Arthur Matthew")), 2)
-            checkCount(tr.select(e.id).where(e.name.startsWith("Arthur Matthew Dent")), 1)
+            checkCount(tr.select(em.id).where(em.name.startsWith("Arthur")), 3)
+            checkCount(tr.select(em.id).where(em.name.startsWith("Arthur Matthew")), 2)
+            checkCount(tr.select(em.id).where(em.name.startsWith("Arthur Matthew Dent")), 1)
 
-            checkCount(tr.select(e.id).where(e.name.contains("Dent")), 2)
-            checkCount(tr.select(e.id).where(e.name.contains("Matthew")), 2)
-            checkCount(tr.select(e.id).where(e.name.contains("Arthur Matthew")), 2)
-            checkCount(tr.select(e.id).where(e.name.contains("Arthur Matthew Dent")), 1)
-            checkCount(tr.select(e.id).where(e.name.contains("Arthur Philip Holmes")), 0)
+            checkCount(tr.select(em.id).where(em.name.contains("Dent")), 2)
+            checkCount(tr.select(em.id).where(em.name.contains("Matthew")), 2)
+            checkCount(tr.select(em.id).where(em.name.contains("Arthur Matthew")), 2)
+            checkCount(tr.select(em.id).where(em.name.contains("Arthur Matthew Dent")), 1)
+            checkCount(tr.select(em.id).where(em.name.contains("Arthur Philip Holmes")), 0)
 
-            checkCount(tr.select(e.id).where(e.name.endsWith("Dent")), 2)
-            checkCount(tr.select(e.id).where(e.name.endsWith("Holmes")), 1)
-            checkCount(tr.select(e.id).where(e.name.endsWith("Arthur Matthew Dent")), 1)
+            checkCount(tr.select(em.id).where(em.name.endsWith("Dent")), 2)
+            checkCount(tr.select(em.id).where(em.name.endsWith("Holmes")), 1)
+            checkCount(tr.select(em.id).where(em.name.endsWith("Arthur Matthew Dent")), 1)
         }
         //composite foreign keys are not supported
        tm {
@@ -342,8 +342,8 @@ class MariaDBIntegrationTest {
             }
         }
 
-        tm { it.update(e).children(2).where(h.name.eq("curling")) }
-        tm { it.deleteFrom(e.innerJoin(Hobby)).where(h.name.eq("curling")) }
+        tm { it.update(em).children(2).where(ho.name.eq("curling")) }
+        tm { it.deleteFrom(em.innerJoin(Hobby)).where(ho.name.eq("curling")) }
     }
 
 

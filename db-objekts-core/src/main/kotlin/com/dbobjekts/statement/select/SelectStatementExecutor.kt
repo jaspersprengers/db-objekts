@@ -1,14 +1,13 @@
 package com.dbobjekts.statement.select
 
 import com.dbobjekts.api.AnyColumn
+import com.dbobjekts.api.Slice
 import com.dbobjekts.api.ResultRow
 import com.dbobjekts.api.SortOrder
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.metadata.column.*
-import com.dbobjekts.metadata.joins.ManualJoinChain
-import com.dbobjekts.metadata.joins.DerivedJoin
 import com.dbobjekts.metadata.joins.JoinChain
 import com.dbobjekts.statement.ColumnInResultRow
 import com.dbobjekts.statement.Semaphore
@@ -85,6 +84,8 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
     /**
      * Sorts results in ascending order based on the columns provided. Sorting is done in the where clause through an ORDER BY clause
      * Can be combined with [orderDesc]
+     *
+     * Equivalent to `order(SortOrder.ASC, columns)`
      * Example:
      * ```kotlin
      *  transaction.select(Employee.name).orderAsc(Employee.married, Employee.name).orderDesc(Employee.salary)
@@ -99,6 +100,9 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
     /**
      * Sorts results in descending order based on the columns provided. Sorting is done in the where clause through an ORDER BY clause.
      * Can be combined with [orderAsc]
+     *
+     * Equivalent to `order(SortOrder.DESC, columns)
+     *
      * Example:
      * ```kotlin
      *  transaction.select(Employee.name).orderDesc(e.salary, e.name).orderAsc(Employee.married)
@@ -157,6 +161,13 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
      */
     fun asList(): List<T> = execute().asList().also { semaphore.clear(); statementLog.logResult(it) }
 
+    /**
+     * Executes the select statement, fetches all rows and returns a slice of the result set.
+     *
+     * WARNING: do not use this in conjunction with a LIMIT clause.
+     */
+    fun asSlice(skip: Long, size: Long): List<T> = execute(Slice(skip, size)).asList().also { semaphore.clear() }
+
     private fun columnsToFetch(): List<ColumnInResultRow> =
         columns.mapIndexed { index, column -> ColumnInResultRow(1 + index, column) }
 
@@ -172,7 +183,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
      *
      * This can be useful for huge result sets that would run into memory problems when fetched at once into a list.
      */
-    @Deprecated("Use forEachRow with a BiPredicate")
+    @Deprecated("Use iterator instead")
     fun forEachRow(currentRow: (T) -> Boolean) {
         val sql = toSQL()
         val params = getWhereClause().getParameters()
@@ -190,28 +201,15 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         )
     }
 
-    /**
-     * Executes the select query and lets you step through the results with a custom function that receives the current row data
-     * and returns a Boolean to indicate whether to proceed or not. Example:
-     * ```kotlin
-     *     transaction.select(e.name).forEachRow({ rowNumber, row ->
-     *        buffer.add(row)
-     *        !buffer.memoryFull()
-     *     })
-     *  ```
-     *
-     * This can be useful for huge result sets that would run into memory problems when fetched at once into a list.
-     */
-    fun forEachRow(currentRow: (Int, T) -> Boolean) {
+    fun iterator(): Iterator<T> {
         val sql = toSQL()
         val params = getWhereClause().getParameters()
         semaphore.clear();
-        connection.prepareAndExecuteForSelectWithRowIterator<T, RSB>(
+        return connection.createRowIterator(
             sql,
             params,
             columnsToFetch(),
-            selectResultSet,
-            currentRow
+            selectResultSet
         )
     }
 
@@ -223,7 +221,7 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         return this
     }
 
-    private fun execute(): RSB {
+    private fun execute(slice: Slice? = null): RSB {
         val sql = toSQL()
         val params: List<SqlParameter<*>> = getWhereClause().getParameters()
         val merged: List<SqlParameter<*>> = havingClause?.let {
@@ -234,7 +232,8 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
             sql,
             merged,
             columnsToFetch(),
-            selectResultSet
+            selectResultSet,
+            slice
         )
     }
 

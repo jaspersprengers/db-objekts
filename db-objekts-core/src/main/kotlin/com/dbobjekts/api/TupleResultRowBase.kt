@@ -19,25 +19,12 @@ abstract class ResultRow<out O> {
         this.jdbcResultSetAdapter = jdbcResultSetAdapter
     }
 
-    internal fun retrieveAll() {
-        rows = jdbcResultSetAdapter.retrieveAll(this)
+    internal fun retrieveAll(slice: Slice? = null){
+        rows = jdbcResultSetAdapter.retrieveAll(this, slice)
     }
 
     internal fun extractValue(column: ColumnInResultRow, resultSet: ResultSet): Any? {
         return column.column.retrieveValue(column.position, resultSet)
-    }
-    protected fun extractRow_2(cols: List<ColumnInResultRow>, resultSet: ResultSet): List<Any?>{
-        var index = 0
-        val values = mutableListOf<Any?>()
-        for (s in selectables){
-            val retrieved: List<Any?> = s.columns.mapIndexed() { idx, _ ->
-                val curr = index + idx
-                extractValue(cols[curr], resultSet)
-            }
-            values += s.toValue(retrieved)
-            index += s.columns.size
-        }
-        return values
     }
 
     internal fun first(): O =

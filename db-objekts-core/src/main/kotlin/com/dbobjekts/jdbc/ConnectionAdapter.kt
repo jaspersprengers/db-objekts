@@ -1,7 +1,9 @@
 package com.dbobjekts.jdbc
 
 import com.dbobjekts.api.AnySqlParameter
+import com.dbobjekts.api.Slice
 import com.dbobjekts.api.ResultRow
+import com.dbobjekts.api.ResultSetIterator
 import com.dbobjekts.api.exception.StatementExecutionException
 import com.dbobjekts.metadata.Catalog
 import com.dbobjekts.statement.ColumnInResultRow
@@ -55,11 +57,12 @@ data class ConnectionAdapter(
         sql: String,
         parameters: List<AnySqlParameter>,
         columnsToFetch: List<ColumnInResultRow>,
-        selectResultSet: T
+        selectResultSet: T,
+        slice: Slice? = null
     ): T {
         val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters))
         selectResultSet.initialize(resultSetAdapter)
-        selectResultSet.retrieveAll()
+        selectResultSet.retrieveAll(slice)
         return selectResultSet
     }
 
@@ -73,6 +76,17 @@ data class ConnectionAdapter(
         val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters))
         selectResultSet.initialize(resultSetAdapter)
         resultSetAdapter.retrieveWithIterator(selectResultSet, iteratorFunction)
+    }
+
+    fun <T, RS : ResultRow<T>> createRowIterator(
+        sql: String,
+        parameters: List<AnySqlParameter>,
+        columnsToFetch: List<ColumnInResultRow>,
+        selectResultSet: RS
+    ): ResultSetIterator<T, RS> {
+        val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters))
+        selectResultSet.initialize(resultSetAdapter)
+        return ResultSetIterator(selectResultSet, columnsToFetch, resultSetAdapter.resultSet)
     }
 
     private fun executeSelect(

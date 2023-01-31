@@ -53,6 +53,13 @@ open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
     fun asList(): List<T> = executeForSelect().asList().also { semaphore.clear() }
 
     /**
+     * Executes the select statement, fetches all rows and returns a slice of the result set.
+     *
+     * WARNING: do not use this in conjunction with a LIMIT clause.
+     */
+    fun asSlice(offset: Long, size: Long): List<T> = executeForSelect(Slice(offset, size)).asList().also { semaphore.clear() }
+
+    /**
      * Executes the select query and lets you step through the results with a custom function that receives the current row number (one -based) and data
      * and returns a Boolean to indicate whether to proceed or not. Example:
      * ```kotlin
@@ -90,9 +97,9 @@ open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
         SqlParameter<T>(position, ColumnFactory.getColumnForValue(value), value)
 
 
-    private fun executeForSelect(): RSB {
+    private fun executeForSelect(slice: Slice? = null): RSB {
         connection.statementLog.logStatement(sql, params)
-        return connection.prepareAndExecuteForSelect(sql, params, columnsToFetch, selectResultSet)
+        return connection.prepareAndExecuteForSelect(sql, params, columnsToFetch, selectResultSet, slice)
     }
 
 

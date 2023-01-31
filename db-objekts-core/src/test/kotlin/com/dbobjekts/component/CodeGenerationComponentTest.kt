@@ -123,15 +123,17 @@ class CodeGenerationComponentTest {
     fun `with illegal identifiers`() {
         val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
         val conf = generator.configureObjectNaming()
+        assertThatThrownBy { conf.setObjectNameForSchema("core", "true") }
+            .hasMessage("true cannot be used as an override for schema 'core'. It is a restricted Java/Kotlin keyword.")
         assertThatThrownBy { conf.setFieldNameForColumn("core", "employee", "married", "true") }
-            .hasMessage("true cannot be used as an override. It is a restricted Java/Kotlin keyword.")
+            .hasMessage("true cannot be used as an override for column 'core.employee.married'. It is a restricted Java/Kotlin keyword.")
         assertThatThrownBy { conf.setFieldNameForColumn("core", "employee", "married", "hello world") }
-            .hasMessage("hello world cannot be used as an override. It is not a valid Java/Kotlin identifier.")
+            .hasMessage("hello world cannot be used as an override for column 'core.employee.married'. It is not a valid Java/Kotlin identifier.")
 
         assertThatThrownBy { conf.setObjectNameForTable("core", "employee", "true") }
-            .hasMessage("true cannot be used as an override. It is a restricted Java/Kotlin keyword.")
+            .hasMessage("true cannot be used as an override for table 'core.employee'. It is a restricted Java/Kotlin keyword.")
         assertThatThrownBy { conf.setObjectNameForTable("core", "employee", "hello world") }
-            .hasMessage("hello world cannot be used as an override. It is not a valid Java/Kotlin identifier.")
+            .hasMessage("hello world cannot be used as an override for table 'core.employee'. It is not a valid Java/Kotlin identifier.")
     }
 
     @Test
