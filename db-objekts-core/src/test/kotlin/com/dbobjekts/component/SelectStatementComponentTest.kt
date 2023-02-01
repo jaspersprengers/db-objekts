@@ -97,10 +97,8 @@ class SelectStatementComponentTest : HasAliases by Aliases {
     @Test
     fun `cannot return iterator from transaction block`() {
         assertThatThrownBy {
-            val ret: Iterator<String> = tm({
-                it.select(em.name).where(em.id.lt(11)).iterator()
-            })
-        }.hasMessageEndingWith("An Iterator over a ResultSet must be consumed within the transaction block")
+            val ret: Iterator<String> = tm({ it.select(em.name).where(em.id.lt(11)).iterator() })
+        }.hasMessageEndingWith("An Iterator over a ResultSet must be consumed within the transaction block.")
     }
 
     @Test
