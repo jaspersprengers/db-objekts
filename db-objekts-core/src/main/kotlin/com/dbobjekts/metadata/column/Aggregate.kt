@@ -102,18 +102,54 @@ data class Condition<T : Number, C : HavingClause<T>>(private val clause: C,
 object Aggregate {
     val ALIAS = "AGGREGATE"
 
+    /**
+     * Less-than operator for aggregated column
+     */
     fun lt(value: Long): HavingClauseForLong = HavingClauseForLong("<", value)
+    /**
+     * Greater -than operator for aggregated column
+     */
     fun gt(value: Long): HavingClauseForLong = HavingClauseForLong(">", value)
+    /**
+     * Less-than-or-equal operator for aggregated column
+     */
     fun le(value: Long): HavingClauseForLong = HavingClauseForLong("<=", value)
+    /**
+     * Greater-than-or-equal operator for aggregated column
+     */
     fun ge(value: Long): HavingClauseForLong = HavingClauseForLong(">=", value)
+    /**
+     * Equals operator for aggregated column
+     */
     fun eq(value: Long): HavingClauseForLong = HavingClauseForLong("=", value)
+    /**
+     * Not-equals operator for aggregated column
+     */
     fun ne(value: Long): HavingClauseForLong = HavingClauseForLong("<>", value)
 
+    /**
+     * Less-than operator for aggregated column
+     */
     fun lt(value: Double): HavingClauseForDouble = HavingClauseForDouble("<", value)
+    /**
+     * Greater-than operator for aggregated column
+     */
     fun gt(value: Double): HavingClauseForDouble = HavingClauseForDouble(">", value)
+    /**
+     * Less-than-or-equal operator for aggregated column
+     */
     fun le(value: Double): HavingClauseForDouble = HavingClauseForDouble("<=", value)
+    /**
+     * Greater-than-or-equal operator for aggregated column
+     */
     fun ge(value: Double): HavingClauseForDouble = HavingClauseForDouble(">=", value)
+    /**
+     * Equals operator for aggregated column
+     */
     fun eq(value: Double): HavingClauseForDouble = HavingClauseForDouble("=", value)
+    /**
+     * Not-equals operator for aggregated column
+     */
     fun ne(value: Double): HavingClauseForDouble = HavingClauseForDouble("<>", value)
 
     internal fun containsOneGroupByAggregate(columns: List<AnyColumn>): Boolean =

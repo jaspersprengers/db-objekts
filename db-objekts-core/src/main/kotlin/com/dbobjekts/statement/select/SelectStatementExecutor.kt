@@ -1,9 +1,6 @@
 package com.dbobjekts.statement.select
 
-import com.dbobjekts.api.AnyColumn
-import com.dbobjekts.api.Slice
-import com.dbobjekts.api.ResultRow
-import com.dbobjekts.api.SortOrder
+import com.dbobjekts.api.*
 import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Selectable
@@ -32,7 +29,6 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         columns = selectables.flatMap { it.columns }
         semaphore.claim("select")
         columns.forEach {
-            //if (it.aggregateType != null && it.aggregateType != AggregateType.COUNT)
             registerTable(it.table)
         }
     }
@@ -166,42 +162,50 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
      *
      * WARNING: do not use this in conjunction with a LIMIT clause.
      */
-    fun asSlice(skip: Long, size: Long): List<T> = execute(Slice(skip, size)).asList().also { semaphore.clear() }
+    fun asSlice(skip: Long, limit: Long): List<T> = execute(Slice(skip, limit)).asList().also { semaphore.clear() }
 
     private fun columnsToFetch(): List<ColumnInResultRow> =
         columns.mapIndexed { index, column -> ColumnInResultRow(1 + index, column) }
 
     /**
-     * Executes the select query and lets you step through the results with a custom function that receives the current row data
+     * Executes the select query and lets you step through the results with a custom predicate that receives the current row data
      * and returns a Boolean to indicate whether to proceed or not. Example:
      * ```kotlin
-     *     transaction.select(e.name).forEachRow({ row ->
+     *     transaction.select(e.name).forEachRow({ index, row ->
      *        buffer.add(row)
      *        !buffer.memoryFull()
      *     })
      *  ```
      *
-     * This can be useful for huge result sets that would run into memory problems when fetched at once into a list.
+     * This can be useful to prevent memory overruns with very large result sets
      */
-    @Deprecated("Use iterator instead")
-    fun forEachRow(currentRow: (T) -> Boolean) {
+    fun forEachRow(predicate: (Int, T) -> Boolean) {
         val sql = toSQL()
         val params = getWhereClause().getParameters()
         semaphore.clear();
-        val iteratorFct: (Int, T) -> Boolean = { rowNum, row ->
-            currentRow.invoke(row)
-        }
 
         connection.prepareAndExecuteForSelectWithRowIterator<T, RSB>(
             sql,
             params,
             columnsToFetch(),
             selectResultSet,
-            iteratorFct
+            predicate
         )
     }
 
-    fun iterator(): Iterator<T> {
+    /**
+     * Returns a [ResultSetIterator], which implements [Iterator].
+     *
+     * This delegates to the underlying [ResultSet] for each call to `next()`, which makes it more memory-efficient for very large data sets by not loading all rows into a single list.
+     *
+     * WARNING: You cannot return a [ResultSetIterator] from a transaction block, as the underlying [Connection] will be closed.
+     *
+     * ```kotlin
+     * // this will fail at runtime
+     * val iterator = tm { it.select(Employee).iterator() }
+     * ```
+     */
+    fun iterator(): ResultSetIterator<T, RSB> {
         val sql = toSQL()
         val params = getWhereClause().getParameters()
         semaphore.clear();
@@ -213,6 +217,19 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
         )
     }
 
+    /**
+     * Adds optional restrictions on the values of an aggregated column (sum, min, max, etc). A [HavingClause] is created with the [Aggregate] object.
+     *
+     * Conditions can be chained, but nesting is not allowed. The left operand is always the aggregated column, while the right side is a Long or Double.
+     *
+     *
+     * The following query selects the name and number of certificates for every employee has either one or two certificates.
+     *
+     * ```kotlin
+     *  it.select(e.name, ce.name.count())
+     *    .having(Aggregate.gt(0).and().lt(3))
+     * ```
+     */
     fun having(havingClause: HavingClause<*>): SelectStatementExecutor<T, RSB> {
         if (!Aggregate.containsOneGroupByAggregate(columns)) {
             throw StatementBuilderException("Use of the 'having' clause requires exactly one column to be designated as an aggregate with sum(), min(), max(), avg(), count() or distinct().")

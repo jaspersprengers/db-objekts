@@ -557,7 +557,8 @@ A call like `select(Employee.name, Country.name)` is a bridge too far. db-Objekt
 ```kotlin
  transaction.select(e.name, c.name)
       .from(Employee.innerJoin(ea).innerJoin(Address).innerJoin(Country))
-      .where(ea.kind eq "WORK").asList()
+      .where(ea.kind eq "WORK")
+      .asList()
 ```
 
 The table provided in the `innerJoin()` must have an explicit foreign key relationship with its parent, so there's no need to specify the columns. This resolves to the following SQL (we'll look at left/right outer joins later).
@@ -568,8 +569,6 @@ The table provided in the `innerJoin()` must have an explicit foreign key relati
      JOIN COUNTRY c on c.id = a.country_id
 ```
 
-`asList` always return a (potentially empty) list of results. If one row is all you expect, you can invoke `first()` or the safer option `firstOrNull()`, since `first()` will throw if the Resultset was empty.
-
 As long as there is an explicit foreign key relationship between parent and child, there is no limit to the number of tables you can involve in the join chain. Consider this example from `MariaDBNationsIntegrationTest`, which needs two intermediate tables to join up the target column
 
 ```kotlin
@@ -578,16 +577,31 @@ tr.select(Continents.name, CountryStats.population.sum())
     .asList()
 ```
 
+[#collecting-query-results]
+==== Collecting query results
+
+You already saw `asList()`. There are five more methods available to collect the results from a select or native sql query.
+
+* `asList() : List<T>` fetches the entire `ResultSet` into an immutable `List`, which can be empty.
+* `firstOrNull(): T?` fetches only the first result in the `ResultSet`, which may be null.
+* `first(): T` fetches the first result in the `ResultSet`, throwing a [StatementExecutionException] when there are no results.
+* `asSlice(skip: Long, limit: Long): List<T>` iterates through the `ResultSet`, skipping the first _skip_ rows and collects a maximum of _limit_ rows to a list.
+* `forEachRow(): Unit` iterates through the results with a custom predicate.
+* `iterator(): ResultSetIterator<T>` lets you fetch and process each row one by one
+
 When you execute a select statement, db-Objekts pulls all results into a list structure, which add to the JVM heap. This can become problematic.
 `forEachRow()` lets you inspect the Resultset row by row through a custom predicate. Return false to stop further retrieval.
 ```kotlin
-  var counter = 0
-    transaction.select(e.name).orderAsc(e.name).forEachRow({ row ->
-    // handle the row result any way you want
-    //there could be many more rows in the resultset, but we stop fetching after two
-    ++counter > 2
+tr.select(e.name).orderAsc(e.name).forEachRow({ rowNumber, row ->
+// handle the row result any way you want
+//there could be many more rows in the resultset, but we stop fetching after two
+rowNumber <= 2
 })
 ```
+
+WARNING: Do not use `asSlice()` in conjunction with a `limit()` clause, as this will probably lead to confusing results. A limit clause is executed on the database side, whereas the `limit` parameter of the `asSlice` method determines the maximum number of rows to fetch after skipping an initial number. `asSlice` can be used as a paging mechanism, but it is still less efficient than a combination of a greater-than operator and a `limit` clause.
+
+==== Ordering and limiting
 
 You can further tweak selection results with the `orderBy` and `limit(..)` methods. This example orders all employees by salary (highest first), then by name (A-Z), and retrieves the first ten rows.
 
@@ -730,8 +744,7 @@ This selects the names of employees who have one or two certificates. db-Objekts
 * Only operators `eq`, `ne`, `lt`, `le`, `gt` and `ge` are supported.
 * You use `and()` an `or()` to chain conditions, but since nested conditions are not supported, mixing them can be confusing.
 
-===== Not all is possible
-Native SQL provides more possibilities with aggregate queries (some of them vendor-specific) than are supported by db-Objekts. As with everything else in this library, it is a conscious design decision to balance usability and complexity. You can always resort to creating a native SQL query if the default behavior doesn't cut it.
+NOTE: Native SQL provides more possibilities with aggregate queries (some of them vendor-specific) than are supported by db-Objekts. As with everything else in this library, it is a conscious design decision to balance usability and complexity. You can always resort to creating a native SQL query if the default behavior doesn't cut it.
 
 [#queries-update]
 === Update statements
@@ -800,7 +813,7 @@ val (id, name, salary, married, children, hobby) =
         .first()
 ```
 
-The `sql` method on `Transaction` works the same as regular select statements when it comes to retrieving parameterized tuples. But instead of providing that information through a list of ColumnClasses, you do it in a call to `withResultTypes`.
+The `sql` method on `Transaction` works the same as regular select statements when it comes to retrieving parameterized tuples. It has xref:collecting-query-results[the same methods] as select queries on metadata. But instead of providing type information through a list of Column references, you do it through `withResultTypes`.
 
 This returns a builder with methods for each available standard SQL type in a nullable and non-nullable flavour. String together all the methods you need, call `first[orNull]()`, or `asList()`, and the output of the custom query will be returned in a type-safe tuple.
 

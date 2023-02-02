@@ -4,8 +4,6 @@ import com.dbobjekts.api.exception.StatementBuilderException
 import com.dbobjekts.jdbc.ConnectionAdapter
 import com.dbobjekts.metadata.Selectable
 import com.dbobjekts.metadata.Table
-import com.dbobjekts.metadata.joins.ManualJoinChain
-import com.dbobjekts.metadata.joins.DerivedJoin
 import com.dbobjekts.metadata.joins.JoinChain
 import com.dbobjekts.statement.Semaphore
 import com.dbobjekts.statement.customsql.CustomSQLStatementBuilder
