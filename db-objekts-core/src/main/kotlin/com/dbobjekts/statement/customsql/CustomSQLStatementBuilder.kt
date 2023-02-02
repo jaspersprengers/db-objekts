@@ -252,4 +252,18 @@ class Returns1<T1>(
         semaphore.clear()
         return execute().forEachRow(mapper)
     }
+
+    /**
+     * Returns a [ResultSetIterator], which implements [Iterator].
+     *
+     * This delegates to the underlying [ResultSet] for each call to `next()`, which makes it more memory-efficient for very large data sets by not loading all rows into a single list.
+     *
+     * WARNING: You cannot return a [ResultSetIterator] from a transaction block, as the underlying [Connection] has been already closed.
+     *
+     * ```kotlin
+     * // this will fail at runtime
+     * val iterator = tm { it.select(Employee).iterator() }
+     * ```
+     */
+    fun iterator(): ResultSetIterator<T1, ResultRow1<T1>> = execute().iterator()
 }

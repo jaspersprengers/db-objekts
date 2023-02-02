@@ -1,6 +1,7 @@
 package com.dbobjekts.codegen.configbuilders
 
 import com.dbobjekts.api.PackageName
+import com.dbobjekts.api.exception.CodeGenerationException
 
 /**
  * Configuration object for the output of the generated code

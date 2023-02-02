@@ -1,23 +1,24 @@
- package com.dbobjekts.statement.customsql
+package com.dbobjekts.statement.customsql
  
-  import com.dbobjekts.api.*
-  import com.dbobjekts.statement.Semaphore
-  import com.dbobjekts.jdbc.ConnectionAdapter
-  import com.dbobjekts.metadata.ColumnFactory
-  import com.dbobjekts.metadata.column.Column
-  import com.dbobjekts.metadata.column.NonNullableColumn
-  import com.dbobjekts.metadata.column.NullableColumn
-  import java.math.BigDecimal
-  import java.sql.Blob
-  import java.sql.Clob
-  import java.time.Instant
-  import java.time.LocalDate
-  import java.time.LocalDateTime
-  import java.time.LocalTime
-  import java.time.OffsetDateTime 
+import com.dbobjekts.api.*
+import com.dbobjekts.statement.Semaphore
+import com.dbobjekts.statement.customsql.SQLStatementExecutor
+import com.dbobjekts.jdbc.ConnectionAdapter
+import com.dbobjekts.metadata.ColumnFactory
+import com.dbobjekts.metadata.column.Column
+import com.dbobjekts.metadata.column.NonNullableColumn
+import com.dbobjekts.metadata.column.NullableColumn
+import java.math.BigDecimal
+import java.sql.Blob
+import java.sql.Clob
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.OffsetDateTime 
      
 class Returns3<T1, T2, T3>(
-    internal val column1: Column<T1>, internal val column2: Column<T2>, internal val column3: Column<T3>,
+   internal val column1: Column<T1>, internal val column2: Column<T2>, internal val column3: Column<T3>,
     private val semaphore: Semaphore, private val conn: ConnectionAdapter,
     private val sql: String,
     private val args: List<Any>
@@ -196,9 +197,24 @@ class Returns3<T1, T2, T3>(
      *
      * This can be useful for huge result sets that would run into memory problems when fetched at once into a list.
      */
-    fun forEachRow(mapper: (Int, Tuple3<T1, T2, T3>) -> Boolean) {
+    fun forEachRow(predicate: (Int, Tuple3<T1, T2, T3>) -> Boolean) {
         semaphore.clear()
-        return execute().forEachRow(mapper)
+        return execute().forEachRow(predicate)
     }
+    
+    /**
+     * Returns a [ResultSetIterator], which implements [Iterator].
+     *
+     * This delegates to the underlying [ResultSet] for each call to `next()`, which makes it more memory-efficient for very large data sets by not loading all rows into a single list.
+     *
+     * WARNING: You cannot return a [ResultSetIterator] from a transaction block, as the underlying [Connection] has been already closed.
+     *
+     * ```kotlin
+     * // this will fail at runtime
+     * val iterator = tm { it.select(Employee).iterator() }
+     * ```
+     */
+    fun iterator(): ResultSetIterator<Tuple3<T1, T2, T3>, ResultRow3<T1, T2, T3>> = execute().iterator()
 }
 
+ 

@@ -82,6 +82,16 @@ open class SQLStatementExecutor<T, RSB : ResultRow<T>>(
         )
     }
 
+    fun iterator(): ResultSetIterator<T, RSB> {
+        semaphore.clear();
+        return connection.createRowIterator(
+            sql,
+            params,
+            columnsToFetch,
+            selectResultSet
+        )
+    }
+
     val params: List<AnySqlParameter> by lazy {
         if (args.isNotEmpty()) {
             val list = when (val first = args.first()) {

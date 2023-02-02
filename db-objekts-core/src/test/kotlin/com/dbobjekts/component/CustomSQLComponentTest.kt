@@ -11,13 +11,7 @@ import org.junit.jupiter.api.Test
 class CustomSQLComponentTest {
 
 
-    @Test
-    fun `test all employees with home and work address`() {
-        AcmeDB.createExampleCatalog(AcmeDB.transactionManager)
-        val tm = AcmeDB.transactionManager
-        tm({
-            val rows = it.sql(
-                """
+    val sql = """
                         select e.id,e.name,e.SALARY,e.MARRIED,e.CHILDREN,
                           e.DATE_OF_BIRTH, h.NAME, ha.STREET as home_addess, wa.STREET as street_address, d.NAME, c.NAME
                         from core.EMPLOYEE e left join hr.HOBBY h on h.ID = e.HOBBY_ID
@@ -29,10 +23,23 @@ class CustomSQLComponentTest {
                         left join core.DEPARTMENT d on d.ID = ed.DEPARTMENT_ID
                         left join hr.CERTIFICATE c on c.EMPLOYEE_ID = e.ID order by e.id asc;
                     """.trimIndent()
-            ).withResultTypes().long().string().double().booleanNil().intNil().date().stringNil().stringNil().stringNil().string()
+
+    @Test
+    fun `test all employees with home and work address`() {
+        AcmeDB.createExampleCatalog(AcmeDB.transactionManager)
+        val tm = AcmeDB.transactionManager
+        tm({
+            val rows = it.sql(sql).withResultTypes().long().string().double().booleanNil().intNil().date().stringNil().stringNil().stringNil().string()
                 .stringNil()
                 .asList()
             assertThat(rows).hasSize(11)
+            var counter = 0
+            val iterator = it.sql("select e.id from core.EMPLOYEE e").withResultTypes().long()
+                .iterator().forEachRemaining { row ->
+                    counter += 1
+                }
+            assertThat(counter).isEqualTo(10)
+
         })
     }
 
