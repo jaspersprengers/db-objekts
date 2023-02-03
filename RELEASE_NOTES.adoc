@@ -2,6 +2,9 @@
 
 == 0.4.4-alpha
 * Aliases generator creates by default two-letter aliases for better usability.
+* New `iterator()` retrieval method for select and custom sql statements to step through each row in a result set.
+* `forEachRow()` method takes a lambda `(Int,T) -> Boolean`, the first argument being the row number and the second the row object. The lambda can return `false` to stop iteration.
+* New `slice()` method fetches only a subset of the ResultSet.
 
 == 0.4.3-alpha
 * Simplified validation of generated code against an existing schema

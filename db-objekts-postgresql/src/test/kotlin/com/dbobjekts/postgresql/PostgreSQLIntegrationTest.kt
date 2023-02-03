@@ -199,9 +199,9 @@ class PostgreSQLIntegrationTest {
             Assertions.assertThat(
                 tr.select(h.name.nullable)
                     .from(Employee.leftJoin(Hobby))
-                    .where(e.id.eq(id)).first()
+                    .where(e.id.eq(id)).firstOrNull()
             )
-            assertThat(tr.select(e.children).where(e.id.eq(id)).first()).isNull()
+            assertThat(tr.select(e.children).where(e.id.eq(id)).firstOrNull()).isNull()
         }
 
         tm { tr ->
@@ -236,7 +236,7 @@ class PostgreSQLIntegrationTest {
 
         tm { tr ->
             tr.update(e).children(null).where(e.name.eq("Janet"))
-            assertThat(tr.select(e.children).where(e.name.eq("Janet")).first()).isNull()
+            assertThat(tr.select(e.children).where(e.name.eq("Janet")).firstOrNull()).isNull()
         }
 
         tm { tr ->

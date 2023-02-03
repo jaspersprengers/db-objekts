@@ -233,10 +233,10 @@ class MysqlIntegrationTest {
 
         tm { tr ->
             val id = tr.insert(e).mandatoryColumns("Jack", 3000.5, LocalDate.of(1980, 1, 1)).execute()
-            Assertions.assertThat(
+            assertThat(
                 tr.select(h.name.nullable)
                     .from(Employee.leftJoin(Hobby))
-                    .where(e.id.eq(id)).first()
+                    .where(e.id.eq(id)).firstOrNull()
             )
             assertThat(tr.select(e.children).where(e.id.eq(id)).first()).isNull()
         }

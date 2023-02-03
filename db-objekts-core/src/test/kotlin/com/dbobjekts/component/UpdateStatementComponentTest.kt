@@ -56,7 +56,7 @@ class UpdateStatementComponentTest {
             assertEquals(0, tr.select(e.children).where(e.name.eq("Janet")).first())
 
             tr.update(e).children(null).where(e.name.eq("Janet"))
-            assertNull(tr.select(e.children).where(e.name.eq("Janet")).first())
+            assertNull(tr.select(e.children).where(e.name.eq("Janet")).firstOrNull())
 
             tr.update(e).hobbyId("c").where(e.name.eq("Janet"))
             assertEquals("Chess", tr.select(h.name).where(e.name.eq("Janet")).first())

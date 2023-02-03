@@ -250,16 +250,6 @@ class MariaDBIntegrationTest : HasAliases by Aliases {
         assertThat(l2[2]).isEqualTo("Charlie")
         assertThat(l2[3]).isEqualTo("Karl")
 
-   /*     tm { tr ->
-            val id = tr.insert(e).mandatoryColumns("Jack", 3000.5, true, LocalDate.of(1980, 1, 1)).execute()
-            Assertions.assertThat(
-                tr.select(h.name.nullable)
-                    .from(Employee.leftJoin(Hobby))
-                    .where(em.id.eq(id)).first()
-            )
-            assertThat(tr.select(e.children).where(em.id.eq(id)).first()).isNull()
-        }
-*/
         tm { tr ->
             tr.update(em).name("Janet").where(em.name.eq("Bob"))
             assertThat(tr.select(em.name).where(em.name.eq("Janet")).first()).isEqualTo("Janet")

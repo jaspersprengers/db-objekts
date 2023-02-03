@@ -35,14 +35,19 @@ abstract class ResultRow<out O> {
         return column.column.retrieveValue(column.position, resultSet)
     }
 
-    internal fun first(): O =
-        firstOrNull() ?: throw StatementExecutionException("Expected exactly one row, but result set was empty.")
-
+    internal fun first(): O {
+        val rows = retrieveSingleRow()
+        return if (rows.isEmpty()) throw StatementExecutionException("Expected exactly one row, but result set was empty.") else rows[0]
+    }
 
     internal fun firstOrNull(): O? {
-        withSlice(Slice.singleRow())
-        val rows = retrieve()
+        val rows = retrieveSingleRow()
         return if (rows.isEmpty()) null else rows[0]
+    }
+
+    private fun retrieveSingleRow(): List<O> {
+        withSlice(Slice.singleRow())
+        return retrieve()
     }
 
     internal fun asList(): List<O> = retrieve()
