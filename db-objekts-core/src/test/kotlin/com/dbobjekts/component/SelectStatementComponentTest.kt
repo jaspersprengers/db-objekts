@@ -10,8 +10,7 @@ import com.dbobjekts.testdb.acme.hr.Certificate
 import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
@@ -20,6 +19,7 @@ class SelectStatementComponentTest : HasAliases by Aliases {
 
     companion object {
         val tm = AcmeDB.transactionManager
+
         @BeforeAll
         @JvmStatic
         fun setup() {
@@ -41,6 +41,19 @@ class SelectStatementComponentTest : HasAliases by Aliases {
         assertEquals(30000.0, tm { it.select(em.salary).orderAsc(em.salary).first() })
     }
 
+
+    @Test
+    fun `difference between no results and null result in single row`() {
+        tm {
+            // no results: first throws
+            assertNull(it.select(em.children).where(em.name.eq("No Result")).firstOrNull())
+            assertThatThrownBy { it.select(em.children).where(em.name.eq("No Result")).first() }
+            // null in result. Can call both first and firstOrNull
+            assertNull(it.select(em.children).where(em.name.eq("Fred")).firstOrNull())
+            assertNull(it.select(em.children).where(em.name.eq("Fred")).first())
+        }
+
+    }
 
     @Test
     fun `test LIKE conditions on strings`() {
@@ -154,31 +167,36 @@ class SelectStatementComponentTest : HasAliases by Aliases {
         tm { tr ->
             val derivedJoin: Tuple6<EmployeeRow, String, AddressType, String, String?, String?> =
                 tr.select(Employee, Address.street, EmployeeAddress.kind, Department.name, Hobby.name.nullable, Certificate.name.nullable)
-                .from(Employee
-                    .leftJoin(ea)
-                    .leftJoin(ad)
-                    .leftJoin(ho)
-                    .leftJoin(ed)
-                    .leftJoin(de)
-                    .leftJoin(Certificate))
-                .orderAsc(Employee.name).first()
+                    .from(
+                        Employee
+                            .leftJoin(ea)
+                            .leftJoin(ad)
+                            .leftJoin(ho)
+                            .leftJoin(ed)
+                            .leftJoin(de)
+                            .leftJoin(Certificate)
+                    )
+                    .orderAsc(Employee.name).first()
             assertThat(derivedJoin.v1.name).isEqualTo("Alice")
 
             val manualJoin: Tuple6<EmployeeRow, String, AddressType, String, String?, String?> =
                 tr.select(Employee, Address.street, EmployeeAddress.kind, Department.name, Hobby.name.nullable, Certificate.name.nullable)
-                    .from(Employee
-                        .leftJoin(ea).on(ea.employeeId.eq(em.id))
-                        .leftJoin(ad).on(ea.addressId.eq(ad.id))
-                        .leftJoin(ho).on(em.hobbyId.eq(ho.id))
-                        .leftJoin(ed).on(em.id.eq(ed.employeeId))
-                        .leftJoin(de).on(ed.departmentId.eq(de.id))
-                        .leftJoin(ce).on(ce.employeeId.eq(em.id)))
+                    .from(
+                        Employee
+                            .leftJoin(ea).on(ea.employeeId.eq(em.id))
+                            .leftJoin(ad).on(ea.addressId.eq(ad.id))
+                            .leftJoin(ho).on(em.hobbyId.eq(ho.id))
+                            .leftJoin(ed).on(em.id.eq(ed.employeeId))
+                            .leftJoin(de).on(ed.departmentId.eq(de.id))
+                            .leftJoin(ce).on(ce.employeeId.eq(em.id))
+                    )
                     .orderAsc(Employee.name).first()
             assertThat(manualJoin.v1.name).isEqualTo("Alice")
 
-            val autoJoin = tr.select(Employee, Address.street, EmployeeAddress.kind, Department.name, Hobby.name.nullable, Certificate.name.nullable)
-                .orderAsc(Employee.name)
-                .useOuterJoins().first()
+            val autoJoin =
+                tr.select(Employee, Address.street, EmployeeAddress.kind, Department.name, Hobby.name.nullable, Certificate.name.nullable)
+                    .orderAsc(Employee.name)
+                    .useOuterJoins().first()
             assertThat(autoJoin.v1.name).isEqualTo("Alice")
         }
     }
@@ -230,7 +248,6 @@ class SelectStatementComponentTest : HasAliases by Aliases {
             s.select(em.name).where(em.id.gt(5)).limit(3).first()
         })
     }
-
 
 
 }

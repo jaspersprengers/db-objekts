@@ -95,7 +95,7 @@ object AcmeDB {
             tr.sql("insert into core.EMPLOYEE (ID, NAME, SALARY, MARRIED, DATE_OF_BIRTH, CHILDREN, HOBBY_ID) values (6, 'Alice', 36000, true, '1960-8-8', 5, 'c')").execute()
             tr.sql("insert into core.EMPLOYEE (ID, NAME, SALARY, MARRIED, DATE_OF_BIRTH, CHILDREN, HOBBY_ID) values (7, 'Gina', 31000, true, '1983-12-12', 2, 'f')").execute()
             tr.sql("insert into core.EMPLOYEE (ID, NAME, SALARY, MARRIED, DATE_OF_BIRTH, CHILDREN, HOBBY_ID) values (8, 'Charlie', 30000, true, '1988-6-16', 3, 'p')").execute()
-            tr.sql("insert into core.EMPLOYEE (ID, NAME, SALARY, MARRIED, DATE_OF_BIRTH, CHILDREN, HOBBY_ID) values (9, 'Fred', 38000, false, '1996-3-8', 0, 'f')").execute()
+            tr.sql("insert into core.EMPLOYEE (ID, NAME, SALARY, MARRIED, DATE_OF_BIRTH, CHILDREN, HOBBY_ID) values (9, 'Fred', 38000, false, '1996-3-8', null, 'f')").execute()
             tr.sql("insert into core.EMPLOYEE (ID, NAME, SALARY, MARRIED, DATE_OF_BIRTH, CHILDREN, HOBBY_ID) values (10, 'Jasper', 39000, false, '2000-5-5', 0, 'c')").execute()
 
             //finance people

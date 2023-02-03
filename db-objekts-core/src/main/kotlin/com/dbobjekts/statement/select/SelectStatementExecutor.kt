@@ -144,25 +144,49 @@ class SelectStatementExecutor<T, RSB : ResultRow<T>>(
      * For better performance, use this only when you expect a single result, or use the [limit] clause in addition.
      * @throws com.dbobjekts.api.exception.StatementExecutionException if there are no results. To prevent this, use [firstOrNull]
      */
-    fun first(): T = execute().first().also { semaphore.clear(); statementLog.logResult(it) }
+    fun first(): T {
+        try {
+            return execute().first().also { statementLog.logResult(it) }
+        } finally {
+            semaphore.clear()
+        }
+    }
 
     /**
      * Executes the select statement, fetches all rows and returns the first result, or null if there is no match.
      * For better performance, use this only when you expect a single result, or use the [limit] clause in addition.
      */
-    fun firstOrNull(): T? = execute().firstOrNull().also { semaphore.clear(); statementLog.logResult(it) }
+    fun firstOrNull(): T? {
+        try {
+            return execute().firstOrNull().also { statementLog.logResult(it) }
+        } finally {
+            semaphore.clear()
+        }
+    }
 
     /**
      * Executes the select statement, fetches all rows and returns them as a list of tuples
      */
-    fun asList(): List<T> = execute().asList().also { semaphore.clear(); statementLog.logResult(it) }
+    fun asList(): List<T> {
+        try {
+            return execute().asList().also { statementLog.logResult(it) }
+        } finally {
+            semaphore.clear()
+        }
+    }
 
     /**
      * Executes the select statement, fetches all rows and returns a slice of the result set.
      *
      * WARNING: do not use this in conjunction with a LIMIT clause.
      */
-    fun asSlice(skip: Long, limit: Long): List<T> = execute(Slice(skip, limit)).asList().also { semaphore.clear() }
+    fun asSlice(skip: Long, limit: Long): List<T> {
+        try {
+            return execute(Slice(skip, limit)).asList().also { statementLog.logResult(it) }
+        } finally {
+            semaphore.clear()
+        }
+    }
 
     private fun columnsToFetch(): List<ColumnInResultRow> =
         columns.mapIndexed { index, column -> ColumnInResultRow(1 + index, column) }

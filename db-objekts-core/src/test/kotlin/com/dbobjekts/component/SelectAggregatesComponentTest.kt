@@ -107,7 +107,7 @@ class SelectAggregatesComponentTest {
     fun `get distinct number of children and hobbies`() {
         tm { tr ->
             val kiddos = tr.select(e.children.distinct()).asList()
-            assertThat(kiddos).containsExactlyInAnyOrder(0, 1, 2, 3, 5)
+            assertThat(kiddos).containsExactlyInAnyOrder(null, 0, 1, 2, 3, 5)
 
             val hobbies = tr.select(e.hobbyId.distinct()).where(e.hobbyId.isNotNull()).asList()
             assertThat(hobbies).containsExactlyInAnyOrder("c", "p", "f")

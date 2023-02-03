@@ -5,6 +5,7 @@ import com.dbobjekts.fixture.columns.AddressType
 import com.dbobjekts.fixture.columns.AddressTypeColumn
 import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.metadata.column.EnumAsStringColumn
+import com.dbobjekts.metadata.column.NullableNumberAsBooleanColumn
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -87,7 +88,7 @@ class CustomSQLComponentTest {
                             left join core.ADDRESS ha on ha.ID = home.ADDRESS_ID                            
                     """.trimIndent()
             ).withResultTypes()
-                .custom(ColumnClasses.NUMBER_AS_BOOLEAN)
+                .customNil(NullableNumberAsBooleanColumn::class.java)
                 .custom(AddressTypeColumn::class.java)
                 .asList()
             assertThat(rows).hasSize(20)
