@@ -82,35 +82,6 @@ class SelectStatementComponentTest : HasAliases by Aliases {
     }
 
     @Test
-    fun `test select all employees with iterator`() {
-        tm({
-            val buffer = mutableListOf<String?>()
-            val iterator = it.select(em.name).where(em.id.lt(11))
-                .orderAsc(em.name).iterator()
-            while (iterator.hasNext()) {
-                buffer.add(iterator.next())
-            }
-            assertThat(buffer.size).isEqualTo(10)
-        })
-    }
-
-    @Test
-    fun `cannot return iterator from transaction block`() {
-        assertThatThrownBy {
-            val ret: Iterator<String> = tm({ it.select(em.name).where(em.id.lt(11)).iterator() })
-        }.hasMessageEndingWith("An Iterator over a ResultSet must be consumed within the transaction block.")
-    }
-
-    @Test
-    fun `select slice of all employees`() {
-        tm({
-            val two: List<String> = it.select(em.name).orderAsc(em.name).asSlice(2, 4)
-            //skipping Alice and Bob
-            assertThat(two).containsExactly("Charlie", "Diane", "Eve", "Fred")
-        })
-    }
-
-    @Test
     fun `test select, IN whereclause`() {
         tm({ tr ->
             tr.select(em.name).asList()

@@ -935,7 +935,7 @@ For numeric types we have, from small to large
 
 |===
 
-Then there is String and Boolean
+Then there is String and Booleancustomsql
 
 |===
 |Column class  |value class

@@ -6,10 +6,21 @@ import com.dbobjekts.fixture.columns.AddressTypeColumn
 import com.dbobjekts.metadata.ColumnFactory
 import com.dbobjekts.metadata.column.EnumAsStringColumn
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 
 class CustomSQLComponentTest {
 
+
+    companion object {
+        @JvmStatic
+        @BeforeAll
+        fun setup() {
+            AcmeDB.createExampleCatalog(AcmeDB.transactionManager)
+        }
+
+        val tm = AcmeDB.transactionManager
+    }
 
     val sql = """
                         select e.id,e.name,e.SALARY,e.MARRIED,e.CHILDREN,
@@ -26,28 +37,47 @@ class CustomSQLComponentTest {
 
     @Test
     fun `test all employees with home and work address`() {
-        AcmeDB.createExampleCatalog(AcmeDB.transactionManager)
-        val tm = AcmeDB.transactionManager
-        tm({
-            val rows = it.sql(sql).withResultTypes().long().string().double().booleanNil().intNil().date().stringNil().stringNil().stringNil().string()
-                .stringNil()
-                .asList()
-            assertThat(rows).hasSize(11)
-            var counter = 0
-            val iterator = it.sql("select e.id from core.EMPLOYEE e").withResultTypes().long()
-                .iterator().forEachRemaining { row ->
-                    counter += 1
-                }
-            assertThat(counter).isEqualTo(10)
 
+        tm({
+            val rows =
+                it.sql(sql).withResultTypes().long().string().double().booleanNil().intNil().date().stringNil().stringNil().stringNil()
+                    .string()
+                    .stringNil()
+                    .asList()
+            assertThat(rows).hasSize(11)
+        })
+    }
+
+    @Test
+    fun `select with iterator`() {
+
+        tm({
+            val iterator = it.sql("select e.id from core.EMPLOYEE e").withResultTypes().long()
+                .iterator()
+            var counter = 0
+            iterator.forEachRemaining { row ->
+                counter += 1
+            }
+            assertThat(counter).isEqualTo(10)
+        })
+    }
+
+    @Test
+    fun `select with foreach loop`() {
+        tm({
+            var counter = 0
+            it.sql("select e.id from core.EMPLOYEE e").withResultTypes().long()
+                .forEachRow({ nmb, row ->
+                    counter += 1
+                    nmb < 5 // break after 5 rows
+                })
+            assertThat(counter).isEqualTo(5)
         })
     }
 
 
     @Test
     fun `test custom`() {
-        AcmeDB.createExampleCatalog(AcmeDB.transactionManager)
-        val tm = AcmeDB.transactionManager
         tm({
             val rows = it.sql(
                 """

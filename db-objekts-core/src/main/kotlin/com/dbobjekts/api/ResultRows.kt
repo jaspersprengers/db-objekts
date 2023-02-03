@@ -14,15 +14,21 @@ import java.sql.ResultSet
 abstract class ResultRow<out O> {
 
     protected lateinit var jdbcResultSetAdapter: JDBCResultSetAdapter
-    private lateinit var rows: List<O>
+    private var fetched = false
+    private var slice: Slice? = null
     internal lateinit var selectables: List<Selectable<*>>
 
     internal fun initialize(jdbcResultSetAdapter: JDBCResultSetAdapter) {
         this.jdbcResultSetAdapter = jdbcResultSetAdapter
     }
 
-    internal fun retrieveAll(slice: Slice? = null){
-        rows = jdbcResultSetAdapter.retrieveAll(this, slice)
+    internal fun withSlice(slice: Slice) {
+        this.slice = slice
+    }
+
+    private fun retrieve(): List<O> {
+        assertNotFetched()
+        return jdbcResultSetAdapter.retrieve(this, slice).also { fetched = true }
     }
 
     internal fun extractValue(column: ColumnInResultRow, resultSet: ResultSet): Any? {
@@ -30,18 +36,31 @@ abstract class ResultRow<out O> {
     }
 
     internal fun first(): O =
-        if (rows.isEmpty())
-            throw StatementExecutionException("Expected exactly one row, but result set was empty.")
-        else rows.get(0)
+        firstOrNull() ?: throw StatementExecutionException("Expected exactly one row, but result set was empty.")
 
-    internal fun firstOrNull(): O? = if (rows.isEmpty()) null else rows.get(0)
 
-    internal fun asList(): List<O> = rows
+    internal fun firstOrNull(): O? {
+        withSlice(Slice.singleRow())
+        val rows = retrieve()
+        return if (rows.isEmpty()) null else rows[0]
+    }
 
-    internal fun extractRow(cols: List<ColumnInResultRow>, resultSet: ResultSet): O{
+    internal fun asList(): List<O> = retrieve()
+
+    internal fun <T, RS : ResultRow<T>> iterator(): ResultSetIterator<T, RS> {
+        assertNotFetched()
+        return ResultSetIterator(this, jdbcResultSetAdapter.resultSetColumns, jdbcResultSetAdapter.resultSet) as ResultSetIterator<T, RS>
+    }
+
+    internal fun assertNotFetched() {
+        if (fetched)
+            throw StatementExecutionException("Cannot retrieve results twice.")
+    }
+
+    internal fun extractRow(cols: List<ColumnInResultRow>, resultSet: ResultSet): O {
         var index = 0
         val values = mutableListOf<Any?>()
-        for (s in selectables){
+        for (s in selectables) {
             val retrieved: List<Any?> = s.columns.mapIndexed() { idx, _ ->
                 val curr = index + idx
                 extractValue(cols[curr], resultSet)
@@ -184,7 +203,8 @@ class ResultRow11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> : ResultRow<Tupl
 
 class ResultRow12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> :
     ResultRow<Tuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>>() {
-    override fun castToRow(values: List<Any?>
+    override fun castToRow(
+        values: List<Any?>
     ): Tuple12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> =
         Tuple12(
             values[0] as T1,
@@ -204,7 +224,8 @@ class ResultRow12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> :
 
 class ResultRow13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> :
     ResultRow<Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>>() {
-    override fun castToRow(values: List<Any?>
+    override fun castToRow(
+        values: List<Any?>
     ): Tuple13<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> =
         Tuple13(
             values[0] as T1,
@@ -246,7 +267,8 @@ class ResultRow14<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> :
 
 class ResultRow15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> :
     ResultRow<Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>>() {
-    override fun castToRow(values: List<Any?>
+    override fun castToRow(
+        values: List<Any?>
     ): Tuple15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> =
         Tuple15(
             values[0] as T1,
@@ -269,7 +291,8 @@ class ResultRow15<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T
 
 class ResultRow16<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> :
     ResultRow<Tuple16<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>>() {
-    override fun castToRow(values: List<Any?>
+    override fun castToRow(
+        values: List<Any?>
     ): Tuple16<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> =
         Tuple16(
             values[0] as T1,
@@ -293,7 +316,8 @@ class ResultRow16<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T
 
 class ResultRow17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> :
     ResultRow<Tuple17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17>>() {
-    override fun castToRow(values: List<Any?>
+    override fun castToRow(
+        values: List<Any?>
     ): Tuple17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17> =
         Tuple17(
             values[0] as T1,
@@ -318,7 +342,8 @@ class ResultRow17<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T
 
 class ResultRow18<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18> :
     ResultRow<Tuple18<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18>>() {
-    override fun castToRow(values: List<Any?>
+    override fun castToRow(
+        values: List<Any?>
     ): Tuple18<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18> =
         Tuple18(
             values[0] as T1,
@@ -370,7 +395,8 @@ class ResultRow19<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T
 
 class ResultRow20<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20> :
     ResultRow<Tuple20<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20>>() {
-    override fun castToRow(values: List<Any?>
+    override fun castToRow(
+        values: List<Any?>
     ): Tuple20<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20> =
         Tuple20(
             values[0] as T1,
@@ -398,7 +424,8 @@ class ResultRow20<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T
 
 class ResultRow21<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21> :
     ResultRow<Tuple21<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21>>() {
-    override fun castToRow(values: List<Any?>
+    override fun castToRow(
+        values: List<Any?>
     ): Tuple21<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21> =
         Tuple21(
             values[0] as T1,
@@ -427,7 +454,8 @@ class ResultRow21<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T
 
 class ResultRow22<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22> :
     ResultRow<Tuple22<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22>>() {
-    override fun castToRow(values: List<Any?>
+    override fun castToRow(
+        values: List<Any?>
     ): Tuple22<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22> =
         Tuple22(
             values[0] as T1,

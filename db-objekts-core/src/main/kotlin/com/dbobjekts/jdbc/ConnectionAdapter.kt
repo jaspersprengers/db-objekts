@@ -62,7 +62,7 @@ data class ConnectionAdapter(
     ): T {
         val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters))
         selectResultSet.initialize(resultSetAdapter)
-        selectResultSet.retrieveAll(slice)
+        slice?.let { selectResultSet.withSlice(it) }
         return selectResultSet
     }
 
@@ -74,6 +74,7 @@ data class ConnectionAdapter(
         iteratorFunction: (Int, T) -> Boolean
     ) {
         val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters))
+        selectResultSet.assertNotFetched()
         selectResultSet.initialize(resultSetAdapter)
         resultSetAdapter.retrieveWithIterator(selectResultSet, iteratorFunction)
     }
@@ -85,8 +86,9 @@ data class ConnectionAdapter(
         selectResultSet: RS
     ): ResultSetIterator<T, RS> {
         val resultSetAdapter = JDBCResultSetAdapter(columnsToFetch, executeSelect(sql, parameters))
+        selectResultSet.assertNotFetched()
         selectResultSet.initialize(resultSetAdapter)
-        return ResultSetIterator(selectResultSet, columnsToFetch, resultSetAdapter.resultSet)
+        return selectResultSet.iterator()
     }
 
     private fun executeSelect(

@@ -33,15 +33,16 @@ class JDBCResultSetAdapter(
         return resultSetColumns
     }
 
-    fun <T, RS : ResultRow<T>> retrieveAll(
-        resultRow: RS,
+    fun <T, RS : ResultRow<T>> retrieve(
+        resultTemplate: RS,
         slice: Slice?
     ): List<T> {
         val buffer = LinkedList<T>()
         var rowNumber = 0
         while (advanceResultSet()) {
-            if (slice == null || (slice.skip <= rowNumber && buffer.size < slice.limit))
-                buffer.add(resultRow.extractRow(resultSetColumns, resultSet))
+            if (slice == null || (slice.skip <= rowNumber && buffer.size < slice.limit)) {
+                buffer.add(resultTemplate.extractRow(resultSetColumns, resultSet))
+            }
             rowNumber += 1
         }
         resultSet.close()

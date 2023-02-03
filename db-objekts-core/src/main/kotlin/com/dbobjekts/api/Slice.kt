@@ -11,4 +11,11 @@ data class Slice(
         if (limit < 1)
             throw IllegalArgumentException("Limit must be >= 1")
     }
+
+    companion object {
+        fun singleRow(): Slice {
+            return Slice(0, 1)
+        }
+    }
+
 }
