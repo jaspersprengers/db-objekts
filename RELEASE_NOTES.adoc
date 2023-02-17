@@ -1,5 +1,12 @@
 = Release notes
 
+== 0.4.5-alpha
+* All Column implementations in core are open for extension
+* Added `.and()` method to configuration builders for more fluent syntax in code generator.
+* Tables in schema are added to Schema metadata objects as static fields, fiving an overview in autocomplete.
+* The same applies for all schemas in a CatalogDefinition
+
+
 == 0.4.4-alpha
 * Aliases generator creates by default two-letter aliases for better usability.
 * New `iterator()` retrieval method for select and custom sql statements to step through each row in a result set.
