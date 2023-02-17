@@ -10,7 +10,7 @@ import java.sql.Types
  *
  * @param name    The column name in the corresponding database table
  */
-class BooleanColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class BooleanColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NonNullableColumn<Boolean>(table,name, Boolean::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
@@ -20,7 +20,7 @@ class BooleanColumn(table: AnyTable, name: String, aggregateType: AggregateType?
         statement.setBoolean(position, value)
 }
 
-class NullableBooleanColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class NullableBooleanColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<Boolean?>(table,name, Types.BOOLEAN, Boolean::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
@@ -30,7 +30,7 @@ class NullableBooleanColumn(table: AnyTable, name: String, aggregateType: Aggreg
         statement.setBoolean(position, value as Boolean)
 }
 
-class NumberAsBooleanColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class NumberAsBooleanColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NonNullableColumn<Boolean>(table,name, Boolean::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
@@ -40,7 +40,7 @@ class NumberAsBooleanColumn(table: AnyTable, name: String, aggregateType: Aggreg
         statement.setInt(position, if (value) 1 else 0)
 }
 
-class NullableNumberAsBooleanColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class NullableNumberAsBooleanColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<Boolean?>(table,name, Types.INTEGER, Boolean::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 

@@ -12,7 +12,7 @@ import javax.sql.rowset.serial.SerialClob
  *
  * @param name The column name in the corresponding database table
  */
-class ClobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class ClobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NonNullableColumn<Clob>(table,name, Clob::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
@@ -27,7 +27,7 @@ class ClobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     }
 }
 
-class NullableClobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class NullableClobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<Clob?>(table,name, Types.CLOB, Clob::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 

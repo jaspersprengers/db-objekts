@@ -10,7 +10,7 @@ import java.sql.Types
  *
  * @param name    The column name in the corresponding database table
  */
-class FloatColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class FloatColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NonNullableColumn<Float>(table,name, Float::class.java, aggregateType), FloatingPointNumericColumn by FloatingPointNumericColumnCloner(table, name){
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
@@ -20,7 +20,7 @@ class FloatColumn(table: AnyTable, name: String, aggregateType: AggregateType?) 
         statement.setFloat(position, value)
 }
 
-class NullableFloatColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class NullableFloatColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<Float?>(table,name, Types.FLOAT, Float::class.java, aggregateType), FloatingPointNumericColumn by FloatingPointNumericColumnCloner(table, name){
     constructor(table: AnyTable, name: String) : this(table, name, null)
 

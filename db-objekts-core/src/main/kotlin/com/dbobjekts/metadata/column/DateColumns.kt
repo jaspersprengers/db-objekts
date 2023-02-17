@@ -13,7 +13,7 @@ import java.time.LocalTime
  *
  * @param name The column name in the corresponding database table
  */
-class DateColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class DateColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NonNullableColumn<LocalDate>(table,name, LocalDate::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
@@ -26,7 +26,7 @@ class DateColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
         statement.setDate(position, DateUtil.toSqlDate(value))
 }
 
-class NullableDateColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class NullableDateColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<LocalDate?>(table,name, Types.DATE, LocalDate::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 

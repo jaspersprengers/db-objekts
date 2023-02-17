@@ -5,7 +5,7 @@ import com.dbobjekts.api.exception.DBObjektsException
 
 interface AutoKeyColumn<I> : IsGeneratedPrimaryKey
 
-class AutoKeyIntegerColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class AutoKeyIntegerColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     IntegerColumn(table, name, aggregateType), AutoKeyColumn<Int> {
     constructor(table: AnyTable, name: String) : this(table, name, null)
     override val nullable: NullableColumn<Int?> = NullableIntegerColumn(table, name, aggregateType)
@@ -15,7 +15,7 @@ class AutoKeyIntegerColumn(table: AnyTable, name: String, aggregateType: Aggrega
 
 }
 
-class AutoKeyLongColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class AutoKeyLongColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     LongColumn(table, name, aggregateType), AutoKeyColumn<Long> {
     constructor(table: AnyTable, name: String) : this(table, name, null)
     override val nullable: NullableColumn<Long?> = NullableLongColumn(table, name, aggregateType)

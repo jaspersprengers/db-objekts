@@ -15,7 +15,7 @@ import java.time.LocalTime
  *
  * @param name The column name in the corresponding database table
  */
-class LegacyDateColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class LegacyDateColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NonNullableColumn<Date>(table,name, Date::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
@@ -25,7 +25,7 @@ class LegacyDateColumn(table: AnyTable, name: String, aggregateType: AggregateTy
         statement.setDate(position, value)
 }
 
-class NullableLegacyDateColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class NullableLegacyDateColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<Date?>(table,name, Types.DATE, Date::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 

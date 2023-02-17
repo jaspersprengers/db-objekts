@@ -11,7 +11,7 @@ import java.sql.Types
  *
  * @param name    The column name in the corresponding database table
  */
-class BigDecimalColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class BigDecimalColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NonNullableColumn<BigDecimal>(table,name, BigDecimal::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
@@ -27,7 +27,7 @@ class BigDecimalColumn(table: AnyTable, name: String, aggregateType: AggregateTy
 
 }
 
-class NullableBigDecimalColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class NullableBigDecimalColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<BigDecimal?>(table,name, Types.NUMERIC, BigDecimal::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 

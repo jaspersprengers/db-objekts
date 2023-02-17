@@ -13,7 +13,7 @@ import java.time.OffsetDateTime
  *
  * @param name The column name in the corresponding database table
  */
-class OffsetDateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class OffsetDateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NonNullableColumn<OffsetDateTime>(table,name, OffsetDateTime::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
@@ -24,7 +24,7 @@ class OffsetDateTimeColumn(table: AnyTable, name: String, aggregateType: Aggrega
     }
 }
 
-class NullableOffsetDateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class NullableOffsetDateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<OffsetDateTime?>(table,name, Types.TIMESTAMP, OffsetDateTime::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 

@@ -13,7 +13,7 @@ import java.time.LocalTime
  *
  * @param name The column name in the corresponding database table
  */
-class TimeStampColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class TimeStampColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NonNullableColumn<Instant>(table,name, Instant::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
@@ -23,7 +23,7 @@ class TimeStampColumn(table: AnyTable, name: String, aggregateType: AggregateTyp
         statement.setTimestamp(position, DateUtil.toSqlTimeStamp(value))
 }
 
-class NullableTimeStampColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class NullableTimeStampColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<Instant?>(table,name, Types.TIMESTAMP, Instant::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 

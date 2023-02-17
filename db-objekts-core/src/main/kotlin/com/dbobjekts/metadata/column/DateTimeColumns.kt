@@ -7,7 +7,7 @@ import java.sql.ResultSet
 import java.sql.Types
 import java.time.LocalDateTime
 
-class DateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class DateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NonNullableColumn<LocalDateTime>(table,name, LocalDateTime::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
@@ -18,7 +18,7 @@ class DateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType
         statement.setTimestamp(position, DateUtil.toSqlTimeStamp(value))
 }
 
-class NullableDateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class NullableDateTimeColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<LocalDateTime?>(table,name, Types.TIMESTAMP, LocalDateTime::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 

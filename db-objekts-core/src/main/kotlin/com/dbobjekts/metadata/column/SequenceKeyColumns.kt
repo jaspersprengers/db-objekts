@@ -8,7 +8,7 @@ interface SequenceKeyColumn<I> : IsGeneratedPrimaryKey {
     fun createValueForUpdate(key: Long): NullableColumnAndValue<I>
 }
 
-class SequenceKeyLongColumn(
+open class SequenceKeyLongColumn(
     table: AnyTable,
     name: String,
     val sequence: String,
@@ -28,7 +28,7 @@ class SequenceKeyLongColumn(
 }
 
 
-class SequenceKeyIntegerColumn(
+open class SequenceKeyIntegerColumn(
     table: AnyTable,
     name: String,
     val sequence: String,

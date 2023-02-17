@@ -13,7 +13,7 @@ import javax.sql.rowset.serial.SerialBlob
  *
  * @param name The column name in the corresponding database table
  */
-class BlobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class BlobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NonNullableColumn<Blob>(table,name, Blob::class.java, aggregateType) {
 
     constructor(table: AnyTable, name: String) : this(table, name, null)
@@ -31,7 +31,7 @@ class BlobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     }
 }
 
-class NullableBlobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
+open class NullableBlobColumn(table: AnyTable, name: String, aggregateType: AggregateType?) :
     NullableColumn<Blob?>(table,name, Types.BLOB, Blob::class.java, aggregateType) {
     constructor(table: AnyTable, name: String) : this(table, name, null)
 
