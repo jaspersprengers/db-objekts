@@ -3,7 +3,7 @@ package com.dbobjekts.codegen
 import com.dbobjekts.api.PackageName
 import com.dbobjekts.api.SchemaName
 import com.dbobjekts.api.TableName
-import com.dbobjekts.codegen.exclusionfilters.ExclusionConfigurer
+import com.dbobjekts.codegen.configbuilders.ExclusionConfigurer
 import com.dbobjekts.api.TableExclusionFilter
 import com.dbobjekts.codegen.metadata.DBTableDefinition
 import org.assertj.core.api.Assertions.assertThat
@@ -16,7 +16,7 @@ class TableExclusionTest {
     val departments = employees.copy(tableName = TableName("departments"))
     val salaries = employees.copy(tableName = TableName("salaries"), schema = SchemaName("finance"))
 
-    val set = ExclusionConfigurer()
+    val set = ExclusionConfigurer(CodeGenerator())
 
     @Test
     fun `include all tables`() {

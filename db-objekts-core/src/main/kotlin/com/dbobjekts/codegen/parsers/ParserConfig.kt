@@ -1,12 +1,11 @@
 package com.dbobjekts.codegen.parsers
 
 import com.dbobjekts.api.ColumnTypeMapper
-import com.dbobjekts.api.CustomColumnTypeMapper
 import com.dbobjekts.api.PackageName
 import com.dbobjekts.api.SequenceForPrimaryKeyResolver
 import com.dbobjekts.codegen.configbuilders.CodeGeneratorConfig
 import com.dbobjekts.codegen.configbuilders.ObjectNamingConfigurer
-import com.dbobjekts.codegen.exclusionfilters.ExclusionConfigurer
+import com.dbobjekts.codegen.configbuilders.ExclusionConfigurer
 import com.dbobjekts.vendors.Vendor
 
 

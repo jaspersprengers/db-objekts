@@ -2,11 +2,12 @@ package com.dbobjekts.codegen.configbuilders
 
 import com.dbobjekts.api.PackageName
 import com.dbobjekts.api.exception.CodeGenerationException
+import com.dbobjekts.codegen.CodeGenerator
 
 /**
  * Configuration object for the output of the generated code
  */
-class OutputConfigurer {
+class OutputConfigurer(generator: CodeGenerator) : AbstractConfigurer(generator) {
 
     internal var basedirOpt: String? = null
     internal var basePackage: PackageName? = null

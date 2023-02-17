@@ -2,9 +2,7 @@ package com.dbobjekts.codegen.configbuilders
 
 import com.dbobjekts.api.ColumnTypeMapper
 import com.dbobjekts.api.PackageName
-import com.dbobjekts.api.CustomColumnTypeMapper
 import com.dbobjekts.api.SequenceForPrimaryKeyResolver
-import com.dbobjekts.codegen.exclusionfilters.ExclusionConfigurer
 import javax.sql.DataSource
 
 

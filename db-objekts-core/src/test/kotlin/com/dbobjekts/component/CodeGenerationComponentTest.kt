@@ -11,32 +11,30 @@ import com.dbobjekts.testdb.acme.CatalogDefinition
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.Test
-import java.lang.IllegalStateException
-import java.nio.file.Paths
 
 class CodeGenerationComponentTest {
 
     @Test
     fun `validate acme catalog`() {
 
-        val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
-
-        generator.configurePrimaryKeySequences()
+        CodeGenerator()
+            .withDataSource(AcmeDB.dataSource)
+        .configurePrimaryKeySequences()
             .addCustomResolver(LibrarySchemaResolver)
             .setSequenceNameForPrimaryKey("core", "employee", "id", "EMPLOYEE_SEQUENCE")
             .setSequenceNameForPrimaryKey("core", "address", "id", "ADDRESS_SEQ")
             .setSequenceNameForPrimaryKey("core", "department", "id", "DEPARTMENT_SEQ")
-
-        generator.configureColumnTypeMapping()
+        .and().configureColumnTypeMapping()
             .setColumnTypeForJDBCType("TINYINT(1)", NumberAsBooleanColumn::class.java)
             .setEnumForColumnName(column = "kind", table = "EMPLOYEE_ADDRESS", enumClass = AddressType::class.java)
             .setEnumForColumnName(column = "address_string", enumClass = AddressType::class.java)
             .setEnumForColumnName(column = "address_int", enumClass = AddressType::class.java)
-        generator.configureOutput()
-            .basePackageForSources("com.dbobjekts.testdb.acme")
+        .and().configureOutput()
+            .basePackageForSources("com.dbobjekts.testdb2.acme")
             .outputDirectoryForGeneratedSources(PathsUtil.getGeneratedSourcesDirectory())
-        generator.validateCatalog(CatalogDefinition).assertNoDifferences()
-        generator.generateSourceFiles()
+        .and().validateCatalog(CatalogDefinition)
+            .assertNoDifferences()
+        .and().generateSourceFiles()
     }
 
     @Test
@@ -49,17 +47,18 @@ class CodeGenerationComponentTest {
                 .execute()
         }
 
-        val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
-        generator.configureExclusions().ignoreSchemas("core", "hr", "library")
-        generator.configureObjectNaming()
+        val def = CodeGenerator()
+            .withDataSource(AcmeDB.dataSource)
+            .configureExclusions()
+            .ignoreSchemas("core", "hr", "library")
+            .and().configureObjectNaming()
             .setObjectNameForTable("trial", "emploiee", "Employee")
             .setObjectNameForTable("trial", "adres", "Address")
             .setFieldNameForColumn("trial", "emploiee", "id", "primaryKey")
             .setFieldNameForColumn("trial", "adres", "adres_id", "addressId")
-        generator.configureOutput()
+            .and().configureOutput()
             .basePackageForSources("com.dbobjekts.testdb.acme")
-        val def = generator.createCatalogDefinition()
-
+            .and().createCatalogDefinition()
 
         val employeeTable = def.findTable("trial", "emploiee") ?: throw IllegalStateException("no employee table found")
         val employeeId = employeeTable.findPrimaryKey("id") ?: throw IllegalStateException()
@@ -70,18 +69,18 @@ class CodeGenerationComponentTest {
     }
 
     @Test
-    fun `with reserved schema name`(){
+    fun `with reserved schema name`() {
         val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
         AcmeDB.transactionManager {
             it.sql("CREATE SCHEMA if not exists string").execute()
             it.sql("CREATE TABLE if not exists string.string(id int null)").execute()
-            generator.configureExclusions().ignoreSchemas("core", "hr", "library")
-            generator.configureObjectNaming()
+            val def = generator.configureExclusions().ignoreSchemas("core", "hr", "library")
+                .and().configureObjectNaming()
                 .setObjectNameForSchema("string", "StringSchema")
-                .setObjectNameForTable("string","string", "StringTable")
-            generator.configureOutput()
+                .setObjectNameForTable("string", "string", "StringTable")
+                .and().configureOutput()
                 .basePackageForSources("com.dbobjekts.testdb.acme")
-            val def = generator.createCatalogDefinition()
+                .and().createCatalogDefinition()
 
             assertThat(def.findSchema("string")?.schemaName?.metaDataObjectName).isEqualTo("StringSchema")
             assertThat(def.findTable("string", "string")?.tableName?.metaDataObjectName).isEqualTo("StringTable")
@@ -102,14 +101,14 @@ class CodeGenerationComponentTest {
             it.sql("alter table core.country add date_created DATETIME not null default now()").execute()
             it.sql("alter table core.country add audit_pending DATETIME null").execute()
         }
-        generator.configureExclusions()
+        val def = generator.configureExclusions()
             .ignoreColumnPattern("audit")
             .ignoreColumn("date_created")
             .ignoreSchemas("finance")
             .ignoreTable("country", schema = "hr") // important to specify schema, because there is a core.country as well
-        generator.configureOutput()
+            .and().configureOutput()
             .basePackageForSources("com.dbobjekts.testdb.acme")
-        val def = generator.createCatalogDefinition()
+            .and().createCatalogDefinition()
 
         assertThat(def.findColumnsForType(SequenceKeyLongColumn::class.java)).hasSize(7)
 
@@ -121,8 +120,7 @@ class CodeGenerationComponentTest {
 
     @Test
     fun `with illegal identifiers`() {
-        val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
-        val conf = generator.configureObjectNaming()
+        val conf = CodeGenerator().withDataSource(AcmeDB.dataSource).configureObjectNaming()
         assertThatThrownBy { conf.setObjectNameForSchema("core", "true") }
             .hasMessage("true cannot be used as an override for schema 'core'. It is a restricted Java/Kotlin keyword.")
         assertThatThrownBy { conf.setFieldNameForColumn("core", "employee", "married", "true") }
@@ -139,18 +137,21 @@ class CodeGenerationComponentTest {
     @Test
     fun `with duplicate column names`() {
         val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
-        generator.configureObjectNaming().setFieldNameForColumn("core", "employee", "married", "salary")
-        generator.configureOutput()
+            .configureObjectNaming().setFieldNameForColumn("core", "employee", "married", "salary")
+            .and()
+            .configureOutput()
             .basePackageForSources("com.dbobjekts.testdb.acme")
+            .and()
         assertThatThrownBy { generator.createCatalogDefinition() }.hasMessageStartingWith("The following column names are found more than once in table EMPLOYEE")
     }
 
     @Test
     fun `with duplicate table names`() {
         val generator = CodeGenerator().withDataSource(AcmeDB.dataSource)
-        generator.configureObjectNaming().setObjectNameForTable("core", "employee", "country")
-        generator.configureOutput()
+            .configureObjectNaming().setObjectNameForTable("core", "employee", "country")
+            .and().configureOutput()
             .basePackageForSources("com.dbobjekts.testdb.acme")
+            .and()
         assertThatThrownBy { generator.createCatalogDefinition() }.hasMessageStartingWith("The following table names  [Country] are found multiple times across schemas. This is not allowed.")
     }
 

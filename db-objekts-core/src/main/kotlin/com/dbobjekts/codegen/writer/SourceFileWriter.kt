@@ -4,6 +4,7 @@ import com.dbobjekts.api.PackageName
 import org.apache.commons.io.FileUtils
 import java.io.File
 import java.nio.charset.Charset
+import java.nio.file.Files
 
 class SourceFileWriter(private val baseDir: String) {
     private val sep = File.separator

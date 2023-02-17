@@ -2,13 +2,14 @@ package com.dbobjekts.codegen.configbuilders
 
 import com.dbobjekts.api.ColumnTypeMapper
 import com.dbobjekts.api.CustomColumnTypeMapper
+import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.codegen.datatypemapper.*
 import com.dbobjekts.metadata.column.NonNullableColumn
 
 /**
  * Handles custom mapping to [com.dbobjekts.metadata.column.Column] types
  */
-class ColumnTypeMappingConfigurer {
+class ColumnTypeMappingConfigurer(generator: CodeGenerator) : AbstractConfigurer(generator) {
 
     internal val mappers: MutableList<ColumnTypeMapper> = mutableListOf()
 

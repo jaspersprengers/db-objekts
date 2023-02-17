@@ -40,7 +40,7 @@ class SourcesGenerator(
         FileUtils.deleteDirectory(rootpackageDir)
 
         catalog.schemas.forEach { schemaDefinition ->
-            val schemaFileBuilder = SchemaCodeBuilder(schemaDefinition)
+            val schemaFileBuilder = SchemaSourceBuilder(schemaDefinition)
             writeSourceFile(
                 schemaDefinition,
                 schemaDefinition.schemaName.value,
@@ -53,7 +53,7 @@ class SourcesGenerator(
             }
         }
 
-        writeSourceFile(null, catalog.name, CatalogCodeBuilder(catalog).createFileSource())
+        writeSourceFile(null, catalog.name, CatalogSourceBuilder(catalog).createFileSource())
         writeSourceFile(null, "Aliases", AliasCodeBuilder(catalog).createFileSource())
 
 

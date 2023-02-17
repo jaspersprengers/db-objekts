@@ -1,9 +1,10 @@
-package com.dbobjekts.codegen.exclusionfilters
+package com.dbobjekts.codegen.configbuilders
 
 import com.dbobjekts.api.ColumnExclusionFilter
 import com.dbobjekts.api.SchemaExclusionFilter
 import com.dbobjekts.api.TableExclusionFilter
 import com.dbobjekts.api.exception.CodeGenerationException
+import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.codegen.metadata.ColumnMetaData
 import com.dbobjekts.codegen.metadata.DBTableDefinition
 import com.dbobjekts.codegen.metadata.TableMetaData
@@ -11,7 +12,7 @@ import com.dbobjekts.codegen.metadata.TableMetaData
 /**
  * Handles exclusions for the code generator engine, based on certain schemas, tables or columns.
  */
-class ExclusionConfigurer() {
+class ExclusionConfigurer(codeGenerator: CodeGenerator): AbstractConfigurer(codeGenerator) {
 
     internal var schemaFilters = mutableSetOf<SchemaExclusionFilter>()
     internal var tableFilters = mutableSetOf<TableExclusionFilter>()

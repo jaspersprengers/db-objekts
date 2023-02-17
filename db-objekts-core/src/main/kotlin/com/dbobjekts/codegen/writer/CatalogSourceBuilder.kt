@@ -3,7 +3,7 @@ package com.dbobjekts.codegen.writer
 import com.dbobjekts.codegen.metadata.DBCatalogDefinition
 import com.dbobjekts.util.Version
 
-class CatalogCodeBuilder(val catalog: DBCatalogDefinition) {
+class CatalogSourceBuilder(val catalog: DBCatalogDefinition) {
     private val strBuilder = StringBuilder()
 
     fun createFileSource(): String {

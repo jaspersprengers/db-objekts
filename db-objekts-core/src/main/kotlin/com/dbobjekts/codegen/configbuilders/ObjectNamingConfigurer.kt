@@ -3,10 +3,11 @@ package com.dbobjekts.codegen.configbuilders
 import com.dbobjekts.api.ColumnName
 import com.dbobjekts.api.SchemaName
 import com.dbobjekts.api.TableName
+import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.util.ObjectNameValidator
 
 
-class ObjectNamingConfigurer {
+class ObjectNamingConfigurer(generator: CodeGenerator) : AbstractConfigurer(generator) {
 
     private val columnOverrides = mutableListOf<ColumnOverride>()
     private val tableOverrides = mutableListOf<TableOverride>()

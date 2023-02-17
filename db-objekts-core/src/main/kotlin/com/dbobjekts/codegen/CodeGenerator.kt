@@ -3,7 +3,7 @@ package com.dbobjekts.codegen
 import com.dbobjekts.api.TransactionManager
 import com.dbobjekts.api.exception.CodeGenerationException
 import com.dbobjekts.codegen.configbuilders.*
-import com.dbobjekts.codegen.exclusionfilters.ExclusionConfigurer
+import com.dbobjekts.codegen.configbuilders.ExclusionConfigurer
 import com.dbobjekts.codegen.metadata.DBCatalogDefinition
 import com.dbobjekts.codegen.parsers.CatalogParser
 import com.dbobjekts.codegen.parsers.ParserConfig
@@ -32,12 +32,12 @@ import javax.sql.DataSource
 class CodeGenerator {
 
     private val logger = LoggerFactory.getLogger(CodeGenerator::class.java)
-    private var exclusionConfigurer: ExclusionConfigurer = ExclusionConfigurer()
+    private var exclusionConfigurer: ExclusionConfigurer = ExclusionConfigurer(this)
     private lateinit var dataSource: DataSource
-    private val outputConfigurer = OutputConfigurer()
-    private val objectNamingConfigurer = ObjectNamingConfigurer()
-    private val columnTypeMappingConfigurer = ColumnTypeMappingConfigurer()
-    private val primaryKeySequenceConfigurer = PrimaryKeySequenceConfigurer()
+    private val outputConfigurer = OutputConfigurer(this)
+    private val objectNamingConfigurer = ObjectNamingConfigurer(this)
+    private val columnTypeMappingConfigurer = ColumnTypeMappingConfigurer(this)
+    private val primaryKeySequenceConfigurer = PrimaryKeySequenceConfigurer(this)
 
     fun withDataSource(datasource: DataSource): CodeGenerator {
         if (this::dataSource.isInitialized)
@@ -100,7 +100,7 @@ class CodeGenerator {
      * report.assertNoDifferences()
      * ```
      */
-    fun validateCatalog(catalog: Catalog) = ValidationResult(catalog, createCatalogDefinition())
+    fun validateCatalog(catalog: Catalog) = ValidationResult(this, catalog, createCatalogDefinition())
 
     /**
      *
@@ -134,6 +134,8 @@ class CodeGenerator {
     fun differencesWithCatalog(catalog: Catalog): List<String> = createCatalogDefinition().diff(catalog)
 
     private fun createConfig(): CodeGeneratorConfig {
+        if (!this::dataSource.isInitialized)
+            throw CodeGenerationException("Cannot run code generation: no valid DataSource set. Make sure to configure one with withDataSource(..) on the CodeGenerator instance.")
         return CodeGeneratorConfig(
             dataSource = dataSource,
             exclusionConfigurer = exclusionConfigurer,
