@@ -1,6 +1,7 @@
 = Release notes
 
 == 0.4.5-alpha
+* Where-clause condition supports null values in `eq()` and `ne()` methods. These are equivalent to `isNull()` and `isNotNull()`
 * All Column implementations in core are open for extension
 * Added `.and()` method to configuration builders for more fluent syntax in code generator.
 * Tables in schema are added to `Schema` metadata objects as static fields, for a quick overview in autocomplete.
