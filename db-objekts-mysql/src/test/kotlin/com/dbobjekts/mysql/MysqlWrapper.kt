@@ -14,6 +14,8 @@ class MysqlWrapper(
     init {
         withDatabaseName("test")
         withEnv("MYSQL_ROOT_PASSWORD", "test")
+        withConnectTimeoutSeconds(600)
+        withStartupTimeoutSeconds(600)
         if (files.isEmpty())
             throw IllegalArgumentException("Provide at least one sql file")
         files.forEach {

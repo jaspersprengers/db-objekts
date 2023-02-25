@@ -31,7 +31,7 @@ class MysqlIntegrationTest {
     companion object {
 
         @Container
-        val container: MysqlWrapper = MysqlWrapper("8.0", listOf("acme.sql", "classicmodels.sql"))
+        val container: MysqlWrapper = MysqlWrapper("8.0.32", listOf("acme.sql", "classicmodels.sql"))
         lateinit var dataSource: DataSource
         lateinit var tm: TransactionManager
 
