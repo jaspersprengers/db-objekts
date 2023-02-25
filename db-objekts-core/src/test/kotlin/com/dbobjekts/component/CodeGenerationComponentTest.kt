@@ -30,7 +30,7 @@ class CodeGenerationComponentTest {
             .setEnumForColumnName(column = "address_string", enumClass = AddressType::class.java)
             .setEnumForColumnName(column = "address_int", enumClass = AddressType::class.java)
         .and().configureOutput()
-            .basePackageForSources("com.dbobjekts.testdb2.acme")
+            .basePackageForSources("com.dbobjekts.testdb.acme")
             .outputDirectoryForGeneratedSources(PathsUtil.getGeneratedSourcesDirectory())
         .and().validateCatalog(CatalogDefinition)
             .assertNoDifferences()
