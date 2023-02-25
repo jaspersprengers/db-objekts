@@ -683,8 +683,8 @@ The canonical form of the where clause is `statement.where(column .. operator ..
 ```
 These are the available operators.
 
-- `eq`: is equal to
-- `ne`: is not equal to.
+- `eq`: is equal to. A call with a null argument delegates to `isNull()`
+- `ne`: is not equal to. A call with a null argument delegates to `isNotNull()`
 - `gt`: is greater than. Comparison operators can be used with numeric as well as date/time and char types
 - `lt`: is less than.
 - `gte`: is greater than or equal.

@@ -48,11 +48,15 @@ data class Condition<I, W : WhereClauseComponent>(
 
     /**
      * operator for equality condition. Results in SQL: my_column = my_column2
+     *
+     * If the column permits null values, the call is delegated to isNotNull()
      */
     fun eq(column: AnyColumn): W = createColumnCondition(column,"=")
 
     /**
      * operator for not-equality condition. Results in SQL: my_column <> my_column2
+     *
+     * If the column permits null values, the call is delegated to isNotNull()
      */
     fun ne(column: AnyColumn): W = createColumnCondition(column,"!=")
 

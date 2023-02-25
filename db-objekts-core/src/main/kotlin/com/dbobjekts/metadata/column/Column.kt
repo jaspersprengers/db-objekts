@@ -37,6 +37,8 @@ abstract class Column<I>(
 
     /**
      * operator for equality condition. Results in SQL: my_column = ?
+     *
+     * If the column permits null values, the call is delegated to isNull()
      */
     fun eq(value: I): SubClause =
         if (value == null) isNull() else createSimpleCondition(
@@ -51,6 +53,8 @@ abstract class Column<I>(
 
     /**
      * operator for not-equality condition. Results in SQL: my_column <> my_column2
+     *
+     * If the column permits null values, the call is delegated to isNotNull()
      */
     fun ne(column: AnyColumn): SubClause = createColumnCondition(column, "!=")
 
