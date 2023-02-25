@@ -85,6 +85,18 @@ class SelectStatementComponentTest : HasAliases by Aliases {
     }
 
     @Test
+    fun `select for null and not null`(){
+        tm({
+            //eve has a hobby, bob doesn't
+            it.select(em.hobbyId).where(em.name.eq("Eve").and(em.hobbyId).isNotNull()).first()
+            it.select(em.hobbyId).where(em.name.eq("Eve").and(em.hobbyId).ne(null)).first()
+
+            it.select(em.hobbyId).where(em.name.eq("Bob").and(em.hobbyId).isNull()).first()
+            it.select(em.hobbyId).where(em.name.eq("Bob").and(em.hobbyId).eq(null)).first()
+        })
+    }
+
+    @Test
     fun `test select two columns from two tables`() {
         tm({
             val (salary, street) =

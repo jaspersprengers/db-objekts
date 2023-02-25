@@ -41,7 +41,7 @@ data class Condition<I, W : WhereClauseComponent>(
      * operator for equality condition. Results in SQL: my_column = ?
      */
     fun eq(value: I): W =
-        if (value == null) throw StatementBuilderException("Cannot supply null argument. Use isNull()") else createSimpleCondition(
+        if (value == null) isNull() else createSimpleCondition(
             value,
             "="
         )
@@ -87,7 +87,7 @@ data class Condition<I, W : WhereClauseComponent>(
      * @param value a non-null value
      */
     fun ne(value: I): W =
-        if (value == null) throw StatementBuilderException("Cannot supply null argument. Use isNotNull()") else createSimpleCondition(
+        if (value == null) isNotNull() else createSimpleCondition(
             value,
             "<>"
         )

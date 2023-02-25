@@ -39,7 +39,7 @@ abstract class Column<I>(
      * operator for equality condition. Results in SQL: my_column = ?
      */
     fun eq(value: I): SubClause =
-        if (value == null) throw StatementBuilderException("Cannot supply null argument for condition. Use isNull()") else createSimpleCondition(
+        if (value == null) isNull() else createSimpleCondition(
             value,
             "="
         )
@@ -84,7 +84,7 @@ abstract class Column<I>(
      * @param value a non-null value
      */
     fun ne(value: I): SubClause =
-        if (value == null) throw StatementBuilderException("Cannot supply null argument. Use isNotNull()") else createSimpleCondition(
+        if (value == null) isNotNull() else createSimpleCondition(
             value,
             "<>"
         )
