@@ -25,10 +25,10 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <kotlin.version>1.7.22</kotlin.version>
+        <kotlin.version>1.8.21</kotlin.version>
         <kotlin.compiler.incremental>true</kotlin.compiler.incremental>
-        <logback.version>1.4.5</logback.version>
-        <testcontainers.version>1.17.6</testcontainers.version>
+        <logback.version>1.4.7</logback.version>
+        <testcontainers.version>1.18.1</testcontainers.version>
     </properties>
 
     <scm>
