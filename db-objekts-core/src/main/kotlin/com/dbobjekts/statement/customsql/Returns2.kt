@@ -27,14 +27,14 @@ class Returns2<T1, T2>(
     /**
      * Adds a custom non-nullable Column type as the next column in the result row.
      * @param clz a subclass of NonNullableColumn<*>             
-     */
-    fun <R, T : NonNullableColumn<R>> custom(clz: Class<T>): Returns3<T1, T2, R> = Returns3(column1, column2, ColumnFactory.forClass(clz), semaphore, conn, sql, args)
+     */               
+    fun <R> column(col: NonNullableColumn<R>): Returns3<T1, T2, R> = Returns3(column1, column2, col, semaphore, conn, sql, args)
     
     /**
      * Adds a custom nullable Column type as the next column in the result row.
      * @param clz a subclass of NullableColumn<*>             
      */
-    fun <R, T : NullableColumn<R>> customNil(clz: Class<T>): Returns3<T1, T2, R> = Returns3(column1, column2, ColumnFactory.forClassAsNullable(clz), semaphore, conn, sql, args)
+    fun <R> columnNil(col: NullableColumn<R>): Returns3<T1, T2, R> = Returns3(column1, column2, col, semaphore, conn, sql, args)
 
     /**
      * Adds a String type as the next column in the result row

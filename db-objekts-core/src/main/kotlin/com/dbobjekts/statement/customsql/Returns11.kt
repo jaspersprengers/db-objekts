@@ -27,14 +27,14 @@ class Returns11<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
     /**
      * Adds a custom non-nullable Column type as the next column in the result row.
      * @param clz a subclass of NonNullableColumn<*>             
-     */
-    fun <R, T : NonNullableColumn<R>> custom(clz: Class<T>): Returns12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> = Returns12(column1, column2, column3, column4, column5, column6, column7, column8, column9, column10, column11, ColumnFactory.forClass(clz), semaphore, conn, sql, args)
+     */               
+    fun <R> column(col: NonNullableColumn<R>): Returns12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> = Returns12(column1, column2, column3, column4, column5, column6, column7, column8, column9, column10, column11, col, semaphore, conn, sql, args)
     
     /**
      * Adds a custom nullable Column type as the next column in the result row.
      * @param clz a subclass of NullableColumn<*>             
      */
-    fun <R, T : NullableColumn<R>> customNil(clz: Class<T>): Returns12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> = Returns12(column1, column2, column3, column4, column5, column6, column7, column8, column9, column10, column11, ColumnFactory.forClassAsNullable(clz), semaphore, conn, sql, args)
+    fun <R> columnNil(col: NullableColumn<R>): Returns12<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, R> = Returns12(column1, column2, column3, column4, column5, column6, column7, column8, column9, column10, column11, col, semaphore, conn, sql, args)
 
     /**
      * Adds a String type as the next column in the result row

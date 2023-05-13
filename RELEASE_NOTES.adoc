@@ -1,5 +1,8 @@
 = Release notes
 
+== 0.4.6-alpha
+* Upgraded various dependencies to the latest versions
+
 == 0.4.5-alpha
 * Where-clause condition supports null values in `eq()` and `ne()` methods. These are equivalent to `isNull()` and `isNotNull()`
 * All Column implementations in core are open for extension

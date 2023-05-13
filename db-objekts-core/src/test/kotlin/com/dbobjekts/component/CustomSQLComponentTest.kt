@@ -1,11 +1,9 @@
 package com.dbobjekts.component
 
-import com.dbobjekts.api.ColumnClasses
 import com.dbobjekts.fixture.columns.AddressType
 import com.dbobjekts.fixture.columns.AddressTypeColumn
-import com.dbobjekts.metadata.ColumnFactory
-import com.dbobjekts.metadata.column.EnumAsStringColumn
 import com.dbobjekts.metadata.column.NullableNumberAsBooleanColumn
+import com.dbobjekts.testdb.acme.core.EmployeeAddress
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -38,15 +36,14 @@ class CustomSQLComponentTest {
 
     @Test
     fun `test all employees with home and work address`() {
-
-        tm({
+        tm {
             val rows =
                 it.sql(sql).withResultTypes().long().string().double().booleanNil().intNil().date().stringNil().stringNil().stringNil()
                     .string()
                     .stringNil()
                     .asList()
             assertThat(rows).hasSize(11)
-        })
+        }
     }
 
     @Test
