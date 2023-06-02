@@ -6,10 +6,9 @@ image::logo.png[logo, 600]
 
 === Preliminaries
 
-NOTE: db-Objekts is currently in alpha. The API is subject to change and not ready for production.
-Starting from release `0.4.3.-alpha`, deprecated API behavior will be marked as such and become breaking from the first beta. These changes will however be minor and should not deter you from trying the software in its current state.
+NOTE: This is the first beta release of db-Objekts. Changes to the API should be few, but they can be breaking. There will be no deprecation of API behaviour prior to change.
 At present, it supports H2, MariaDB, MySQL and PostrgreSQL.
-A beta is planned for early 2023 and a first stable release later that year. xref:roadmap[Roadmap]
+See the xref:roadmap[Roadmap]
 
 
 == db-Objekts in a nutshell
@@ -1111,16 +1110,11 @@ This is the very first alpha release. The API may change slightly, so it is not 
 [#roadmap]
 === Roadmap
 
-* The alpha releases will cover the following:
-**  Close to 100% unit test coverage
-** Full coverage for all column types in the H2 database, used for testing
-** Improving and cleaning up source code documentation and user docs
-** Minor alterations the API with regard to method names and possible refactoring of packages
+During the beta release the following is planned:
 
-* The first beta release is planned for early 2023. These will cover:
-** Addition of PostgreSQL and MySQL as vendor types
-** Rigorous integration tests on dockerized images of all database vendors as part of the build
-** No more API changes are to be expected.
+* Rigorous integration tests on dockerized images of all database vendors
+* Better support to plug in your own database vendor implementation.
+
 
 [#contact]
 == Contact

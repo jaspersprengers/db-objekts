@@ -1,5 +1,8 @@
 = Release notes
 
+== o.5.0-beta
+* First beta release
+
 == 0.4.6-alpha
 * Upgrade to kotlin 1.18.21
 * Upgraded various dependencies to the latest versions
