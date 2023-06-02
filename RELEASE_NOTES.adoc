@@ -1,6 +1,7 @@
 = Release notes
 
 == 0.4.6-alpha
+* Upgrade to kotlin 1.18.21
 * Upgraded various dependencies to the latest versions
 
 == 0.4.5-alpha
