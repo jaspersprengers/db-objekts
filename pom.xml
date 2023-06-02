@@ -5,7 +5,7 @@
 
     <groupId>com.db-objekts</groupId>
     <artifactId>db-objekts</artifactId>
-    <version>0.4.6-alpha</version>
+    <version>0.5.0-beta-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <name>db-objekts</name>
