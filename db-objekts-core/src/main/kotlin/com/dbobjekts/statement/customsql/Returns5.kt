@@ -24,6 +24,51 @@ class Returns5<T1, T2, T3, T4, T5>(
     private val args: List<Any>
 ) {
 
+   /**
+      * Adds a non-nullable `EnumAsStringColumn` type as the next column in the result row.
+      *
+      * Example:
+      *```kotlin
+      * withResultTypes().enumAsString(AddressType::class.java)
+      * ```
+      * @param clz a valid Enum class
+      */
+    fun <E : Enum<E>> enumAsString(clz: Class<E>): Returns6<T1, T2, T3, T4, T5, E> = Returns6(column1, column2, column3, column4, column5, ColumnFactory.forEnumAsString(clz), semaphore, conn, sql, args)
+ 
+     /**
+      * Adds a `NullableEnumAsStringColumn` type as the next column in the result row.
+      *
+      * Example:
+      *```kotlin
+      * withResultTypes().enumAsStringNil(AddressType::class.java)
+      * ```
+      * @param clz a valid Enum class
+      */
+    fun <E : Enum<E>> enumAsStringNil(clz: Class<E>): Returns6<T1, T2, T3, T4, T5, E?> = Returns6(column1, column2, column3, column4, column5, ColumnFactory.forNullableEnumAsString(clz), semaphore, conn, sql, args)
+ 
+     /**
+      * Adds a non-nullable `EnumAsIntColumn` as the next column in the result row.
+      *
+      * Example:
+      *```kotlin
+      * withResultTypes().enumAsInt(AddressType::class.java)
+      * ```
+      * @param clz a valid Enum class
+      */
+    fun <E : Enum<E>> enumAsInt(clz: Class<E>): Returns6<T1, T2, T3, T4, T5, E> = Returns6(column1, column2, column3, column4, column5, ColumnFactory.forEnumAsInt(clz), semaphore, conn, sql, args)
+ 
+    /**
+      * Adds a `NullableEnumAsIntColumn` as the next column in the result row.
+      *
+      * Example:
+      *```kotlin
+      * withResultTypes().enumAsIntNil(AddressType::class.java)
+      * ```
+      * @param clz a valid Enum class
+      */
+    fun <E : Enum<E>> enumAsIntNil(clz: Class<E>): Returns6<T1, T2, T3, T4, T5, E?> = Returns6(column1, column2, column3, column4, column5, ColumnFactory.forNullableEnumAsInt(clz), semaphore, conn, sql, args)
+
+
     /**
      * Adds a custom non-nullable Column type as the next column in the result row.
      * @param clz a subclass of NonNullableColumn<*>             

@@ -34,6 +34,11 @@ class CustomSQLSelectStatementBuilder(
     fun <R> column(col: NonNullableColumn<R>): Returns1<R> = Returns1(col, semaphore, conn, sql, args)
     fun <R> columnNil(col: NullableColumn<R>): Returns1<R> = Returns1(col, semaphore, conn, sql, args)
 
+    fun <E : Enum<E>> enumAsString(clz: Class<E>): Returns1<E> = Returns1(ColumnFactory.forEnumAsString(clz), semaphore, conn, sql, args)
+    fun <E : Enum<E>> enumAsStringNil(clz: Class<E>): Returns1<E?> = Returns1(ColumnFactory.forNullableEnumAsString(clz), semaphore, conn, sql, args)
+    fun <E : Enum<E>> enumAsInt(clz: Class<E>): Returns1<E> = Returns1(ColumnFactory.forEnumAsInt(clz), semaphore, conn, sql, args)
+    fun <E : Enum<E>> enumAsIntNil(clz: Class<E>): Returns1<E?> = Returns1(ColumnFactory.forNullableEnumAsInt(clz), semaphore, conn, sql, args)
+
     fun string(): Returns1<String> = Returns1(ColumnFactory.VARCHAR, semaphore, conn, sql, args)
     fun stringNil(): Returns1<String?> = Returns1(ColumnFactory.VARCHAR_NIL, semaphore, conn, sql, args)
     fun long(): Returns1<Long> = Returns1(ColumnFactory.LONG, semaphore, conn, sql, args)

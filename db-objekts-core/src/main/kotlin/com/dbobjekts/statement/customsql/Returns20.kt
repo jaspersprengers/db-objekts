@@ -24,6 +24,51 @@ class Returns20<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15
     private val args: List<Any>
 ) {
 
+   /**
+      * Adds a non-nullable `EnumAsStringColumn` type as the next column in the result row.
+      *
+      * Example:
+      *```kotlin
+      * withResultTypes().enumAsString(AddressType::class.java)
+      * ```
+      * @param clz a valid Enum class
+      */
+    fun <E : Enum<E>> enumAsString(clz: Class<E>): Returns21<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, E> = Returns21(column1, column2, column3, column4, column5, column6, column7, column8, column9, column10, column11, column12, column13, column14, column15, column16, column17, column18, column19, column20, ColumnFactory.forEnumAsString(clz), semaphore, conn, sql, args)
+ 
+     /**
+      * Adds a `NullableEnumAsStringColumn` type as the next column in the result row.
+      *
+      * Example:
+      *```kotlin
+      * withResultTypes().enumAsStringNil(AddressType::class.java)
+      * ```
+      * @param clz a valid Enum class
+      */
+    fun <E : Enum<E>> enumAsStringNil(clz: Class<E>): Returns21<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, E?> = Returns21(column1, column2, column3, column4, column5, column6, column7, column8, column9, column10, column11, column12, column13, column14, column15, column16, column17, column18, column19, column20, ColumnFactory.forNullableEnumAsString(clz), semaphore, conn, sql, args)
+ 
+     /**
+      * Adds a non-nullable `EnumAsIntColumn` as the next column in the result row.
+      *
+      * Example:
+      *```kotlin
+      * withResultTypes().enumAsInt(AddressType::class.java)
+      * ```
+      * @param clz a valid Enum class
+      */
+    fun <E : Enum<E>> enumAsInt(clz: Class<E>): Returns21<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, E> = Returns21(column1, column2, column3, column4, column5, column6, column7, column8, column9, column10, column11, column12, column13, column14, column15, column16, column17, column18, column19, column20, ColumnFactory.forEnumAsInt(clz), semaphore, conn, sql, args)
+ 
+    /**
+      * Adds a `NullableEnumAsIntColumn` as the next column in the result row.
+      *
+      * Example:
+      *```kotlin
+      * withResultTypes().enumAsIntNil(AddressType::class.java)
+      * ```
+      * @param clz a valid Enum class
+      */
+    fun <E : Enum<E>> enumAsIntNil(clz: Class<E>): Returns21<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, E?> = Returns21(column1, column2, column3, column4, column5, column6, column7, column8, column9, column10, column11, column12, column13, column14, column15, column16, column17, column18, column19, column20, ColumnFactory.forNullableEnumAsInt(clz), semaphore, conn, sql, args)
+
+
     /**
      * Adds a custom non-nullable Column type as the next column in the result row.
      * @param clz a subclass of NonNullableColumn<*>             
