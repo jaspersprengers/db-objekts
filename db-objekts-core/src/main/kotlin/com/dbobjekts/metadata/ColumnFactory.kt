@@ -122,6 +122,15 @@ object ColumnFactory {
         return getConstructor(clz).newInstance(table, DUMMY, null) as C
     }
 
+    fun <E : Enum<E>> forEnumAsString(clz: Class<E>): EnumAsStringColumn<E> =  EnumAsStringColumn(table, DUMMY, clz, null)
+
+    fun <E : Enum<E>> forNullableEnumAsString(clz: Class<E>): NullableEnumAsStringColumn<E> =  NullableEnumAsStringColumn(table, DUMMY, clz, null)
+
+    fun <E : Enum<E>> forEnumAsInt(clz: Class<E>): EnumAsIntColumn<E> =  EnumAsIntColumn(table, DUMMY, clz, null)
+
+    fun <E : Enum<E>> forNullableEnumAsInt(clz: Class<E>): NullableEnumAsIntColumn<E> =  NullableEnumAsIntColumn(table, DUMMY, clz, null)
+
+
     @Suppress("UNCHECKED_CAST")
     internal fun <T> nullableColumn(col: NonNullableColumn<T>): NullableColumn<T?> {
         val clz = col::class.java

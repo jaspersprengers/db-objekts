@@ -3,7 +3,6 @@ package com.dbobjekts.metadata.joins
 import com.dbobjekts.api.AnyColumn
 import com.dbobjekts.api.AnyTable
 import com.dbobjekts.api.exception.StatementBuilderException
-import com.dbobjekts.metadata.column.IsForeignKey
 import com.dbobjekts.statement.SQLOptions
 import com.dbobjekts.statement.whereclause.SubClause
 import com.dbobjekts.util.StringUtil
@@ -20,7 +19,7 @@ class DerivedJoin(
 
     fun on(clause: SubClause): ManualJoinChain {
         if (pairs.size != 1)
-            throw StatementBuilderException("Illegal state")
+            throw StatementBuilderException("Illegal state. You must call join() first.")
         val (tableToJoin, joinType) = pairs[0]
         return when (joinType) {
             JoinType.LEFT -> ManualJoinChain(table).leftJoin(tableToJoin).on(clause)
@@ -48,17 +47,17 @@ class DerivedJoin(
 
     private fun lastJoinTable(): AnyTable = if (joins.isEmpty()) table else joins.last().rightPart.table
 
-    private fun checkTableNotJoinedAlready(table: AnyTable) {
+    private fun assertTableIsNotJoinedAlready(table: AnyTable) {
         if (joins.any { it.containsTable(table) })
             throw StatementBuilderException("Table ${table.tableName} is already present in join. You cannot add it again: ${toSQL()}")
     }
 
     private fun extractJoinedColumnPair(table: AnyTable): Pair<AnyColumn, AnyColumn> {
-        val head =
+        val headPair =
             if (joins.isEmpty()) getJoinPair(lastJoinTable(), lastJoinTable(), table)
             else joins.reversed().map { getJoinPair(it.leftPart.table, it.rightPart.table, table) }.filterNotNull().firstOrNull()
 
-        return if (head == null) throw StatementBuilderException("Cannot join ${table.toSQL()} to ${lastJoinTable().toSQL()}") else head
+        return headPair ?: throw StatementBuilderException("Cannot join ${table.toSQL()} to ${lastJoinTable().toSQL()}")
     }
 
     private fun getJoinPair(left: AnyTable, right: AnyTable, tableToAdd: AnyTable): Pair<AnyColumn, AnyColumn>? {
@@ -99,7 +98,7 @@ class DerivedJoin(
 
     override fun toSQL(options: SQLOptions): String {
         pairs.forEach { (t, j) ->
-            checkTableNotJoinedAlready(t)
+            assertTableIsNotJoinedAlready(t)
             joins += createJoin(j, extractJoinedColumnPair(t))
         }
         return StringUtil.concat(listOf(table.toSQL(options), JoinFactory.toSQL(joins.toList())))

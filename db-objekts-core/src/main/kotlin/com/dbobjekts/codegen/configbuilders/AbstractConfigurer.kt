@@ -10,7 +10,7 @@ abstract class AbstractConfigurer(protected val generator: CodeGenerator) {
      * Returns the parent [CodeGenerator] instance to allow for fluent syntax.
      * ```kotlin
      * CodeGenerator()
-     *             .withDataSource(AcmeDB.dataSource)
+     *         .withDataSource(AcmeDB.dataSource)
      *         .configurePrimaryKeySequences()
      *             [...]
      *         .and().configureColumnTypeMapping()

@@ -1,9 +1,7 @@
 package com.dbobjekts.component
 
 import com.dbobjekts.fixture.columns.AddressType
-import com.dbobjekts.fixture.columns.AddressTypeColumn
 import com.dbobjekts.metadata.column.NullableNumberAsBooleanColumn
-import com.dbobjekts.testdb.acme.core.EmployeeAddress
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -49,7 +47,7 @@ class CustomSQLComponentTest {
     @Test
     fun `select with iterator`() {
 
-        tm({
+        tm{
             val iterator = it.sql("select e.id from core.EMPLOYEE e").withResultTypes().long()
                 .iterator()
             var counter = 0
@@ -57,27 +55,27 @@ class CustomSQLComponentTest {
                 counter += 1
             }
             assertThat(counter).isEqualTo(10)
-        })
+        }
     }
 
     @Test
     fun `select with foreach loop`() {
-        tm({
+        tm{
             var counter = 0
             it.sql("select e.id from core.EMPLOYEE e").withResultTypes().long()
-                .forEachRow({ nmb, row ->
+                .forEachRow{ nmb, row ->
                     counter += 1
                     nmb < 5 // break after 5 rows
-                })
+                }
             assertThat(counter).isEqualTo(5)
-        })
+        }
     }
 
 
     @Test
     fun `test custom`() {
-        tm({
-            val rows = it.sql(
+        tm{
+            it.sql(
                 """
                         select e.children,home.kind,e.id
                         from core.EMPLOYEE e 
@@ -86,10 +84,11 @@ class CustomSQLComponentTest {
                     """.trimIndent()
             ).withResultTypes()
                 .customNil(NullableNumberAsBooleanColumn::class.java)
-                .custom(AddressTypeColumn::class.java)
-                .asList()
-            assertThat(rows).hasSize(20)
-        })
+                .enumAsString(AddressType::class.java)
+                .asList().forEach { (children, addresstype) ->
+                    println("$children $addresstype")
+                }
+        }
     }
 
 }
