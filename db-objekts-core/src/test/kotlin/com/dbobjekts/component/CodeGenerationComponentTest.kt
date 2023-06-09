@@ -5,6 +5,7 @@ import com.dbobjekts.api.SequenceForPrimaryKeyResolver
 import com.dbobjekts.codegen.CodeGenerator
 import com.dbobjekts.codegen.datatypemapper.ColumnMappingProperties
 import com.dbobjekts.fixture.columns.AddressType
+import com.dbobjekts.fixture.columns.CertificateType
 import com.dbobjekts.metadata.column.NumberAsBooleanColumn
 import com.dbobjekts.metadata.column.SequenceKeyLongColumn
 import com.dbobjekts.testdb.acme.CatalogDefinition
@@ -29,11 +30,11 @@ class CodeGenerationComponentTest {
             .setEnumForColumnName(column = "kind", table = "EMPLOYEE_ADDRESS", enumClass = AddressType::class.java)
             .setEnumForColumnName(column = "address_string", enumClass = AddressType::class.java)
             .setEnumForColumnName(column = "address_int", enumClass = AddressType::class.java)
+            .setEnumForColumnName(column = "certificate_type", enumClass = CertificateType::class.java)
         .and().configureOutput()
             .basePackageForSources("com.dbobjekts.testdb.acme")
             .outputDirectoryForGeneratedSources(PathsUtil.getGeneratedSourcesDirectory())
-        .and().validateCatalog(CatalogDefinition)
-            .assertNoDifferences()
+        .and().validateCatalog(CatalogDefinition).assertNoDifferences()
         .and().generateSourceFiles()
     }
 

@@ -1,7 +1,9 @@
 package com.dbobjekts.component
 
 import com.dbobjekts.api.Tuple6
+import com.dbobjekts.api.Tuple7
 import com.dbobjekts.fixture.columns.AddressType
+import com.dbobjekts.fixture.columns.CertificateType
 import com.dbobjekts.statement.select.SelectStatementExecutor
 import com.dbobjekts.testdb.acme.Aliases
 import com.dbobjekts.testdb.acme.HasAliases
@@ -52,7 +54,6 @@ class SelectStatementComponentTest : HasAliases by Aliases {
             assertNull(it.select(em.children).where(em.name.eq("Fred")).firstOrNull())
             assertNull(it.select(em.children).where(em.name.eq("Fred")).first())
         }
-
     }
 
     @Test
@@ -177,8 +178,8 @@ class SelectStatementComponentTest : HasAliases by Aliases {
     @Test
     fun `join all tables in outer join`() {
         tm { tr ->
-            val derivedJoin: Tuple6<EmployeeRow, String, AddressType, String, String?, String?> =
-                tr.select(Employee, Address.street, EmployeeAddress.kind, Department.name, Hobby.name.nullable, Certificate.name.nullable)
+            val derivedJoin: Tuple7<EmployeeRow, String, AddressType, String, String?, String?, CertificateType?> =
+                tr.select(Employee, Address.street, EmployeeAddress.kind, Department.name, Hobby.name.nullable, Certificate.name.nullable, Certificate.certificateType)
                     .from(
                         Employee
                             .leftJoin(ea)

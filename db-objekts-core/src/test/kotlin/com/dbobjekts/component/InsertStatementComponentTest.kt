@@ -1,7 +1,9 @@
 package com.dbobjekts.component
 
 import com.dbobjekts.fixture.columns.AddressType
+import com.dbobjekts.fixture.columns.CertificateType
 import com.dbobjekts.testdb.acme.core.*
+import com.dbobjekts.testdb.acme.hr.Certificate
 import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatThrownBy
@@ -31,8 +33,11 @@ class InsertStatementComponentTest {
             assertThat(jack.married).isNull()
             assertThat(jack.children).isNull()
             assertThat(jack.hobbyId).isNull()
+            tr.insert(Certificate).mandatoryColumns("OCP", jack.id).execute()
+            assertThat(tr.select(Certificate).where(Certificate.employeeId.eq(jack.id)).first().certificateType).isEqualTo(CertificateType.OPTIONAL)
         }
     }
+
 
     @Test
     fun `Row-based insertion`() {

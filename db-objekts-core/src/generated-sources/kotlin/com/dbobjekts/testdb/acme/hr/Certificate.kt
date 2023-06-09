@@ -5,6 +5,7 @@ import com.dbobjekts.api.TableRowData
 import com.dbobjekts.metadata.Table
 import com.dbobjekts.metadata.column.AutoKeyLongColumn
 import com.dbobjekts.metadata.column.ForeignKeyLongColumn
+import com.dbobjekts.metadata.column.NullableEnumAsIntColumn
 import com.dbobjekts.metadata.column.VarcharColumn
 import com.dbobjekts.statement.WriteQueryAccessors
 import com.dbobjekts.statement.insert.InsertBuilderBase
@@ -37,14 +38,19 @@ object Certificate:Table<CertificateRow>("CERTIFICATE"), HasUpdateBuilder<Certif
      * Foreign key to CORE.EMPLOYEE.ID
      */
     val employeeId = ForeignKeyLongColumn(this, "EMPLOYEE_ID", Employee.id)
-    override val columns: List<AnyColumn> = listOf(id,name,employeeId)
-    override fun toValue(values: List<Any?>) = CertificateRow(values[0] as Long,values[1] as String,values[2] as Long)
+    /**
+     * Represents db column HR.CERTIFICATE.CERTIFICATE_TYPE
+     */
+    val certificateType = NullableEnumAsIntColumn(this, "CERTIFICATE_TYPE", com.dbobjekts.fixture.columns.CertificateType::class.java)
+    override val columns: List<AnyColumn> = listOf(id,name,employeeId,certificateType)
+    override fun toValue(values: List<Any?>) = CertificateRow(values[0] as Long,values[1] as String,values[2] as Long,values[3] as com.dbobjekts.fixture.columns.CertificateType?)
     override fun metadata(): WriteQueryAccessors<CertificateUpdateBuilder, CertificateInsertBuilder> = WriteQueryAccessors(CertificateUpdateBuilder(), CertificateInsertBuilder())
 }
 
 class CertificateUpdateBuilder() : UpdateBuilderBase(Certificate) {
     fun name(value: String): CertificateUpdateBuilder = put(Certificate.name, value)
     fun employeeId(value: Long): CertificateUpdateBuilder = put(Certificate.employeeId, value)
+    fun certificateType(value: com.dbobjekts.fixture.columns.CertificateType?): CertificateUpdateBuilder = put(Certificate.certificateType, value)
     
     /**
      * FOR INTERNAL USE ONLY
@@ -54,6 +60,7 @@ class CertificateUpdateBuilder() : UpdateBuilderBase(Certificate) {
       add(Certificate.id, rowData.id)
       add(Certificate.name, rowData.name)
       add(Certificate.employeeId, rowData.employeeId)
+      add(Certificate.certificateType, rowData.certificateType)
       return where(Certificate.id.eq(rowData.id))
     }    
         
@@ -62,6 +69,7 @@ class CertificateUpdateBuilder() : UpdateBuilderBase(Certificate) {
 class CertificateInsertBuilder():InsertBuilderBase(){
     fun name(value: String): CertificateInsertBuilder = put(Certificate.name, value)
     fun employeeId(value: Long): CertificateInsertBuilder = put(Certificate.employeeId, value)
+    fun certificateType(value: com.dbobjekts.fixture.columns.CertificateType?): CertificateInsertBuilder = put(Certificate.certificateType, value)
 
     fun mandatoryColumns(name: String, employeeId: Long) : CertificateInsertBuilder {
       mandatory(Certificate.name, name)
@@ -74,6 +82,7 @@ class CertificateInsertBuilder():InsertBuilderBase(){
       rowData as CertificateRow
       add(Certificate.name, rowData.name)
       add(Certificate.employeeId, rowData.employeeId)
+      add(Certificate.certificateType, rowData.certificateType)
       return execute()
     }    
         
@@ -83,7 +92,8 @@ class CertificateInsertBuilder():InsertBuilderBase(){
 data class CertificateRow(
 val id: Long = 0,
   val name: String,
-  val employeeId: Long    
+  val employeeId: Long,
+  val certificateType: com.dbobjekts.fixture.columns.CertificateType?    
 ) : TableRowData<CertificateUpdateBuilder, CertificateInsertBuilder>(Certificate.metadata()){
      override val primaryKeys = listOf<Pair<AnyColumn, Any?>>(Pair(Certificate.id, id))
 }
