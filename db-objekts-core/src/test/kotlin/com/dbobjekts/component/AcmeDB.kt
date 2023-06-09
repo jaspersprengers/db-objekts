@@ -42,7 +42,7 @@ object AcmeDB {
                         "MARRIED boolean null, date_of_birth DATE not null, children SMALLINT null, hobby_id varchar(10) null," +
                         "foreign key(hobby_id) references hr.HOBBY(id))"
             ).execute()
-            tr.sql("create table IF NOT EXISTS hr.CERTIFICATE(id BIGINT primary key auto_increment, name varchar(50) not null, employee_id BIGINT not null, foreign key(employee_id) references core.employee(id) on DELETE CASCADE)").execute()
+            tr.sql("create table IF NOT EXISTS hr.CERTIFICATE(id BIGINT primary key auto_increment, name varchar(50) not null, employee_id BIGINT not null, certificate_type int null, foreign key(employee_id) references core.employee(id) on DELETE CASCADE)").execute()
             tr.sql("create table IF NOT EXISTS core.COUNTRY(id varchar(10) primary key, name varchar(50) not null)").execute()
 
             tr.sql("create table IF NOT EXISTS core.ADDRESS(id BIGINT primary key, street varchar(50) not null, postcode varchar(10) null, country_id varchar(10) not null, foreign key(country_id) references core.COUNTRY(id)  on DELETE CASCADE)").execute()
