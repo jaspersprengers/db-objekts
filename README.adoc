@@ -820,7 +820,13 @@ This returns a builder with methods for each available standard SQL type in a nu
 
 image::custom_sql.png[autocomplete_update, 600]
 
-Apart from standard column types you can also map retrieved values using a custom column type. For this there are the `custom(..)` and `customNil(..)` builder methods.
+=== Retrieving Enums and using custom column types
+For character and integer columns with a constrained range of values that map to a business enum, you can retrieve their values by passing in the enum class. Because we're dealing with raw SQL, you must specify the type (integer or character) that db-Objekts should use when retrieving the results.
+
+Examples: `.enumAsString[Nil](Addresstype.class.java)` and `.enumAsInt[Nil](Addresstype.class.java)`. Both return an `AddressType`, or `AddressType?` if you use the *Nil variant.
+
+
+You can also map retrieved values using a custom column type. For this there are the `custom(..)` and `customNil(..)` builder methods.
 
 These come in a nullable and non-nullable flavor and take a reference to the appropriate Column class. Suppose the following query selects two columns which are stored as TINYINT(1) used as a Boolean, and VARCHAR(10) nullable, respectively. We want to read them out as Boolean and our own AddressType.
 
@@ -837,7 +843,7 @@ Static objects `com.dbobjekts.api.[Nil]ColumnClasses` gives a handy overview, so
 ```kotlin
 .custom(ColumnClasses.NUMBER_AS_BOOLEAN)
 ```
-The `custom` and `customNil` methods take a `NonNullableColumn` and `NullableColumn` reference, respectively. You can't go wrong there, as mismatches won't compile.
+The `custom` and `customNil` methods take a `NonNullableColumn` and `NullableColumn` reference, respectively. You can't go wrong there, as mismatches won't compile. Note in the above example that you could also have used `enumAsStringNil(AddressType.class.java)`, if there was no custom `NullableAddressTypeAsStringColumn` class.
 
 == Advanced topics
 
