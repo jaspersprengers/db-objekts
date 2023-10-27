@@ -821,7 +821,7 @@ This returns a builder with methods for each available standard SQL type in a nu
 image::custom_sql.png[autocomplete_update, 600]
 
 === Retrieving Enums and using custom column types
-For character and integer columns with a constrained range of values that map to a business enum, you can retrieve their values by passing in the enum class. Because we're dealing with raw SQL, you must specify the type (integer or character) that db-Objekts should use when retrieving the results.
+Columns with a small, relatively immutable range of values can be directly retrieved as a Kotlin enum, provided the values match by name or ordinal number (zero-based). Since you're dealing with raw SQL, you must specify the type (integer or character) that db-Objekts should retrieve from the result rows.
 
 Examples: `.enumAsString[Nil](Addresstype.class.java)` and `.enumAsInt[Nil](Addresstype.class.java)`. Both return an `AddressType`, or `AddressType?` if you use the *Nil variant.
 
