@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.db-objekts</groupId>
         <artifactId>db-objekts</artifactId>
-        <version>0.5.0-beta</version>
+        <version>0.5.1-beta-SNAPSHOT</version>
     </parent>
 
     <artifactId>db-objekts-mysql</artifactId>
@@ -23,7 +23,7 @@
         <dependency>
             <groupId>com.db-objekts</groupId>
             <artifactId>db-objekts-core</artifactId>
-            <version>0.5.0-beta</version>
+            <version>0.5.1-beta-SNAPSHOT</version>
         </dependency>
 
         <!--database-->
