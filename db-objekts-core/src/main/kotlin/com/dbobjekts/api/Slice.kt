@@ -1,6 +1,8 @@
 package com.dbobjekts.api
 
-
+/**
+ * Represents a slice of a result set, starting with `skip` and containing `limit` rows
+ */
 data class Slice(
     val skip: Long,
     val limit: Long

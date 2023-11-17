@@ -1,5 +1,8 @@
 package com.dbobjekts.api
 
+/**
+ * Configuration to exclude columns in the database schemas from the generated code.
+ */
 class ColumnExclusionFilter(
     private val column: String,
     private val table: String? = null,
