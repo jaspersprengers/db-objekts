@@ -1,6 +1,9 @@
 = Release notes
 
-== o.5.0-beta
+== 0.5.1-beta
+Upgrade of dependencies
+
+== 0.5.0-beta
 * First beta release
 
 == 0.4.6-alpha
