@@ -1,6 +1,6 @@
 = Release notes
 
-== 0.5.1-beta
+== 0.6.0-SNAPSHOT
 Upgrade of dependencies
 minor refactoring and fixes to tests
 
