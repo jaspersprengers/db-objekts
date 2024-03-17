@@ -39,9 +39,6 @@ class QueryOverviewComponentTest {
 
             val rows: List<Tuple3<String, String, Long>> =
                 transaction.select(Book.title, Author.name, Item.id).where(Book.published.lt(LocalDate.of(1980, 1, 1))).asList()
-            rows.forEach { (title, name, id) ->
-                println("$title by $name item $id")
-            }
 
             transaction.insert(Loan).mandatoryColumns(memberId = sally, itemId = item19, dateLoaned = LocalDate.now()).execute()
             transaction.insert(Loan).mandatoryColumns(memberId = sally, itemId = phil1, dateLoaned = LocalDate.now()).execute()
@@ -54,17 +51,15 @@ class QueryOverviewComponentTest {
             val (title, item) = transaction.select(Book.title, Item.id.nullable).where(Book.isbn.eq("ISBN-WIGAN")).useOuterJoins().first()
             assertThat(item).isNull()
 
-            transaction.select(Loan, Item, Book, Author, Member).asList()
-                .forEach { (dateLoaned, item, book, author, member) ->
-                    println("Item $item of $book by $author loaned to $member on $dateLoaned")
-                }
-            println(transaction.transactionExecutionLog().last().sql)
+            val record = transaction.select<LoanRow, ItemRow, BookRow, AuthorRow, MemberRow>(Loan, Item, Book, Author, Member)
+                .orderAsc(Loan.itemId, Loan.memberId)
+                .where(Loan.itemId.eq(10).and(Loan.memberId).eq(11))
+                .asList().first()
+            assertThat(record.v2.isbn).isEqualTo("ISBN-1984")
+            assertThat(record.v3.title).isEqualTo("Nineteen-eighty Four")
+            assertThat(record.v4.name).isEqualTo("George Orwell")
+            assertThat(record.v5.name).isEqualTo("Sally")
 
-         /*   transaction.select(Item.id, Item.isbn, Member.name, Loan.dateLoaned.nullable, Loan.dateReturned)
-                .from(Loan.rightJoin(Item).innerJoin(Book).innerJoin(Member)).forEachRow { (item, isbn, member, loaned, returned) ->
-                    println("$item $isbn $loaned by $member returned $returned")
-                    true
-                }*/
         }
 
     }

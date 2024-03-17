@@ -47,7 +47,7 @@ class CustomSQLComponentTest {
     @Test
     fun `select with iterator`() {
 
-        tm{
+        tm {
             val iterator = it.sql("select e.id from core.EMPLOYEE e").withResultTypes().long()
                 .iterator()
             var counter = 0
@@ -60,10 +60,10 @@ class CustomSQLComponentTest {
 
     @Test
     fun `select with foreach loop`() {
-        tm{
+        tm {
             var counter = 0
             it.sql("select e.id from core.EMPLOYEE e").withResultTypes().long()
-                .forEachRow{ nmb, row ->
+                .forEachRow { nmb, row ->
                     counter += 1
                     nmb < 5 // break after 5 rows
                 }
@@ -74,20 +74,22 @@ class CustomSQLComponentTest {
 
     @Test
     fun `test custom`() {
-        tm{
-            it.sql(
+        tm {
+            val row = it.sql(
                 """
                         select e.children,home.kind,e.id
                         from core.EMPLOYEE e 
                             left join core.EMPLOYEE_ADDRESS home on home.EMPLOYEE_ID = e.ID 
-                            left join core.ADDRESS ha on ha.ID = home.ADDRESS_ID                            
+                            left join core.ADDRESS ha on ha.ID = home.ADDRESS_ID
+                        order by e.id asc limit 1;
                     """.trimIndent()
             ).withResultTypes()
                 .customNil(NullableNumberAsBooleanColumn::class.java)
                 .enumAsString(AddressType::class.java)
-                .asList().forEach { (children, addresstype) ->
-                    println("$children $addresstype")
-                }
+                .asList().first()
+            assertThat(row.v1).isFalse()
+            assertThat(row.v2).isEqualTo(AddressType.WORK)
+
         }
     }
 

@@ -4,6 +4,7 @@ import com.dbobjekts.testdb.acme.core.Employee
 import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions.assertThatThrownBy
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
 
@@ -37,7 +38,7 @@ class DeleteStatementComponentTest {
 
             //this is not supported by H2, but possible in (e.g.) MariaDB
 
-            Assertions.assertThatThrownBy { tr.deleteFrom(e.innerJoin(Hobby)).where(h.name.eq("curling")) }
+            assertThatThrownBy { tr.deleteFrom(e.innerJoin(Hobby)).where(h.name.eq("curling")) }
 
             //delete all Employee records
             tr.deleteFrom(Employee).where()

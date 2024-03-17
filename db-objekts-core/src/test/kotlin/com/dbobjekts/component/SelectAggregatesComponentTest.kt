@@ -1,10 +1,7 @@
 package com.dbobjekts.component
 
 import com.dbobjekts.metadata.column.Aggregate
-import com.dbobjekts.testdb.acme.core.Address
-import com.dbobjekts.testdb.acme.core.Department
-import com.dbobjekts.testdb.acme.core.Employee
-import com.dbobjekts.testdb.acme.core.EmployeeDepartment
+import com.dbobjekts.testdb.acme.core.*
 import com.dbobjekts.testdb.acme.hr.Certificate
 import com.dbobjekts.testdb.acme.hr.Hobby
 import org.assertj.core.api.Assertions
@@ -22,6 +19,7 @@ class SelectAggregatesComponentTest {
         val a = Address
         val ed = EmployeeDepartment
         val h = Hobby
+        val c = Country
         val tm = AcmeDB.transactionManager
 
         @BeforeAll
@@ -156,24 +154,24 @@ class SelectAggregatesComponentTest {
     @Test
     fun `sum of salaries by hobby name`() {
         tm({
-            it.select(e.salary.sum(), h.name)
+            val record = it.select(e.salary.sum(), h.name)
                 .orderDesc(h.name)
                 .having(Aggregate.gt(70000).and().lt(100000))
-                .asList().forEach {
-                    println(it)
-                }
+                .first()
+            assertThat(record.v1).isEqualTo(98000.0)
+            assertThat(record.v2).isEqualTo("Photography")
         })
     }
 
     @Test
     fun `average salaries by country of residence`() {
         tm({
-            it.select(e.salary.sum(), h.name)
-                .orderDesc(h.name)
+            val record = it.select(e.salary.sum(), a.countryId)
+                .orderDesc(a.countryId)
                 .having(Aggregate.gt(70000).and().lt(100000))
-                .asList().forEach {
-                    println(it)
-                }
+                .first()
+        assertThat(record.v1).isEqualTo(99000.0)
+        assertThat(record.v2).isEqualTo("be")
         })
     }
 
