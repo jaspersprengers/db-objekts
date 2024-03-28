@@ -1,6 +1,9 @@
 = Release notes
 
-== 0.6.0-SNAPSHOT
+== 0.6.0-RC
+First release candidate for 0.6.0
+
+== 0.5.1-beta
 Upgrade of dependencies
 minor refactoring and fixes to tests
 
