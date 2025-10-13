@@ -98,9 +98,9 @@ class CodeGenerationComponentTest {
             //add some stuff to the test db that wel will ignore for the code generator
             it.sql("CREATE SCHEMA if not exists finance").execute()
             it.sql("create table if not exists hr.country").execute()
-            it.sql("alter table core.employee add date_created DATETIME not null default now()").execute()
-            it.sql("alter table core.country add date_created DATETIME not null default now()").execute()
-            it.sql("alter table core.country add audit_pending DATETIME null").execute()
+            it.sql("alter table core.employee add date_created TIMESTAMP not null default now()").execute()
+            it.sql("alter table core.country add date_created TIMESTAMP not null default now()").execute()
+            it.sql("alter table core.country add audit_pending TIMESTAMP null").execute()
         }
         val def = generator.configureExclusions()
             .ignoreColumnPattern("audit")

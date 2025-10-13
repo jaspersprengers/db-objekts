@@ -3,17 +3,18 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.db-objekts</groupId>
+        <groupId>nl.firtree.db-objekts</groupId>
         <artifactId>db-objekts</artifactId>
-        <version>0.6.0-RC2</version>
+        <version>0.7.0-SNAPSHOT</version>
     </parent>
 
     <packaging>jar</packaging>
     <artifactId>db-objekts-core</artifactId>
+    <name>db-objekts core module</name>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -118,17 +119,6 @@
             <plugin>
                 <groupId>org.jetbrains.dokka</groupId>
                 <artifactId>dokka-maven-plugin</artifactId>
-                <version>1.7.20</version>
-                <executions>
-                    <execution>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>dokka</goal>
-                            <goal>javadoc</goal>
-                            <goal>javadocJar</goal>
-                        </goals>
-                    </execution>
-                </executions>
                 <configuration>
                     <sourceDirectories>
                         <dir>${project.basedir}/src/main/kotlin</dir>

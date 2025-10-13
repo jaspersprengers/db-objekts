@@ -1,5 +1,8 @@
 = Release notes
 
+== 0.7.0
+Migration to new repository and namespace nl.firtree
+
 == 0.6.0-RC
 First release candidate for 0.6.0
 

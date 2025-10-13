@@ -189,7 +189,7 @@ The sub module `db-objekts-spring-demo` contains examples from this section and 
 The main jar is `com.db-objekts:db-objekts-core`, and you also need a vendor-specific implementation. Since they all depend on core, just add the vendor-specific dependency to your maven or gradle file configuration.
 ```xml
 <dependency>
-	<groupId>com.db-objekts</groupId>
+	<groupId>nl.firtree.db-objekts</groupId>
 	<artifactId>db-objekts-mariadb</artifactId>
 	<version>...</version>
 </dependency>

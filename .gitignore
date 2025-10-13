@@ -1,4 +1,5 @@
 **/*.iml
+local.txt
 target
 /.idea
 /core.iml
